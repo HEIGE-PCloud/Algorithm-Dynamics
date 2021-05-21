@@ -250,7 +250,7 @@ Due to the good compatibility of Python, it can run on all mainstream desktop op
 
 ### An overview of the structure of the solution
 
-
+![Design structure](https://mermaid.ink/svg/eyJjb2RlIjoiZ3JhcGggVERcbiAgICBBbGdvcml0aG1EeW5hbWljc1tBbGdvcml0aG0gRHluYW1pY3NdXG4gICAgbWFpbkNvZGluZ0ludGVyZmFjZVtNYWluIENvZGluZyBJbnRlcmZhY2VdXG4gICAgcXVlc3Rpb25EaXNwbGF5V2lkZ2V0IC0tLSBxdWVzdGlvblRleHRXaWRnZXRbUXVlc3Rpb24gVGV4dCBXaWRnZXRdXG4gICAgcXVlc3Rpb25EaXNwbGF5V2lkZ2V0IC0tLSBzYW1wbGVUZXN0Y2FzZVdpZGdldFtTYW1wbGUgVGVzdGNhc2UgV2lkZ2V0XVxuICAgIG1haW5Db2RpbmdJbnRlcmZhY2UgLS0tIHF1ZXN0aW9uRGlzcGxheVdpZGdldFtRdWVzdGlvbiBEaXNwbGF5IFdpZGdldF1cbiAgICBtYWluQ29kaW5nSW50ZXJmYWNlIC0tLSBjb2RlRWRpdG9yW0NvZGUgRWRpdG9yXVxuICAgIGNvZGVFZGl0b3IgLS0tIGNvZGVJbnB1dEJveFtDb2RlIElucHV0IEJveF1cbiAgICBjb2RlRWRpdG9yIC0tLSBsaW5lTnVtYmVyW0xpbmUgTnVtYmVyXVxuICAgIGNvZGVFZGl0b3IgLS0tIHN5bnRheEhpZ2hsaWdodG5pbmdbU3ludGF4IEhpZ2hsaWdodG5pbmddXG4gICAgbWFpbkNvZGluZ0ludGVyZmFjZSAtLS0gcnVuQ29kZUJ1dHRvbltSdW4gQ29kZSBCdXR0b25dXG4gICAgcnVuQ29kZUJ1dHRvbiAtLT58c3VibWlzc2lvbnwgcnVuQ29kZUp1ZGdlcnt7SnVkZ2VyfX0gLS0-fHJlc3VsdHwgZGlmZkVkaXRvcltEaWZmIEVkaXRvcl1cbiAgICBtYWluQ29kaW5nSW50ZXJmYWNlIC0tLSBzdWJtaXRCdXR0b25bU3VibWl0IEJ1dHRvbl0gLS0-fHN1Ym1pc3Npb258IHN1Ym1pdENvZGVKdWRnZXJ7e0p1ZGdlcn19IC0tPnxyZXN1bHR8IGxvY2FsRGF0YWJhc2VbKExvY2FsIERhdGFiYXNlKV1cblxuXG4gICAgbG9jYWxEYXRhYmFzZVsoTG9jYWwgRGF0YWJzZSldIC0tLSBkYXRhYmFzZUludGVyZmFjZVtEYXRhYmFzZSBJbnRlcmZhY2VdXG5cbiAgICBkYXRhYmFzZUludGVyZmFjZSAtLS0gc2VhcmNoQm94W1NlYXJjaCBCb3hdXG4gICAgZGF0YWJhc2VJbnRlcmZhY2UgLS0tIHNlYXJjaEJ1dHRvbltTZWFyY2ggQnV0dG9uXVxuICAgIGRhdGFiYXNlSW50ZXJmYWNlIC0tLSBsaXN0Vmlld1tMaXN0IFZpZXddXG4gICAgZGF0YWJhc2VJbnRlcmZhY2UgLS0tIGltcG9ydEJ1dHRvbltJbXBvcnQgQnV0dG9uXSAtLT4gaW1wb3J0RmlsZUhhbmRsaW5nV2luZG93W0ltcG9ydCBGaWxlIEhhbmRsaW5nIFdpbmRvd10gLS0-IHJlYWRGaWxlW1JlYWQgRmlsZV0gLS0-IGxvY2FsRGF0YWJhc2VcbiAgICBkYXRhYmFzZUludGVyZmFjZSAtLS0gZXhwb3J0QnV0dG9uW0V4cG9ydCBCdXR0b25dLS0-IGxvY2FsRGF0YWJhc2UgLS0-IGV4cG9ydEZpbGVIYW5kbGluZ1dpbmRvd1tFeHBvcnQgRmlsZSBIYW5kbGluZyBXaW5kb3ddIC0tPiB3cml0ZUZpbGVbV3JpdGUgRmlsZV1cbiAgICBkYXRhYmFzZUludGVyZmFjZSAtLS0gZGVsZXRlQnV0dG9uW0RlbGV0ZSBCdXR0b25dXG5cbiAgICBsaXN0VmlldyAtLS0gY2hlY2tCb3hbQ2hlY2sgQm94XVxuICAgIGxpc3RWaWV3IC0tLSBpdGVtTmFtZVtJdGVtIE5hbWVdXG4gICAgbGlzdFZpZXcgLS0tIHN0YXJ0Q29kaW5nQnV0dG9uW1N0YXJ0IENvZGluZyBCdXR0b25dIC0tPiBtYWluQ29kaW5nSW50ZXJmYWNlXG5cblxuICAgIEFsZ29yaXRobUR5bmFtaWNzIC0tLSBtYWluTWVudVtNYWluIE1lbnVdXG4gICAgbWFpbk1lbnUgLS0tIGRhdGFiYXNlSW50ZXJmYWNlXG4gICAgbWFpbk1lbnUgLS0tIHF1aWNrU3RhcnRCdXR0b25bUXVpY2sgU3RhcnQgQnV0dG9uXVxuIiwibWVybWFpZCI6eyJ0aGVtZSI6Im5ldXRyYWwifSwidXBkYXRlRWRpdG9yIjpmYWxzZX0)
 
 ## Development
 
@@ -271,9 +271,9 @@ Due to the good compatibility of Python, it can run on all mainstream desktop op
 
 Download and install [VS Code](https://code.visualstudio.com/).
 
-Instead of using a large IDE with everything pre-configured, I decide to use a code editor to write the code and a terminal to execute all the commands I need. This gives me more control on the project.
+Instead of using a large IDE with everything pre-configured, I decide to use a code editor to write the code and a terminal to execute all the commands I need. This gives me more control on my project.
 
-VS Code is a free and open source code editor which also have greate support for python.
+VS Code is a free and open source code editor which also have greate support for Python.
 
 I decide to use VS Code as my main editor.
 
@@ -287,21 +287,21 @@ I simply choose the latest Python release for this project. When we release the 
 
 Download and install [Git](https://git-scm.com/).
 
-Git is a free and open source distributed version control system. It records every "commit" I made to the source code and allows me to revert back to any previous "commit". This makes it easy to roll back to a certain version and locate bugs. It also allow me to create new "branch" which is useful when experimenting new features without worrying about damaging the stable code.
+Git is a free and open source distributed version control system. It records every "commit" I made to the source code and allows me to revert back to any previous "commit". This makes it easy to roll back to a certain version and locate bugs. It also allow me to create new "branches" which is useful when experimenting new features without worrying about damaging the stable code.
 
-I decide to use Git as the version control tool for this project.
+I decide to use Git as the version control system for this project.
 
 #### Project management
 
 GitHub
 
-GitHub is a code hosting platform with project management function support. There are many useful functions provided by GitHub to manage this project. The "Issue" function allows my stakeholders to report bugs and issues is a much easier and convenient way. The "Actions" function provides support for CI/CD and auto testing. The "Project" function provides support for manage and organize the TODO list for the project.
+GitHub is a code hosting platform which supports many project management features. The "Issue" allows my stakeholders to report bugs and suggests features. The "Action" provides support for CI/CD. The "Project" provides support for manage and organize the TODO list for the project.
 
 I decide to use GitHub as the code hosting platform for this project.
 
 #### Create a project repository
 
-We need to first create a private repository for this project.
+I need to first create a private repository for this project.
 
 ![Create a Project Repository](images/Create-a-New-Repository.png)
 
@@ -309,18 +309,18 @@ This is the inital screenshot of this project repository, there is not many thin
 
 ![Project Repository](images/HEIGE-PCloud-Algorithm-Dynamics-A-handy-tool-to-help-you-learn-and-revise-algorithms.png)
 
-We need to `clone` this repository in order to add files and write code to it.
+I need to `clone` this repository in order to add files and write code to it.
 
-```bash
+```shell
 git clone https://github.com/HEIGE-PCloud/Algorithm-Dynamics.git
 cd Algorithm-Dynamics
 ```
 
 #### Configure `.gitignore`
 
-The `.gitigore` file lists the files we do not want to be managed by the version control system. For example, we don't want to track the changes of the cache files or the log file.
+The `.gitigore` file lists the files I do not want to be managed by the version control system. For example, I don't want to track the changes of the cache files or the log file.
 
-GitHub has already generated a nice `.gitignore` file for this Python project, but we need to further ignore aditional two files, the config file from the VS Code and the pdf preview of this report.
+GitHub has already generated a nice `.gitignore` file for this Python project, but I need to further ignore aditional two files, the config file from the VS Code and the pdf preview of this report.
 
 ```diff
 +# VS Code config
@@ -333,7 +333,7 @@ GitHub has already generated a nice `.gitignore` file for this Python project, b
 
 After we have made the changes, we need to create a `commit` to comfirm the chagnes and let Git record it, so we can go back here again in the future if needed.
 
-```bash
+```shell
 ❯ git add .gitignore
 ❯ git commit -m "chore(configure-environment): update .gitignore
 - Ignore config files for VS Code
@@ -343,31 +343,296 @@ After we have made the changes, we need to create a `commit` to comfirm the chag
 
 Now, we have created our first commit and pushed it to the remote repository.
 
-### Create the virtual environment
+#### Create the virtual environment
 
 A virtual environment is a self-contained directory tree that contains a Python installation for a particular version of Python, plus a number of additional packages.
 
-My Python program will use many external libraries, at the same time, there are other Python projects on my computer require the same library with differnt version requirements, so we need a virtual environment to isolate the dependicies for different projects. 
+My Python program will use many external libraries, at the same time, there are other Python projects on my computer require the same library with differnt version requirements, so I need a virtual environment to isolate the dependicies for different projects. 
 
-First, we install the lastest release of virtualenv.
+First, I install the lastest release of virtualenv.
 
 ```
 ❯ pip install virtualenv
 ```
 
-Next, we create a new virtual environment under the project folder.
+Next, I create a new virtual environment under the project folder.
 
 ```
 ❯ virtualenv env
 ```
 
-Finally, we need to activate the virtual environment.
+Finally, I need to activate the virtual environment.
 
 ```
 ❯ .\env\Scripts\activate.ps1
 ```
 
-Now we have a clean environment to install and manage all the dependicies and packages for this project.
+Now I have a clean environment to install and manage all the dependicies and packages for this project.
+
+### Hello, World!
+
+#### Hello GUI Application
+
+I will create a simple GUI Application to go through all the development stages to verify our environment is ready.
+
+I will use `PyQt6` as the GUI framework.
+
+[PyQt](https://riverbankcomputing.com/software/pyqt) is a set of Python bindings for The Qt Company's [Qt application framework](https://www.qt.io/) and runs on all platforms supported by Qt including Windows, macOS, Linux, iOS and Android.
+
+> PyQt is licensed under [GNU GPL v3](https://www.gnu.org/licenses/gpl-3.0.en.html), which means our program needs to licensed under GNU GPL v3 as well.
+
+Fisrt, I install `PyQt6` in our virtual environment.
+
+```
+❯(env)  pip install PyQt6
+```
+
+I then create `helloworld.py` under `src` folder as the source code file for the Hello World application.
+
+In this hello world program, I will create a custom widget contains a text label and a button. The text label will display a hello world sentence. When the button is clicked by the user, the text will randomly change to the hello world message in another language.
+
+```python
+import sys
+import random
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import (QApplication, QLabel, QWidget, QPushButton, QVBoxLayout)
+
+
+class MyWidget(QWidget):
+    def __init__(self):
+        super().__init__()
+        # List for all hello text
+        self.hello = ["Hallo Welt", "Hei maailma", "Hola Mundo", "Привет мир"]
+        # Add a button for changing the hello text
+        self.button = QPushButton("Click me!")
+        # Connect the button to magic function
+        self.button.clicked.connect(self.say_hello)
+        # Add a label to display the text
+        self.text = QLabel("Hello World", )
+        # Set alignment to center
+        self.text.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        # Set layout of the widget
+        self.layout = QVBoxLayout(self)
+        self.layout.addWidget(self.text)
+        self.layout.addWidget(self.button)
+
+    def say_hello(self):
+        self.text.setText(random.choice(self.hello))
+
+
+if __name__ == "__main__":
+    # Create a new application
+    app = QApplication(sys.argv)
+    # Create a new widegt
+    widget = MyWidget()
+    # Resize the widget
+    widget.resize(800, 600)
+    # Show the widget
+    widget.show()
+    # Run the app
+    sys.exit(app.exec())
+```
+
+Finally, we run our hello world GUI program.
+
+```
+❯(env)  python .\src\helloworld.py
+```
+
+An ugly hello world window shows up correctly. When the user clicks the Click me button, the text in the middle will change randomly.
+
+![Hello World](images/Hello-World.png)
+
+#### Hello unit test
+
+I am going to automate the test process with [Pytest](https://docs.pytest.org/) unit test framework. It can run through my pre-set test data automatically without me clicking each button or inputing each value by hand. This saves a lot of time and improves the quality of my tests dramatically.
+
+I will use Pytest as my unit test framework.
+
+First, I need to install Pytest in my virtual environment.
+
+```
+❯(env)  pip install Pytest
+```
+
+Next I need to create the test file for the hello world program. Under `test` folder, I create `test_helloworld.py.
+
+Here is the folder structure of the project.
+
+```
+.
++-- report
+|   +-- images
+|   +-- report.md
++-- src
+|   +-- __init__.py
+|   +-- helloworld.py
++-- tests
+|   +-- __init__.py
+|   +-- test_helloworld.py
++-- .gitignore
++-- coveragerc
++-- LICSNSE
++-- README.md
+```
+
+Here I create three tests for the hello world program. First I test its initial state, this ensure the widget loads up with the correct text and layout. Second I test its `sayHello` function to make sure the text is changed correctly (white box test). Finally I test its button, I simulate the click with `QTest.mouseClick` to make sure the button is working (black box test).
+
+```python
+import sys
+from PyQt6.QtWidgets import QApplication
+from PyQt6.QtCore import Qt
+from PyQt6.QtTest import QTest
+from src.helloworld import MyWidget
+
+
+app = QApplication(sys.argv)
+
+
+def test_initWidget():
+    """
+    Test the initial state of the widget.
+    """
+    widget = MyWidget()
+    hello = ["Hallo Welt", "Hei maailma", "Hola Mundo", "Привет мир"]
+    assert widget.text.text() == 'Hello World'
+    assert widget.button.text() == 'Click me!'
+    assert widget.hello == hello
+
+
+def test_sayHello():
+    """
+    Whitebox test the sayHello function.
+    Execute sayHello 10000 times, remove each random result from the list.
+    The final list should be empty.
+    """
+    widget = MyWidget()
+    hello = ["Hallo Welt", "Hei maailma", "Hola Mundo", "Привет мир"]
+    for i in range(10000):
+        widget.sayHello()
+        text = widget.text.text()
+        if text in hello:
+            hello.remove(widget.text.text())
+    assert len(hello) == 0
+
+
+def test_mouseClick():
+    """
+    Blackbox test the sayHello function.
+    Use QTest.mouseClick to click the button 10000 times.
+    Remove each random result from the list.
+    The final list should be empty as well.
+    """
+    widget = MyWidget()
+    hello = ["Hallo Welt", "Hei maailma", "Hola Mundo", "Привет мир"]
+    for i in range(10000):
+        QTest.mouseClick(widget.button, Qt.MouseButton.LeftButton)
+        text = widget.text.text()
+        if text in hello:
+            hello.remove(widget.text.text())
+    assert len(hello) == 0
+```
+
+#### Hello coverage
+
+"Coverage" is a measure used to describe the degree to which the source code of a program is executed when a test runs. A program with high test coverage has had more of its source code executed during testing, which suggests it has a lower chance of containing undetected software bugs compared to a program with low test coverage. I will use the coverage to provide evidence for the quality of my tests.
+
+We need to install `Pytest-cov` to calculate the coverage of the tests.
+
+```
+❯(env)  pip install Pytest-cov
+```
+
+I need to add a config file for the Pytest-cov to exclude the test and debug code from the coverage calculation.
+
+Create `coveragerc`.
+
+```
+[run]
+branch = True
+
+[report]
+exclude_lines =
+    # Have to re-enable the standard pragma
+    pragma: no cover
+
+    # Don't complain about missing debug-only code:
+    def __repr__
+    if self\.debug
+
+    # Don't complain if tests don't hit defensive assertion code:
+    raise AssertionError
+    raise NotImplementedError
+
+    # Don't complain if non-runnable code isn't run:
+    if 0:
+    if __name__ == .__main__.:
+```
+
+Now, I run the unit test with this command. `--cov` configures the folder of my source code. `--cov-report` configures the format of the coverage output, `term` lets it to be printed directly to the termial. `-vv` shows the details of my tests. `--cov-config` configures the location of our config file for coverage, which is the `coveragerc` file I just created.
+
+```
+❯(env)  pytest --cov=src -vv --cov-report=term --cov-config=./coveragerc
+```
+
+Here is the output of the test. My 3 tests `test_initWidget`, `test_sayHello`, `test_mouseClick` are executed and passed correctly. And the coverage report shows that the coverage of my tests is 100% which means all code is executed during the tests. I aim for a 95%+ coverage for the formal project.
+
+```
+========================== test session starts ==========================
+platform win32 -- Python 3.9.5, pytest-6.2.4, py-1.10.0, pluggy-0.13.1 -- c:\users\heige\documents\algorithm-dynamics\env\scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\HEIGE\Documents\Algorithm-Dynamics
+plugins: cov-2.12.0
+collected 3 items
+
+tests/test_helloworld.py::test_initWidget PASSED [ 33%]
+tests/test_helloworld.py::test_sayHello PASSED  [ 66%]
+tests/test_helloworld.py::test_mouseClick PASSED [100%]
+
+------------ coverage: platform win32, python 3.9.5-final-0 ------------
+Name                Stmts   Miss Branch BrPart  Cover
+-----------------------------------------------------
+src\__init__.py         0      0      0      0   100%
+src\helloworld.py      17      0      0      0   100%
+-----------------------------------------------------
+TOTAL                  17      0      0      0   100%
+
+
+=========================== 3 passed in 0.53s ===========================
+```
+
+#### Hello static check
+
+The style of the code is important as well. It will make the maintenance much easier if all variables have meaningful names, no trailing whitespace, proper blank lines, etc. I will use the tool flake8 to perform static check of my code. flake8 nicely works with VS Code, so I will have useful notifications so these issues can be fixed quickly.
+
+![flake8](images/flake8.png)
+
+Another useful tool is autopep8, it auto formats my source code and decides the whichspaces and blank lines wisely. 
+
+I install these two tools to monitor and improve the style of my code.
+
+```
+❯(env)  pip install flake8 autopep8
+```
+
+#### Hello `requirements.txt`
+
+I have installed a lot of packages for my project. `requirements.txt` is a file records all the packages I have installed, so the packages can be easily managed.
+
+```shell
+❯(env)  pip freeze > requirements.txt
+```
+
+#### Hello CI/CD
+
+Continuous integration (CI) and continuous delivery (CD) embody a culture, set of operating principles, and collection of practices that enable application development teams to deliver code changes more frequently and reliably.
+
+I will use GitHub Actions to auto test, build and deliver my application. 
+
+
+
+Codecov
+
 
 ## Evaluation
 
