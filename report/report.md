@@ -471,7 +471,7 @@ Here is the folder structure of the project.
 |   +-- __init__.py
 |   +-- test_helloworld.py
 +-- .gitignore
-+-- coveragerc
++-- .coveragerc
 +-- LICSNSE
 +-- README.md
 ```
@@ -545,7 +545,7 @@ We need to install `Pytest-cov` to calculate the coverage of the tests.
 
 I need to add a config file for the Pytest-cov to exclude the test and debug code from the coverage calculation.
 
-Create `coveragerc`.
+Create `.coveragerc`.
 
 ```
 [run]
@@ -569,10 +569,10 @@ exclude_lines =
     if __name__ == .__main__.:
 ```
 
-Now, I run the unit test with this command. `--cov` configures the folder of my source code. `--cov-report` configures the format of the coverage output, `term` lets it to be printed directly to the termial. `-vv` shows the details of my tests. `--cov-config` configures the location of our config file for coverage, which is the `coveragerc` file I just created.
+Now, I run the unit test with this command. `--cov` configures the folder of my source code. `--cov-report` configures the format of the coverage output, `term` lets it to be printed directly to the termial. `-vv` shows the details of my tests. `--cov-config` configures the location of our config file for coverage, which is the `.coveragerc` file I just created.
 
 ```
-❯(env)  pytest --cov=src -vv --cov-report=term --cov-config=./coveragerc
+❯(env)  pytest --cov=src -vv --cov-report=term --cov-config=./.coveragerc
 ```
 
 Here is the output of the test. My 3 tests `test_initWidget`, `test_sayHello`, `test_mouseClick` are executed and passed correctly. And the coverage report shows that the coverage of my tests is 100% which means all code is executed during the tests. I aim for a 95%+ coverage for the formal project.
@@ -629,9 +629,8 @@ Continuous integration (CI) and continuous delivery (CD) embody a culture, set o
 
 I will use GitHub Actions to auto test, build and deliver my application. 
 
+I will use [Codecov](https://codecov.io/) to monitor the test quailty and coverage.
 
-
-Codecov
 
 
 ## Evaluation
