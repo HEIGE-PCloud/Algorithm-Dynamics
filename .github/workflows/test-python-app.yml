@@ -10,7 +10,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [macos-latest, windows-latest]
       fail-fast: false
     steps:
     - uses: actions/checkout@v2
@@ -32,3 +32,4 @@ jobs:
       uses: codecov/codecov-action@v1
       with:
         fail_ci_if_error: true
+        token: ${{ env.CODECOV_TOKEN }}
