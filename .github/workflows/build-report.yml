@@ -13,7 +13,7 @@ jobs:
 
       - uses: xu-cheng/latex-action@v2
         with:
-          root_file: report/report.tex
+          root_file: report.tex
           working_directory: report
           extra_system_packages: "py-pygments"
           latexmk_shell_escape: true
