@@ -1,4 +1,4 @@
-\documentclass{report}
+\documentclass[a4paper]{report}
 \usepackage{tikz}
 \usepackage{minted}
 \usepackage{hyperref}
@@ -7,12 +7,13 @@
 \usetikzlibrary{shapes.geometric, arrows}
 \usemintedstyle{vs}
 \graphicspath{ {./images/} }
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1em}
 \title{A Level Programming Project Report}
 \author{Junrong Chen}
 \date{\today}
 
 \begin{document}
-
 \maketitle
 \tableofcontents
 \clearpage
@@ -350,8 +351,8 @@ This is the inital screenshot of this project repository, there is not many thin
 I need to \mintinline{text}{clone} this repository in order to add files and write code to it.
 
 \begin{minted}{bash}
-    git clone https://github.com/HEIGE-PCloud/Algorithm-Dynamics.git
-    cd Algorithm-Dynamics
+git clone https://github.com/HEIGE-PCloud/Algorithm-Dynamics.git
+cd Algorithm-Dynamics
 \end{minted}
 
 \subsection{Configure Git ignore files}
@@ -365,11 +366,11 @@ GitHub has already generated a nice \mintinline{text}{.gitigore} file for this P
 After I have made the changes, I need to create a \emph{commit} to comfirm the chagnes and let Git record it, so I can go back here again in the future if needed.
 
 \begin{minted}{bash}
-    $ git add .gitignore
-    $ git commit -m "chore(configure-environment): update .gitignore
-    - Ignore config files for VS Code
-    - Ignore pdf files for the report"
-    $ git push
+$ git add .gitignore
+$ git commit -m "chore(configure-environment): update .gitignore
+- Ignore config files for VS Code
+- Ignore pdf files for the report"
+$ git push
 \end{minted}
 
 Now, I have created the first commit and pushed it to the remote repository.
@@ -383,19 +384,19 @@ My Python program will use many external libraries, at the same time, there are 
 First, I install the lastest release of virtualenv.
 
 \begin{minted}{bash}
-    $ pip install virtualenv
+$ pip install virtualenv
 \end{minted}
 
 Next, I create a new virtual environment under the project folder.
 
 \begin{minted}{bash}
-    $ virtualenv env
+$ virtualenv env
 \end{minted}
 
 Finally, I need to activate the virtual environment.
 
 \begin{minted}{bash}
-    $ ./env/Scripts/activate
+$ ./env/Scripts/activate
 \end{minted}
 
 Now I have a clean environment to install and manage all the dependicies and packages for this project.
@@ -413,7 +414,7 @@ PyQt is licensed under \href{https://www.gnu.org/licenses/gpl-3.0.en.html}{GNU G
 Fisrt, I install PyQt6 in the virtual environment.
 
 \begin{minted}{bash}
-    $ (env)  pip install PyQt6
+$ (env)  pip install PyQt6
 \end{minted}
 
 I then create \mintinline{text}{helloworld.py} under \mintinline{text}{src} folder as the source code file for the Hello World application.
@@ -425,7 +426,7 @@ In this hello world program, I will create a custom widget contains a text label
 I run the GUI Application with the following command.
 
 \begin{minted}{bash}
-    $ (env) pythonw ./src/helloworld.py
+$ (env) pythonw ./src/helloworld.py
 \end{minted}
 
 An hello world window shows up correctly. When the I click the  button, the text in the middle will change randomly.
@@ -439,7 +440,7 @@ I am going to automate the test process with \href{https://docs.pytest.org/}{Pyt
 I need to install Pytest into my virtual environment first.
 
 \begin{minted}{bash}
-    $ (env) pip install Pytest
+$ (env) pip install Pytest
 \end{minted}
 
 Next I need to write the test code for the hello world program. Under \mintinline{text}{test} folder, I create \mintinline{text}{test_helloworld.py}.
@@ -455,39 +456,19 @@ Here I create three tests for the hello world program. First I test its initial 
 I need to install Pytest-cov to calculate the coverage of the tests.
 
 \begin{minted}{bash}
-    $ (env) pip install Pytest-cov    
+$ (env) pip install Pytest-cov
 \end{minted}
 
 I need to add a config file for the Pytest-cov to exclude the test and debug code from the coverage calculation.
 
 Create \mintinline{text}{.coveragerc}.
 
-\begin{minted}{text}
-[run]
-branch = True
-
-[report]
-exclude_lines =
-# Have to re-enable the standard pragma
-pragma: no cover
-
-# Don't complain about missing debug-only code:
-def __repr__
-if self\.debug
-
-# Don't complain if tests don't hit defensive assertion code:
-raise AssertionError
-raise NotImplementedError
-
-# Don't complain if non-runnable code isn't run:
-if 0:
-if __name__ == .__main__.:
-\end{minted}
+\inputminted{text}{../.coveragerc}
 
 Now, I run the unit test with this command. \mintinline{text}{--cov} configures the folder of my source code. \mintinline{text}{--cov-report} configures the format of the coverage output, \mintinline{text}{term} lets it to be printed directly to the termial. `-vv` shows the details of my tests. \mintinline{text}{--cov-config} configures the location of our config file for coverage, which is the \mintinline{text}{.coveragerc} file I just created.
 
 \begin{minted}{bash}
-    $ (env) pytest --cov=src -vv --cov-report=term --cov-config=./.coveragerc
+$ (env) pytest --cov=src -vv --cov-report=term --cov-config=./.coveragerc
 \end{minted}
 
 Here is the output of the test. My 3 tests \mintinline{python}{test_initWidget}, \mintinline{python}{test_sayHello}, \mintinline{python}{test_mouseClick} are executed and passed correctly. And the coverage report shows that the coverage of my tests is 100\% which means all code is executed during the tests. I aim for a 95\%+ coverage for the formal project.
@@ -526,7 +507,7 @@ Another useful tool is autopep8, it auto formats my source code and decides the 
 I install these two tools to monitor and improve the style of my code.
 
 \begin{minted}{bash}
-    $ (env) pip install flake8 autopep8
+$ (env) pip install flake8 autopep8
 \end{minted}
 
 \subsection{Hello requirements.txt}
@@ -534,7 +515,7 @@ I install these two tools to monitor and improve the style of my code.
 I have installed a lot of packages for my project. \mintinline{text}{requirements.txt} is a file records all the packages I have installed, so the packages can be easily managed.
 
 \begin{minted}{bash}
-    $ (env) pip freeze > requirements.txt
+$ (env) pip freeze > requirements.txt
 \end{minted}
 
 \subsection{Hello CI/CD}
@@ -545,42 +526,9 @@ I will use \href{https://github.com/features/actions}{GitHub Actions} to auto te
 
 I will use \href{https://codecov.io/}{Codecov} to monitor the test quailty and coverage.
 
-Create workflow file for GitHub Actions at \mintinline{text}{.github/workflows/test-python-app.yml}.
+Create workflow file at \mintinline{text}{.github/workflows/test-python-app.yml}.
 
-\begin{minted}{yaml}
-name: Test Python Application
-
-on: [push, pull_request, workflow_dispatch]
-
-jobs:
-  build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [macos-latest, windows-latest]
-      fail-fast: false
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python 3.9
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.9
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-    - name: Lint with flake8
-      run: |
-        flake8 src --count --show-source --statistics
-    - name: Test with pytest
-      run: |
-        pytest --cov=src --cov-config=.coveragerc
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v1.5.0
-      with:
-        fail_ci_if_error: true
-        token: ${{ secrets.CODECOV_TOKEN }}
-\end{minted}
+\inputminted{yaml}{../.github/workflows/test-python-app.yml}
 
 I can view the coverage report at Codecov.
 
@@ -594,14 +542,7 @@ Configure Dependabot.
 
 Create Dependabot config file at \mintinline{text}{.github/workflows/dependabot.yml}.
 
-\begin{minted}{yaml}
-version: 2
-updates:
-  - package-ecosystem: "pip"
-    directory: "/"
-    schedule:
-      interval: "daily"
-\end{minted}
+\inputminted{yaml}{../.github/dependabot.yml}
 
 So the dependicies will be automatically checked everyday and the bot will create a new pull request when a new update is detected.
 
