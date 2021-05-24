@@ -1,0 +1,24 @@
+name: Build Report
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: xu-cheng/latex-action@v2
+        with:
+          root_file: report/report.tex
+          working_directory: report
+          extra_system_packages: "py-pygments"
+          latexmk_shell_escape: true
+          
+      - uses: actions/upload-artifact@v2
+          with:
+            name: report.pdf
+            path: report/report.pdf
