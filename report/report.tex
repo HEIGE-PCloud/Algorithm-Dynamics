@@ -494,9 +494,8 @@ Here is the output of the test. My 3 tests \mintinline{python}{test_initWidget},
 
 \begin{minted}{text}
 ========================== test session starts ==========================
-platform win32 -- Python 3.9.5, pytest-6.2.4, py-1.10.0, pluggy-0.13.1 -- c:\users\heige\documents\algorithm-dynamics\env\scripts\python.exe
+platform win32 -- Python 3.9.5, pytest-6.2.4, py-1.10.0, pluggy-0.13.1 --
 cachedir: .pytest_cache
-rootdir: C:\Users\HEIGE\Documents\Algorithm-Dynamics
 plugins: cov-2.12.0
 collected 3 items
 
@@ -549,9 +548,6 @@ I will use \href{https://codecov.io/}{Codecov} to monitor the test quailty and c
 Create workflow file for GitHub Actions at \mintinline{text}{.github/workflows/test-python-app.yml}.
 
 \begin{minted}{yaml}
-# This workflow will install Python dependencies, run tests and lint with a single version of Python
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
-
 name: Test Python Application
 
 on: [push, pull_request, workflow_dispatch]
@@ -599,15 +595,10 @@ Configure Dependabot.
 Create Dependabot config file at \mintinline{text}{.github/workflows/dependabot.yml}.
 
 \begin{minted}{yaml}
-# To get started with Dependabot version updates, you'll need to specify which
-# package ecosystems to update and where the package manifests are located.
-# Please see the documentation for all configuration options:
-# https://help.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
-
 version: 2
 updates:
-  - package-ecosystem: "pip" # See documentation for possible values
-    directory: "/" # Location of package manifests
+  - package-ecosystem: "pip"
+    directory: "/"
     schedule:
       interval: "daily"
 \end{minted}
