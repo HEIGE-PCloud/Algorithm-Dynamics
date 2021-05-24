@@ -2,7 +2,7 @@
 
 > - [ ] Described and justified the features that make the problem solvable by computational methods, explaining why it is amenable to a computational approach. 
 > - [ ] Identified suitable stakeholders for the project and described them explaining how they will make use of the proposed solution and why it is appropriate to their needs. 
-> - [ ] Researched the problem in- [ ]depth looking at existing solutions to similar problems, identifying and justifying suitable approaches based on this research. 
+> - [ ] Researched the problem in depth looking at existing solutions to similar problems, identifying and justifying suitable approaches based on this research. 
 > - [ ] Identified the essential features of the proposed computational solution explaining these choices. 
 > - [ ] Identified and explained with justification any limitations of the proposed solution. 
 > - [ ] Specified and justified the requirements for the solution including (as appropriate) any hardware and software requirements. 
@@ -191,9 +191,16 @@ Codeforces helds contest regularly similarly to LeetCode, but with much harder q
 
 #### Stakeholders
 
-Interview stakeholders and get feedback
+##### Design the interview
 
-(TODO)
+###### Interview the teachers
+
+
+
+###### Interview the students
+
+
+
 
 #### Features
 
@@ -215,6 +222,16 @@ There are a few limitations of this software.
 > For the highest marks in this section you need to make sure you have justified the hardware and software requirements you have listed.  It is not sufficient to say your program will require 4Gb of RAM, a minimum of Windows 10 and 250Mb of hard drive space, for example, you must explain why you have come up with these figures
 
 Due to the good compatibility of Python, it can run on all mainstream desktop operating systems. Linux, macOS and Windows. The software itself does not contain complex graphical effects or large scale computation. So it should be able to run under 1C CPU and 512M RAM. However, the code solutions provided by the students may need more resource to run and test. So 2C CPU and 2G RAM is recommended. 
+
+| Hardware | Requirement | Explaination |
+|----------|-------------|--------------|
+| Keyboard | Keyboard | User input|
+| Mouse | Mouse | User input |
+| CPU | | |
+| Operating System |||
+| RAM ||
+| Hard Drive|||
+| Network connection|||
 
 ### Success criteria
 
@@ -627,11 +644,77 @@ I have installed a lot of packages for my project. `requirements.txt` is a file 
 
 Continuous integration (CI) and continuous delivery (CD) embody a culture, set of operating principles, and collection of practices that enable application development teams to deliver code changes more frequently and reliably.
 
-I will use GitHub Actions to auto test, build and deliver my application. 
+I will use [GitHub Actions](https://github.com/features/actions) to auto test, build and deliver my application. 
 
 I will use [Codecov](https://codecov.io/) to monitor the test quailty and coverage.
 
+Create workflow file for GitHub Actions at `.github/workflows/test-python-app.yml`.
 
+```yml
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Test Python Application
+
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest, windows-latest]
+      fail-fast: false
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Lint with flake8
+      run: |
+        flake8 src --count --show-source --statistics
+    - name: Test with pytest
+      run: |
+        pytest --cov=src --cov-config=.coveragerc
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v1.5.0
+      with:
+        fail_ci_if_error: true
+        token: ${{ secrets.CODECOV_TOKEN }}
+```
+
+View the coverage report at Codecov.
+
+![Codecov](images/Codecov.png)
+
+#### Hello Dependabot
+
+The dependicies I install may get upgraded by their maintainer later during my developing process. I need them to be managed and upgraded automatically. I use GitHub Dependabot to manage the dependicies.
+
+Configure Dependabot.
+
+Create Dependabot config file at `.github/workflows/dependabot.yml`.
+
+```yml
+# To get started with Dependabot version updates, you'll need to specify which
+# package ecosystems to update and where the package manifests are located.
+# Please see the documentation for all configuration options:
+# https://help.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+
+version: 2
+updates:
+  - package-ecosystem: "pip" # See documentation for possible values
+    directory: "/" # Location of package manifests
+    schedule:
+      interval: "daily"
+```
+
+So the dependicies will be automatically checked everyday and the bot will create a new pull request when a new update is detected.
 
 ## Evaluation
 
