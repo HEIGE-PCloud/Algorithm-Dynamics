@@ -136,3 +136,26 @@ dmypy.json
 
 # LaTeX
 _minted-report/
+*.aux
+*.bbl
+*.blg
+*.idx
+*.ind
+*.lof
+*.lot
+*.out
+*.toc
+*.acn
+*.acr
+*.alg
+*.glg
+*.glo
+*.gls
+*.fls
+*.fdb_latexmk
+*.snm
+*.synctex(busy)
+*.synctex.gz(busy)
+*.nav
+*.gz
+*.xdv

@@ -347,7 +347,7 @@ This is the inital screenshot of this project repository, there is not many thin
 
 \includegraphics[width=\linewidth]{HEIGE-PCloud-Algorithm-Dynamics-A-handy-tool-to-help-you-learn-and-revise-algorithms}
 
-I need to \mintinline{bash}{clone} this repository in order to add files and write code to it.
+I need to \mintinline{text}{clone} this repository in order to add files and write code to it.
 
 \begin{minted}{bash}
     git clone https://github.com/HEIGE-PCloud/Algorithm-Dynamics.git
@@ -356,9 +356,9 @@ I need to \mintinline{bash}{clone} this repository in order to add files and wri
 
 \subsection{Configure Git ignore files}
 
-The \mintinline{bash}{.gitigore} file lists files not being managed by the version control system. For example, I don't want to track the changes of the cache files or the log file.
+The \mintinline{text}{.gitigore} file lists files not being managed by the version control system. For example, I don't want to track the changes of the cache files or the log file.
 
-GitHub has already generated a nice \mintinline{bash}{.gitigore} file for this Python project, but I need to further ignore aditional two files, the config file from the VS Code and the pdf preview of this report.
+GitHub has already generated a nice \mintinline{text}{.gitigore} file for this Python project, but I need to further ignore aditional two files, the config file from the VS Code and the pdf preview of this report.
 
 \subsection{Create the first commit}
 
@@ -400,11 +400,11 @@ Finally, I need to activate the virtual environment.
 
 Now I have a clean environment to install and manage all the dependicies and packages for this project.
 
-\section{Hello, World!}
+\section{Hello World!}
 
-\subsection{Hello GUI Application}
+\subsection{Hello GUI application}
 
-I will create a simple GUI Application to go through all the development stages to verify the environment is ready.
+I will create a simple GUI application to go through all the development stages to verify the environment is ready.
 
 I will use PyQt6 as the GUI framework. \href{https://riverbankcomputing.com/software/pyqt}{PyQt} is a set of Python bindings for The Qt Company's \href{https://www.qt.io/}{Qt application framework} and runs on all platforms supported by Qt including Windows, macOS, Linux, iOS and Android.
 
@@ -416,11 +416,203 @@ Fisrt, I install PyQt6 in the virtual environment.
     $ (env)  pip install PyQt6
 \end{minted}
 
-I then create \mintinline{bash}{helloworld.py} under \mintinline{bash}{src} folder as the source code file for the Hello World application.
+I then create \mintinline{text}{helloworld.py} under \mintinline{text}{src} folder as the source code file for the Hello World application.
 
 In this hello world program, I will create a custom widget contains a text label and a button. The text label will display a hello world sentence. When the button is clicked by the user, the text will randomly change to the hello world message in another language.
 
 \inputminted{python}{../src/helloworld.py}
+
+I run the GUI Application with the following command.
+
+\begin{minted}{bash}
+    $ (env) pythonw ./src/helloworld.py
+\end{minted}
+
+An hello world window shows up correctly. When the I click the  button, the text in the middle will change randomly.
+
+\includegraphics[width=\linewidth]{Hello-World.png}
+
+\subsection{Hello unit test}
+
+I am going to automate the test process with \href{https://docs.pytest.org/}{Pytest} unit test framework. It can run through my pre-set test data automatically without me clicking each button or inputing each value by hand. This saves a lot of time and improves the quality of my tests.
+
+I need to install Pytest into my virtual environment first.
+
+\begin{minted}{bash}
+    $ (env) pip install Pytest
+\end{minted}
+
+Next I need to write the test code for the hello world program. Under \mintinline{text}{test} folder, I create \mintinline{text}{test_helloworld.py}.
+
+Here I create three tests for the hello world program. First I test its initial state, this ensure the widget loads up with the correct text and layout. Second I test its \mintinline{python}{sayHello} function to make sure the text is changed correctly (white box test). Third I test its button, I simulate the click with \mintinline{python}{QTest.mouseClick} to make sure the button is working (black box test).
+
+\inputminted{python}{../tests/test_helloworld.py}
+
+\subsection{Hello coverage}
+
+\emph{Coverage} is a measure used to describe the degree to which the source code of a program is executed when a test runs. A program with high test coverage has had more of its source code executed during testing, which suggests it has a lower chance of containing undetected software bugs compared to a program with low test coverage. I will use the coverage to provide evidence for the quality of my tests.
+
+I need to install Pytest-cov to calculate the coverage of the tests.
+
+\begin{minted}{bash}
+    $ (env) pip install Pytest-cov    
+\end{minted}
+
+I need to add a config file for the Pytest-cov to exclude the test and debug code from the coverage calculation.
+
+Create \mintinline{text}{.coveragerc}.
+
+\begin{minted}{text}
+[run]
+branch = True
+
+[report]
+exclude_lines =
+# Have to re-enable the standard pragma
+pragma: no cover
+
+# Don't complain about missing debug-only code:
+def __repr__
+if self\.debug
+
+# Don't complain if tests don't hit defensive assertion code:
+raise AssertionError
+raise NotImplementedError
+
+# Don't complain if non-runnable code isn't run:
+if 0:
+if __name__ == .__main__.:
+\end{minted}
+
+Now, I run the unit test with this command. \mintinline{text}{--cov} configures the folder of my source code. \mintinline{text}{--cov-report} configures the format of the coverage output, \mintinline{text}{term} lets it to be printed directly to the termial. `-vv` shows the details of my tests. \mintinline{text}{--cov-config} configures the location of our config file for coverage, which is the \mintinline{text}{.coveragerc} file I just created.
+
+\begin{minted}{bash}
+    $ (env) pytest --cov=src -vv --cov-report=term --cov-config=./.coveragerc
+\end{minted}
+
+Here is the output of the test. My 3 tests \mintinline{python}{test_initWidget}, \mintinline{python}{test_sayHello}, \mintinline{python}{test_mouseClick} are executed and passed correctly. And the coverage report shows that the coverage of my tests is 100\% which means all code is executed during the tests. I aim for a 95\%+ coverage for the formal project.
+
+\begin{minted}{text}
+========================== test session starts ==========================
+platform win32 -- Python 3.9.5, pytest-6.2.4, py-1.10.0, pluggy-0.13.1 -- c:\users\heige\documents\algorithm-dynamics\env\scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\HEIGE\Documents\Algorithm-Dynamics
+plugins: cov-2.12.0
+collected 3 items
+
+tests/test_helloworld.py::test_initWidget PASSED [ 33%]
+tests/test_helloworld.py::test_sayHello PASSED  [ 66%]
+tests/test_helloworld.py::test_mouseClick PASSED [100%]
+
+------------ coverage: platform win32, python 3.9.5-final-0 ------------
+Name                Stmts   Miss Branch BrPart  Cover
+-----------------------------------------------------
+src\__init__.py         0      0      0      0   100%
+src\helloworld.py      17      0      0      0   100%
+-----------------------------------------------------
+TOTAL                  17      0      0      0   100%
+
+
+=========================== 3 passed in 0.53s ===========================
+\end{minted}
+
+\subsection{Hello static check}
+
+The style of the code is important as well. It will make the maintenance much easier if all variables have meaningful names, no trailing whitespace, proper blank lines, etc. I will use the tool flake8 to perform static check of my code. flake8 nicely works with VS Code, so I will have useful notifications so these issues can be fixed quickly.
+
+\includegraphics[width=\linewidth]{flake8.png}
+
+Another useful tool is autopep8, it auto formats my source code and decides the whichspaces and blank lines wisely. 
+
+I install these two tools to monitor and improve the style of my code.
+
+\begin{minted}{bash}
+    $ (env) pip install flake8 autopep8
+\end{minted}
+
+\subsection{Hello requirements.txt}
+
+I have installed a lot of packages for my project. \mintinline{text}{requirements.txt} is a file records all the packages I have installed, so the packages can be easily managed.
+
+\begin{minted}{bash}
+    $ (env) pip freeze > requirements.txt
+\end{minted}
+
+\subsection{Hello CI/CD}
+
+Continuous integration (CI) and continuous delivery (CD) embody a culture, set of operating principles, and collection of practices that enable application development teams to deliver code changes more frequently and reliably.
+
+I will use \href{https://github.com/features/actions}{GitHub Actions} to auto test, build and deliver my application. 
+
+I will use \href{https://codecov.io/}{Codecov} to monitor the test quailty and coverage.
+
+Create workflow file for GitHub Actions at \mintinline{text}{.github/workflows/test-python-app.yml}.
+
+\begin{minted}{yaml}
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Test Python Application
+
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest, windows-latest]
+      fail-fast: false
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Lint with flake8
+      run: |
+        flake8 src --count --show-source --statistics
+    - name: Test with pytest
+      run: |
+        pytest --cov=src --cov-config=.coveragerc
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v1.5.0
+      with:
+        fail_ci_if_error: true
+        token: ${{ secrets.CODECOV_TOKEN }}
+\end{minted}
+
+I can view the coverage report at Codecov.
+
+\includegraphics[width=\linewidth]{Codecov.png}
+
+\subsection{Hello Dependabot}
+
+The dependicies I install may get upgraded by their maintainer later during my developing process. I need them to be managed and upgraded automatically. I use GitHub Dependabot to manage the dependicies.
+
+Configure Dependabot.
+
+Create Dependabot config file at \mintinline{text}{.github/workflows/dependabot.yml}.
+
+\begin{minted}{yaml}
+# To get started with Dependabot version updates, you'll need to specify which
+# package ecosystems to update and where the package manifests are located.
+# Please see the documentation for all configuration options:
+# https://help.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+
+version: 2
+updates:
+  - package-ecosystem: "pip" # See documentation for possible values
+    directory: "/" # Location of package manifests
+    schedule:
+      interval: "daily"
+\end{minted}
+
+So the dependicies will be automatically checked everyday and the bot will create a new pull request when a new update is detected.
 
 \chapter{Evaluation}
 
