@@ -134,7 +134,7 @@ LeetCode helds a contest every week, people try to solve the coding questions as
 
 ![LeetCode Pricing](images/LeetCode-Premium.png)
 
-The basic functions of LeetCode is free to use for all users and it charges a fee for premium subscriptions. The premium subscription provides a larger question database, better code editor, faster judger and more.
+
 
 ###### Advantage
 
@@ -715,8 +715,3 @@ updates:
 ```
 
 So the dependicies will be automatically checked everyday and the bot will create a new pull request when a new update is detected.
-
-## Evaluation
-
-> - [ ] Provided annotated evidence of post development testing for function and robustness. 
-> - [ ] Provided annotated evidence for usability testing. 

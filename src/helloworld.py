@@ -9,7 +9,7 @@ class MyWidget(QWidget):
     def __init__(self):
         super().__init__()
         # List for all hello text
-        self.hello = ["Hallo Welt", "Hei maailma", "Hola Mundo", "Привет мир"]
+        self.hello = ["Hallo Welt", "Hei maailma", "Hola Mundo"]
         # Add a button for changing the hello text
         self.button = QPushButton("Click me!")
         # Connect the button to magic function

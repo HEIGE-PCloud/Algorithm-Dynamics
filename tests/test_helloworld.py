@@ -6,6 +6,7 @@ from src.helloworld import MyWidget
 
 
 app = QApplication(sys.argv)
+hello = ["Hallo Welt", "Hei maailma", "Hola Mundo"]
 
 
 def test_initWidget():
@@ -13,7 +14,6 @@ def test_initWidget():
     Test the initial state of the widget.
     """
     widget = MyWidget()
-    hello = ["Hallo Welt", "Hei maailma", "Hola Mundo", "Привет мир"]
     assert widget.text.text() == 'Hello World'
     assert widget.button.text() == 'Click me!'
     assert widget.hello == hello
@@ -26,7 +26,6 @@ def test_sayHello():
     The final list should be empty.
     """
     widget = MyWidget()
-    hello = ["Hallo Welt", "Hei maailma", "Hola Mundo", "Привет мир"]
     for i in range(10000):
         widget.sayHello()
         text = widget.text.text()
@@ -43,7 +42,6 @@ def test_mouseClick():
     The final list should be empty as well.
     """
     widget = MyWidget()
-    hello = ["Hallo Welt", "Hei maailma", "Hola Mundo", "Привет мир"]
     for i in range(10000):
         QTest.mouseClick(widget.button, Qt.MouseButton.LeftButton)
         text = widget.text.text()
