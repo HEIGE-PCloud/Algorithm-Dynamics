@@ -19,7 +19,7 @@
 \clearpage
 \chapter{Analysis}
 
-\section{Description of the problem}
+\section{Problem Identification}
 
 A Level Computer Science students need to learn many algorithms and data structures during the course. In the final exam, they need to write pseudocode to solve computational questions. Many students find it is hard to achieve a high score on those questions due to the lack of efficient training. The general method used by students to learn and revise for Computer Science is to attempt and self-mark past paper questions. This works well for ordinary questions. However, for the algorithm questions, different students may produce completely different code solutions. This makes their self-marking very unreliable. It is also too much work for the teacher to mark their solutions one by one. So, in the end, students do not know whether they get things right, and teachers do not know how the students perform and how they can help - especially in this lockdown online learning era where no direct contact between teachers and students is possible.
 
@@ -41,6 +41,10 @@ Computer Science students find that they tend to lose mark on the algorithms cod
 
 (TODO): Find actual stakeholders
 
+\section{Why it is suited to a computational solution}
+
+The original problem, `mark the students' answer by a computer', is a difficult one for a computer. But I transform the question into `compare the output of the students' code solution with test cases', which makes the problem solvable by a computational method. The computer is good at `executing the code' and `comparing two strings'. This solution solves the `marking' question from another angle and makes the question suited to a computational solution.
+
 \section{Solve by computational methods}
 
 \subsection{Thinking abstractly}
@@ -51,36 +55,74 @@ In reality, the students' answer is sent to a teacher to mark it against the mar
 
 \subsection{Thinking ahead}
 
-There are two types of input required.
+There are two types of input data.
 
-For the teacher, the software requires them to input the question and test cases as a text file. A question editor need to be provided for this purpose.
+For teachers, the software requires them to enter questions and test cases. Need to provide them with a question editor containing input boxes.
 
-For the students, the software requires them to input their code solutions to give them feedback. A code editor need to be provided for this purpose.
+For the students, the software requires them to enter their code solutions. Need to provide them with a code editor.
 
 A relational database is need to store all the input data.
 
-(TODO)
-
 \subsection{Thinking procedurally and decomposition}
 
-The program will be decomposed into several parts.
+The program can be decomposed into several parts.
 
-\begin{itemize}
-    \item Code editor
-    \item Question editor
-    \item Local database
-    \item Data analyzer
-    \item Judger
-    \item GUI
-\end{itemize}
-
-(TODO)
+\includegraphics[width=\linewidth]{decomposition-diagram}
 
 \subsection{Thinking concurrently}
 
-When auto judging the solution, many test cases can be executed at the same time to reduce the judging time for large test cases.
+When judging the students' solution, many test cases can be executed at the same time to reduce the judging time. The number of parallel judgers need to be set carefully based on the user's hardware. Running too few test cases concurrently may result in a very long judging time while running too many test cases at the same time may use up computing resources and cause serious issues.
 
-(TODO)
+\section{Interview}
+
+\subsection{Design the interview}
+
+\subsubsection{Interview for teachers}
+
+\begin{enumerate}
+    \item Do you find your students tend to lose marks in the code writting questions in A Level exams?
+    \item Do you find marking the coding question takes a lot of time and effort?
+    \item Do you find it is more difficult to monitor students' learning level on algorithm than hardware
+    \item Do you know the learning
+    \item If yes, do you think such platform can deliver a better experience?
+    \item Do you think a similar solution can help improve teaching?
+    \item Do you have anything else to add?
+\end{enumerate}
+
+\subsubsection{Interview for students}
+
+\begin{enumerate}
+    \item Do you find coding questions difficult?
+    \item Do you find practicing those questions difficult?
+    \item Have you tried any online coding platform?
+    \item If yes, do you think such platform can deliver a better experience?
+    \item Do you think such a solution can improve your learning?
+    \item Do you have anything else to add?
+\end{enumerate}
+
+Quick start button.
+
+Navigate through main menu.
+
+Programming layout.
+
+Code editor.
+
+Run code.
+
+Submit code.
+
+Diff editor to show difference.
+
+Database. Search problem. Find submission.
+
+Programming language support.
+
+\subsection{Conduct the interview}
+
+\subsubsection{Stakeholder 1}
+
+\subsubsection{Stakeholder 2}
 
 \section{Research}
 
@@ -357,9 +399,9 @@ cd Algorithm-Dynamics
 
 \subsection{Configure Git ignore files}
 
-The \mintinline{text}{.gitigore} file lists files not being managed by the version control system. For example, I don't want to track the changes of the cache files or the log file.
+The \mintinline{text}{.gitignore} file lists files not being managed by the version control system. For example, I don't want to track the changes of the cache files or the log file.
 
-GitHub has already generated a nice \mintinline{text}{.gitigore} file for this Python project, but I need to further ignore aditional two files, the config file from the VS Code and the pdf preview of this report.
+GitHub has already generated a nice \mintinline{text}{.gitignore} file for this Python project, but I need to further ignore aditional two files, the config file from the VS Code and the pdf preview of this report.
 
 \subsection{Create the first commit}
 
@@ -468,23 +510,23 @@ Create \mintinline{text}{.coveragerc}.
 Now, I run the unit test with this command. \mintinline{text}{--cov} configures the folder of my source code. \mintinline{text}{--cov-report} configures the format of the coverage output, \mintinline{text}{term} lets it to be printed directly to the termial. `-vv` shows the details of my tests. \mintinline{text}{--cov-config} configures the location of our config file for coverage, which is the \mintinline{text}{.coveragerc} file I just created.
 
 \begin{minted}{bash}
-$ (env) pytest --cov=src -vv --cov-report=term --cov-config=./.coveragerc
+$ (env) pytest --cov=src -vv --cov-report=term
 \end{minted}
 
 Here is the output of the test. My 3 tests \mintinline{python}{test_initWidget}, \mintinline{python}{test_sayHello}, \mintinline{python}{test_mouseClick} are executed and passed correctly. And the coverage report shows that the coverage of my tests is 100\% which means all code is executed during the tests. I aim for a 95\%+ coverage for the formal project.
 
 \begin{minted}{text}
-========================== test session starts ==========================
-platform win32 -- Python 3.9.5, pytest-6.2.4, py-1.10.0, pluggy-0.13.1 --
+====================== test session starts ======================
+platform win32 -- Python 3.9.5, pytest-6.2.4
 cachedir: .pytest_cache
 plugins: cov-2.12.0
 collected 3 items
 
 tests/test_helloworld.py::test_initWidget PASSED [ 33%]
-tests/test_helloworld.py::test_sayHello PASSED  [ 66%]
+tests/test_helloworld.py::test_sayHello PASSED   [ 66%]
 tests/test_helloworld.py::test_mouseClick PASSED [100%]
 
------------- coverage: platform win32, python 3.9.5-final-0 ------------
+-------- coverage: platform win32, python 3.9.5-final-0 ---------
 Name                Stmts   Miss Branch BrPart  Cover
 -----------------------------------------------------
 src\__init__.py         0      0      0      0   100%
@@ -492,8 +534,7 @@ src\helloworld.py      17      0      0      0   100%
 -----------------------------------------------------
 TOTAL                  17      0      0      0   100%
 
-
-=========================== 3 passed in 0.53s ===========================
+======================== 3 passed in 0.53s ======================
 \end{minted}
 
 \subsection{Hello static check}

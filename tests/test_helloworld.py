@@ -22,7 +22,8 @@ def test_initWidget():
 def test_sayHello():
     """
     Whitebox test the sayHello function.
-    Execute sayHello 10000 times, remove each random result from the list.
+    Execute sayHello 10000 times.
+    Remove each random result from the list.
     The final list should be empty.
     """
     widget = MyWidget()
@@ -43,7 +44,8 @@ def test_mouseClick():
     """
     widget = MyWidget()
     for i in range(10000):
-        QTest.mouseClick(widget.button, Qt.MouseButton.LeftButton)
+        QTest.mouseClick(widget.button,
+                         Qt.MouseButton.LeftButton)
         text = widget.text.text()
         if text in hello:
             hello.remove(widget.text.text())

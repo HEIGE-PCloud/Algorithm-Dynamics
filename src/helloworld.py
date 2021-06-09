@@ -1,8 +1,8 @@
 import sys
 import random
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import (QApplication, QLabel, QWidget, QPushButton,
-                             QVBoxLayout)
+from PyQt6.QtWidgets import (QApplication, QLabel, QWidget,
+                             QPushButton, QVBoxLayout)
 
 
 class MyWidget(QWidget):
