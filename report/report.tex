@@ -4,6 +4,7 @@
 \usepackage{hyperref}
 \usepackage{graphicx}
 \usepackage{fontspec}
+\usepackage{tabulary}
 \usetikzlibrary{shapes.geometric, arrows}
 \usemintedstyle{vs}
 \graphicspath{ {./images/} }
@@ -21,7 +22,7 @@
 
 \section{Problem Identification}
 
-A Level Computer Science students need to learn many algorithms and data structures during the course. In the final exam, they need to write pseudocode to solve computational questions. Many students find it is hard to achieve a high score on those questions due to the lack of efficient training. The general method used by students to learn and revise for Computer Science is to attempt and self-mark past paper questions. This works well for ordinary questions. However, for the algorithm questions, different students may produce completely different code solutions. This makes their self-marking very unreliable. It is also too much work for the teacher to mark their solutions one by one. So, in the end, students do not know whether they get things right, and teachers do not know how the students perform and how they can help - especially in this lockdown online learning era where no direct contact between teachers and students is possible.
+A Level Computer Science students need to learn many algorithms and data structures during the course. In the final exam, they need to write pseudocode to solve computational questions. Many students find it is hard to achieve a high score on those questions due to the lack of efficient training. The general method used by students to learn and revise for Computer Science is to attempt and self-mark past paper questions. This works well for ordinary questions. However, for the algorithm questions, different students may produce completely different code solutions. This makes their self-marking very unreliable. It is also too much work for the teacher to mark their solutions one by one. So, in the end, students do not know whether they get things right, and teachers do not know how the students perform and how they can help, especially in this lockdown online learning era where no direct contact between teachers and students is possible.
 
 Both the students and the teachers are looking for a more efficient method to learn and practice.
 
@@ -33,35 +34,25 @@ There are two types of stakeholders, Computer Science teachers and Computer Scie
 
 Computer Science teachers find it is difficult to monitor their students' ability to design and implement algorithms, so they cannot provide efficient help to their students. This software allows them to create coding questions and send them to the students. After the students hand their solutions back, the software will automatically mark their answers and provide detailed statistical data with simple visualisations. This helps the teachers saving a lot of time and allows them to help the students better.
 
-(TODO): Find actual stakeholders
-
 \subsection{Computer Science students}
 
 Computer Science students find that they tend to lose mark on the algorithms coding questions, so they want more practice. But unlike ordinary questions, they may take a completely different approach towards the questions comparing to the mark scheme, so they do not know whether they get it correct. Students may also think they have got things right, but actually, they have made some mistakes. The software provides a free practice space that automatically marks their solutions and points out their mistakes in real-time. So the students can learn and revise more efficiently.
 
-(TODO): Find actual stakeholders
-
 \section{Why it is suited to a computational solution}
 
-The original problem, `mark the students' answer by a computer', is a difficult one for a computer. But I transform the question into `compare the output of the students' code solution with test cases', which makes the problem solvable by a computational method. The computer is good at `executing the code' and `comparing two strings'. This solution solves the `marking' question from another angle and makes the question suited to a computational solution.
+The original problem, `mark the students' answer by a computer', is a difficult question for a computer. But I transform the question into `compare the output of the students' code with pre-generated test cases', which makes the problem solvable by using a computational method as the computer is good at `executing a piece of code' and `comparing two strings'. This approach solves the `marking' question from another angle and makes the question suited to a computational solution.
 
 \section{Solve by computational methods}
 
 \subsection{Thinking abstractly}
 
-In reality, students use pen and paper to write their code solutions. This can be simplified by a code editor and the students can use the keyboard to type in their code. In this way, no `text scanning' or `handwriting recognization' is needed which makes the designing and programming much easier. The code editor will also provide a better user experience. Features such as syntax highlighting cannot exist on paper but are possible in the abstracted code editor.
+In reality, students use pens and paper to write their code solutions. This can be simplified by a code editor and the students can use their keyboards to type in the code. In this way, no `text scanning' or `handwriting recognization' is needed which makes the design and programming much easier. The code editor will also provide a better user experience. Features such as syntax highlighting cannot exist on paper but are possible in the abstracted code editor.
 
 In reality, the students' answer is sent to a teacher to mark it against the mark scheme. The teacher needs to read the code line by line and check whether it is correct. This process is simplified into a judger that marks the code against pre-generated test cases, which transforms a problem that originally cannot be solved by computational method into one which is very easy to be solved by a computer while saving time and costs. When creating a new question, instead of creating a mark scheme for marking, the teacher needs to provide test cases with the correct input and expected output. The judger will run the students' submissions with the input and check whether their output matches the expected one.
 
 \subsection{Thinking ahead}
 
-There are two types of input data.
-
-For teachers, the software requires them to enter questions and test cases. Need to provide them with a question editor containing input boxes.
-
-For the students, the software requires them to enter their code solutions. Need to provide them with a code editor.
-
-A relational database is need to store all the input data.
+For teachers, the software requires them to enter questions and test cases. A question editor containing input boxes is needed for this purpose. For the students, the software requires them to enter their code solutions. A code editor is needed for this purpose and a relational database is need to store all the data. For all users, the software requires input data from mouse and keyboard to navigate between different windows and menus. 
 
 \subsection{Thinking procedurally and decomposition}
 
@@ -80,51 +71,116 @@ When judging the students' solution, many test cases can be executed at the same
 \subsubsection{Interview for teachers}
 
 \begin{enumerate}
-    \item Do you find your students tend to lose marks in the code writting questions in A Level exams?
-    \item Do you find marking the coding question takes a lot of time and effort?
-    \item Do you find it is more difficult to monitor students' learning level on algorithm than hardware
-    \item Do you know the learning
-    \item If yes, do you think such platform can deliver a better experience?
-    \item Do you think a similar solution can help improve teaching?
+    \item Do you find your students tend to lose marks on programming questions in exams?
+    \item Do you find marking the programming question takes a lot of time and effort?
+    \item Compare to the knowledge-based Computer System section, do you find it is more difficult to monitor students' skill level on the Algorithm and Programming section?
+    \item Have you ever heard about some online programming platforms?
+    \item Have you ever tried some of the online programming platforms?
+    \item If yes, what do you think about these platforms? Have you ever considered to use them for teaching and training?
+    \item Do you think a similar solution can help improve the efficienty of learning and training?
+    \item If no, do you think the idea of a software that can mark students' answers on programming questions and provide analysis data can help improve the efficienty of learning and training?
     \item Do you have anything else to add?
 \end{enumerate}
+
+(TODO): Justificate the interview design
+
+Question 1 to 3 give me confirmation that there is real questions with the (TODO). Question 4 asks about the teachers knowledge on existing solutions. It gives me insights on the problems with the existing solutions and how my solution can fit their need better. If they have not seen those platforms, I ask whether they think such solution can help.
 
 \subsubsection{Interview for students}
 
 \begin{enumerate}
-    \item Do you find coding questions difficult?
-    \item Do you find practicing those questions difficult?
-    \item Have you tried any online coding platform?
-    \item If yes, do you think such platform can deliver a better experience?
-    \item Do you think such a solution can improve your learning?
+    \item Do you find the programming questions difficult?
+    \item Do you find yourself lacking efficient practicing in algorithm designing and programming?
+    \item Have you ever heard about some online programming platforms?
+    \item Have you ever tried some of the online programming platforms?
+    \item If yes, what do you think about these platforms?
+    \item Do you think a similar solution can help you learning and practicing?
+    \item If no, do you think the idea of a software that provides coding questions and marks your answer instantly can help you learn and practice better? 
     \item Do you have anything else to add?
 \end{enumerate}
 
-Quick start button.
-
-Navigate through main menu.
-
-Programming layout.
-
-Code editor.
-
-Run code.
-
-Submit code.
-
-Diff editor to show difference.
-
-Database. Search problem. Find submission.
-
-Programming language support.
+(TODO): Justificate the interview design
 
 \subsection{Conduct the interview}
 
-\subsubsection{Stakeholder 1}
+\subsubsection{Computer Science teacher - Mr Grimwood}
 
-\subsubsection{Stakeholder 2}
+\begin{enumerate}
+    \item Do you find your students tend to lose marks on programming questions in exams?
+    
+    They do. Many of them don't understand the algorithms.
+
+    \item Do you find marking the programming questions takes a lot of time and effort?
+
+    Yes. Because some students produce partially correct answers, so it takes a lot of time to identify the correct part and award them the corresponding mark. Some students may take completely different approaches which takes a lot of effort to understand and mark them.
+    
+    \item Do you find it is more difficult to monitor students' skill level on the Algorithm and Programming section and more difficult to provide sufficient help?
+    
+    Yes.
+
+    \item Have you ever heard about some online programming platforms?
+
+    I have. Emm... But I forget the names.
+    
+    \item If yes, have you ever tried some of the online programming platforms?
+
+    I have.
+    
+    \item If yes, what do you think about these platforms?
+    
+    I think the idea is quite interesting and I find them actually work quite well.
+    
+    \item Have you ever considered to use them for teaching and practicing?
+
+    No. Because most of them require a paid subscription, and their content is more likely to be something like `Learning Python' which is irrelevant to the A Level Computer Science content.
+
+    \item Do you think a similar solution can help improve the efficienty of learning and training?
+
+    Yes. The students can learn at their own pace and they can keep practicing by themselves.
+
+    \item Do you have anything else to add?
+    
+    No.
+\end{enumerate}
+
+\subsubsection{Computer Science student - PCloud}
+
+\begin{enumerate}
+    \item Do you find the programming questions difficult?
+
+    I find some of them quite complex and difficult, especially the graph algorithms such as Dijkstra.
+
+    \item Do you find yourself lacking efficient practicing in algorithm designing and programming?
+
+    Absolutely. Although I code a lot in my spare time, but normal projects are quite different from the exam questions. There are not many past papers and exam-style questions for practicing, so I usually don't feel confident of those questions.
+
+    \item Have you ever heard about some online programming platforms?
+    
+    Yes. Such as AcWing, LeetCode and TopCoder.
+
+    \item Have you ever tried some of the online programming platforms?
+
+    Yes.
+
+    \item If yes, what do you think about these platforms?
+    
+    I really enjoy the experience. It provides a very strong positive feedback when I solve a new question.
+
+    \item Do you think a similar solution can help you learning and practicing?
+
+    Absolutely. The existing platforms do not provide A Level related content. So if a software solution can be altered for A Level Computer Science course, that will really help a lot.
+
+    \item Do you have anything else to add?
+
+    No.
+
+\end{enumerate}
+
+(TODO): Justificate the interview
 
 \section{Research}
+
+(TODO): Rewrite the research section and analysis with more details.
 
 There are many coding training websites on the market, most of them share the similar idea, so I will investigate two of the most popular ones.
 
@@ -215,7 +271,7 @@ When the user submits the code, the code enters a queue waiting for judging, the
 
 \subsubsection{Contest}
 
-Codeforces helds contest regularly similarly to LeetCode, but with much harder quesitons.
+Codeforces helds contest regularly similarly to LeetCode, but with much harder questions.
 
 \subsubsection{Analysis}
 
@@ -234,7 +290,7 @@ Codeforces helds contest regularly similarly to LeetCode, but with much harder q
     \item Codeforces focuses more on coding competition purpose instead of learning and practicing.
     \item Codeforces does not provide out of box code editor. Users need to write code in their own code editor.
     \item Codeforces does not provide debugging feature, users need to run and debug their code in their own runtime environment.
-    \item The juding process will be very slow when many users are submitting solutions at the same time.
+    \item The judging process will be very slow when many users are submitting solutions at the same time.
 \end{itemize}
 
 \paragraph{Ideas}
@@ -248,70 +304,45 @@ Codeforces helds contest regularly similarly to LeetCode, but with much harder q
 
 \section{Features}
 
-(TODO)
-
-\begin{center}
-\begin{tabular}{ |c|c|c| } 
- \hline
- cell1 & cell2 & cell3 \\ 
-  \hline
- cell4 & cell5 & cell6 \\ 
-  \hline
- cell7 & cell8 & cell9 \\ 
- \hline
-\end{tabular}
-\end{center}
+(TODO): Propose a solution to the problem by describing each element of the product in detail.  You can have mock ups of the graphics / screen designs from a drawing application at this stage.
 
 \section{Limitations}
 
-There are a few limitations of this software.
+The software is written in Python instead of web-based which means extra software needs to be downloaded by the user. Because Python has good cross-platform compatibility, the software can still run on all mainstream platforms (Windows, Mac OS and Linux) which minimize the inconvenience. But downloading an extra software is still inconvenient and may violate the IT security policy of some schools.
 
-The software is written in Python instead of web-based which means extra software needs to be downloaded by the user. Because Python has good cross-platform compatibility, the software can still run on all mainstream platform (Windows, Mac OS and Linux) which minimize the inconvenience, but downloading an extra software is still inconvenient and may violate the IT security policy of some schools.
-
-The judger can only accept code submission in Python. The reason for choosing Python is because it has a very similar grammar to the pseudocode and most students are already very familiar with it. Creating a compiler for `Pseudocode Programming Language' is too complex for this project. So only Python is supported for now. The reason for not supporting other programming language is that an extra runtime environment needs to be installed (compiler/interpreter), so it is not possible to support them out of the box. But some extra configuration might be provided to allow submit code solution in other languages.
+The judger can only accept code submission in Python. The reason for choosing Python is because it has a very similar grammar to the pseudocode and most students are already very familiar with it. Creating a compiler for `Pseudocode Programming Language' is too complex for this project. So only Python is supported for now. The reason for not supporting other programming language is that an extra runtime environment needs to be installed, so it is not possible to support them out of the box. But some extra configuration might be provided to allow submit code solution in other languages.
 
 Unlike LeetCode, there is no Discussion pages for users to discuss questions because it is a Python program instead of a web one. But this is not a big problem, students and teachers should use an existing product such as Microsoft Teams which has very good support in sharing code snippets. It is unnecessary to rebuild the wheel.
 
-Distribute the questions and assignments is still something inconvenient. Currently, distributing questions and assignments requires the teacher to first export the questions and assignments, then send them to the students through email or file-sharing platforms. When the students finish working, they need to send their result back through email or other apps. I have attempted to integrate the file-sharing function with the existing platform - the Microsoft Teams Assignment function. But very, unfortunately, the Graph API required for this operation is still in beta version, which means it can only be tested in the development environment and cannot be used in production. So for now, the users still have to use this inconvenient way to share questions and submissions. But the further, the integration with some existing platforms may improve the experience.
+Distribute the questions and assignments is still something inconvenient. Currently, distributing questions and assignments requires the teacher to first export the questions and assignments, then send them to the students through email or file-sharing platforms. When the students finish working, they need to send their result back through email or other apps. I have attempted to integrate the file-sharing function with the existing platform - the Microsoft Teams Assignment function. But very unfortunately, the Graph API required for this operation is still in beta version, which means it can only be tested in the development environment and cannot be used in production. So for now, the users still have to use this inconvenient way to share questions and submissions. But in the future, the integration with some existing platforms may improve the experience.
 
 There are no good ways to maintain and distribute a large question database. Computer Science teachers are requied to maintain a database for their own students. But this is a difficult work. Creating good test cases is much time consuming than writing a mark scheme, it is very likely for a wrong solution to pass the judging if the test cases are not good enough. It relies on the teacher who creates the questions to consider everything clearly to minimize its impact.
 
-The judger can only simply compare the students' output with the expected output, if there is a format error such as trailing space and extra newline in their output, which will not be considered as a mistake in a real exam, will be marked as a wrong answer by the judger. So students may need to spend extra time debugging their output format.
+The judger can only simply compare the students' output with the expected output, if there is a format error such as trailing space and extra newline in their output, which will not be considered as a mistake in a real exam, will be marked as a wrong answer by the judger. So students may need to spend extra time debugging their output format. It cannot judge "partially correct" answer. (TODO)
 
 \section{Hardware and software requirements}
 
-Due to the good compatibility of Python, it can run on all mainstream desktop operating systems. Linux, macOS and Windows. The software itself does not contain complex graphical effects or large scale computation. So it should be able to run under 1C CPU and 512M RAM. However, the code solutions provided by the students may need more resource to run and test. So 2C CPU and 2G RAM is recommended.
-
-(TODO)
-
-\begin{center}
-    \begin{tabular}{ |c|c|c| }
-        \hline
-        cell1 & cell2 & cell3 \\
-        \hline
-        cell4 & cell5 & cell6 \\
-        \hline
-        cell7 & cell8 & cell9 \\
-        \hline
-    \end{tabular}
-\end{center}
+\begin{tabulary}{\linewidth}{|L|L|}
+    \hline
+    Hardware and software requirements & Justification \\
+    \hline
+    Standard mouse, keyboard and monitor. & Standard I/O devices are required for the user to interact with the software. \\
+    \hline
+    Operating system: Windows 10, macOS 10.14, 10.15, 11.0, CentOS Linux 8.3, openSUSE 15.2, SUSE Linux Enterprise Server 15 SP2, Ubuntu 20.04, Generic Linux. & A modern operating system is required for the GUI library and Python interpreter that I am going to use. Outdated operating systems such as Windows 7 are not supported. Mobile operating systems such as ChromeOS, Android and iOS are not supported. This list of operating systems has covered all mainstream platforms, so users should find no compatibility issues with it. The software will need to be tested on all different platforms to ensure its compatibility. \\
+    \hline
+    x86 64-bit CPU (Intel / AMD architecture) with 2 or more cores and 1 GHz or higher clock speed. & A modern CPU is required for the Python interpreter. At least 1 spare core is required for the judger to judge the submitted code. A clock speed higher than 1 GHz is required to ensure the software is running smoothly. \\
+    \hline
+    1G free memory or more. & Around 512M RAM is required to run the software, and another 512M RAM is required for the judger to judge the submissions. \\
+    \hline
+    256M free disk space or more. & 256M free disk space is required to store and run the program itself, user may need extra disk space to store extra cache data and the database. \\
+    \hline
+    A modren graphics card. & The software has very little graphical demand, if the user's graphics card can run their operation system, it should be able to handle software as well. \\
+    \hline
+\end{tabulary}
 
 \section{Success criteria}
 
 (TODO)
-
-\begin{center}
-    \begin{tabular}{ |c|c|c| }
-        \hline
-        cell1 & cell2 & cell3 \\
-        \hline
-        cell4 & cell5 & cell6 \\
-        \hline
-        cell7 & cell8 & cell9 \\
-        \hline
-    \end{tabular}
-\end{center}
-
 
 \chapter{Design}
 
@@ -507,7 +538,7 @@ Create \mintinline{text}{.coveragerc}.
 
 \inputminted{text}{../.coveragerc}
 
-Now, I run the unit test with this command. \mintinline{text}{--cov} configures the folder of my source code. \mintinline{text}{--cov-report} configures the format of the coverage output, \mintinline{text}{term} lets it to be printed directly to the termial. `-vv` shows the details of my tests. \mintinline{text}{--cov-config} configures the location of our config file for coverage, which is the \mintinline{text}{.coveragerc} file I just created.
+Now, I run the unit test with this command. \mintinline{text}{--cov} configures the folder of my source code. \mintinline{text}{--cov-report} configures the format of the coverage output, \mintinline{text}{term} lets it to be printed directly to the termial. \mintinline{text}{-vv} shows the details of my tests. \mintinline{text}{--cov-config} configures the location of our config file for coverage, which is the \mintinline{text}{.coveragerc} file I just created.
 
 \begin{minted}{bash}
 $ (env) pytest --cov=src -vv --cov-report=term
