@@ -14,7 +14,7 @@ jobs:
 
       - name: Build graphs
         run: |
-          sudo npm install -g @mermaid-js/mermaid-cli
+          npm install @mermaid-js/mermaid-cli
           python report/graphs/build_graphs.py
 
       - name: Build report
