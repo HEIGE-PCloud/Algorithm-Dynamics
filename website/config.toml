@@ -6,9 +6,9 @@ DefaultContentLanguage           = "en"                    # Default language fo
 
 [params]
     themeStyle                   = "auto"                  # Choose "light" or "dark" or "auto"
-    favicon                      = "/img/fav.ico"          # Path to favicon file
+    favicon                      = ""                      # Path to favicon file
     showRSSButton                = false                   # Show rss button in navigation
-    fadeIn                       = false                   # Turn on/off the fade-in effect
+    fadeIn                       = true                    # Turn on/off the fade-in effect
     fadeInIndex                  = false                   # Turn on/off the fade-in effect on the index page even if fade-in was otherwise turned off
     dateFormat                   = "Jan 2, 2006"
     email                        = "heige.pcloud@outlook.com"# E-mail address for contact section
@@ -80,3 +80,14 @@ DefaultContentLanguage           = "en"                    # Default language fo
     # For styles, see https://xyproto.github.io/splash/docs/longer/all.html
     style = "friendly"
     tabWidth = 4
+
+[languages]
+    [languages.en]
+        languageName     = "English"
+        languageCode     = "en-us"
+        contentDir       = "content"
+        weight           = 0
+        title            = "Algorithm Dynamics"
+        [languages.en.params]
+            description  = "Algorithm Dynamics is a handy tool to help you learn and revise algorithms"   # Max 160 characters show in search results
+            # footerText   = ""                      # Text to override default footer text (markdown allowed)
