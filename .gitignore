@@ -159,3 +159,7 @@ _minted-report/
 *.nav
 *.gz
 *.xdv
+
+# node_modules
+node_modules
+package-lock.json
