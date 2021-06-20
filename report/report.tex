@@ -619,6 +619,19 @@ Create Dependabot config file at \mintinline{text}{.github/workflows/dependabot.
 
 So the dependicies will be automatically checked everyday and the bot will create a new pull request when a new update is detected.
 
+\section{Create a website}
+
+\subsection{Hugo}
+\begin{minted}{bash}
+hugo new site website
+\end{minted}
+
+\subsection{Add theme}
+\begin{minted}{bash}
+npm i -g postcss postcss-cli autoprefixer
+git submodule add https://github.com/victoriadrake/hugo-theme-introduction.git website/themes/introduction
+\end{minted}
+
 \chapter{Evaluation}
 
 This is the Evaluation chapter.
