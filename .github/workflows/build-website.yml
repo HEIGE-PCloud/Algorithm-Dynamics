@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build_report:
+  build-report:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -31,7 +31,7 @@ jobs:
           name: report.pdf
           path: report/report.pdf
           
-  build_website:
+  build-website:
     runs-on: ubuntu-latest
     needs: build-report
     steps:
