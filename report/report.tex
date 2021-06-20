@@ -7,7 +7,7 @@
 \usepackage{tabulary}
 \usetikzlibrary{shapes.geometric, arrows}
 \usemintedstyle{vs}
-\graphicspath{ {./images/} }
+\graphicspath{ {./images/} {./graphs/} }
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{1em}
 \title{A Level Programming Project Report}
@@ -58,7 +58,7 @@ For teachers, the software requires them to enter questions and test cases. A qu
 
 The program can be decomposed into several parts.
 
-\includegraphics[width=\linewidth]{decomposition-diagram}
+\includegraphics[width=\linewidth]{decomposition}
 
 \subsection{Thinking concurrently}
 
@@ -336,7 +336,7 @@ The judger can only simply compare the students' output with the expected output
     \hline
     256M free disk space or more. & 256M free disk space is required to store and run the program itself, user may need extra disk space to store extra cache data and the database. \\
     \hline
-    A modren graphics card. & The software has very little graphical demand, if the user's graphics card can run their operation system, it should be able to handle software as well. \\
+    A modern dedicate or integrate graphics card. & The software has very little graphical demand, if the user's graphics card can run their operation system, it should be able to handle software as well. \\
     \hline
 \end{tabulary}
 
@@ -352,10 +352,11 @@ This is the design chapter.
 
 Sample flow chart
 
-\tikzstyle{startstop} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm,text centered, draw=black, fill=red!30]
-\tikzstyle{io} = [trapezium, trapezium left angle=70, trapezium right angle=110, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=blue!30]
-\tikzstyle{process} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=orange!30]
-\tikzstyle{decision} = [diamond, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=green!30]
+\tikzstyle{startstop} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm,text centered, draw=black]
+\tikzstyle{item} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm,text centered, draw=black]
+\tikzstyle{io} = [trapezium, trapezium left angle=70, trapezium right angle=110, minimum width=3cm, minimum height=1cm, text centered, draw=black]
+\tikzstyle{process} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, draw=black]
+\tikzstyle{decision} = [diamond, minimum width=3cm, minimum height=1cm, text centered, draw=black]
 \tikzstyle{arrow} = [thick,->,>=stealth]
 
 \begin{tikzpicture}[node distance=2cm]

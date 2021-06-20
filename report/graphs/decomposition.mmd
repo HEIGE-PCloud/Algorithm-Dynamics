@@ -1,0 +1,12 @@
+graph TD
+    algorithm_dynamics[Algorithm Dynamics] --> database[Database]
+    algorithm_dynamics --> gui[gui]
+    algorithm_dynamics --> solution_judger[Solution Judger]
+    database --> import_data[Import Data]
+    database --> export_data[Export Data]
+    gui --> main_menu[Main Menu]
+    main_menu --> question_list[Question List]
+    main_menu --> code_editor[Code Editor]
+    code_editor --> line_number[Line Number]
+    code_editor --> syntax_highlightning[Syntax Highlightning]
+    solution_judger[Solution Judger] --> runtime_environment[Runtime Environment] --> execute[Execute Code] --> score[Score Output]
