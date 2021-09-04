@@ -521,7 +521,6 @@ Next I need to write the test code for the hello world program. Under \mintinlin
 
 Here I create three tests for the hello world program. First I test its initial state, this ensure the widget loads up with the correct text and layout. Second I test its \mintinline{python}{sayHello} function to make sure the text is changed correctly (white box test). Third I test its button, I simulate the click with \mintinline{python}{QTest.mouseClick} to make sure the button is working (black box test).
 
-\inputminted{python}{../tests/test_helloworld.py}
 
 \subsection{Hello coverage}
 
@@ -535,9 +534,6 @@ $ (env) pip install Pytest-cov
 
 I need to add a config file for the Pytest-cov to exclude the test and debug code from the coverage calculation.
 
-Create \mintinline{text}{.coveragerc}.
-
-\inputminted{text}{../.coveragerc}
 
 Now, I run the unit test with this command. \mintinline{text}{--cov} configures the folder of my source code. \mintinline{text}{--cov-report} configures the format of the coverage output, \mintinline{text}{term} lets it to be printed directly to the termial. \mintinline{text}{-vv} shows the details of my tests. \mintinline{text}{--cov-config} configures the location of our config file for coverage, which is the \mintinline{text}{.coveragerc} file I just created.
 
