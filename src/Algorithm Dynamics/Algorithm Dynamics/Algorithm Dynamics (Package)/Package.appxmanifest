@@ -8,8 +8,8 @@
 
   <Identity
     Name="4be0f190-55aa-4cfc-b027-866b30f6a7ee"
-    Publisher="CN=HEIGE"
-    Version="1.0.0.0" />
+    Publisher="CN=PCloud"
+    Version="0.1.0.0" />
 
   <Properties>
     <DisplayName>Algorithm Dynamics (Package)</DisplayName>
