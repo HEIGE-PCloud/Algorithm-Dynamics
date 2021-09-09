@@ -26,11 +26,27 @@ namespace Algorithm_Dynamics
         public MainWindow()
         {
             this.InitializeComponent();
+            MainNavigationView.SelectedItem = MainNavigationView.MenuItems.OfType<NavigationViewItem>().First();
         }
 
-        private void myButton_Click(object sender, RoutedEventArgs e)
+        private void MainNavigationView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
-            myButton.Content = "Clicked";
+            if (args.IsSettingsSelected)
+            {
+                contentFrame.Navigate(typeof(Pages.SettingsPage));
+            }
+            else
+            {
+                NavigationViewItem selectedItem = args.SelectedItem as NavigationViewItem;
+                if (selectedItem != null)
+                {
+                    string selectedItemTag = selectedItem.Tag as string;
+                    sender.Header = "Sample Page " + selectedItemTag.Substring(selectedItemTag.Length - 1);
+                    string pageName = "Algorithm_Dynamics.Pages." + selectedItemTag;
+                    Type pageType = Type.GetType(pageName);
+                    contentFrame.Navigate(pageType);
+                }
+            }
         }
     }
 }

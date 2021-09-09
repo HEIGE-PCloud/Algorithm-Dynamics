@@ -5,9 +5,15 @@
     xmlns:local="using:Algorithm_Dynamics"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d">
 
-    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-        <Button x:Name="myButton" Click="myButton_Click">Click Me</Button>
-    </StackPanel>
+    <muxc:NavigationView x:Name="MainNavigationView"
+                         SelectionChanged="MainNavigationView_SelectionChanged">
+        <muxc:NavigationView.MenuItems>
+            <muxc:NavigationViewItem Icon="Home"  Content="Home" Tag="HomePage" />
+            <muxc:NavigationViewItem Icon="List" Content="Problems" Tag="ProblemPage" />
+        </muxc:NavigationView.MenuItems>
+        <Frame x:Name="contentFrame"/>
+    </muxc:NavigationView>
 </Window>
