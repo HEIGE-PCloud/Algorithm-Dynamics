@@ -34,35 +34,39 @@ There are two types of stakeholders, Computer Science teachers and Computer Scie
 
 Computer Science teachers find it is difficult to monitor their students' ability to design and implement algorithms, so they cannot provide efficient help to their students. This software allows them to create coding questions and send them to the students. After the students hand their solutions back, the software will automatically mark their answers and provide detailed statistical data with simple visualisations. This helps the teachers saving a lot of time and allows them to help the students better.
 
+The stakeholder is Mr. Grimwood, who is an experienced A Level Computer Science teacher who teaches a Year 12 CS group and a Year 13 CS group.
+
 \subsection{Computer Science students}
 
 Computer Science students find that they tend to lose mark on the algorithms coding questions, so they want more practice. But unlike ordinary questions, they may take a completely different approach towards the questions comparing to the mark scheme, so they do not know whether they get it correct. Students may also think they have got things right, but actually, they have made some mistakes. The software provides a free practice space that automatically marks their solutions and points out their mistakes in real-time. So the students can learn and revise more efficiently.
 
+The stakeholders are Timofei and PCloud, they are both Year 13 students studying A Level Computer Science.
+
 \section{Why it is suited to a computational solution}
 
-The original problem, `mark the students' answer by a computer', is a difficult question for a computer. But I transform the question into `compare the output of the students' code with pre-generated test cases', which makes the problem solvable by using a computational method as the computer is good at `executing a piece of code' and `comparing two strings'. This approach solves the `marking' question from another angle and makes the question suited to a computational solution.
+The original problem, `understand and mark a student's answer' is a very difficult question for a computer to solve. But I transform the question into `compare the output of the students' code with pre-generated test cases', which makes the problem solvable using a computational method, since a computer is good at `executing a piece of code' and `comparing two strings'. This approach solves the `marking' question from another angle, and makes the question suited to a computational solution.
 
 \section{Solve by computational methods}
 
 \subsection{Thinking abstractly}
 
-In reality, students use pens and paper to write their code solutions. This can be simplified by a code editor and the students can use their keyboards to type in the code. In this way, no `text scanning' or `handwriting recognization' is needed which makes the design and programming much easier. The code editor will also provide a better user experience. Features such as syntax highlighting cannot exist on paper but are possible in the abstracted code editor.
+In reality, students use pens and paper to write their code solutions. This can be simplified into a code editor, and the students can use their keyboards to type in the code. In this way, no `text scanning' or `handwriting recognization' is needed which makes the design and programming much easier. The code editor will also provide a better user experience. Features such as syntax highlighting cannot exist on paper but are possible in a code editor.
 
-In reality, the students' answer is sent to a teacher to mark it against the mark scheme. The teacher needs to read the code line by line and check whether it is correct. This process is simplified into a judger that marks the code against pre-generated test cases, which transforms a problem that originally cannot be solved by computational method into one which is very easy to be solved by a computer while saving time and costs. When creating a new question, instead of creating a mark scheme for marking, the teacher needs to provide test cases with the correct input and expected output. The judger will run the students' submissions with the input and check whether their output matches the expected one.
+In reality, the students' answer is sent to a teacher to mark it against the mark scheme. The teacher needs to read the code line by line and check whether it is correct. This process is abstracted into a judger that marks the code against pre-generated test cases, which transforms a problem that originally cannot be solved by computational method into one which is very easy to be solved by a computer while saving time and costs. When creating a new question, instead of creating a mark scheme for marking, the teacher needs to provide test cases with the correct input and expected output. The judger will run the students' submissions with the input and check whether their output matches the expected one.
 
 \subsection{Thinking ahead}
 
-For teachers, the software requires them to enter questions and test cases. A question editor containing input boxes is needed for this purpose. For the students, the software requires them to enter their code solutions. A code editor is needed for this purpose and a relational database is need to store all the data. For all users, the software requires input data from mouse and keyboard to navigate between different windows and menus. 
+For teachers, the software requires them to enter questions and test cases. A question editor containing input boxes is needed for this purpose. For students, the software requires them to enter their code solutions. A code editor is needed for this purpose. A relational database is need to store all the data. For all users, the software requires input data from mouse and keyboard to navigate between different windows and menus. Users will also need a monitor for the program to display all the information and outputs.
 
 \subsection{Thinking procedurally and decomposition}
 
-The program can be decomposed into several parts.
+The program can be decomposed into several parts. Each part can be designed and maintained individually. Different components can interact with each other using custom APIs.
 
 \includegraphics[width=\linewidth]{decomposition}
 
 \subsection{Thinking concurrently}
 
-When judging the students' solution, many test cases can be executed at the same time to reduce the judging time. The number of parallel judgers need to be set carefully based on the user's hardware. Running too few test cases concurrently may result in a very long judging time while running too many test cases at the same time may use up computing resources and cause serious issues.
+When judging the students' solution, many test cases can be executed at the same time to reduce the judging time. The number of parallel judgers need to be set carefully based on the user's hardware. Running too few test cases concurrently may result in a very long judging time while running too many test cases at the same time may use up computing resources and cause issues.
 
 \section{Interview}
 
@@ -82,7 +86,7 @@ When judging the students' solution, many test cases can be executed at the same
     \item Do you have anything else to add?
 \end{enumerate}
 
-Question 1 to 3 are a series of proof-of-concept questions, which I expect my stackholders to answer `Yes' to all of them. They confirm that the problem I am trying to solve actually exists and there is a need for such solution. Question 4 to 5 ask about the teachers' knowledge about existing solutions. Question 6 to 8 ask their experiences and opinions about these existing solutions, which gives me insights on the problems with existing solutions and how my solution can fit their need better.
+Question 1 to 3 are a series of proof-of-concept questions, which I expect my stackholders to answer `Yes' to all of them. They confirm that the problem I am trying to solve actually exists and there is a need for such solution. Question 4 to 5 ask about the teachers' knowledge on existing solutions. Question 6 to 8 ask their experiences and opinions about these existing solutions, which gives me insights on the problems with existing solutions and how my solution can fit their need better.
 
 \subsubsection{Interview for students}
 
@@ -93,7 +97,7 @@ Question 1 to 3 are a series of proof-of-concept questions, which I expect my st
     \item Have you ever tried some of the online programming platforms?
     \item If yes, what do you think about these platforms?
     \item Do you think a similar solution can help you learning and practicing?
-    \item If no, do you think the idea of a software that provides coding questions and marks your answer instantly can help you learn and practice better? 
+    \item If no, do you think the idea of a software that provides coding questions and marks your answer instantly can help you learn and practice better?
     \item Do you have anything else to add?
 \end{enumerate}
 
@@ -105,83 +109,111 @@ Question 1 and 2 are similar proof-of-concept questions to confirm such problem 
 
 \begin{enumerate}
     \item Do you find your students tend to lose marks on programming questions in exams?
-    
-    They do. Many of them don't understand the algorithms.
+
+          They do. Many of them don't understand the algorithms.
 
     \item Do you find marking the programming questions takes a lot of time and effort?
 
-    Yes. Because some students produce partially correct answers, so it takes a lot of time to identify the correct part and award them the corresponding mark. Some students may take completely different approaches which takes a lot of effort to understand and mark them.
-    
+          Yes. Because some students produce partially correct answers, so it takes a lot of time to identify the correct part and award them the corresponding mark. Some students may take completely different approaches which takes a lot of effort to understand and mark them.
+
     \item Do you find it is more difficult to monitor students' skill level on the Algorithm and Programming section and more difficult to provide sufficient help?
-    
-    Yes.
+
+          Yes.
 
     \item Have you ever heard about some online programming platforms?
 
-    I have. Emm... But I forget the names.
-    
+          I have. Emm... But I forget the names.
+
     \item If yes, have you ever tried some of the online programming platforms?
 
-    I have.
-    
+          I have.
+
     \item If yes, what do you think about these platforms?
-    
-    I think the idea is quite interesting and I find them actually work quite well.
-    
+
+          I think the idea is quite interesting and I find them actually work quite well.
+
     \item Have you ever considered to use them for teaching and practicing?
 
-    No. Because most of them require a paid subscription, and their content is more likely to be something like `Learning Python' which is irrelevant to the A Level Computer Science content.
+          No. Because most of them require a paid subscription, and their content is more likely to be something like `Learning Python' which is irrelevant to the A Level Computer Science content.
 
     \item Do you think a similar solution can help improve the efficienty of learning and training?
 
-    Yes. The students can learn at their own pace and they can keep practicing by themselves.
+          Yes. The students can learn at their own pace and they can keep practicing by themselves.
 
     \item Do you have anything else to add?
-    
-    No.
 
+          No.
 \end{enumerate}
+
+Mr. Grimwood has serverl valuable points here. He points out that the `partially correct' answers are the most difficult ones to mark. For my solution, if a student submits a `partially correct' code answer, then its output will certainly not match the expected output. Which means my solution might not be able to tell the difference between a `partially correct' answer and a `incorrect' answer. This is a potential limitation I need to watch out. He also says the price is one of his concern. My solution will be a free and open-source software, which will meet his need perfectly. By adding the function to create custom questions and share them with others, users will be able to create and find A Level Computer Science content, or any content easier. It is also a good idea for me to create some A Level Computer Science content come with the software to make it easier to use.
 
 \subsubsection{Computer Science student - PCloud}
 
 \begin{enumerate}
     \item Do you find the programming questions difficult?
 
-    I find some of them quite complex and difficult, especially the graph algorithms such as Dijkstra.
+          I find some of them quite complex and difficult, especially the graph algorithms such as Dijkstra.
 
     \item Do you find yourself lacking efficient practicing in algorithm designing and programming?
 
-    Absolutely. Although I code a lot in my spare time, but normal projects are quite different from the exam questions. There are not many past papers and exam-style questions for practicing, so I usually don't feel confident of those questions.
+          Absolutely. Although I code a lot in my spare time, but normal projects are quite different from the exam questions. There are not many past papers and exam-style questions for practicing, so I usually don't feel confident of those questions.
 
     \item Have you ever heard about some online programming platforms?
-    
-    Yes. Such as AcWing, LeetCode and TopCoder.
+
+          Yes. Such as AcWing, LeetCode and TopCoder.
 
     \item Have you ever tried some of the online programming platforms?
 
-    Yes.
+          Yes. I am an active user of AcWing.
 
     \item If yes, what do you think about these platforms?
-    
-    I really enjoy the experience. It provides a very strong positive feedback when I solve a new question.
+
+          I really enjoy the experience. They can provide an instant feedback for my submissions. It provides a very strong positive feedback when I solve a new question. I find myself learning faster and more efficient with such platform.
 
     \item Do you think a similar solution can help you learning and practicing?
 
-    Absolutely. The existing platforms do not provide A Level related content. So if a software solution can be altered for A Level Computer Science course, that will really help a lot.
+          Absolutely. The existing platforms do not provide A Level related content. So if a software solution can be altered for A Level Computer Science course, that will really help a lot.
+
+    \item (*) How do you think it should be optimized for A Level CS content?
+
+          You can add past exam questions practicing. Add a timed practice mode will be helpful.
 
     \item Do you have anything else to add?
 
-    No.
+          No.
+\end{enumerate}
+
+PCloud confirms that such solution will help him learning and practicing more efficiently. The instant feedback of whether he gets the question correct is very important to him. Instead of sending the user's submission to a remote server, my solution should judge the user's answer on their own computer. This can avoid the unstabilities caused by the remote server's availability and the network connection. He also gives me some good ideas about the content. I can add past exam questions for users to do timed practice, which enables users to practice algorithms and exam techniques at the same time.
+
+(TODO): Conduct and analysis the interview with Timofei
+
+\subsubsection{Computer Science student - Timofei}
+
+\begin{enumerate}
+
+    \item Do you find the programming questions difficult?
+
+    \item Do you find yourself lacking efficient practicing in algorithm designing and programming?
+
+    \item Have you ever heard about some online programming platforms?
+
+    \item Have you ever tried some of the online programming platforms?
+
+    \item If yes, what do you think about these platforms?
+
+    \item Do you think a similar solution can help you learning and practicing?
+
+    \item If no, do you think the idea of a software that provides coding questions and marks your answer instantly can help you learn and practice better?
+
+    \item Do you have anything else to add?
 
 \end{enumerate}
 
-(TODO): Justificate the interview
-
 \section{Research}
 
-(TODO): Rewrite the research section and analysis with more details.
+ (TODO): Rewrite the research section and analysis with more details.
 
-There are many coding training websites on the market, most of them share the similar idea, so I will investigate two of the most popular ones.
+There are many coding training websites on the market, most of them share a similar idea, so I will investigate two of the most popular ones.
 
 \begin{itemize}
     \item LeetCode
@@ -197,25 +229,23 @@ LeetCode provides a database containing more than 1000 coding questions.
 \subsubsection{Main coding layout}
 \includegraphics[width=\linewidth]{Two-Sum-LeetCode-Coding}
 
-This is the main coding area of LeetCode. The question is on the left and the code editor is on the right, the user can write their code in the code editor and submit their solutions by clicking the button at the down right corner. This layout is a good design as the question and the code editor are displayed on the same screen, which makes it very convenient for the user to read the question and write the code solution. User can \emph{run code} to check their solution against sample test cases in order to avoid stupid errors before formal submission for judging.
+This is LeetCode's main coding area. The user's screen is spliteed into two parts - the question secton and the code editor for inputing answer. User can drag the splitter in the middle to adjust the size of each section.
 
-\subsubsection{Submissions}
+The question section contains 4 tabs, `Description' tab displays the content of the question. `Solution' tab displays the solutions from the community. `Discuss' tab displays the discussions in the community. `Submission' tab lists user's previous submissions. Since I am not adding social functions in my solution, I will ignore the `Solution' and `Discuss' tab. Under the `Description' tab, LeetCode provides the context of the question, followed by 3 examples, and constrains for this question. The examples allow the user to run and check their solution before formal submission for marking, this can help them avoid silly mistakes. My solution should also provide similar examples for each question. Under the `Submission' tab, LeetCode records every history submission, so the user can revise old questions more efficiently. My solution should provide a similarly function as well.
 
 \includegraphics[width=\linewidth]{Two-Sum-LeetCode-Submission}
 
-The submission layout displays the running time and memory usage of the user's code solution. It also compares the result with all other submissions. It lists all history submissions down below. Being able to see the stats of the submission is an interesting feature for the user.
+The code editor provides line number and syntax highlighting functions. User can change their programming language with a drop-down box. LeetCode supports all mainstream programming languages. My solution should be able to support multiple programming languages as well, which allows students with different background using it easily.
 
-\subsubsection{Discussion}
+On the button, the user can `Run Code' to test their code against the examples before submission, and then click the `Submit' button to submit their solution formally.
 
-\includegraphics[width=\linewidth]{nterview-Question-LeetCode-Discuss}
+The split view design is clean and handy. The user can see the question and write their solution on the same page without switching between different windows. The design of examples and the `Run Code' button is useful as well. I can refer to LeetCode's coding layout when designing my solution's interface.
 
-There is a discussion page in LeetCode for all users to discuss the questions and their job interview experience. A good discussion environment is very helpful for self-taught programming.
+\subsubsection{Question database}
 
-\subsubsection{Contest}
+\includegraphics[width=\linewidth]{LeetCode-Problems}
 
-\includegraphics[width=\linewidth]{Contest-LeetCode}
-
-LeetCode helds a contest every week, people try to solve the coding questions as quickly as possible. This motivate people's passion of learning and practicing algorithms.
+Every question in LeetCode has many different attributes (Lists, Difficulty, Status, Tags, Title, Acceptance), so it is very easy for a user to find a suitable question to practice. My solution can organizes the question database in a similar way and provide corresponding query interface for a better user experience. The `Pick One' button on the top right is a very handy feature as well. User can simply click that button to start working on a quick random question. The idea of `a list of question' is great. Users can organizes a series of questions to practice and share with each other.
 
 \subsubsection{Pricing}
 
@@ -225,85 +255,35 @@ The basic functions of LeetCode is free to use for all users and it charges a fe
 
 \subsubsection{Analysis}
 
-\paragraph{Advantage}
+LeetCode is a fully web-based solution, which means it works on any devices. However, it also means you will not be able to use it without an stable Internet connection. I decide to make my solution a desktop application, since most students practice coding with a computer. It also save me a lot of cost from running and maintaining a server. LeetCode runs a large community for users to discuss questions with each other. I am not adding such function to my solution. Teachers and students can use existing platforms they have been familiar with, it is unnecessary for me to develop a new platform and for the users to migrate from mature solutions. LeetCode has an easy-to-use graphical interface, which is important so new users can get their hands on very easily. 
 
-\begin{itemize}
-    \item LeetCode is fully web-based, so it works on any platform.
-    \item LeetCode makes it easy to share questions and discuss them with other users.
-    \item LeetCode has a clean and easy to use graphical interface.
-\end{itemize}
-
-\paragraph{Downside}
-
-\begin{itemize}
-    \item LeetCode does not allow users to create custom questions.
-    \item There is no way for a teacher or a tutor to assign coursework and get statistics data.
-    \item LeetCode charges a subscription fee for some essential functions.
-    \item LeetCode requires a stable Internet connection to run and debug code.
-\end{itemize}
-
-\paragraph{Ideas}
-
-\begin{itemize}
-    \item The layout of the coding area is good practice.
-    \item The way LeetCode organizes its question database (Tagging each question with question type/difficulty/accept rate) is good practice.
-    \item My software will be completely free and open sourced with a good editor and fast judger out of the box.
-    \item The \emph{run code} function for debugging before formal submission is a very useful feature.
-    \item Some format of coding competition can be held by the user.
-\end{itemize}
+LeetCode does not support custom questions or any functions for educators. It is mainly designed for self-learners. My solution is designed for school use, so it must support functions like custom questions, custom assignments, statistics data visualisations. LeetCode charges a subscription fee for essential functions. My solution will be free and open-source so everyone can benefit from it.
 
 \subsection{Codeforces}
 
-Codeforces is a competitive coding platform, it is mainly used by people to held coding competition. It takes a similar approach to judge code with test data. There is no code editor provided, user are required to write and debug their solution on their own IDE and only submit the source code for judging.
+Codeforces is a competitive coding platform, it is mainly used by people to held coding competition.
 
 \subsubsection{Main question layout}
 
 \includegraphics[width=\linewidth]{Problem-A-Codeforces}
 
-The question layout displays the description of the question and provides sample test cases. It also shows the performance requirement for the code solution.
+The questions and the examples take up nearly all the spaces on the question page. There is no online editor or online runtime environment provided. Users are expected to write and test their code in their own IDEs and only submit the solution for judging. Custom IDEs may be more powerful than a builtin one. My solution will provide an editor, it is much more convenient to use. Even if a user decide to use his own environment, he can paste his code into the editor for submission. It sets time and memory limit for users' submissions, if a piece of code takes to long to run, or takes up too much memory while running, it will be terminated and marked wrong.
 
 \subsubsection{Submission}
 
 \includegraphics[width=\linewidth]{Submission-66675479-Codeforces}
 
-When the user submits the code, the code enters a queue waiting for judging, then the user can look up their result.
+When the user submits the code, the code enters a queue waiting for judging, then the user can look up their result. Users can check their source code, performance stats, and more important, when they have not passed all test cases, they are able to see what they have got wrong. The judgement protocol provide detailed information about each test case, so users can debug easily.
 
-\subsubsection{Contest}
-
-Codeforces helds contest regularly similarly to LeetCode, but with much harder questions.
+\includegraphics[width=\linewidth]{Judgement-Protocol-Codeforces}
 
 \subsubsection{Analysis}
 
-\paragraph{Advantage}
-
-\begin{itemize}
-    \item Codeforces is completely free and it is maintained by its community.
-    \item Codeforces is fully web-based so it works on any platform.
-    \item Codeforces supports all mainstream programming languages.
-    \item Codeforces supports custom questions.
-\end{itemize}
-
-\paragraph{Downside}
-
-\begin{itemize}
-    \item Codeforces focuses more on coding competition purpose instead of learning and practicing.
-    \item Codeforces does not provide out of box code editor. Users need to write code in their own code editor.
-    \item Codeforces does not provide debugging feature, users need to run and debug their code in their own runtime environment.
-    \item The judging process will be very slow when many users are submitting solutions at the same time.
-\end{itemize}
-
-\paragraph{Ideas}
-
-\begin{itemize}
-    \item The sample test cases are very useful for the user to debug their code solution.
-    \item Set a time and space limit for judging to prevent malicious code from using up all system resources.
-    \item Provide out of box code editor, runtime environment to make the software easy to use.
-    \item Use a local judger to judge the user's solution instead of uploading it to a server to speed up the judging speed. 
-\end{itemize}
+Codeforces is optimized for coding competition, so it has a light weight and complex interface for better performance. It is completely free to use. Users can create their own questions but it is very complicate to do so. My solution needs to enable users without experiences to create questions easily. There is no function for education - there is no way for a teacher to `create a class' and monitor his students. Codeforces is an online platform, so it also work across all devices and require an Internet connection. Users have to use their own IDEs to write and debug their code. Codeforces sends all submissions to a central `judging queue' for marking. My solution will mark all submissions in local, which makes judging a lot faster and save me from running a server. By limiting time and space allowance, Codeforces effectly prevents malicious code from running.
 
 \section{Features}
 
-(TODO): Propose a solution to the problem by describing each element of the product in detail.  You can have mock ups of the graphics / screen designs from a drawing application at this stage.
+ (TODO): Propose a solution to the problem by describing each element of the product in detail.  You can have mock ups of the graphics / screen designs from a drawing application at this stage.
 
 \section{Limitations}
 
@@ -341,294 +321,20 @@ The judger can only simply compare the students' output with the expected output
 
 \section{Success criteria}
 
-(TODO)
+(TODO): Add success criteria
 
 \chapter{Design}
 
-This is the design chapter.
+\section{Decomposition}
 
-(TODO)
-
-Sample flow chart
-
-\tikzstyle{startstop} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm,text centered, draw=black]
-\tikzstyle{item} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm,text centered, draw=black]
-\tikzstyle{io} = [trapezium, trapezium left angle=70, trapezium right angle=110, minimum width=3cm, minimum height=1cm, text centered, draw=black]
-\tikzstyle{process} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, draw=black]
-\tikzstyle{decision} = [diamond, minimum width=3cm, minimum height=1cm, text centered, draw=black]
-\tikzstyle{arrow} = [thick,->,>=stealth]
-
-\begin{tikzpicture}[node distance=2cm]
-    \node (start) [startstop] {Start};
-    \node (in1) [io, below of=start] {Input};
-    \node (pro1) [process, below of=in1] {Process 1};
-    \node (dec1) [decision, below of=pro1, yshift=-0.5cm] {Decision 1};
-    \node (pro2a) [process, below of=dec1, yshift=-0.5cm] {Process 2a};
-    \node (pro2b) [process, right of=dec1, xshift=2cm] {Process 2b};
-    \node (out1) [io, below of=pro2a] {Output};
-    \node (stop) [startstop, below of=out1] {Stop};
-    \draw [arrow] (start) -- (in1);
-    \draw [arrow] (in1) -- (pro1);
-    \draw [arrow] (pro1) -- (dec1);
-    \draw [arrow] (dec1) -- node {yes} (pro2a);
-    \draw [arrow] (dec1) -- node {no} (pro2b);
-    \draw [arrow] (pro2b) |- (pro1);
-    \draw [arrow] (pro2a) -- (out1);
-    \draw [arrow] (out1) -- (stop);
-\end{tikzpicture}
+(TODO): Add design chapter
 
 \chapter{Development}
 
-\section{Preparation}
-
-\subsection{Code editor}
-
-Download and install \href{https://code.visualstudio.com/}{VS Code}.
-
-Instead of using a large IDE with everything pre-configured, I decide to use a code editor to write source code and a terminal to execute commands. This gives me more control on my project.
-
-VS Code is a free and open source code editor which also have greate support for Python.
-
-I decide to use VS Code as my code editor.
-
-\subsection{Runtime environment}
-
-Download and install \href{https://www.python.org/downloads/}{Python 3.9.5}.
-
-I simply choose the latest Python release for this project. When I release the software, the Python interpreter will be packed with the binary files so there is no need to worry about the compatibility with the Python installation in users' environment.
-
-\subsection{Version control}
-
-Download and install \href{https://git-scm.com/}{Git}.
-
-Git is a free and open source distributed version control system. It records every \emph{commit} I made to the source code and allows me to revert back to any previous \emph{commit}. This makes it easy to roll back to a certain version and locate bugs. It also allow me to create new \emph{branches} which is useful when experimenting new features without worrying about damaging the stable code.
-
-I decide to use Git as the version control system for this project.
-
-\subsection{Project management}
-
-\href{https://github.com}{GitHub} is a code hosting platform which supports many project management features. The \emph{Issue} allows my stakeholders to report bugs and suggests features easily. The \emph{Action} provides support for CI/CD. The \emph{Project} provides support for managing and organizing the TODO list for the project.
-
-I decide to use GitHub as the code hosting platform for this project.
-
-\subsection{Create a project repository}
-
-I need to create a private repository to store and manage the source code.
-
-\includegraphics[width=\linewidth]{Create-a-New-Repository}
-
-This is the inital screenshot of this project repository, there is not many things there right now, but it will be much more vivid as time goes forward.
-
-\includegraphics[width=\linewidth]{HEIGE-PCloud-Algorithm-Dynamics-A-handy-tool-to-help-you-learn-and-revise-algorithms}
-
-I need to \mintinline{text}{clone} this repository in order to add files and write code to it.
-
-\begin{minted}{bash}
-git clone https://github.com/HEIGE-PCloud/Algorithm-Dynamics.git
-cd Algorithm-Dynamics
-\end{minted}
-
-\subsection{Configure Git ignore files}
-
-The \mintinline{text}{.gitignore} file lists files not being managed by the version control system. For example, I don't want to track the changes of the cache files or the log file.
-
-GitHub has already generated a nice \mintinline{text}{.gitignore} file for this Python project, but I need to further ignore aditional two files, the config file from the VS Code and the pdf preview of this report.
-
-\subsection{Create the first commit}
-
-After I have made the changes, I need to create a \emph{commit} to comfirm the chagnes and let Git record it, so I can go back here again in the future if needed.
-
-\begin{minted}{bash}
-$ git add .gitignore
-$ git commit -m "chore(configure-environment): update .gitignore
-- Ignore config files for VS Code
-- Ignore pdf files for the report"
-$ git push
-\end{minted}
-
-Now, I have created the first commit and pushed it to the remote repository.
-
-\subsection{Create a virtual environment}
-
-A virtual environment is a self-contained directory tree that contains a Python installation for a particular version of Python, plus a number of additional packages.
-
-My Python program will use many external libraries, at the same time, there are other Python projects on my computer require the same library with differnt version requirements, so I need a virtual environment to isolate the dependicies for different projects.
-
-First, I install the lastest release of virtualenv.
-
-\begin{minted}{bash}
-$ pip install virtualenv
-\end{minted}
-
-Next, I create a new virtual environment under the project folder.
-
-\begin{minted}{bash}
-$ virtualenv env
-\end{minted}
-
-Finally, I need to activate the virtual environment.
-
-\begin{minted}{bash}
-$ ./env/Scripts/activate
-\end{minted}
-
-Now I have a clean environment to install and manage all the dependicies and packages for this project.
-
-\section{Hello World!}
-
-\subsection{Hello GUI application}
-
-I will create a simple GUI application to go through all the development stages to verify the environment is ready.
-
-I will use PyQt6 as the GUI framework. \href{https://riverbankcomputing.com/software/pyqt}{PyQt} is a set of Python bindings for The Qt Company's \href{https://www.qt.io/}{Qt application framework} and runs on all platforms supported by Qt including Windows, macOS, Linux, iOS and Android.
-
-PyQt is licensed under \href{https://www.gnu.org/licenses/gpl-3.0.en.html}{GNU GPL v3}, which means the program needs to licensed under GNU GPL v3 as well.
-
-Fisrt, I install PyQt6 in the virtual environment.
-
-\begin{minted}{bash}
-$ (env)  pip install PyQt6
-\end{minted}
-
-I then create \mintinline{text}{helloworld.py} under \mintinline{text}{src} folder as the source code file for the Hello World application.
-
-In this hello world program, I will create a custom widget contains a text label and a button. The text label will display a hello world sentence. When the button is clicked by the user, the text will randomly change to the hello world message in another language.
-
-I run the GUI Application with the following command.
-
-\begin{minted}{bash}
-$ (env) pythonw ./src/helloworld.py
-\end{minted}
-
-An hello world window shows up correctly. When the I click the  button, the text in the middle will change randomly.
-
-\includegraphics[width=\linewidth]{Hello-World.png}
-
-\subsection{Hello unit test}
-
-I am going to automate the test process with \href{https://docs.pytest.org/}{Pytest} unit test framework. It can run through my pre-set test data automatically without me clicking each button or inputing each value by hand. This saves a lot of time and improves the quality of my tests.
-
-I need to install Pytest into my virtual environment first.
-
-\begin{minted}{bash}
-$ (env) pip install Pytest
-\end{minted}
-
-Next I need to write the test code for the hello world program. Under \mintinline{text}{test} folder, I create \mintinline{text}{test_helloworld.py}.
-
-Here I create three tests for the hello world program. First I test its initial state, this ensure the widget loads up with the correct text and layout. Second I test its \mintinline{python}{sayHello} function to make sure the text is changed correctly (white box test). Third I test its button, I simulate the click with \mintinline{python}{QTest.mouseClick} to make sure the button is working (black box test).
-
-
-\subsection{Hello coverage}
-
-\emph{Coverage} is a measure used to describe the degree to which the source code of a program is executed when a test runs. A program with high test coverage has had more of its source code executed during testing, which suggests it has a lower chance of containing undetected software bugs compared to a program with low test coverage. I will use the coverage to provide evidence for the quality of my tests.
-
-I need to install Pytest-cov to calculate the coverage of the tests.
-
-\begin{minted}{bash}
-$ (env) pip install Pytest-cov
-\end{minted}
-
-I need to add a config file for the Pytest-cov to exclude the test and debug code from the coverage calculation.
-
-
-Now, I run the unit test with this command. \mintinline{text}{--cov} configures the folder of my source code. \mintinline{text}{--cov-report} configures the format of the coverage output, \mintinline{text}{term} lets it to be printed directly to the termial. \mintinline{text}{-vv} shows the details of my tests. \mintinline{text}{--cov-config} configures the location of our config file for coverage, which is the \mintinline{text}{.coveragerc} file I just created.
-
-\begin{minted}{bash}
-$ (env) pytest --cov=src -vv --cov-report=term
-\end{minted}
-
-Here is the output of the test. My 3 tests \mintinline{python}{test_initWidget}, \mintinline{python}{test_sayHello}, \mintinline{python}{test_mouseClick} are executed and passed correctly. And the coverage report shows that the coverage of my tests is 100\% which means all code is executed during the tests. I aim for a 95\%+ coverage for the formal project.
-
-\begin{minted}{text}
-====================== test session starts ======================
-platform win32 -- Python 3.9.5, pytest-6.2.4
-cachedir: .pytest_cache
-plugins: cov-2.12.0
-collected 3 items
-
-tests/test_helloworld.py::test_initWidget PASSED [ 33%]
-tests/test_helloworld.py::test_sayHello PASSED   [ 66%]
-tests/test_helloworld.py::test_mouseClick PASSED [100%]
-
--------- coverage: platform win32, python 3.9.5-final-0 ---------
-Name                Stmts   Miss Branch BrPart  Cover
------------------------------------------------------
-src\__init__.py         0      0      0      0   100%
-src\helloworld.py      17      0      0      0   100%
------------------------------------------------------
-TOTAL                  17      0      0      0   100%
-
-======================== 3 passed in 0.53s ======================
-\end{minted}
-
-\subsection{Hello static check}
-
-The style of the code is important as well. It will make the maintenance much easier if all variables have meaningful names, no trailing whitespace, proper blank lines, etc. I will use the tool flake8 to perform static check of my code. flake8 nicely works with VS Code, so I will have useful notifications so these issues can be fixed quickly.
-
-\includegraphics[width=\linewidth]{flake8.png}
-
-Another useful tool is autopep8, it auto formats my source code and decides the whichspaces and blank lines wisely. 
-
-I install these two tools to monitor and improve the style of my code.
-
-\begin{minted}{bash}
-$ (env) pip install flake8 autopep8
-\end{minted}
-
-\subsection{Hello requirements.txt}
-
-I have installed a lot of packages for my project. \mintinline{text}{requirements.txt} is a file records all the packages I have installed, so the packages can be easily managed.
-
-\begin{minted}{bash}
-$ (env) pip freeze > requirements.txt
-\end{minted}
-
-\subsection{Hello CI/CD}
-
-Continuous integration (CI) and continuous delivery (CD) embody a culture, set of operating principles, and collection of practices that enable application development teams to deliver code changes more frequently and reliably.
-
-I will use \href{https://github.com/features/actions}{GitHub Actions} to auto test, build and deliver my application. 
-
-I will use \href{https://codecov.io/}{Codecov} to monitor the test quailty and coverage.
-
-Create workflow file at \mintinline{text}{.github/workflows/test-python-app.yml}.
-
-\inputminted{yaml}{../.github/workflows/build-app.yml}
-
-I can view the coverage report at Codecov.
-
-\includegraphics[width=\linewidth]{Codecov.png}
-
-\subsection{Hello Dependabot}
-
-The dependicies I install may get upgraded by their maintainer later during my developing process. I need them to be managed and upgraded automatically. I use GitHub Dependabot to manage the dependicies.
-
-Configure Dependabot.
-
-Create Dependabot config file at \mintinline{text}{.github/workflows/dependabot.yml}.
-
-\inputminted{yaml}{../.github/dependabot.yml}
-
-So the dependicies will be automatically checked everyday and the bot will create a new pull request when a new update is detected.
-
-\section{Create a website}
-
-\subsection{Hugo}
-\begin{minted}{bash}
-hugo new site website
-\end{minted}
-
-\subsection{Add theme}
-\begin{minted}{bash}
-npm i -g postcss postcss-cli autoprefixer
-git submodule add https://github.com/victoriadrake/hugo-theme-introduction.git website/themes/introduction
-\end{minted}
+(TODO): Add development chapter
 
 \chapter{Evaluation}
 
-This is the Evaluation chapter.
-
-(TODO)
+(TODO): Add evaluation chapter
 
 \end{document}
