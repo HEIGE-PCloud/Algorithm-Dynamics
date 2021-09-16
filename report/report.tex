@@ -193,25 +193,37 @@ PCloud confirms that such solution will help him learning and practicing more ef
 
     \item Do you find the programming questions difficult?
 
+    Yes. I geneually lose marks because of some careless syntax mistakes I made.
+
     \item Do you find yourself lacking efficient practicing in algorithm designing and programming?
+
+    Yes. I find I cannot find many materials to practice.
 
     \item Have you ever heard about some online programming platforms?
 
+    Codewar. Something like that.
+
     \item Have you ever tried some of the online programming platforms?
+
+    Yes.
 
     \item If yes, what do you think about these platforms?
 
+    I think they are quite helpful. But I find their marking is too specific, if I get a single character wrong in my output, it gets marked incorrect. 
+
     \item Do you think a similar solution can help you learning and practicing?
 
-    \item If no, do you think the idea of a software that provides coding questions and marks your answer instantly can help you learn and practice better?
+    Yes.
 
     \item Do you have anything else to add?
 
+    No.
+
 \end{enumerate}
 
-\section{Research}
+Timofei points out that the marking system in existing products is not very sensible. This may be a potential limitation of my solution as well. It is easy to directly compare the users' output and the expected output. But if they are different, it is difficult to figure out whether that difference is caused by a wrong coude solution or just some formating error. I can partially solve this by allowing the users to pre-test their code against examples before formal submissions, so they can check the output format. 
 
- (TODO): Rewrite the research section and analysis with more details.
+\section{Research}
 
 There are many coding training websites on the market, most of them share a similar idea, so I will investigate two of the most popular ones.
 
@@ -287,7 +299,9 @@ Codeforces is optimized for coding competition, so it has a light weight and com
 
 \section{Limitations}
 
-The software is written in Python instead of web-based which means extra software needs to be downloaded by the user. Because Python has good cross-platform compatibility, the software can still run on all mainstream platforms (Windows, Mac OS and Linux) which minimize the inconvenience. But downloading an extra software is still inconvenient and may violate the IT security policy of some schools.
+(TODO): Update limitations
+
+The software will be written in C# instead of web-based which means extra software needs to be downloaded by the user. I plan to use .Net 5 runtime and WinUI 3 library for my solution, so only the Windows 10 1809 or newer Windows operating systems will be supported. This should cause much compatibility issues since most school computers are running the required version of operating system. Downloading an extra software is inconvenient and may violate the IT security policy of some schools.
 
 The judger can only accept code submission in Python. The reason for choosing Python is because it has a very similar grammar to the pseudocode and most students are already very familiar with it. Creating a compiler for `Pseudocode Programming Language' is too complex for this project. So only Python is supported for now. The reason for not supporting other programming language is that an extra runtime environment needs to be installed, so it is not possible to support them out of the box. But some extra configuration might be provided to allow submit code solution in other languages.
 
@@ -297,7 +311,7 @@ Distribute the questions and assignments is still something inconvenient. Curren
 
 There are no good ways to maintain and distribute a large question database. Computer Science teachers are requied to maintain a database for their own students. But this is a difficult work. Creating good test cases is much time consuming than writing a mark scheme, it is very likely for a wrong solution to pass the judging if the test cases are not good enough. It relies on the teacher who creates the questions to consider everything clearly to minimize its impact.
 
-The judger can only simply compare the students' output with the expected output, if there is a format error such as trailing space and extra newline in their output, which will not be considered as a mistake in a real exam, will be marked as a wrong answer by the judger. So students may need to spend extra time debugging their output format. It cannot judge "partially correct" answer. (TODO)
+The judger can only simply compare the students' output with the expected output, if there is a format error such as trailing space and extra newline in their output, which will not be considered as a mistake in a real exam, will be marked as a wrong answer by the judger. So students may need to spend extra time debugging their output format. It cannot judge "partially correct" answer as well. It does not care which line did the student get correct or wrong, if the final output doesn't match, the submission will be marked wrong. 
 
 \section{Hardware and software requirements}
 
@@ -305,15 +319,15 @@ The judger can only simply compare the students' output with the expected output
     \hline
     Hardware and software requirements & Justification \\
     \hline
-    Standard mouse, keyboard and monitor. & Standard I/O devices are required for the user to interact with the software. \\
+    Standard mouse, keyboard and monitor. & Standard I/O devices are required for the user to interact with the software. Users need a mouse to navigate around different menus and pages, they need to use a keyboard to input their code solutions and use monitor to get the output from the software. \\
     \hline
-    Operating system: Windows 10, macOS 10.14, 10.15, 11.0, CentOS Linux 8.3, openSUSE 15.2, SUSE Linux Enterprise Server 15 SP2, Ubuntu 20.04, Generic Linux. & A modern operating system is required for the GUI library and Python interpreter that I am going to use. Outdated operating systems such as Windows 7 are not supported. Mobile operating systems such as ChromeOS, Android and iOS are not supported. This list of operating systems has covered all mainstream platforms, so users should find no compatibility issues with it. The software will need to be tested on all different platforms to ensure its compatibility. \\
+    Operating system: Windows 10 (1809 or later), Windows 11. & The software is designed with the WinUI 3 library and .Net 5 runtime, which require such operating system to run. \\
     \hline
-    x86 64-bit CPU (Intel / AMD architecture) with 2 or more cores and 1 GHz or higher clock speed. & A modern CPU is required for the Python interpreter. At least 1 spare core is required for the judger to judge the submitted code. A clock speed higher than 1 GHz is required to ensure the software is running smoothly. \\
+    x86 64-bit CPU (Intel / AMD architecture) with 2 or more cores and 1 GHz or higher clock speed. & A modern CPU is required for the software. 1 core will be used to run the main program and at least 1 spare core is required for the judger to judge the submitted code. A clock speed higher than 1 GHz is required to ensure the software is running smoothly. \\
     \hline
-    1G free memory or more. & Around 512M RAM is required to run the software, and another 512M RAM is required for the judger to judge the submissions. \\
+    1GB free memory or more. & Around 512MB RAM is required to run the software, and another 512MB RAM is required for the judger to judge the submissions. \\
     \hline
-    256M free disk space or more. & 256M free disk space is required to store and run the program itself, user may need extra disk space to store extra cache data and the database. \\
+    256MB free disk space or more. & 256MB free disk space is required to store and run the program itself, user may need extra disk space to store extra cache data and the database. \\
     \hline
     A modern dedicate or integrate graphics card. & The software has very little graphical demand, if the user's graphics card can run their operation system, it should be able to handle software as well. \\
     \hline

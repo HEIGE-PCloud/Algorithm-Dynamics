@@ -10,5 +10,11 @@
 
     <Grid>
         <TextBlock Text="HomePage"/>
+        <Button>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="This is a button"/>
+                <Button Content="This is a button in a button"/>
+            </StackPanel>
+        </Button>
     </Grid>
 </Page>
