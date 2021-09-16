@@ -1,11 +1,11 @@
 \documentclass[a4paper]{report}
 \usepackage{tikz}
+\usepackage{ulem}
 \usepackage{minted}
 \usepackage{hyperref}
 \usepackage{graphicx}
 \usepackage{fontspec}
 \usepackage{tabulary}
-\usepackage[normalem]{ulem}
 \usetikzlibrary{shapes.geometric, arrows}
 \usemintedstyle{vs}
 \graphicspath{ {./images/} {./graphs/} }
@@ -306,7 +306,7 @@ The judger can only accept code submission in limited programming languages and 
 
 Unlike LeetCode, there is no Discussion pages for users to discuss questions because it is a desktop program instead of a web one. But this is not a big problem, students and teachers should use an existing product such as Microsoft Teams which has very good support in sharing code snippets. It is unnecessary to rebuild the wheel.
 
-Distribute the questions and assignments is still something inconvenient. Currently, distributing questions and assignments requires the teacher to first export the questions and assignments, then send them to the students through email or file-sharing platforms. When the students finish working, they need to send their result back through email or other apps. I have attempted to integrate the file-sharing function with the existing platform - the Microsoft Teams Assignment function. \soul{But very unfortunately, the Graph API required for this operation is still in beta version, which means it can only be tested in the development environment and cannot be used in production. So for now, the users still have to use this inconvenient way to share questions and submissions. But in the future, the integration with some existing platforms may improve the experience.} (Update: the Microsoft Teams API is out of beta, now it is possible to integrate with it)
+Distribute the questions and assignments is still something inconvenient. Currently, distributing questions and assignments requires the teacher to first export the questions and assignments, then send them to the students through email or file-sharing platforms. When the students finish working, they need to send their result back through email or other apps. I have attempted to integrate the file-sharing function with the existing platform - the Microsoft Teams Assignment function. \sout{But very unfortunately, the Graph API required for this operation is still in beta version, which means it can only be tested in the development environment and cannot be used in production. So for now, the users still have to use this inconvenient way to share questions and submissions. But in the future, the integration with some existing platforms may improve the experience.} (Update: the Microsoft Teams API is out of beta, now it is possible to integrate with it)
 
 There are no good ways to maintain and distribute a large question database. Computer Science teachers are requied to maintain a database for their own students. But this is a difficult work. Creating good test cases is much time consuming than writing a mark scheme, it is very likely for a wrong solution to pass the judging if the test cases are not good enough. It relies on the teacher who creates the questions to consider everything clearly to minimize its impact.
 
@@ -334,7 +334,12 @@ The judger can only simply compare the students' output with the expected output
 
 \section{Success criteria}
 
-(TODO): Add success criteria
+\begin{tabulary}{\linewidth}{|L|L|}
+      \hline
+      Criteria & Justification \\
+      \hline
+      Provide a menu and a homepage filled with links to different functions of the solution. 
+\end{tabulary}
 
 \chapter{Design}
 
