@@ -1,10 +1,17 @@
 version: 2
 updates:
-  - package-ecosystem: "pip"
+
+  - package-ecosystem: "gitsubmodule"
     directory: "/"
     schedule:
       interval: "daily"
-  - package-ecosystem: "gitsubmodule"
-    directory: "/"
+
+  - package-ecosystem: "nuget"
+    directory: "/Algorithm Dynamics/Algorithm Dynamics/Algorithm Dynamics"
+    schedule:
+      interval: "daily"
+
+  - package-ecosystem: "nuget"
+    directory: "/Algorithm Dynamics/Algorithm Dynamics.Core/"
     schedule:
       interval: "daily"
