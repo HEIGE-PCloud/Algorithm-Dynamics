@@ -1,0 +1,94 @@
+﻿<Page
+    x:Class="Algorithm_Dynamics.Pages.PlaygroundPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Algorithm_Dynamics.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:muxc="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <muxc:MarkdownTextBlock Text="# Problem A + B" 
+                             Grid.RowSpan="2"
+                             Margin="8"
+                             Background="Black"/>
+
+        <controls:WebView2 x:Name="myWebView"
+                           Grid.Column="1" 
+                           HorizontalAlignment="Stretch" 
+                           VerticalAlignment="Stretch"
+                           Visibility="Collapsed"/>
+        <StackPanel Grid.Row="1"
+              Grid.Column="1"
+              Margin="8">
+            <Pivot x:Name="CodeExecutePivot">
+                <PivotItem Header="Input" x:Name="InputPanel">
+                    <TextBox x:Name="InputTextBlock"
+                       PlaceholderText="Input Panel"
+                       TextWrapping="NoWrap"
+                       IsReadOnly="False"
+                       AcceptsReturn="True"
+                       MaxHeight="200"/>
+                </PivotItem>
+                <PivotItem Header="Output" x:Name="OutputPanel">
+                    <TextBox x:Name="OutputTextBlock"
+                             PlaceholderText="Output Panel"
+                             Text="{x:Bind StandardOutput, Mode=OneWay}"
+                             TextWrapping="NoWrap"
+                             IsReadOnly="True"
+                             AcceptsReturn="True"
+                             MaxHeight="200"/>
+                </PivotItem>
+                <PivotItem Header="Error" x:Name="ErrorPanel">
+                    <TextBox x:Name="ErrorTextBlock"
+                       PlaceholderText="Error Panel"
+                       TextWrapping="NoWrap"
+                       IsReadOnly="True"
+                       AcceptsReturn="True"
+                       MaxHeight="200"/>
+                </PivotItem>
+            </Pivot>
+            <RelativePanel>
+                <TextBlock x:Name="ResultTextBlock"
+                           Text="Pending..."/>
+                <Button x:Name="RunCodeButton" 
+                        Content="Run Code"
+                        RelativePanel.AlignRightWithPanel="True"
+                        Click="RunCodeButton_Click"/>
+                <ProgressRing x:Name="RunCodeProgressRing"
+                              IsActive="False"
+                              RelativePanel.LeftOf="RunCodeButton"/>
+            </RelativePanel>
+        </StackPanel>
+        <muxc:GridSplitter
+            HorizontalAlignment="Left"
+            Grid.Column="1"
+            Grid.RowSpan="2"
+            Width="16">
+            <muxc:GridSplitter.RenderTransform>
+                <TranslateTransform X="-8" />
+            </muxc:GridSplitter.RenderTransform>
+        </muxc:GridSplitter>
+        <muxc:GridSplitter
+            VerticalAlignment="Top"
+            Grid.Row="1"
+            Grid.Column="1"
+            Grid.ColumnSpan="1"
+            Height="16">
+            <muxc:GridSplitter.RenderTransform>
+                <TranslateTransform Y="-8" />
+            </muxc:GridSplitter.RenderTransform>
+        </muxc:GridSplitter>
+    </Grid>
+</Page>
