@@ -4,7 +4,7 @@ import argparse
 parser = argparse.ArgumentParser(description='Build graphs')
 parser.add_argument('--command',
                     dest='command',
-                    default='./node_modules/.bin/mmdc',
+                    default='mmdc',
                     type=str,
                     help='Command for mermaid-cli')
 parser.add_argument('--directory',

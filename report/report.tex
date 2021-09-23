@@ -186,8 +186,6 @@ Mr. Grimwood has serverl valuable points here. He points out that the `partially
 
 PCloud confirms that such solution will help him learning and practicing more efficiently. The instant feedback of whether he gets the question correct is very important to him. Instead of sending the user's submission to a remote server, my solution should judge the user's answer on their own computer. This can avoid the unstabilities caused by the remote server's availability and the network connection. He also gives me some good ideas about the content. I can add past exam questions for users to do timed practice, which enables users to practice algorithms and exam techniques at the same time.
 
-(TODO): Conduct and analysis the interview with Timofei
-
 \subsubsection{Computer Science student - Timofei}
 
 \begin{enumerate}
@@ -296,7 +294,21 @@ Codeforces is optimized for coding competition, so it has a light weight and com
 
 \section{Features}
 
- (TODO): Propose a solution to the problem by describing each element of the product in detail.  You can have mock ups of the graphics / screen designs from a drawing application at this stage.
+A useful homepage interface with shortcuts to different functions in the software and other resources outside the software. This allows the user to get into practicing faster and makes the software easy to use. Details about the design of the homepage will be discussed in the Design chapter.
+
+A problem database with a graphical user interface. The GUI will have a searchbox and several drop-down menus for the user to input information to search for a problem. This provides user a simple way to find the problems they want, and it also ensures the users can manage and backup the data easily.
+
+An interface for users to create new problems and share it with others. This interface will have multiple text fields for the user to input the descriptions to the problem, the expect input and output data. Then the problem is saved to the database and can be exported to a JSON file allowing the user to share it with others. Users can also create a `list' of problems and export the entire list into a JSON file and share it with others. This enables teachers to create custom problems and share them with the students. It is a core feature that differentiate my solution to the existing ones.
+
+An interface for teachers to create assignments. An assignment is a `list' of problems with some extra data, such as the due date and total mark. It can be exported to JSON file and share with students. The students submission will be exported into a JSON file as well and can be sent back to the teacher. The solution will also integrate with the assignment function in Microsoft Teams for Education, which makes it even easier to do. The students' submissions will be automatically marked by the software and detailed data will be provided to the teacher. An simple data analysis interface will be provided to the teacher so they can have a brief look at the result. The teacher can also export the data into a CSV file so they can import it to their school system or analysis it with professional softwares. This automates the entire process from creating assignments, distribute assignments, collecting assignments and marking assignments. Teachers will have more time analysis the students performance and provide corresponding help timely. It is a core feature that differentiate my solution to the existing ones.
+
+An interface displaying the problem and the code editor. The solution provides a `Run Code' button for the student to pre-run their code before submission, a `Submit' button for the student to submit their code. This allows the students to read the question and write their code solution without switch between different windows. The `Run Code' function also makes it easier to debug their code.
+
+A playground with a code editor and runtime environment. This allows the software to be used in class teaching as well, the students can experiment different algorithms and programming languages in the playground easily.
+
+A settings page contains all the setting options for the software. Users can adjust settings such as their perferred programming language, syntax highlighting settings, color themes and so on. This allows the users to customize the software to fit their need and allows users with different backgrounds to use it without issues.
+
+
 
 \section{Limitations}
 
@@ -336,19 +348,37 @@ The judger can only simply compare the students' output with the expected output
 
 \begin{tabulary}{\linewidth}{|L|L|}
       \hline
-      Criteria & Justification \\
+      Criteria & Justification\\
       \hline
-      Provide a menu and a homepage filled with buttons link to different functions of the solution. & To make the program easy to use and allow the user finding the function they want to use quickly \\
+      Users can use different links, menus and buttons to navigate around the software easily. & This ensures the program is easy to use and allows the user finding the function they want to use quickly.\\
       \hline 
-      Proide an interface for the problem database. & Users can search for questions easily through the interface \\
+      Users can use different drop-down menus and the search box to find a problem from the problem database. & This allows users to search for questions easily in the database.\\
       \hline
-      Provide an interface for the user to add or export new questions. & Users can easily add new questions, edit existing questions or share them with others. \\
+      Users can add new questions to the database. & This allows teachers to create new algorithm problems.\\
       \hline
-      Provide a training interface where the quesiton and the code editor is displayed. & This allows the user to practice. \\
+      Users can create lists of questions. & This allows teachers to organize problems better by creating lists to manage them.\\
       \hline
-      Provide a setting menu for the user to adjust their preferred programming languages, colour theme, and other settings. & Users can have a customzied experience with different setting options. \\
+      Users can create assignments. & This allows teachers to create new assignments for their students.\\
+      \hline
+      Users can export/import questions, lists and assignments from/to their problem database. & This allows the users to share questions and data with others easily.\\
+      \hline
+      Users can work on a problem and their submissions can be automatically marked by the judger. & This allows the users to practice and get feedback in the software.\\
+      \hline
+      Users can create submissions for assignments and export it into file or upload it to Microsoft Teams for Education. & This allows the students to complete and hand in assignments easily.\\
+      \hline
+      The software can mark the assignments automatically. & This automates the marking process and reduce teachers' work.\\
+      \hline
+      The software can perform simple data analysis to the assignments data. & This provide teachers with an overview about students' performance on their assignments and allowing them to help their students better.\\
+      \hline
+      Users can export the assignment data to CSV files. & This allows the teachers to use advance data analysis tools and import the data into their school system.\\
+      \hline
+      Users can use the playground to test any code. & This allows the users to experiment new algorithms and programming languages and allows the software to be used in class teaching.\\
+      \hline
+      Users can customize the software. & This allows users to work in their favourite environment and makes the solution suitable to users with different backgroudns.\\
       \hline
 \end{tabulary}
+
+All the succes criterias will first be tested through the unit tests created during the development. Then they will be tested and improved by me during the Alpha Testing stage. Finally they will be tested by the stakeholders in the Beta Testing stage, and the evaluation will be based on their user experience and opions.
 
 \chapter{Design}
 
