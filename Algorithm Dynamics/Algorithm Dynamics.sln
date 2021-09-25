@@ -7,7 +7,9 @@ Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "Algorithm Dynamics (Package
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Algorithm Dynamics", "Algorithm Dynamics\Algorithm Dynamics\Algorithm Dynamics.csproj", "{98B27FAC-3DEA-40AD-84F7-19CD1036DE65}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Algorithm Dynamics.Core", "Algorithm Dynamics.Core\Algorithm Dynamics.Core.csproj", "{44746C95-237B-4DAD-AF37-ADFFE276BF9B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Algorithm Dynamics.Core", "Algorithm Dynamics.Core\Algorithm Dynamics.Core.csproj", "{44746C95-237B-4DAD-AF37-ADFFE276BF9B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Algorithm Dynamics.Test", "Algorithm Dynamics.Test\Algorithm Dynamics.Test.csproj", "{39B1DB2D-818B-48EC-9917-762AE98E1047}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,6 +73,22 @@ Global
 		{44746C95-237B-4DAD-AF37-ADFFE276BF9B}.Release|x64.Build.0 = Release|Any CPU
 		{44746C95-237B-4DAD-AF37-ADFFE276BF9B}.Release|x86.ActiveCfg = Release|Any CPU
 		{44746C95-237B-4DAD-AF37-ADFFE276BF9B}.Release|x86.Build.0 = Release|Any CPU
+		{39B1DB2D-818B-48EC-9917-762AE98E1047}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39B1DB2D-818B-48EC-9917-762AE98E1047}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39B1DB2D-818B-48EC-9917-762AE98E1047}.Debug|arm64.ActiveCfg = Debug|Any CPU
+		{39B1DB2D-818B-48EC-9917-762AE98E1047}.Debug|arm64.Build.0 = Debug|Any CPU
+		{39B1DB2D-818B-48EC-9917-762AE98E1047}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{39B1DB2D-818B-48EC-9917-762AE98E1047}.Debug|x64.Build.0 = Debug|Any CPU
+		{39B1DB2D-818B-48EC-9917-762AE98E1047}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{39B1DB2D-818B-48EC-9917-762AE98E1047}.Debug|x86.Build.0 = Debug|Any CPU
+		{39B1DB2D-818B-48EC-9917-762AE98E1047}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39B1DB2D-818B-48EC-9917-762AE98E1047}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39B1DB2D-818B-48EC-9917-762AE98E1047}.Release|arm64.ActiveCfg = Release|Any CPU
+		{39B1DB2D-818B-48EC-9917-762AE98E1047}.Release|arm64.Build.0 = Release|Any CPU
+		{39B1DB2D-818B-48EC-9917-762AE98E1047}.Release|x64.ActiveCfg = Release|Any CPU
+		{39B1DB2D-818B-48EC-9917-762AE98E1047}.Release|x64.Build.0 = Release|Any CPU
+		{39B1DB2D-818B-48EC-9917-762AE98E1047}.Release|x86.ActiveCfg = Release|Any CPU
+		{39B1DB2D-818B-48EC-9917-762AE98E1047}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

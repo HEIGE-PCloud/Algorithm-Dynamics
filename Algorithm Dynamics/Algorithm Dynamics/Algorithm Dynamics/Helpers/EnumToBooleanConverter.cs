@@ -1,8 +1,6 @@
 ﻿using Microsoft.UI.Xaml.Data;
 using System;
 
-using Windows.UI.Xaml.Data;
-
 namespace Algorithm_Dynamics.Helpers
 {
     public class EnumToBooleanConverter : IValueConverter

@@ -1,11 +1,10 @@
-﻿using Microsoft.UI.Xaml.Controls;
-using Algorithm_Dynamics.Core.Models;
+﻿using Algorithm_Dynamics.Core.Models;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Navigation;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using Microsoft.UI.Xaml.Navigation;
-using System;
-using Microsoft.UI.Xaml;
 
 
 // To learn more about WinUI, the WinUI project structure,
