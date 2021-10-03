@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml;
+﻿using Algorithm_Dynamics.Core.Models;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Web.WebView2.Core;
 using System;
@@ -61,30 +62,32 @@ namespace Algorithm_Dynamics.Pages
             ErrorTextBlock.Text = "";
             StandardOutput.Clear();
             StandardError.Clear();
-            Process proc = new()
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = "python",
-                    ArgumentList = { "-c", $"{Code}" },
-                    UseShellExecute = false,
-                    RedirectStandardInput = true,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    CreateNoWindow = true
-                },
-                EnableRaisingEvents = true
-            };
-            proc.OutputDataReceived += new DataReceivedEventHandler(Proc_OutputDataReceived);
-            proc.ErrorDataReceived += new DataReceivedEventHandler(Proc_ErrorDataReceived);
-            proc.Exited += new EventHandler(Proc_Exited);
-            Timer timer = new Timer(delegate { proc.Kill(); }, null, 2000, Timeout.Infinite);
-            proc.Start();
-            proc.BeginOutputReadLine();
-            proc.BeginErrorReadLine();
-            proc.StandardInput.WriteLine(InputTextBlock.Text);
-            await proc.WaitForExitAsync();
-            proc.WaitForExit();
+            //Process proc = new()
+            //{
+            //    StartInfo = new ProcessStartInfo
+            //    {
+            //        FileName = "python",
+            //        ArgumentList = { "-c", $"{Code}" },
+            //        UseShellExecute = false,
+            //        RedirectStandardInput = true,
+            //        RedirectStandardOutput = true,
+            //        RedirectStandardError = true,
+            //        CreateNoWindow = true
+            //    },
+            //    EnableRaisingEvents = true
+            //};
+            //proc.OutputDataReceived += new DataReceivedEventHandler(Proc_OutputDataReceived);
+            //proc.ErrorDataReceived += new DataReceivedEventHandler(Proc_ErrorDataReceived);
+            //proc.Exited += new EventHandler(Proc_Exited);
+            //Timer timer = new Timer(delegate { proc.Kill(); }, null, 2000, Timeout.Infinite);
+            //proc.Start();
+            //proc.BeginOutputReadLine();
+            //proc.BeginErrorReadLine();
+            //proc.StandardInput.WriteLine(InputTextBlock.Text);
+            //await proc.WaitForExitAsync();
+            //proc.WaitForExit();
+            SubmissionResult result = new();
+            result = await Judger.RunCode(Code, InputTextBlock.Text);
             RunCodeButton.IsEnabled = true;
             RunCodeProgressRing.IsActive = false;
             //if (!proc.WaitForExit(1000))
@@ -93,18 +96,10 @@ namespace Algorithm_Dynamics.Pages
             //    ErrorTextBlock.Text = "Time Limit Exceed";
             //    ResultTextBlock.Text = "TLE";
             //}
-            OutputTextBlock.Text = StandardOutput.ToString();
-            ErrorTextBlock.Text = StandardError.ToString();
-            if (string.IsNullOrEmpty(ErrorTextBlock.Text))
-            {
-                CodeExecutePivot.SelectedItem = OutputPanel;
-                ResultTextBlock.Text = "Passed";
-            }
-            else
-            {
-                CodeExecutePivot.SelectedItem = ErrorPanel;
-                ResultTextBlock.Text = "CE";
-            }
+            //OutputTextBlock.Text = StandardOutput.ToString();
+            //ErrorTextBlock.Text = StandardError.ToString();
+            OutputTextBlock.Text = result.StandardOutput;
+            ErrorTextBlock.Text = result.StandardError;
         }
         private void Proc_Exited(object sender, EventArgs e)
         {

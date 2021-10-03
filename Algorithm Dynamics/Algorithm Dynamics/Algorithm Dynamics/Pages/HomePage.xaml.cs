@@ -1,4 +1,4 @@
-﻿using Algorithm_Dynamics.Core.Models;
+﻿using Algorithm_Dynamics.Models;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;

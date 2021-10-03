@@ -18,7 +18,6 @@ namespace Algorithm_Dynamics
             this.InitializeComponent();
             MainNavigationView.SelectedItem = MainNavigationView.MenuItems.OfType<NavigationViewItem>().First();
         }
-
         private void MainNavigationView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
             if (args.IsSettingsSelected)
