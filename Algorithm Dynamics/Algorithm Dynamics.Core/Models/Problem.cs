@@ -10,6 +10,8 @@ namespace Algorithm_Dynamics.Core.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public Status ProblemStatus { get; set; }
+        public Difficulty ProblemDifficulty { get; set; }
         public string Description { get; set; }
         public int TimeLimit { get; set; }
         public int MemoryLimit { get; set; }
@@ -28,6 +30,18 @@ namespace Algorithm_Dynamics.Core.Models
             MemoryLimit = memoryLimit;
             TestCases = testCases;
             Tags = tags;
+        }
+        public enum Status
+        {
+            Todo,
+            Solved,
+            Attempted,
+        }
+        public enum Difficulty
+        {
+            Easy,
+            Medium,
+            Hard,
         }
     }
 }

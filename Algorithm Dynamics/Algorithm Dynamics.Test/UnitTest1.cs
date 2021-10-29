@@ -8,7 +8,7 @@ namespace Algorithm_Dynamics.Test
     public class UnitTest1
     {
         [TestMethod]
-        public async Task TestMethod1()
+        public void TestMethod1()
         {
             SubmissionResult result = new();
             result.StandardOutput = "Hello World";

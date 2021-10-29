@@ -47,6 +47,11 @@ namespace Algorithm_Dynamics.Pages
             Source.Clear();
             Source.Add(new HomePageGridItem("Home", Symbol.Home));
             Source.Add(new HomePageGridItem("Problems", Symbol.List));
+            Source.Add(new HomePageGridItem("Import Problems", Symbol.Import));
+            Source.Add(new HomePageGridItem("Import Problem Lists", Symbol.Import));
+            Source.Add(new HomePageGridItem("Import Assignments", Symbol.Import));
+            Source.Add(new HomePageGridItem("Pick a Random Problem", Symbol.Shuffle));
+            Source.Add(new HomePageGridItem("Playground", Symbol.Edit));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

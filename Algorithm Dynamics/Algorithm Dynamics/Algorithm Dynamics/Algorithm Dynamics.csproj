@@ -10,11 +10,17 @@
     <UseWinUI>true</UseWinUI>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Pages\AssignmentAssignedPage.xaml" />
+    <None Remove="Pages\AssignmentCompletedPage.xaml" />
+    <None Remove="Pages\AssignmentCreatePage.xaml" />
+    <None Remove="Pages\AssignmentExportPage.xaml" />
+    <None Remove="Pages\AssignmentImportPage.xaml" />
     <None Remove="Pages\AssignmentsPage.xaml" />
     <None Remove="Pages\HomePage.xaml" />
     <None Remove="Pages\PlaygroundPage.xaml" />
     <None Remove="Pages\ProblemsPage.xaml" />
     <None Remove="Pages\SettingsPage.xaml" />
+    <None Remove="Pages\UserAccountPage.xaml" />
     <None Remove="SettingsPage.xaml" />
     <None Remove="Styles\Page.xaml" />
     <None Remove="Styles\Textblock.xaml" />
@@ -43,6 +49,24 @@
     <None Update="Assets\package-lock.json">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
+    <Page Update="Pages\UserAccountPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Pages\AssignmentExportPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Pages\AssignmentImportPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Pages\AssignmentCreatePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Pages\AssignmentCompletedPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Pages\AssignmentAssignedPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>

@@ -6,7 +6,6 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:CommunityToolkit.WinUI.UI.Controls"
-    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -19,16 +18,26 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <muxc:MarkdownTextBlock Text="# Problem A + B" 
-                             Grid.RowSpan="2"
-                             Margin="8"
-                             Background="Black"/>
-
-        <controls:WebView2 x:Name="myWebView"
-                           Grid.Column="1" 
-                           HorizontalAlignment="Stretch" 
-                           VerticalAlignment="Stretch"
-                           Visibility="Collapsed"/>
+        <StackPanel Grid.Column="0"
+                    Grid.RowSpan="2">
+            <NavigationView x:Name="ProblemNavigationView"
+                        PaneDisplayMode="Top"
+                        IsSettingsVisible="False"
+                        IsBackButtonVisible="Collapsed"
+                        AlwaysShowHeader="False">
+                <NavigationView.MenuItems>
+                    <NavigationViewItem Content="Description"/>
+                    <NavigationViewItem Content="Submissions"/>
+                </NavigationView.MenuItems>
+            </NavigationView>
+            <muxc:MarkdownTextBlock Text="# Problem A + B" 
+                             Margin="8"/>
+        </StackPanel>
+        <WebView2 x:Name="myWebView"
+                  HorizontalAlignment="Stretch" 
+                  VerticalAlignment="Stretch"
+                  Visibility="Collapsed"
+                  Grid.Column="1"/>
         <StackPanel Grid.Row="1"
               Grid.Column="1"
               Margin="8">

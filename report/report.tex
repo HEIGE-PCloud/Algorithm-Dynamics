@@ -396,9 +396,64 @@ All the success criteria will first be tested through the unit tests created dur
 
 \chapter{Design}
 
-\section{Decomposition}
+\section{User interface design}
 
-(TODO): Add design chapter
+\subsection{Navigation View}
+
+\begin{tikzpicture}
+      \draw (0,0) rectangle (10,10);
+      \draw (0,9) rectangle (3,10) node[pos=.5] {Home};
+      \draw (0,8) rectangle (3,9) node[pos=.5] {Problems};
+      \draw (0,7) rectangle (3,8) node[pos=.5] {Assignments};
+      \draw (0,6) rectangle (3,7) node[pos=.5] {Playground};
+      \draw (0,2) rectangle (3,6);
+      \draw (0,1) rectangle (3,2) node[pos=.5] {Account};
+      \draw (0,0) rectangle (3,1) node[pos=.5] {Settings};
+      \draw (3,0) rectangle (10,10) node[pos=.5] {Main frame};
+\end{tikzpicture}
+
+The Navigation View provides a global menu for the user to navigate between different pages in the software. There are six tabs in the navigation view, "Home", "Problems", "Assignments", "Playground", "Account", "Settings". By clicking on different tab, the main frame will display the corresponding page. The current selected tab will be highlighted.
+
+Users will be able to know where they are and navigate to another page by one click, which makes the program easier to use.
+
+\subsection{Home Page}
+
+\begin{tikzpicture}
+      \draw (0,0) rectangle (10,10);
+      \draw (0,0) rectangle (3,10) node[pos=.5] {Navigation View};
+      \draw (3,6) rectangle (10,10) node[pos=.5] {Background Image};
+      \draw (5,6) rectangle (10,7) node[pos=.5] {Algorithm Dynamics};
+      \draw (3.5,3) rectangle (5.5,5) node[pos=.5] {Random};
+      \draw (5.5,3) rectangle (7.5,5) node[pos=.5] {Import};
+      \draw (7.5,3) rectangle (9.5,5) node[pos=.5] {Playground};
+      \draw (3.5,1) rectangle (5.5,3) node[pos=.5] {Problems};
+      \draw (5.5,1) rectangle (7.5,3) node[pos=.5] {Assignments};
+      \draw (7.5,1) rectangle (9.5,3) node[pos=.5] {Account};
+\end{tikzpicture}
+
+On the top of the home page, there will be a beautiful background image under the `Algorithm Dynamics' title. This makes the interface looks pretty. Let users have a good mood every time they open this software.
+
+The bottom half of the home page will be filled with buttons link to different functions of the software. The `Random' button starts a random problem for the user. The `Import' button shows a window for the user to import problems, problem lists, or assignments. The `Playground', `Problems', `Assignments' and `Account' button links the user to the corresponding page. This groups all the useful functions of the software and putting them on the home page makes they easy accessible to the user, which makes the software easier to use.
+
+\subsection{Problems Page}
+
+\begin{tikzpicture}
+      \draw (0,0) rectangle (10,10);
+      \draw (0,0) rectangle (3,10) node[pos=.5] {Navigation View};
+      
+\end{tikzpicture}
+
+\subsection{Assignments Page}
+
+\subsection{Playground}
+
+\subsection{Account Page}
+
+\subsection{Settings Page}
+
+\subsection{Create Problem Page}
+
+\subsection{Create Assignment Page}
 
 \chapter{Development}
 

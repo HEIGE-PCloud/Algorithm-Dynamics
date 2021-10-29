@@ -16,6 +16,8 @@ namespace Algorithm_Dynamics
         public MainWindow()
         {
             this.InitializeComponent();
+            Title = "Algorithm Dynamics";
+            ExtendsContentIntoTitleBar = false;
             MainNavigationView.SelectedItem = MainNavigationView.MenuItems.OfType<NavigationViewItem>().First();
         }
         private void MainNavigationView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)

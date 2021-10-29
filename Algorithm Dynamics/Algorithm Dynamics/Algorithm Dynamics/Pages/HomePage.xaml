@@ -11,7 +11,18 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid>
+    <StackPanel>
+        <Grid>
+            <Image Source="/Assets/Images/HomePageBackgroundImage.jpg" 
+               Height="256"
+               Stretch="UniformToFill"/>
+            <TextBlock Text="Algorithm Dynamics"
+                       FontSize="48"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Bottom"
+                       Margin="8"
+                       Foreground="White"/>
+        </Grid>
         <controls:AdaptiveGridView
             Padding="{StaticResource MediumLeftRightMargin}"
             animations:Connected.ListItemElementName="itemThumbnail"
@@ -36,5 +47,5 @@
                 </DataTemplate>
             </controls:AdaptiveGridView.ItemTemplate>
         </controls:AdaptiveGridView>
-    </Grid>
+    </StackPanel>
 </Page>

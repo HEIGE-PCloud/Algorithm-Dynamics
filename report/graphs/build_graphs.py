@@ -9,7 +9,7 @@ parser.add_argument('--command',
                     help='Command for mermaid-cli')
 parser.add_argument('--directory',
                     dest='directory',
-                    default='./report/graphs',
+                    default='./graphs',
                     type=str,
                     help='Directory of the graphs')
 args = parser.parse_args()

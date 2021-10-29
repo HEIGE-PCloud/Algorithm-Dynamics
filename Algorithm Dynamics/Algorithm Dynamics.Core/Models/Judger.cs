@@ -10,8 +10,8 @@ namespace Algorithm_Dynamics.Core.Models
 {
     public class Judger
     {
-        private static string StandardOutput;
-        private static string StandardError;
+        private static string _StandardOutput;
+        private static string _StandardError;
         public async static Task<SubmissionResult> RunCode(string UserCode, string Input)
         {
             clear();
@@ -40,8 +40,8 @@ namespace Algorithm_Dynamics.Core.Models
             proc.StandardInput.WriteLine(Input);
             await proc.WaitForExitAsync();
             proc.WaitForExit();
-            result.StandardOutput = StandardOutput;
-            result.StandardError = StandardError;
+            result.StandardOutput = _StandardOutput;
+            result.StandardError = _StandardError;
             result.UserResultCode = SubmissionResult.ResultCode.SUCCESS;
             return result;
         }
@@ -53,7 +53,7 @@ namespace Algorithm_Dynamics.Core.Models
         {
             if (!string.IsNullOrEmpty(e.Data))
             {
-                StandardOutput += e.Data + '\n';
+                _StandardOutput += e.Data + '\n';
             }
         }
 
@@ -61,13 +61,13 @@ namespace Algorithm_Dynamics.Core.Models
         {
             if (!string.IsNullOrEmpty(e.Data))
             {
-                StandardError += e.Data + '\n';
+                _StandardError += e.Data + '\n';
             }
         }
         private static void clear()
         {
-            StandardOutput = "";
-            StandardError = "";
+            _StandardOutput = "";
+            _StandardError = "";
         }
     }
 }

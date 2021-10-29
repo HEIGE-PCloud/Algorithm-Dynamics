@@ -7,15 +7,22 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d">
+    <Grid>
+        <NavigationView x:Name="MainNavigationView"
+                        SelectionChanged="MainNavigationView_SelectionChanged"
+                        IsBackButtonVisible="Collapsed">
+            <NavigationView.MenuItems>
+                <NavigationViewItem x:Name="HomePageNavigationViewItem" Icon="Home"  Content="Home" Tag="HomePage" />
+                <NavigationViewItem x:Name="ProblemsPageNavigationViewItem" Icon="List" Content="Problems" Tag="ProblemsPage" />
+                <NavigationViewItem x:Name="AssignmentsPageNavigationViewItem" Icon="Library" Content="Assignments" Tag="AssignmentsPage"/>
+                <NavigationViewItem x:Name="PlaygroundPageNavigationViewItem" Icon="Edit" Content="Playground" Tag="PlaygroundPage"/>
+            </NavigationView.MenuItems>
+            <NavigationView.FooterMenuItems>
+                <NavigationViewItem x:Name="UserAccountNavigationViewItem" Icon="Contact" Content="Account" Tag="UserAccountPage"/>
+            </NavigationView.FooterMenuItems>
+            <Frame x:Name="contentFrame"
+                   Padding="0, 0, 0, 0"/>
+        </NavigationView>
 
-    <muxc:NavigationView x:Name="MainNavigationView"
-                         SelectionChanged="MainNavigationView_SelectionChanged">
-        <muxc:NavigationView.MenuItems>
-            <muxc:NavigationViewItem x:Name="HomePageNavigationViewItem" Icon="Home"  Content="Home" Tag="HomePage" />
-            <muxc:NavigationViewItem x:Name="ProblemsPageNavigationViewItem" Icon="List" Content="Problems" Tag="ProblemsPage" />
-            <muxc:NavigationViewItem x:Name="AssignmentsPageNavigationViewItem" Icon="Library" Content="Assignments" Tag="AssignmentsPage"/>
-            <muxc:NavigationViewItem x:Name="PlaygroundPageNavigationViewItem" Icon="Edit" Content="Playground" Tag="PlaygroundPage"/>
-        </muxc:NavigationView.MenuItems>
-        <Frame x:Name="contentFrame"/>
-    </muxc:NavigationView>
+    </Grid>
 </Window>

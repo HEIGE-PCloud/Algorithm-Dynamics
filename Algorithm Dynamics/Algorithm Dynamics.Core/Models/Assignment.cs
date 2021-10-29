@@ -11,5 +11,12 @@ namespace Algorithm_Dynamics.Core.Models
         public new string Name { get; set; }
         public new string Description { get; set; }
         public DateTime DueDate { get; set; }
+        public Assignment(string name, string description, DateTime dueDate, ProblemList problemList)
+        {
+            Name = name;
+            Description = description;
+            DueDate = dueDate;
+            AddRange(problemList);
+        }
     }
 }

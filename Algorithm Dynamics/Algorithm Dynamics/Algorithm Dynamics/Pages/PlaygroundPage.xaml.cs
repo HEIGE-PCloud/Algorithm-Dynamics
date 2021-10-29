@@ -8,9 +8,6 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
-
 namespace Algorithm_Dynamics.Pages
 {
     /// <summary>
@@ -21,7 +18,7 @@ namespace Algorithm_Dynamics.Pages
         public string Code { get; set; }
         public StringBuilder StandardOutput { get; set; } = new StringBuilder("");
         public StringBuilder StandardError { get; set; } = new StringBuilder("");
-
+        
         public PlaygroundPage()
         {
             this.InitializeComponent();
@@ -32,10 +29,10 @@ namespace Algorithm_Dynamics.Pages
             await myWebView.EnsureCoreWebView2Async();
             myWebView.CoreWebView2.WebMessageReceived += CoreWebView2_WebMessageReceived;
             Windows.Storage.StorageFolder AssetsDirectory = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync(@"Assets");
-            myWebView.CoreWebView2.SetVirtualHostNameToFolderMapping("appassets.example", AssetsDirectory.Path, CoreWebView2HostResourceAccessKind.Allow);
-            myWebView.Source = new Uri("http://appassets.example/Editor.html");
-            //await myWebView.ExecuteScriptAsync($"window.config={JsonSerializer.Serialize(editorSetting)}");
+            myWebView.CoreWebView2.SetVirtualHostNameToFolderMapping("localeditor.algorithmdynamics.com", AssetsDirectory.Path, CoreWebView2HostResourceAccessKind.Allow);
+            myWebView.Source = new Uri("http://localeditor.algorithmdynamics.com/Editor.html");
         }
+
         private async void CoreWebView2_WebMessageReceived(CoreWebView2 sender, CoreWebView2WebMessageReceivedEventArgs args)
         {
             string data = args.TryGetWebMessageAsString();
@@ -62,70 +59,11 @@ namespace Algorithm_Dynamics.Pages
             ErrorTextBlock.Text = "";
             StandardOutput.Clear();
             StandardError.Clear();
-            //Process proc = new()
-            //{
-            //    StartInfo = new ProcessStartInfo
-            //    {
-            //        FileName = "python",
-            //        ArgumentList = { "-c", $"{Code}" },
-            //        UseShellExecute = false,
-            //        RedirectStandardInput = true,
-            //        RedirectStandardOutput = true,
-            //        RedirectStandardError = true,
-            //        CreateNoWindow = true
-            //    },
-            //    EnableRaisingEvents = true
-            //};
-            //proc.OutputDataReceived += new DataReceivedEventHandler(Proc_OutputDataReceived);
-            //proc.ErrorDataReceived += new DataReceivedEventHandler(Proc_ErrorDataReceived);
-            //proc.Exited += new EventHandler(Proc_Exited);
-            //Timer timer = new Timer(delegate { proc.Kill(); }, null, 2000, Timeout.Infinite);
-            //proc.Start();
-            //proc.BeginOutputReadLine();
-            //proc.BeginErrorReadLine();
-            //proc.StandardInput.WriteLine(InputTextBlock.Text);
-            //await proc.WaitForExitAsync();
-            //proc.WaitForExit();
-            SubmissionResult result = new();
-            result = await Judger.RunCode(Code, InputTextBlock.Text);
+            SubmissionResult result = await Judger.RunCode(Code, InputTextBlock.Text);
             RunCodeButton.IsEnabled = true;
             RunCodeProgressRing.IsActive = false;
-            //if (!proc.WaitForExit(1000))
-            //{
-            //    proc.Kill();
-            //    ErrorTextBlock.Text = "Time Limit Exceed";
-            //    ResultTextBlock.Text = "TLE";
-            //}
-            //OutputTextBlock.Text = StandardOutput.ToString();
-            //ErrorTextBlock.Text = StandardError.ToString();
             OutputTextBlock.Text = result.StandardOutput;
             ErrorTextBlock.Text = result.StandardError;
-        }
-        private void Proc_Exited(object sender, EventArgs e)
-        {
-
-        }
-
-        private void Proc_OutputDataReceived(object sender, DataReceivedEventArgs e)
-        {
-            if (!string.IsNullOrEmpty(e.Data))
-            {
-                StandardOutput.Append(e.Data + '\n');
-            }
-        }
-
-        private void Proc_ErrorDataReceived(object sender, DataReceivedEventArgs e)
-        {
-            if (!string.IsNullOrEmpty(e.Data))
-            {
-                StandardError.Append(e.Data + '\n');
-            }
-        }
-
-        private async void DebugButton_Click(object sender, RoutedEventArgs e)
-        {
-            EditorSetting editorSetting = new EditorSetting();
-            await myWebView.ExecuteScriptAsync($"window.config={JsonSerializer.Serialize(editorSetting)}");
         }
     }
     public class EditorSetting
