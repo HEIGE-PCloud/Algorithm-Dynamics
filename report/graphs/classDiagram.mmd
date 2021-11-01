@@ -1,0 +1,104 @@
+classDiagram
+    class Tag{
+        +int id
+        +string name
+        +Tag()
+    }
+    class TestCase{
+        +int Id
+        +string Input
+        +string Output
+        +TestCase()
+    }
+    class Problem{
+        +int Id
+        +string Name
+        +Status Status
+        +Difficulty Difficulty
+        +string Description
+        +int TimeLimit
+        +int MemoryLimit
+        +List<TestCase> TestCases
+        +List<Tag> Tags
+        +Problem()
+    }
+    class List~Problem~ {
+        # Library Class System.Collections.Generic
+    }
+    class ProblemList{
+        +int Id
+        +string Name
+        +string Description
+        +list<Tag> Tags
+        +ProblemList()
+    }
+    class Assignment{
+        +Guid Uid
+        +string Name
+        +DateTime DueDate
+        +string Description
+        +User Assigner
+        +AssignmentStatus Status
+        +AssignmentType Type
+        +Assignment()
+    }
+    class Submission{
+        +int Id
+        +Problem Problem
+        +string Code
+        +DateTime SubmittedTime
+        +Submission()
+    }
+    class SubmissionResult{
+        +int Id
+        +Submission Submission
+        +string StandardOutput
+        +String StandardError
+        +SubmissionResult()
+    }
+    class AssignmentSubmission{
+        +Guid Uid
+        +User Submitter
+        +Assignment Assignment
+        +List<Submission> SubmissionList
+        +AssignmentSubmissionStatus Status
+        +AssignmentSubmission()
+    }
+    class AssignmentSubmissionResult{
+        +Guid Uid
+        +AssignmentSubmission AssignmentSubmission
+        +List<SubmissionResult> SubmissionResultList
+        +AssignmentSubmissionResult()
+    }
+    class Judger{
+        -static string _StandardOutput
+        -static string _StandardError
+        +async static Task<SubmissionResult> RunCode()
+        +async static Task<SubmissionResult> Judge()
+        +async static Task<AssignmentSubmission> JudgeAssignment()
+        -static void Proc_Exited()
+        -static void Proc_OutputDataReceived()
+        -static void Proc_ErrorDataReceived()
+        -static void Clear()
+    }
+    class User{
+        +Guid Uid
+        +string FirstName
+        +string LastName
+        +string Email
+        +Role Role
+        +User()
+    }
+    List <|-- ProblemList: Inheritance
+    ProblemList <|-- Assignment: Inheritance
+    Submission --> Judger: Submit to a Judger
+    Judger -->  SubmissionResult: Return as the result
+    Problem <--> Tag:One to many
+    Problem <--> TestCase:One to many
+    Problem <--> Submission:One to many
+    ProblemList <--> Problem:One to many
+    Assignment <--> Problem:One to many
+    User <--> Assignment:Create
+    User <--> AssignmentSubmission:Create
+    AssignmentSubmission --> Judger: Submit to a Judger
+    Judger -->  AssignmentSubmissionResult: Return as the result

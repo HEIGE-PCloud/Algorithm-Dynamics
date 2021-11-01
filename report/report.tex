@@ -6,6 +6,8 @@
 \usepackage{graphicx}
 \usepackage{fontspec}
 \usepackage{tabulary}
+\usepackage{graphicx}
+\usepackage{pdfpages}
 \usetikzlibrary{shapes.geometric, arrows}
 \usemintedstyle{vs}
 \graphicspath{ {./images/} {./graphs/} }
@@ -63,7 +65,7 @@ For teachers, the software requires them to enter questions and test cases. A qu
 
 The program can be decomposed into several parts. Each part can be designed and maintained individually. Different components can interact with each other using custom APIs.
 
-\includegraphics[width=\linewidth]{decomposition}
+\includegraphics[width=\linewidth]{decomposition-analysis}
 
 \subsection{Thinking concurrently}
 
@@ -395,41 +397,23 @@ The judger can only simply compare the students' output with the expected output
 All the success criteria will first be tested through the unit tests created during the development. Then they will be tested and improved by me during the Alpha Testing stage. Finally, they will be tested by the stakeholders in the Beta Testing stage, and the evaluation will be based on their user experience and opinions.
 
 \chapter{Design}
+\section{Decomposition}
 
-\section{User interface design}
+% \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{decomposition-design.pdf}
+\includepdf[pages=-]{graphs/decomposition-design.pdf}
+
 
 \subsection{Navigation View}
 
-\begin{tikzpicture}
-      \draw (0,0) rectangle (10,10);
-      \draw (0,9) rectangle (3,10) node[pos=.5] {Home};
-      \draw (0,8) rectangle (3,9) node[pos=.5] {Problems};
-      \draw (0,7) rectangle (3,8) node[pos=.5] {Assignments};
-      \draw (0,6) rectangle (3,7) node[pos=.5] {Playground};
-      \draw (0,2) rectangle (3,6);
-      \draw (0,1) rectangle (3,2) node[pos=.5] {Account};
-      \draw (0,0) rectangle (3,1) node[pos=.5] {Settings};
-      \draw (3,0) rectangle (10,10) node[pos=.5] {Main frame};
-\end{tikzpicture}
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{NavigationView-Design}
 
 The Navigation View provides a global menu for the user to navigate between different pages in the software. There are six tabs in the navigation view, "Home", "Problems", "Assignments", "Playground", "Account", "Settings". By clicking on different tab, the main frame will display the corresponding page. The current selected tab will be highlighted.
 
 Users will be able to know where they are and navigate to another page by one click, which makes the program easier to use.
 
-\subsection{Home Page}
+\subsection{HomePage}
 
-\begin{tikzpicture}
-      \draw (0,0) rectangle (10,10);
-      \draw (0,0) rectangle (3,10) node[pos=.5] {Navigation View};
-      \draw (3,6) rectangle (10,10) node[pos=.5] {Background Image};
-      \draw (5,6) rectangle (10,7) node[pos=.5] {Algorithm Dynamics};
-      \draw (3.5,3) rectangle (5.5,5) node[pos=.5] {Random};
-      \draw (5.5,3) rectangle (7.5,5) node[pos=.5] {Import};
-      \draw (7.5,3) rectangle (9.5,5) node[pos=.5] {Playground};
-      \draw (3.5,1) rectangle (5.5,3) node[pos=.5] {Problems};
-      \draw (5.5,1) rectangle (7.5,3) node[pos=.5] {Assignments};
-      \draw (7.5,1) rectangle (9.5,3) node[pos=.5] {Account};
-\end{tikzpicture}
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{HomePage-Design}
 
 On the top of the home page, there will be a beautiful background image under the `Algorithm Dynamics' title. This makes the interface looks pretty. Let users have a good mood every time they open this software.
 
@@ -437,23 +421,138 @@ The bottom half of the home page will be filled with buttons link to different f
 
 \subsection{Problems Page}
 
-\begin{tikzpicture}
-      \draw (0,0) rectangle (10,10);
-      \draw (0,0) rectangle (3,10) node[pos=.5] {Navigation View};
-      
-\end{tikzpicture}
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{ProblemsPage-Design}
 
-\subsection{Assignments Page}
+\subsection{AssignmentsPage}
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{AssignmentsPage-Design}
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{AssignmentsStudentDetailsPage-Design}
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{AssignmentsTeacherDetailsPage-Design}
 
 \subsection{Playground}
 
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{PlaygroundPage-Design}
+
 \subsection{Account Page}
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{AccountPage-Design}
 
 \subsection{Settings Page}
 
-\subsection{Create Problem Page}
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{SettingsPage-Design}
+
+\subsection{Create New Problem Page}
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CreateNewProblemPage-Design}
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CreateNewProblemPage-Expand-Design}
 
 \subsection{Create Assignment Page}
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CreateNewAssignmentPage-Design}
+
+\subsection{Judger Module}
+
+\section{Decomposition}
+\section{Validation of inputs}
+Combine this section with User interface design
+\section{Algorithm design}
+\section{Data structure design}
+
+\subsection{Class design}
+
+I am taking an object-oriented approach to the design of the software. This is the class diagram for all classes.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{classDiagram}
+
+\subsubsection{\mintinline{text}{Tag}}
+
+A \mintinline{text}{Tag} is a label used to categorize a \mintinline{text}{Problem} or a \mintinline{text}{ProblemList}.
+
+\begin{tabulary}{\textwidth}{|l|l|L|}
+      \hline
+      Variable & Data type & Justification \\
+      \hline
+      \mintinline{text}{Id} & \mintinline{text}{int} & The \mintinline{text}{Id} is the local unique identifier for a \mintinline{text}{Tag}, it comes in handy when I need to store a \mintinline{text}{Tag} into the database. \\
+      \hline
+      \mintinline{text}{Name} & \mintinline{text}{string} & The \mintinline{text}{Name} of the \mintinline{text}{Tag} specifics the content of the \mintinline{text}{Tag}. I use \mintinline{text}{string} as the data type so a string of characters can be stored for its name. \\
+      \hline
+\end{tabulary}
+
+\subsubsection{\mintinline{text}{TestCase}}
+
+A \mintinline{text}{TestCase} is one set of test input and output, which will be used by the \mintinline{text}{Judger} to judge user's submission.
+
+\begin{tabulary}{\textwidth}{|l|l|L|}
+      \hline
+      Variable & Data type & Justification \\
+      \hline
+      \mintinline{text}{Id} & \mintinline{text}{int} & The \mintinline{text}{Id} is the local unique identifier for a \mintinline{text}{TestCase}, it comes in handy when I need to store a \mintinline{text}{TestCase} into the database. \\
+      \hline
+      \mintinline{text}{Input} & \mintinline{text}{String} & The \mintinline{text}{Input} will be feed to the user's submission code by the \mintinline{text}{Judger}. \\
+      \hline
+      \mintinline{text}{Output} & \mintinline{text}{string} & The expected output of the input. The \mintinline{text}{Judger} will compare user's output with the \mintinline{text}{Output} to judge whether user's code is correct. \\
+      \hline
+\end{tabulary}
+
+\subsubsection{\mintinline{text}{Problem}}
+
+The \mintinline{text}{Problem} is the core data object of this program. It is used to store and organize the data for each individual programming question.
+
+\begin{tabulary}{\textwidth}{|l|l|L|}
+      \hline
+      Variable & Data type & Justification \\
+      \hline
+      \mintinline{text}{Id} & \mintinline{text}{int} & The \mintinline{text}{Id} is the local unique identifier for a \mintinline{text}{Problem}, it comes in handy when I need to store a \mintinline{text}{Problem} into the database. \\
+      \hline
+      \mintinline{text}{Name} & \mintinline{text}{string} & The \mintinline{text}{Name} is a string contains the name of a \mintinline{text}{Problem}. \\
+      \hline
+      \mintinline{text}{Status} & \mintinline{text}{enum Status} & \mintinline{text}{Status} is an enumeration type containing 3 possible status: \mintinline{text}{Todo}, \mintinline{text}{Solved} and \mintinline{text}{Attempted}. This is used to collect user statistics data. I choose to use a custom enumeration type instead of some magic numbers to make the code more readable and easier to maintain. \\
+      \hline
+      \mintinline{text}{Difficulty} & \mintinline{text}{enum Difficulty} & \mintinline{text}{Difficulty} is an enumeration type containing 3 possible difficulties: \mintinline{text}{Easy}, \mintinline{text}{Medium} and \mintinline{text}{Hard}. This provdes a way for the user to search and select problems by their difficulties. \\
+      \hline
+      \mintinline{text}{TimeLimit} & \mintinline{text}{int} & \mintinline{text}{TimeLimit} sets the max time allowed for the user code to run in millisecond. When the running time exceed the \mintinline{text}{TimeLimit}, the running code will be killed and a Time Limit Exceed error will be recorded. This prevents infinite loop from using up all computing resources and rejects inefficient algorithms. \\
+      \hline
+      \mintinline{text}{MemoryLimit} & \mintinline{text}{int} & \mintinline{text}{MemoryLimit} sets the max memory allowed for the user's code to consume in bytes. When the memory usage exceed the memory limit, the running code will be killed and a Memory Limit Exceed Error will be recorded. This prevents incorrect code from using up all memory space and rejects inefficient algorithms. \\
+      \hline
+      \mintinline{text}{TestCases} & \mintinline{text}{List<TestCase>} & \mintinline{text}{TestCases} is a list containing all \mintinline{text}{TestCase} for the problem. A list is more appropriate than an array because it allows new \mintinline{text}{TestCase} to be added or remove existing ones during runtime. \\
+      \hline
+      \mintinline{text}{Tags} & \mintinline{text}{List<Tags>} & \mintinline{text}{Tags} is a list containing all \mintinline{text}{Tags} for a \mintinline{text}{Problem}. Similarly, I use a list for \mintinline{text}{Tags} so it can be added or removed during runtime. \\
+      \hline
+\end{tabulary}
+
+\subsubsection{ProblemList}
+
+A ProblemList is a list of problems, with a list of tags so the user can share a list of problems easily. It is also the parent of the Assignment and provides basic functions for it. The ProblemList is inheriate from the \mintinline{text}{List<Problem>} class, which is provded by the .NET 5 library. \mintinline{text}{List<Problem>} provides all basic functions for a list, such as add, remove, sort and find, so I don't need to reinvent the wheel. I choose a list instead of an array because the number of problmes inside the list will be changed during runtime, so a list is more appropriate for my use case.
+
+\begin{tabulary}{\textwidth}{|l|l|L|}
+      \hline
+      Variable & Data type & Justification \\
+      \hline
+      \mintinline{text}{Id} & \mintinline{text}{int} & This \mintinline{text}{Id} is the global unique identifier for a \mintinline{text}{ProblemList}, it comes in handy when I need to store a \mintinline{text}{ProblemList} into the database. \\
+      \hline
+      \mintinline{text}{Name} & \mintinline{text}{string} & The name is a string to store the name of the problem list. \\
+      \hline
+      \mintinline{text}{Description} & \mintinline{text}{string} & The description is a string to store the description of the problem list. \\
+      \hline
+      \mintinline{text}{Tags} & \mintinline{text}{List<Tag>} & \mintinline{text}{Tags} stores a list of \mintinline{text}{Tag} for the problem list. Users can add new \mintinline{text}{Tag} to a \mintinline{text}{ProblemList}, which allows easier searching. \\
+      \hline
+\end{tabulary}
+
+
+\begin{enumerate}
+      \item Tag: A tag is a label used to identify a problem.
+      \item Test case: A test case is one set of test input and output.
+      \item Problem: A problem is a programming question consists of problem description and test cases.
+      \item Problem list: A problem list is a list of problems. It allows to be searched, sorted, inserted new problems and deleted existing problems.
+      \item Assignment: An assignment is a problem list with due date and assignment descriptions.
+      \item Submission: A submission contains the submitted problem and the user code solution.
+      \item Submission result: A submission result contains the submission, the output of the submitted code and its result.
+      \item Judger: A judger takes in a submission, run the submitted code, create a submission result and return the result.
+\end{enumerate}
+
 
 \chapter{Development}
 

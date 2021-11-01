@@ -8,8 +8,9 @@ namespace Algorithm_Dynamics.Core.Models
 {
     public class Submission
     {
-        public Problem SubmittedProblem { get; set; }
-        public string UserCode { get; set; }
+        public int Id { get; set; }
+        public Problem Problem { get; set; }
+        public string Code { get; set; }
         public DateTime SubmittedTime { get; set; }
     }
 }

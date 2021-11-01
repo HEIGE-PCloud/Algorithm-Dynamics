@@ -22,5 +22,8 @@ for file in files:
         filename = file[:-4]
         input_file = f'{directory}/{filename}.mmd'
         output_file = f'{directory}/{filename}.png'
-        print(f'{command} -i {input_file} -o {output_file}')
         os.system(f'{command} -i {input_file} -o {output_file}')
+        output_file = f'{directory}/{filename}.svg'
+        os.system(f'{command} -i {input_file} -o {output_file}')
+        output_file = f'{directory}/{filename}.pdf'
+        os.system(f'{command} -i {input_file} -o {output_file} --pdfFit')
