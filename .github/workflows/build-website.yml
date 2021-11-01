@@ -14,7 +14,7 @@ jobs:
 
       - name: Build graphs
         run: |
-          npm install mermaid.cli
+          npm install @mermaid-js/mermaid-cli
           python report/graphs/build_graphs.py --command ./node_modules/.bin/mmdc
 
       - name: Build report
