@@ -14,8 +14,8 @@ jobs:
 
       - name: Build graphs
         run: |
-          npm install -g mermaid.cli
-          python report/graphs/build_graphs.py
+          npm install mermaid.cli
+          python report/graphs/build_graphs.py --command ./node_modules/.bin/mmdc
 
       - name: Build report
         uses: xu-cheng/latex-action@v2
