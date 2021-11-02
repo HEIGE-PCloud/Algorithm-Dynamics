@@ -123,8 +123,4 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Assets\node_modules\monaco-editor\esm\vs\language\" />
-  </ItemGroup>
 </Project>
