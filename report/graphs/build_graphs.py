@@ -21,9 +21,5 @@ for file in files:
     if file[-4:] == '.mmd':
         filename = file[:-4]
         input_file = f'{directory}/{filename}.mmd'
-        output_file = f'{directory}/{filename}.png'
-        os.system(f'{command} -i {input_file} -o {output_file}')
-        output_file = f'{directory}/{filename}.svg'
-        os.system(f'{command} -i {input_file} -o {output_file}')
         output_file = f'{directory}/{filename}.pdf'
         os.system(f'{command} -i {input_file} -o {output_file} --pdfFit')

@@ -6,7 +6,7 @@ graph LR
     UI --> NavigationView
     UI --> HomePage
     UI --> ProblemsPage
-    ProblemsPage ---> CreateNewProblemPage
+    ProblemsPage --> CreateNewProblemPage
     ProblemsPage --> CreateNewProblemListPage
     ProblemsPage --> SearchBox
     ProblemsPage --> ImportExportDialog
@@ -35,7 +35,7 @@ graph LR
     Judger --> RunCode
     Judger --> JudgeProblem
     Judger --> JudgeAssignment
-    AlgorithmDynamics ---> Database
+    AlgorithmDynamics --> Database
     Database --> AddData
     Database --> SearchData
     Database --> EditData
