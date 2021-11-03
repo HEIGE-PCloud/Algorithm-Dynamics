@@ -27,7 +27,7 @@ namespace Algorithm_Dynamics.Core.Models
             NotStarted,
             InProgress,
             Completed,
-            Overdue
+            OverDue
         }
         public enum AssignmentType
         {

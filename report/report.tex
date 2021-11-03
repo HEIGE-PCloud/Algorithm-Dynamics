@@ -520,6 +520,26 @@ The \mintinline{text}{Problem} is the core data object of this program. It is us
       \hline
 \end{tabulary}
 
+\subsubsection{\mintinline{text}{Submission}}
+
+A \mintinline{text}{Submission} is created when the user submits a piece of code solution to a \mintinline{text}{Problem}. The \mintinline{text}{Submission} will contain all the information including the time, the source code, the programming language selected and the corresponding \mintinline{text}{Problem}.
+
+\begin{tabulary}{\textwidth}{|l|l|L|}
+      \hline
+      Variable & Data type & Justification \\
+      \hline
+      \mintinline{text}{Id} & \mintinline{text}{int} & This \mintinline{text}{Id} is the local unique identifier for a \mintinline{text}{Submission}, it comes in handy when I need to store a \mintinline{text}{Submission} into the database. \\
+      \hline
+      \mintinline{text}{Problem} & \mintinline{text}{Problem} & The \mintinline{text}{Problem} contains the corresponding \mintinline{text}{Problem} of this \mintinline{text}{Submission}, which also contains the \mintinline{text}{TestCases} for the \mintinline{text}{Judger} to judge the \mintinline{text}{Submission}. Before storing a \mintinline{text}{Submission} into the database, this value needs to be normalized to the \mintinline{text}{Id} of that \mintinline{text}{Problem}. \\
+      \hline
+      \mintinline{text}{Code} & \mintinline{text}{string} & \mintinline{text}{Code} stores the submitted code, which will be executed and judged by the \mintinline{text}{Judger}. \\
+      \hline
+      \mintinline{text}{SubmittedTime} & \mintinline{text}{DateTime} & \mintinline{text}{SubmittedTime} stores the time the \mintinline{text}{Submission} is created. Instead of using a \mintinline{text}{string} or an \mintinline{text}{int} value, I decide to use the native data type \mintinline{text}{DateTime} provided by C\#, which makes it easier to process date time, and prevent all formating issues. \\
+      \hline
+      \mintinline{text}{Language} & \mintinline{text}{enum Language} & \mintinline{text}{Language} stores the programming language selected by the user, so the \mintinline{text}{Judger} knows how to run the code.\\
+      \hline
+\end{tabulary}
+
 \subsubsection{\mintinline{text}{ProblemList}}
 
 A \mintinline{text}{ProblemList} is a list of \mintinline{text}{Problem}, with a list of \mintinline{text}{Tags} so the user can share a list of problems easily. It is also the parent of \mintinline{text}{Assignment} and provides basic functions for it. The \mintinline{text}{ProblemList} is inheriate from the \mintinline{text}{List<Problem>} class, which is provded by the .NET 5 library. \mintinline{text}{List<Problem>} provides all basic functions for a list, such as add, remove, sort and find, so I don't need to reinvent the wheel. I choose a list instead of an array because the number of \mintinline{text}{Problem} inside the list will be changed during runtime, so a list is more appropriate for my use case.
@@ -546,24 +566,21 @@ An \mintinline{text}{Assignment} is a \mintinline{text}{ProblemList} with descri
       \hline
       Variable & Data type & Justification \\
       \hline
-      \mintinline{text}{Uid} & \mintinline{text}{Guid} & The \mintinline{text}{Assignment} will use a \mintinline{text}{Guid} value for its \mintinline{text}{Uid} instead of a normal \mintinline{text}{int} value to ensure the \mintinline{text}{Uid} is unique globally. So when the user import an \mintinline{text}{Assignment} into their database, the \mintinline{text}{Uid} will not conflict with any existing values, and it will not be changed (Unlike a \mintinline{text}{ProblemList}, for which will be assigned a new \mintinline{text}{Id} when importing). The \mintinline{text}{Uid} will be referenced by the \mintinline{text}{AssignmentSubmission} as well. \\
+      \mintinline{text}{Uid} & \mintinline{text}{Guid} & The \mintinline{text}{Assignment} will use a \mintinline{text}{Guid} value for its \mintinline{text}{Uid} instead of a normal \mintinline{text}{int} value to ensure the \mintinline{text}{Uid} is unique globally. So when the user import an \mintinline{text}{Assignment} into their database, the \mintinline{text}{Uid} will not conflict with any existing values, and it will not be changed (Unlike a \mintinline{text}{ProblemList}, for which will be assigned a new \mintinline{text}{Id} when importing). The \mintinline{text}{Uid} will be referenced by the \mintinline{text}{AssignmentSubmission} so the \mintinline{text}{Judger} will be able to know which \mintinline{text}{Assignment} it is judging. \\
       \hline
-      \mintinline{text}{Name} & \mintinline{text}{string} & The name is a string to store the name of the \mintinline{text}{Assignment}. \\
+      \mintinline{text}{Name} & \mintinline{text}{string} & The \mintinline{text}{Name} is a \mintinline{text}{string} to store the name of the \mintinline{text}{Assignment}. \\
       \hline
-      \mintinline{text}{DueDate} & \mintinline{text}{DateTime} & The \mintinline{text}{DueDate} stores the time for the due date. \\
+      \mintinline{text}{DueDate} & \mintinline{text}{DateTime} & The \mintinline{text}{DueDate} stores the time for the due date of the \mintinline{text}{Assignment}. Instead of using a \mintinline{text}{string} or an \mintinline{text}{int} value, I decide to use the native data type \mintinline{text}{DateTime} provided by C\#, which makes it easier to process date time, and prevent all formating issues. \\
       \hline
       \mintinline{text}{Description} & \mintinline{text}{string} & The description is a string to store the description of the \mintinline{text}{Assignment}. \\
       \hline
-      \mintinline{text}{Tags} & \mintinline{text}{List<Tag>} & \mintinline{text}{Tags} stores a list of \mintinline{text}{Tag} for the problem list. Users can add new \mintinline{text}{Tag} to a \mintinline{text}{ProblemList}, which allows easier searching. \\
+      \mintinline{text}{Status} & \mintinline{text}{enum Status} & \mintinline{text}{Status} is an enumeration type containing 4 possible status for a source \mintinline{text}{Assignment}: \mintinline{text}{Draft}, \mintinline{text}{Scheduled}, \mintinline{text}{Published} and \mintinline{text}{Assigned} for the teacher to manage the lifecycle of an \mintinline{text}{Assignment}. For a distributed \mintinline{text}{Assignment}, there are 4 possible \mintinline{text}{Status}, \mintinline{text}{NotStarted}, \mintinline{text}{InProgress}, \mintinline{text}{Completed} and \mintinline{text}{OverDue}, which helps the student to manage the lifecycle of an \mintinline{text}{Assignment}. I choose to use a custom enumeration type instead of some magic numbers to make the code more readable and easier to maintain.\\
+      \hline
+      \mintinline{text}{Type} & \mintinline{text}{enum Type} & \mintinline{text}{Type} is an enumeration type containing 2 possible types, \mintinline{text}{Source} or \mintinline{text}{Copy}. It is used to manage the distribution of an \mintinline{text}{Assignment} as described above. \\
       \hline
 \end{tabulary}
 
 \begin{enumerate}
-      \item Tag: A tag is a label used to identify a problem.
-      \item Test case: A test case is one set of test input and output.
-      \item Problem: A problem is a programming question consists of problem description and test cases.
-      \item Problem list: A problem list is a list of problems. It allows to be searched, sorted, inserted new problems and deleted existing problems.
-      \item Assignment: An assignment is a problem list with due date and assignment descriptions.
       \item Submission: A submission contains the submitted problem and the user code solution.
       \item Submission result: A submission result contains the submission, the output of the submitted code and its result.
       \item Judger: A judger takes in a submission, run the submitted code, create a submission result and return the result.
