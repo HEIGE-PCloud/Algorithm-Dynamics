@@ -23,7 +23,7 @@
 \clearpage
 \chapter{Analysis}
 
-\section{Problem Identification}
+\section{Problem identification}
 
 A Level Computer Science students need to learn many algorithms and data structures during the course. In the final exam, they need to write pseudocode to solve computational questions. Many students find it is hard to achieve a high score on those questions due to the lack of efficient training. The general method used by students to learn and revise for Computer Science is to attempt and self-mark past paper questions. This works well for ordinary questions. However, for the algorithm questions, different students may produce completely different code solutions. This makes their self-marking very unreliable. It is also too much work for the teacher to mark their solutions one by one. So, in the end, students do not know whether they get things right, and teachers do not know how the students perform and how they can help, especially in this lockdown online learning era where no direct contact between teachers and students is possible.
 
@@ -460,7 +460,11 @@ The bottom half of the home page will be filled with buttons link to different f
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CreateNewAssignmentPage-Design}
 
-\subsection{Judger Module}
+\subsection{Judger module}
+
+\subsection{Database module}
+
+\subsection{REST API module}
 
 \section{Algorithm design}
 
@@ -498,6 +502,14 @@ In this algorithm, I first create an empty list to store the result. Then I spli
 Next, I use two nested loops to perform linear search on each splitted keyword. I choose to use linear search here because the list is not sorted, so only it will work. The overall time complexity here is $O(nm)$ where $n$ is the length of the \mintinline{text}{sourceList} and $m$ is the length of \mintinline{text}{splitKeyword}. This is not very fast, but in real word use cases, both $n$ and $m$ will be very small (less than 1000), so this algorithm will be fast enough to handle most of the cases. The increase in complexity brings a better searching experience. In this way, the algorithm will be able to match keywords like \mintinline{text}{prob} to result \mintinline{text}{A Long Problem List}, while normal linear search will not be able to do this.
 
 At the end, if no item is found, a not found notice is added to the list, which will be displayed to the user.
+
+\subsection{Judger RunCode Algorithm}
+
+\subsection{Judger Judge Problem Algorithm}
+
+\subsection{Judger Judge Assignment Algorithm}
+
+
 
 \section{Data structure design}
 
@@ -629,6 +641,7 @@ An \mintinline{text}{Assignment} is a \mintinline{text}{ProblemList} with descri
     \item Submission result: A submission result contains the submission, the output of the submitted code and its result.
     \item Judger: A judger takes in a submission, run the submitted code, create a submission result and return the result.
 \end{enumerate}
+\subsection{Database design}
 
 \section{Development testing}
 
