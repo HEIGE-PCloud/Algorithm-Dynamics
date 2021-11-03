@@ -131,7 +131,8 @@ dmypy.json
 .pyre/
 
 # PDF
-*.pdf
+report.pdf
+report/graphs/*.pdf
 
 # LaTeX
 _minted-report/
