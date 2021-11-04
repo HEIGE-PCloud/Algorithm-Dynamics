@@ -23,11 +23,11 @@
         document.body.style.overflow = 'hidden';
         require(['vs/editor/editor.main'], function () {
             window.chrome.webview.postMessage("init");
-            window.chrome.webview.addEventListener('message', run);
+            window.chrome.webview.addEventListener('message', init);
         });
 
-        function run(event) {
-            window.chrome.webview.removeEventListener('message', run);
+        function init(event) {
+            window.chrome.webview.removeEventListener('message', init);
             window.editor = monaco.editor.create(document.getElementById('container'), window.config);
             window.editor.getModel().onDidChangeContent((e) => {
                 window.chrome.webview.postMessage(window.editor.getValue());
@@ -40,6 +40,7 @@
             window.chrome.webview.addEventListener('message', (event) => {
                 let data = event.data;
                 monaco.editor.setTheme(data["theme"]);
+                monaco.editor.setModelLanguage(window.editor.getModel(), data["language"])
             })
             window.chrome.webview.postMessage("loaded");
         }

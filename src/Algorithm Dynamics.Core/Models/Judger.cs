@@ -3,55 +3,53 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using System.Threading;
+using System.IO;
 using System.Threading.Tasks;
+using System.Threading;
 using System.Collections.ObjectModel;
 namespace Algorithm_Dynamics.Core.Models
 {
     public class Judger
     {
+        public static string SourceCodeFilePath { get; set; }
+        public static string SourceCodeFolderPath { get; set; }
+        public static string ExecutableFilePath { get; set; }
         private static string _StandardOutput;
         private static string _StandardError;
-        private static LanguageConfig _PythonLanguageConfig = new(false, "python", new Collection<string>{"1"});
-        private static Dictionary<Language, LanguageConfig> _LanguageConfigDictionary = new()
+        private static string _CompilationOutput;
+        private static string _CompilationError;
+        private async static Task<int> Compile(Language language)
         {
-            {Language.Python, _PythonLanguageConfig}
-        };
-        public async static Task<SubmissionResult> RunCode(string UserCode, string Input, Language language)
-        {
-            var languageConfig = _LanguageConfigDictionary[language];
-            if (languageConfig.NeedCompile)
+            Process CompileProcess = new()
             {
-                // Write UserCode to file
-                // var fileName = $"{Guid.NewGuid()}.{languageConfig.FileExtension}";
-                // var filePath = $"{languageConfig.FilePath}{fileName}";
-                // FileHelper.WriteFile(filePath, UserCode);
-                // Compile
-                Process CompileProcess = new()
+                StartInfo = new ProcessStartInfo
                 {
-                    StartInfo = new ProcessStartInfo
-                    {
-                        FileName = languageConfig.CompileCommand,
-                        Arguments = languageConfig.CompileArguments,
-                        UseShellExecute = false,
-                        CreateNoWindow = true,
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true,
-                    }
-                };
-                // Timer CompileTimer = new Timer(delegate { CompileProcess.Kill(); }, null, 10000, Timeout.Infinite);
-                CompileProcess.Start();
-                await CompileProcess.WaitForExitAsync();
-            }
-            // clear _standardInput and _standardOutput
-            clear();
-            SubmissionResult result = new();
+                    FileName = language.CompileCommand.Replace("{SourceCodeFilePath}", SourceCodeFilePath).Replace("{ExecutableFilePath}", ExecutableFilePath),
+                    Arguments = language.CompileArguments.Replace("{SourceCodeFilePath}", SourceCodeFilePath).Replace("{ExecutableFilePath}", ExecutableFilePath),
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                },
+                EnableRaisingEvents = true
+            };
+            // Timer CompileTimer = new Timer(delegate { CompileProcess.Kill(); }, null, 10000, Timeout.Infinite);
+            CompileProcess.OutputDataReceived += new DataReceivedEventHandler(CompileProcess_OutputDataReceived);
+            CompileProcess.ErrorDataReceived += new DataReceivedEventHandler(CompileProcess_ErrorDataReceived);
+            CompileProcess.Start();
+            CompileProcess.BeginOutputReadLine();
+            CompileProcess.BeginErrorReadLine();
+            await CompileProcess.WaitForExitAsync();
+            return CompileProcess.ExitCode;
+        }
+        private async static Task<int> Execute(string Input, Language language)
+        {
             Process proc = new()
             {
                 StartInfo = new ProcessStartInfo
                 {
-                    FileName = "python",
-                    ArgumentList = { "-c", $"{UserCode}" },
+                    FileName = language.RunCommand.Replace("{SourceCodeFilePath}", SourceCodeFilePath).Replace("{ExecutableFilePath}", ExecutableFilePath),
+                    Arguments = language.RunArguments.Replace("{SourceCodeFilePath}", SourceCodeFilePath).Replace("{ExecutableFilePath}", ExecutableFilePath),
                     UseShellExecute = false,
                     RedirectStandardInput = true,
                     RedirectStandardOutput = true,
@@ -70,11 +68,49 @@ namespace Algorithm_Dynamics.Core.Models
             proc.StandardInput.WriteLine(Input);
             await proc.WaitForExitAsync();
             proc.WaitForExit();
+            return proc.ExitCode;
+        }
+        public async static Task<SubmissionResult> RunCode(string UserCode, string Input, Language language)
+        {
+            clear();
+            SubmissionResult result = new();
+            await File.WriteAllTextAsync(SourceCodeFilePath, UserCode);
+            if (language.NeedCompile)
+            {
+                if (await Compile(language) != 0)
+                {
+                    result.StandardOutput = _CompilationOutput;
+                    result.StandardError = _CompilationError;
+                    result.UserResultCode = SubmissionResult.ResultCode.COMPILE_ERROR;
+                    return result;
+                }
+            }
+            int exitCode = await Execute(Input, language);
             result.StandardOutput = _StandardOutput;
             result.StandardError = _StandardError;
-            result.UserResultCode = SubmissionResult.ResultCode.SUCCESS;
+            if (exitCode == 0)
+            {
+                result.UserResultCode = SubmissionResult.ResultCode.SUCCESS;
+            }
             return result;
         }
+
+        private static void CompileProcess_ErrorDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(e.Data))
+            {
+                _CompilationError += e.Data + '\n';
+            }
+        }
+
+        private static void CompileProcess_OutputDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(e.Data))
+            {
+                _CompilationOutput += e.Data + '\n';
+            }
+        }
+
         private static void Proc_Exited(object sender, EventArgs e)
         {
 
@@ -98,29 +134,8 @@ namespace Algorithm_Dynamics.Core.Models
         {
             _StandardOutput = "";
             _StandardError = "";
+            _CompilationOutput = "";
+            _CompilationError = "";
         }
-        private class LanguageConfig
-        {
-            public bool NeedCompile = false;
-            public string CompileCommand = "";
-            public string RunCommand = "";
-            public string FileName = "";
-            public string FileExtension = "";
-            public string CompileArguments = "";
-            public Collection<string> RunArguments = new();
-            public LanguageConfig(bool needCompile, string compileCommand, string runCommand)
-            {
-                NeedCompile = needCompile;
-                CompileCommand = compileCommand;
-                RunCommand = runCommand;
-            }
-            public LanguageConfig(bool needCompile, string fileName, Collection<string> arguments)
-            {
-                NeedCompile = needCompile;
-                FileName = fileName;
-                Arguments = arguments;
-            }
-        }
-
     }
 }
