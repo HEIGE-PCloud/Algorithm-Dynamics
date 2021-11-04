@@ -5,15 +5,45 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-
+using System.Collections.ObjectModel;
 namespace Algorithm_Dynamics.Core.Models
 {
     public class Judger
     {
         private static string _StandardOutput;
         private static string _StandardError;
-        public async static Task<SubmissionResult> RunCode(string UserCode, string Input)
+        private static LanguageConfig _PythonLanguageConfig = new(false, "python", new Collection<string>{"1"});
+        private static Dictionary<Language, LanguageConfig> _LanguageConfigDictionary = new()
         {
+            {Language.Python, _PythonLanguageConfig}
+        };
+        public async static Task<SubmissionResult> RunCode(string UserCode, string Input, Language language)
+        {
+            var languageConfig = _LanguageConfigDictionary[language];
+            if (languageConfig.NeedCompile)
+            {
+                // Write UserCode to file
+                // var fileName = $"{Guid.NewGuid()}.{languageConfig.FileExtension}";
+                // var filePath = $"{languageConfig.FilePath}{fileName}";
+                // FileHelper.WriteFile(filePath, UserCode);
+                // Compile
+                Process CompileProcess = new()
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = languageConfig.CompileCommand,
+                        Arguments = languageConfig.CompileArguments,
+                        UseShellExecute = false,
+                        CreateNoWindow = true,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                    }
+                };
+                // Timer CompileTimer = new Timer(delegate { CompileProcess.Kill(); }, null, 10000, Timeout.Infinite);
+                CompileProcess.Start();
+                await CompileProcess.WaitForExitAsync();
+            }
+            // clear _standardInput and _standardOutput
             clear();
             SubmissionResult result = new();
             Process proc = new()
@@ -26,7 +56,7 @@ namespace Algorithm_Dynamics.Core.Models
                     RedirectStandardInput = true,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
-                    CreateNoWindow = true
+                    CreateNoWindow = true,
                 },
                 EnableRaisingEvents = true
             };
@@ -69,5 +99,28 @@ namespace Algorithm_Dynamics.Core.Models
             _StandardOutput = "";
             _StandardError = "";
         }
+        private class LanguageConfig
+        {
+            public bool NeedCompile = false;
+            public string CompileCommand = "";
+            public string RunCommand = "";
+            public string FileName = "";
+            public string FileExtension = "";
+            public string CompileArguments = "";
+            public Collection<string> RunArguments = new();
+            public LanguageConfig(bool needCompile, string compileCommand, string runCommand)
+            {
+                NeedCompile = needCompile;
+                CompileCommand = compileCommand;
+                RunCommand = runCommand;
+            }
+            public LanguageConfig(bool needCompile, string fileName, Collection<string> arguments)
+            {
+                NeedCompile = needCompile;
+                FileName = fileName;
+                Arguments = arguments;
+            }
+        }
+
     }
 }
