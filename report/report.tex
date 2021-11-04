@@ -699,8 +699,6 @@ The settings will be stored in a JSON file.
 
 \subsubsection{Tag Table}
 
-The \mintinline{text}{Tag} has a many-to-many relation with the \mintinline{text}{Problem}. A \mintinline{text}{Problem} can have multiple \mintinline{text}{Tags} and a \mintinline{text}{Tag} can be assigned to multiple \mintinline{text}{Problems}. So a link table is required to normalize the data.
-
 \begin{tabulary}{\textwidth}{|L|L|}
     \hline
     Id (Auto increment) & Name \\
@@ -717,11 +715,16 @@ CREATE TABLE Tag
 )
 \end{minted}
 
+\subsubsection{ProblemTag Table}
+
+The \mintinline{text}{Tag} has a many-to-many relation with the \mintinline{text}{Problem}. A \mintinline{text}{Problem} can have multiple \mintinline{text}{Tags} and a \mintinline{text}{Tag} can be assigned to multiple \mintinline{text}{Problems}. So a link table is required to normalize the data.
+
 \begin{tabulary}{\textwidth}{|L|L|L|}
     \hline
     Id (Auto increment) & ProblemId & TagId \\
     \hline
     1 & 1 & 1 \\
+    \hline
     2 & 1 & 2 \\
     \hline
 \end{tabulary}

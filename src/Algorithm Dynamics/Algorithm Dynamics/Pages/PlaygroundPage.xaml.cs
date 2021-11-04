@@ -7,11 +7,12 @@ using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
+using Windows.Storage;
 
 namespace Algorithm_Dynamics.Pages
 {
     /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
+    /// PlaygroundPage
     /// </summary>
     public sealed partial class PlaygroundPage : Page
     {
@@ -21,7 +22,7 @@ namespace Algorithm_Dynamics.Pages
         
         public PlaygroundPage()
         {
-            this.InitializeComponent();
+            InitializeComponent();
             InitializeAsync();
         }
         async void InitializeAsync()
@@ -53,15 +54,22 @@ namespace Algorithm_Dynamics.Pages
         }
         private async void RunCodeButton_Click(object sender, RoutedEventArgs e)
         {
+            // Disable UI Elements
             RunCodeButton.IsEnabled = false;
             RunCodeProgressRing.IsActive = true;
+            
+            // Empty Legacy outputs
             OutputTextBlock.Text = "";
             ErrorTextBlock.Text = "";
             StandardOutput.Clear();
-            StandardError.Clear();
-            SubmissionResult result = await Judger.RunCode(Code, InputTextBlock.Text);
+            StandardError.Clear();;
+
+            SubmissionResult result = await Judger.RunCode(Code, InputTextBlock.Text, LanguageConfig.Cpp);
+
+            // Enable UI Elemnts
             RunCodeButton.IsEnabled = true;
             RunCodeProgressRing.IsActive = false;
+            // Update output
             OutputTextBlock.Text = result.StandardOutput;
             ErrorTextBlock.Text = result.StandardError;
         }
@@ -74,7 +82,7 @@ namespace Algorithm_Dynamics.Pages
         public EditorSetting()
         {
             theme = "vs-dark";
-            language = "python";
+            language = "cpp";
             value = "print(\"Hello world\")";
         }
     }

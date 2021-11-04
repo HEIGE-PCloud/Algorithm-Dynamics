@@ -1,5 +1,8 @@
 ﻿using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Algorithm_Dynamics.Core.Models;
+using Windows.Storage;
+using System;
+
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -27,8 +30,18 @@ namespace Algorithm_Dynamics
         /// <param name="args">Details about the launch request and process.</param>
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
+            PrepareSourceCodeFile();
             m_window = new MainWindow();
             m_window.Activate();
+        }
+
+        private async void PrepareSourceCodeFile()
+        {
+            StorageFolder TemporaryFolder = ApplicationData.Current.TemporaryFolder;
+            StorageFile SourceCodeFile = await TemporaryFolder.CreateFileAsync("sol.txt", CreationCollisionOption.ReplaceExisting);
+            Judger.SourceCodeFilePath = SourceCodeFile.Path;
+            Judger.SourceCodeFolderPath = TemporaryFolder.Path;
+            Judger.ExecutableFilePath = SourceCodeFile.Path.Replace("sol.txt", "sol.exe");
         }
 
         internal Window m_window;
