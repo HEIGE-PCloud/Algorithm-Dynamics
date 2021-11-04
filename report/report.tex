@@ -497,6 +497,10 @@ The AssignmentPage is where the user interact with their assignments. For studen
 
 \subsection{Database module}
 
+Because this software requires many complex relational data, a relational database is needed to store all the data. Since the software runs locally, and every user will have different data, instead of a central SQL Server, a local SQL Database engine is required.
+
+I choose to use SQLite to power this software. It is a small, self-contained, high-reliability, full-featured SQL Database engine, which will be enough to handle all the data storing and querying requests. Details about the desgin of the database will be described in the Data structure design section.
+
 \subsection{REST API module}
 
 \section{Algorithm design}
@@ -505,7 +509,7 @@ The AssignmentPage is where the user interact with their assignments. For studen
 
 This algorithm will be used to power all the search boxes in the software. It will be packed into a function, taking in a list of item and the searching keyword input by the user, returning a list of results. To make the software easy to use, instead of simply using a linear search and returning all matching results, the algorithm will perform some fuzzy searching, so even the word is not typed in completely, matching results will be returned.
 
-\begin{minted}[linenos,tabsize=2,breaklines]{text}
+\begin{minted}[linenos,tabsize=4,breaklines]{text}
 function search(List<string> sourceList, string keyword)
     // Create an empty list to store the results
     resultList = new List<string>()
@@ -538,23 +542,19 @@ At the end, if no item is found, a not found notice is added to the list, which 
 
 \subsection{Judger RunCode Algorithm}
 
-This algorithm is designed for the \mintinline{text}{Judger} to run a piece of code, pass input to the code and receive all the output and error. This is the basic function of the \mintinline{text}{Judger} and further judging will all based on this algorithm. An async function will be used so it will not block the main UI thread. It takes three input, \mintinline{text}{UserCode} for the code to be executed, \mintinline{text}{Input} for the input data, and \mint[]{text}{language} for the programming language. There are two types of programming languages, interpreted programming languages and complied programming languages, the procedure to run them is quite different, so I need to handle them separately. The configuration for each language is stored as \mintinline{text}{LanguageConfig}.
+This algorithm is designed for the \mintinline{text}{Judger} to run a piece of code, pass input to the code and receive all the output and error. This is the basic function of the \mintinline{text}{Judger} and further judging will all based on this algorithm. An async function will be used so it will not block the main UI thread. It takes three input, \mintinline{text}{UserCode} for the code to be executed, \mintinline{text}{Input} for the input data, and TODO for the programming language. There are two types of programming languages, interpreted programming languages and complied programming languages, the procedure to run them is quite different, so I need to handle them separately. The configuration for each language is stored as \mintinline{text}{LanguageConfig}.
 
 
-\begin{minted}[linenos,tabsize=2,breaklines]{text}
+\begin{minted}[linenos,tabsize=4,breaklines]{text}
 async function RunCode(string UserCode, string Input, Language language)
 
 
 endfunction
 \end{minted}
 
-
-
 \subsection{Judger Judge Problem Algorithm}
 
 \subsection{Judger Judge Assignment Algorithm}
-
-
 
 \section{Data structure design}
 
@@ -566,7 +566,7 @@ I am taking an object-oriented approach to the design of the software. This is t
 
 \subsubsection{\mintinline{text}{Tag}}
 
-A \mintinline{text}{Tag} is a label used to categorize a \mintinline{text}{Problem} or a \mintinline{text}{ProblemList}.
+A \mintinline{text}{Tag} is a label used to categorize a \mintinline{text}{Problem}.
 
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
@@ -604,7 +604,7 @@ The \mintinline{text}{Problem} is the core data object of this program. It is us
     \hline
     Variable & Data type & Justification \\
     \hline
-    \mintinline{text}{Id} & \mintinline{text}{int} & The \mintinline{text}{Id} is the local unique identifier for a \mintinline{text}{Problem}, it comes in handy when I need to store a \mintinline{text}{Problem} into the database. \\
+    \mintinline{text}{Id} & \mintinline{text}{int} & The \mintinline{text}{Id} is the local unique identifier for a \mintinline{text}{Problem}, it comes in handy when I need to store a \mintinline{text}{Problem} into the database. When exporting a \mintinline{text}{Problem}, the \mintinline{text}{Id} will not be exported. Instead, a new \mintinline{text}{Id} is given when the other user imports the \mintinline{text}{Problem}. \\
     \hline
     \mintinline{text}{Name} & \mintinline{text}{string} & The \mintinline{text}{Name} is a string contains the name of a \mintinline{text}{Problem}. \\
     \hline
@@ -624,13 +624,13 @@ The \mintinline{text}{Problem} is the core data object of this program. It is us
 
 \subsubsection{\mintinline{text}{Submission}}
 
-A \mintinline{text}{Submission} is created when the user submits a piece of code solution to a \mintinline{text}{Problem}. The \mintinline{text}{Submission} will contain all the information including the time, the source code, the programming language selected and the corresponding \mintinline{text}{Problem}.
+A \mintinline{text}{Submission} is created when the user submits a code solution to the \mintinline{text}{Judger}. The \mintinline{text}{Submission} will contain all the information including the time, the source code, the programming language selected and the corresponding \mintinline{text}{Problem} for the \mintinline{text}{Judger} to judge.
 
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
     Variable & Data type & Justification \\
     \hline
-    \mintinline{text}{Id} & \mintinline{text}{int} & This \mintinline{text}{Id} is the local unique identifier for a \mintinline{text}{Submission}, it comes in handy when I need to store a \mintinline{text}{Submission} into the database. \\
+    \mintinline{text}{Id} & \mintinline{text}{int} & This \mintinline{text}{Id} is the local unique identifier for a \mintinline{text}{Submission}, it comes in handy when I need to store a \mintinline{text}{Submission} into the database. When exporting a \mintinline{text}{ProblemList}, the \mintinline{text}{Id} will not be exported. Instead, a new \mintinline{text}{Id} is given when the other user imports the \mintinline{text}{ProblemList}. \\
     \hline
     \mintinline{text}{Problem} & \mintinline{text}{Problem} & The \mintinline{text}{Problem} contains the corresponding \mintinline{text}{Problem} of this \mintinline{text}{Submission}, which also contains the \mintinline{text}{TestCases} for the \mintinline{text}{Judger} to judge the \mintinline{text}{Submission}. Before storing a \mintinline{text}{Submission} into the database, this value needs to be normalized to the \mintinline{text}{Id} of that \mintinline{text}{Problem}. \\
     \hline
@@ -655,8 +655,6 @@ A \mintinline{text}{ProblemList} is a list of \mintinline{text}{Problem}, with a
     \mintinline{text}{Name} & \mintinline{text}{string} & The name is a string to store the name of the problem list. \\
     \hline
     \mintinline{text}{Description} & \mintinline{text}{string} & The description is a string to store the description of a \mintinline{text}{ProblemList}. \\
-    \hline
-    \mintinline{text}{Tags} & \mintinline{text}{List<Tag>} & \mintinline{text}{Tags} stores a list of \mintinline{text}{Tag} for the \mintinline{text}{ProblemList}. Users can add new \mintinline{text}{Tag} to a \mintinline{text}{ProblemList}, which allows easier searching. \\
     \hline
 \end{tabulary}
 
@@ -689,7 +687,76 @@ An \mintinline{text}{Assignment} is a \mintinline{text}{ProblemList} with descri
 
 \subsection{Settings design}
 
+The settings will be stored in a JSON file.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{json}
+{
+    "AppBackgroundRequestedTheme": "Light/Dark/System",
+}
+\end{minted}
+
 \subsection{Database design}
+
+\subsubsection{Tag Table}
+
+The \mintinline{text}{Tag} has a many-to-many relation with the \mintinline{text}{Problem}. A \mintinline{text}{Problem} can have multiple \mintinline{text}{Tags} and a \mintinline{text}{Tag} can be assigned to multiple \mintinline{text}{Problems}. So a link table is required to normalize the data.
+
+\begin{tabulary}{\textwidth}{|L|L|}
+    \hline
+    Id (Auto increment) & Name \\
+    \hline
+    1 & Tag1 \\
+    \hline
+\end{tabulary}
+
+\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+CREATE TABLE Tag
+(
+    PRIMARY KEY(Id) INTEGER NOT NULL AUTO_INCREMENT,
+    Name TEXT NOT NULL
+)
+\end{minted}
+
+\begin{tabulary}{\textwidth}{|L|L|L|}
+    \hline
+    Id (Auto increment) & ProblemId & TagId \\
+    \hline
+    1 & 1 & 1 \\
+    2 & 1 & 2 \\
+    \hline
+\end{tabulary}
+
+\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+CREATE TABLE ProblemTag
+(
+    PRIMARY KEY(Id) INTEGER NOT NULL AUTO_INCREMENT,
+    FOREIGN KEY (ProblemId) REFERENCES Problem(Id),
+    FOREIGN KEY (TagId) REFERENCES Tag(Id),
+)
+\end{minted}
+
+\subsubsection{TestCase Table}
+
+The \mintinline{text}{TestCase} has a many-to-one relation to the \mintinline{text}{Problem}, one \mintinline{text}{Problem} can have multiple \mintinline{text}{TestCase} while one \mintinline{text}{TestCase} can only belong to one \mintinline{text}{Problem}. So, a foreign key \mintinline{text}{ProblemId} is enabled for the \mintinline{text}{TestCase} to store its corresponding \mintinline{text}{Problem}.
+
+\begin{tabulary}{\textwidth}{|L|L|L|L|L|}
+    \hline
+    Id (Auto increment) & Input & Output & IsExample & ProblemId \\
+    \hline
+    1 & ``Input1'' & ``Output1'' & true & 1 \\
+    \hline
+\end{tabulary}
+
+\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+CREATE TABLE TestCase
+(
+    PRIMARY KEY(Id) INTEGER NOT NULL AUTO_INCREMENT,
+    Input TEXT NOT NULL,
+    Output TEXT NOT NULL,
+    IsExample INTEGER NOT NULL,
+    FOREIGN KEY (ProblemId) REFERENCES Problem(Id)
+)
+\end{minted}
 
 \subsection{Input Export design}
 
@@ -711,7 +778,7 @@ An \mintinline{text}{Assignment} is a \mintinline{text}{ProblemList} with descri
 
 TODO: testing plan
 
-\begin{tabulary}{\textwidth}{|l|l|L|}
+\begin{tabulary}{\textwidth}{|L|L|L|}
     \hline
     Test input & Expect output & Justification \\
     \hline
@@ -721,7 +788,7 @@ TODO: testing plan
 
 TODO: testing plan
 
-\begin{tabulary}{\textwidth}{|l|l|L|}
+\begin{tabulary}{\textwidth}{|L|L|L|}
     \hline
     Test input & Expect output & Justification \\
     \hline
@@ -731,7 +798,7 @@ TODO: testing plan
 
 TODO: testing plan
 
-\begin{tabulary}{\textwidth}{|l|l|L|}
+\begin{tabulary}{\textwidth}{|L|L|L|}
     \hline
     Test input & Expect output & Justification \\
     \hline
@@ -741,7 +808,7 @@ TODO: testing plan
 
 TODO: testing plan
 
-\begin{tabulary}{\textwidth}{|l|l|L|}
+\begin{tabulary}{\textwidth}{|L|L|L|}
     \hline
     Test input & Expect output & Justification \\
     \hline
@@ -751,7 +818,7 @@ TODO: testing plan
 
 TODO: testing plan
 
-\begin{tabulary}{\textwidth}{|l|l|L|}
+\begin{tabulary}{\textwidth}{|L|L|L|}
     \hline
     Test input & Expect output & Justification \\
     \hline
@@ -761,7 +828,7 @@ TODO: testing plan
 
 TODO: testing plan
 
-\begin{tabulary}{\textwidth}{|l|l|L|}
+\begin{tabulary}{\textwidth}{|L|L|L|}
     \hline
     Test input & Expect output & Justification \\
     \hline
@@ -769,7 +836,7 @@ TODO: testing plan
 
 \subsection{Milestone 7: Handle API calls}
 
-\begin{tabulary}{\textwidth}{|l|l|L|}
+\begin{tabulary}{\textwidth}{|L|L|L|}
     \hline
     Test input & Expect output & Justification \\
     \hline
