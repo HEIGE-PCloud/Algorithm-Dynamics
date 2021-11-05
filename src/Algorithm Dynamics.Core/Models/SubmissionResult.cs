@@ -8,13 +8,13 @@ namespace Algorithm_Dynamics.Core.Models
 {
     public class SubmissionResult
     {
-        public Submission UserSubmission { get; set; }
+        public Submission Submission { get; set; }
         public string StandardOutput { get; set; }
         public string StandardError { get; set; }
-        public string ExitCode { get; set; }
+        public int ExitCode { get; set; }
         public int CPUTime { get; set; }
-        public long Memory { get; set; }
-        public ResultCode UserResultCode { get; set; }
+        public int MemoryUsage { get; set; }
+        public ResultCode resultCode { get; set; }
         public enum ResultCode
         {
             WRONG_ANSWER,
@@ -25,6 +25,5 @@ namespace Algorithm_Dynamics.Core.Models
             RUNTIME_ERROR,
             SYSTEM_ERROR
         }
-        
     }
 }

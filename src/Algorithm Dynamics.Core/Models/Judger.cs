@@ -44,7 +44,7 @@ namespace Algorithm_Dynamics.Core.Models
         }
         private async static Task<int> Execute(string Input, Language language)
         {
-            Process proc = new()
+            Process ExecuteProcess = new()
             {
                 StartInfo = new ProcessStartInfo
                 {
@@ -58,17 +58,17 @@ namespace Algorithm_Dynamics.Core.Models
                 },
                 EnableRaisingEvents = true
             };
-            proc.OutputDataReceived += new DataReceivedEventHandler(Proc_OutputDataReceived);
-            proc.ErrorDataReceived += new DataReceivedEventHandler(Proc_ErrorDataReceived);
-            proc.Exited += new EventHandler(Proc_Exited);
-            Timer timer = new Timer(delegate { proc.Kill(); }, null, 2000, Timeout.Infinite);
-            proc.Start();
-            proc.BeginOutputReadLine();
-            proc.BeginErrorReadLine();
-            proc.StandardInput.WriteLine(Input);
-            await proc.WaitForExitAsync();
-            proc.WaitForExit();
-            return proc.ExitCode;
+            ExecuteProcess.OutputDataReceived += new DataReceivedEventHandler(ExecuteProcess_OutputDataReceived);
+            ExecuteProcess.ErrorDataReceived += new DataReceivedEventHandler(ExecuteProcess_ErrorDataReceived);
+            ExecuteProcess.Exited += new EventHandler(ExecuteProcess_Exited);
+            Timer timer = new Timer(delegate { ExecuteProcess.Kill(); }, null, 2000, Timeout.Infinite);
+            ExecuteProcess.Start();
+            ExecuteProcess.BeginOutputReadLine();
+            ExecuteProcess.BeginErrorReadLine();
+            ExecuteProcess.StandardInput.WriteLine(Input);
+            await ExecuteProcess.WaitForExitAsync();
+            ExecuteProcess.WaitForExit();
+            return ExecuteProcess.ExitCode;
         }
         public static void SetSourceCodeFilePath(string FolderPath, string FileName)
         {
@@ -87,7 +87,7 @@ namespace Algorithm_Dynamics.Core.Models
                 {
                     result.StandardOutput = _CompilationOutput;
                     result.StandardError = _CompilationError;
-                    result.UserResultCode = SubmissionResult.ResultCode.COMPILE_ERROR;
+                    result.resultCode = SubmissionResult.ResultCode.COMPILE_ERROR;
                     return result;
                 }
             }
@@ -96,7 +96,7 @@ namespace Algorithm_Dynamics.Core.Models
             result.StandardError = _StandardError;
             if (exitCode == 0)
             {
-                result.UserResultCode = SubmissionResult.ResultCode.SUCCESS;
+                result.resultCode = SubmissionResult.ResultCode.SUCCESS;
             }
             return result;
         }
@@ -117,11 +117,11 @@ namespace Algorithm_Dynamics.Core.Models
             }
         }
 
-        private static void Proc_Exited(object sender, EventArgs e)
+        private static void ExecuteProcess_Exited(object sender, EventArgs e)
         {
 
         }
-        private static void Proc_OutputDataReceived(object sender, DataReceivedEventArgs e)
+        private static void ExecuteProcess_OutputDataReceived(object sender, DataReceivedEventArgs e)
         {
             if (!string.IsNullOrEmpty(e.Data))
             {
@@ -129,7 +129,7 @@ namespace Algorithm_Dynamics.Core.Models
             }
         }
 
-        private static void Proc_ErrorDataReceived(object sender, DataReceivedEventArgs e)
+        private static void ExecuteProcess_ErrorDataReceived(object sender, DataReceivedEventArgs e)
         {
             if (!string.IsNullOrEmpty(e.Data))
             {
