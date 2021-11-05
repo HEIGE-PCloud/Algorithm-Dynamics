@@ -38,8 +38,8 @@ classDiagram
         +DateTime DueDate
         +string Description
         +User Assigner
-        +AssignmentStatus Status
-        +AssignmentType Type
+        +Status Status
+        +Type Type
         +Assignment()
     }
     class Submission{
@@ -62,7 +62,7 @@ classDiagram
         +User Submitter
         +Assignment Assignment
         +List<Submission> SubmissionList
-        +AssignmentSubmissionStatus Status
+        +Status Status
         +AssignmentSubmission()
     }
     class AssignmentSubmissionResult{

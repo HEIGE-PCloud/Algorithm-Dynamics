@@ -497,7 +497,7 @@ The AssignmentPage is where the user interact with their assignments. For studen
 
 \subsection{Database module}
 
-Because this software requires many complex relational data, a relational database is needed to store all the data. Since the software runs locally, and every user will have different data, instead of a central SQL Server, a local SQL Database engine is required.
+Because this software will store many complex relational data, a relational database is needed to store all the data. Since the software runs locally, and every user will have different data, instead of a central SQL Server, a local SQL Database engine is required.
 
 I choose to use SQLite to power this software. It is a small, self-contained, high-reliability, full-featured SQL Database engine, which will be enough to handle all the data storing and querying requests. Details about the desgin of the database will be described in the Data structure design section.
 
@@ -564,6 +564,7 @@ I am taking an object-oriented approach to the design of the software. This is t
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{classDiagram}
 
+\subsubsection{\mintinline{text}{User}}
 \subsubsection{\mintinline{text}{Tag}}
 
 A \mintinline{text}{Tag} is a label used to categorize a \mintinline{text}{Problem}.
@@ -590,7 +591,7 @@ A \mintinline{text}{TestCase} is one set of test input and output, which will be
     \hline
     \mintinline{text}{Input} & \mintinline{text}{string} & The \mintinline{text}{Input} will be feed to the user's submission code by the \mintinline{text}{Judger}. \\
     \hline
-    \mintinline{text}{Output} & \mintinline{text}{string} & The expected output of the input. The \mintinline{text}{Judger} will compare user's output with the \mintinline{text}{Output} to judge whether user's code is correct. \\
+    \mintinline{text}{Output} & \mintinline{text}{string} & This stores the expected \mintinline{text}{Output} of the \mintinline{text}{Input}. The \mintinline{text}{Judger} will compare user's output with the \mintinline{text}{Output} to judge whether user's code is correct. \\
     \hline
     \mintinline{text}{IsExample} & \mintinline{text}{bool} & Define whether this \mintinline{text}{TestCase} is an example. An example \mintinline{text}{TestCase} will be displayed to the user for debugging, and distribute with an \mintinline{text}{Assignment}. A non-example \mintinline{text}{TestCase} will be used to judge the solution and will not be displayed to the user or distribute with an \mintinline{text}{Assignment}. A boolean value is suitable to store the two-state data. \\
     \hline
@@ -608,6 +609,8 @@ The \mintinline{text}{Problem} is the core data object of this program. It is us
     \hline
     \mintinline{text}{Name} & \mintinline{text}{string} & The \mintinline{text}{Name} is a string contains the name of a \mintinline{text}{Problem}. \\
     \hline
+    \mintinline{text}{Description} & \mintinline{text}{string} & The \mintinline{text}{Description} is a string storing the detailed description of a \mintinline{text}{Problem}. Markdown syntax is supported for a better user experience. \\
+    \hline
     \mintinline{text}{Status} & \mintinline{text}{enum Status} & \mintinline{text}{Status} is an enumeration type containing 3 possible status: \mintinline{text}{Todo}, \mintinline{text}{Solved} and \mintinline{text}{Attempted}. This is used to collect user statistics data. I choose to use a custom enumeration type instead of some magic numbers to make the code more readable and easier to maintain. \\
     \hline
     \mintinline{text}{Difficulty} & \mintinline{text}{enum Difficulty} & \mintinline{text}{Difficulty} is an enumeration type containing 3 possible difficulties: \mintinline{text}{Easy}, \mintinline{text}{Medium} and \mintinline{text}{Hard}. This provdes a way for the user to search and select problems by their difficulties. \\
@@ -616,9 +619,37 @@ The \mintinline{text}{Problem} is the core data object of this program. It is us
     \hline
     \mintinline{text}{MemoryLimit} & \mintinline{text}{int} & \mintinline{text}{MemoryLimit} sets the max memory allowed for the user's code to consume in bytes. When the memory usage exceed the memory limit, the running code will be killed and a Memory Limit Exceed Error will be recorded. This prevents incorrect code from using up all memory space and rejects inefficient algorithms. \\
     \hline
+\end{tabulary}
+
+\begin{tabulary}{\textwidth}{|l|l|L|}
+    \hline
+    Variable & Data type & Justification \\
+    \hline
     \mintinline{text}{TestCases} & \mintinline{text}{List<TestCase>} & \mintinline{text}{TestCases} is a list containing all \mintinline{text}{TestCase} for the problem. A list is more appropriate than an array because it allows new \mintinline{text}{TestCase} to be added or remove existing ones during runtime. \\
     \hline
     \mintinline{text}{Tags} & \mintinline{text}{List<Tags>} & \mintinline{text}{Tags} is a list containing all \mintinline{text}{Tags} for a \mintinline{text}{Problem}. Similarly, I use a list for \mintinline{text}{Tags} so it can be added or removed during runtime. \\
+    \hline
+\end{tabulary}
+
+\subsubsection{\mintinline{text}{Language}}
+
+The \mintinline{text}{Language} class defines the compiling and running configurations for different programming languages. This part is hard coded into the code and will not expose to the user as explained in the Limitation setion. Thus, it does not require an \mintinline{text}{Id} attribute since it will not be stored in the database.
+
+\begin{tabulary}{\textwidth}{|l|l|L|}
+    \hline
+    Variable & Data type & Justification \\
+    \hline
+    \mintinline{text}{Name} & \mintinline{text}{string} & I use a \mintinline{text}{string} variable to store the \mintinline{text}{Name} of a programming language. This \mintinline{text}{Name} will be displayed in the drop down menu for the user to select preferred programming language. \\
+    \hline
+    \mintinline{text}{NeedCompile} & \mintinline{text}{bool} & Some programming languages need to be compiled before running, such as C, C++ and Java. This attribute is used to tell the \mintinline{text}{Judger} to compile before executing. \\
+    \hline
+    \mintinline{text}{CompileCommand} & \mintinline{text}{string} & If a programming language requires compilation, this command is executed to call the compiler. \\
+    \hline
+    \mintinline{text}{CompileArguments} & \mintinline{text}{string} & If a programming language requires compilation, this arguments is passed to the command, to specify related file path and compile arguments. \\
+    \hline
+    \mintinline{text}{RunCommand} & \mintinline{text}{string} & The \mintinline{text}{Judger} uses this command to run the executable or the intrepreter. \\
+    \hline
+    \mintinline{text}{RunArguments} & \mintinline{text}{string} & This \mintinline{text}{Judger} pass this arguments to the executable or the intrepreter. \\
     \hline
 \end{tabulary}
 
@@ -630,13 +661,13 @@ A \mintinline{text}{Submission} is created when the user submits a code solution
     \hline
     Variable & Data type & Justification \\
     \hline
-    \mintinline{text}{Id} & \mintinline{text}{int} & This \mintinline{text}{Id} is the local unique identifier for a \mintinline{text}{Submission}, it comes in handy when I need to store a \mintinline{text}{Submission} into the database. When exporting a \mintinline{text}{ProblemList}, the \mintinline{text}{Id} will not be exported. Instead, a new \mintinline{text}{Id} is given when the other user imports the \mintinline{text}{ProblemList}. \\
+    \mintinline{text}{Id} & \mintinline{text}{int} & This \mintinline{text}{Id} is the local unique identifier for a \mintinline{text}{Submission}, it comes in handy when I need to store a \mintinline{text}{Submission} into the database. \\
     \hline
     \mintinline{text}{Problem} & \mintinline{text}{Problem} & The \mintinline{text}{Problem} contains the corresponding \mintinline{text}{Problem} of this \mintinline{text}{Submission}, which also contains the \mintinline{text}{TestCases} for the \mintinline{text}{Judger} to judge the \mintinline{text}{Submission}. Before storing a \mintinline{text}{Submission} into the database, this value needs to be normalized to the \mintinline{text}{Id} of that \mintinline{text}{Problem}. \\
     \hline
     \mintinline{text}{Code} & \mintinline{text}{string} & \mintinline{text}{Code} stores the submitted code, which will be executed and judged by the \mintinline{text}{Judger}. \\
     \hline
-    \mintinline{text}{SubmittedTime} & \mintinline{text}{DateTime} & \mintinline{text}{SubmittedTime} stores the time the \mintinline{text}{Submission} is created. Instead of using a \mintinline{text}{string} or an \mintinline{text}{int} value, I decide to use the native data type \mintinline{text}{DateTime} provided by C\#, which makes it easier to process date time, and prevent all formating issues. \\
+    \mintinline{text}{SubmittedTime} & \mintinline{text}{DateTime} & \mintinline{text}{SubmittedTime} stores the time the \mintinline{text}{Submission} is created. Instead of using a \mintinline{text}{string} or an \mintinline{text}{int} value, I decide to use the native data type \mintinline{text}{DateTime} provided by C\#, which makes it easier to process date time, and prevent any formating issues. \\
     \hline
     \mintinline{text}{Language} & \mintinline{text}{enum Language} & \mintinline{text}{Language} stores the programming language selected by the user, so the \mintinline{text}{Judger} knows how to run the code.\\
     \hline
@@ -662,17 +693,15 @@ A \mintinline{text}{ProblemList} is a list of \mintinline{text}{Problem}, with a
 
 An \mintinline{text}{Assignment} is a \mintinline{text}{ProblemList} with descriptions and a due date. Because the assignment needs to be distributed to students, it is a little more complicated. When an \mintinline{text}{Assignment} is distributed, a copy of that \mintinline{text}{Assignment} is created. All \mintinline{text}{TestCases} with \mintinline{text}{IsExample} set to \mintinline{text}{false} will be removed to prevent students from cheating. The \mintinline{text}{Type} of the \mintinline{text}{Assignment} will be set to \mintinline{text}{Copy} to indicate it is a distributed copy. The \mintinline{text}{Judger} will reject to judge a distributed \mintinline{text}{Assignment} and the \mintinline{text}{AssignmentsPage} will show the \mintinline{text}{Assignment} under the Assigned tab instead of the Created tab.
 
+\mintinline{text}{Assignment} is inheriate from the \mintinline{text}{ProblemList}, so it can reuse the \mintinline{text}{Name} and \mintinline{text}{Description} attributes and all methods  to manage a list of \mintinline{text}{Problem}. Upon that, new attributes and methods are added to make it functional.
+
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
     Variable & Data type & Justification \\
     \hline
     \mintinline{text}{Uid} & \mintinline{text}{Guid} & The \mintinline{text}{Assignment} will use a \mintinline{text}{Guid} value for its \mintinline{text}{Uid} instead of a normal \mintinline{text}{int} value to ensure the \mintinline{text}{Uid} is unique globally. So when the user import an \mintinline{text}{Assignment} into their database, the \mintinline{text}{Uid} will not conflict with any existing values, and it will not be changed (Unlike a \mintinline{text}{ProblemList}, for which will be assigned a new \mintinline{text}{Id} when importing). The \mintinline{text}{Uid} will be referenced by the \mintinline{text}{AssignmentSubmission} so the \mintinline{text}{Judger} will be able to know which \mintinline{text}{Assignment} it is judging. \\
     \hline
-    \mintinline{text}{Name} & \mintinline{text}{string} & The \mintinline{text}{Name} is a \mintinline{text}{string} to store the name of the \mintinline{text}{Assignment}. \\
-    \hline
     \mintinline{text}{DueDate} & \mintinline{text}{DateTime} & The \mintinline{text}{DueDate} stores the time for the due date of the \mintinline{text}{Assignment}. Instead of using a \mintinline{text}{string} or an \mintinline{text}{int} value, I decide to use the native data type \mintinline{text}{DateTime} provided by C\#, which makes it easier to process date time, and prevent all formating issues. \\
-    \hline
-    \mintinline{text}{Description} & \mintinline{text}{string} & The description is a string to store the description of the \mintinline{text}{Assignment}. \\
     \hline
     \mintinline{text}{Status} & \mintinline{text}{enum Status} & \mintinline{text}{Status} is an enumeration type containing 4 possible status for a source \mintinline{text}{Assignment}: \mintinline{text}{Draft}, \mintinline{text}{Scheduled}, \mintinline{text}{Published} and \mintinline{text}{Assigned} for the teacher to manage the lifecycle of an \mintinline{text}{Assignment}. For a distributed \mintinline{text}{Assignment}, there are 4 possible \mintinline{text}{Status}, \mintinline{text}{NotStarted}, \mintinline{text}{InProgress}, \mintinline{text}{Completed} and \mintinline{text}{OverDue}, which helps the student to manage the lifecycle of an \mintinline{text}{Assignment}. I choose to use a custom enumeration type instead of some magic numbers to make the code more readable and easier to maintain.\\
     \hline
@@ -680,10 +709,43 @@ An \mintinline{text}{Assignment} is a \mintinline{text}{ProblemList} with descri
     \hline
 \end{tabulary}
 
-\begin{enumerate}
-    \item Submission result: A submission result contains the submission, the output of the submitted code and its result.
-    \item Judger: A judger takes in a submission, run the submitted code, create a submission result and return the result.
-\end{enumerate}
+When a student finishes an \mintinline{text}{Assignment}, an \mintinline{text}{AssignmentSubmission} is created for the \mintinline{text}{Judger} to judge. The \mintinline{text}{AssignmentSubmission} can either be exported to file and sent to the teacher, or it is uploaded using API. The teacher imports the \mintinline{text}{AssignmentSubmission} or uses API to load it, and the \mintinline{text}{Judger} will be able to mark it and give the result.
+
+\subsubsection{\mintinline{text}{AssignmentSubmission}}
+
+\begin{tabulary}{\textwidth}{|l|l|L|}
+    \hline
+    Variable & Data type & Justification \\
+    \hline
+    \mintinline{text}{Uid} & \mintinline{text}{Guid} & The \mintinline{text}{AssignmentSubmission} uses a \mintinline{text}{Guid} value for its \mintinline{text}{Uid} instead of a normal \mintinline{text}{int} value to ensure the \mintinline{text}{Uid} is unique globally. So when teachers import an \mintinline{text}{AssignmentSubmission} into their database, the \mintinline{text}{Uid} will not conflict with any existing values, and it will not be changed. \\
+    \hline
+    \mintinline{text}{Submitter} & \mintinline{text}{User} & The user information is collected when exporting an \mintinline{text}{AssignmentSubmission}, so the teacher will be able to know who is the \mintinline{text}{Submitter}. \\
+    \hline
+    \mintinline{text}{Assignment} & \mintinline{text}{Assignment} & The \mintinline{text}{Assignment} corresponding to this \mintinline{text}{AssignmentSubmission}, so the \mintinline{text}{Judger} knows how to judge it. \\
+    \hline
+    \mintinline{text}{Status} & \mintinline{text}{enum Status} & \mintinline{text}{Status} is an enumeration type containing 3 possible types, \mintinline{text}{Source} or \mintinline{text}{Copy}. It is used to manage the distribution of an \mintinline{text}{Assignment} as described above. \\
+    \hline
+\end{tabulary}
+
+\subsubsection{\mintinline{text}{Judger}}
+
+The \mintinline{text}{Judger} is a static class, only eposes 4 functions to run and judge user's code. No variable is exposed and no data will be saved to the database. The private variables are discussed in the previous Algorithm design section.
+
+\subsubsection{\mintinline{text}{SubmissionResult}}
+
+\begin{tabulary}{\textwidth}{|l|l|L|}
+    \hline
+    Variable & Data type & Justification \\
+    \hline
+\end{tabulary}
+
+\subsubsection{\mintinline{text}{AssignmentSubmissionResult}}
+
+\begin{tabulary}{\textwidth}{|l|l|L|}
+    \hline
+    Variable & Data type & Justification \\
+    \hline
+\end{tabulary}
 
 \subsection{Settings design}
 
@@ -701,7 +763,7 @@ The settings will be stored in a JSON file.
 
 \begin{tabulary}{\textwidth}{|L|L|}
     \hline
-    Id (Auto increment) & Name \\
+    Id & Name \\
     \hline
     1 & Tag1 \\
     \hline
@@ -721,7 +783,7 @@ The \mintinline{text}{Tag} has a many-to-many relation with the \mintinline{text
 
 \begin{tabulary}{\textwidth}{|L|L|L|}
     \hline
-    Id (Auto increment) & ProblemId & TagId \\
+    Id & ProblemId & TagId \\
     \hline
     1 & 1 & 1 \\
     \hline
@@ -744,7 +806,7 @@ The \mintinline{text}{TestCase} has a many-to-one relation to the \mintinline{te
 
 \begin{tabulary}{\textwidth}{|L|L|L|L|L|}
     \hline
-    Id (Auto increment) & Input & Output & IsExample & ProblemId \\
+    Id & Input & Output & IsExample & ProblemId \\
     \hline
     1 & ``Input1'' & ``Output1'' & true & 1 \\
     \hline

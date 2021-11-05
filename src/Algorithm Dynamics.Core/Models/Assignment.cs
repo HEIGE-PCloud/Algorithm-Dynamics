@@ -9,10 +9,8 @@ namespace Algorithm_Dynamics.Core.Models
     public class Assignment : ProblemList
     {
         public new Guid Id { get; set; }
-        public new string Name { get; set; }
-        public new string Description { get; set; }
-        public AssignmentStatus Status { get; set; }
-        public AssignmentType Type { get; set; }
+        public Status status { get; set; }
+        public Type type { get; set; }
         public DateTime DueDate { get; set; }
         public Assignment(string name, string description, DateTime dueDate, ProblemList problemList)
         {
@@ -22,14 +20,14 @@ namespace Algorithm_Dynamics.Core.Models
             DueDate = dueDate;
             AddRange(problemList);
         }
-        public enum AssignmentStatus
+        public enum Status
         {
             NotStarted,
             InProgress,
             Completed,
             OverDue
         }
-        public enum AssignmentType
+        public enum Type
         {
             Source,
             Copy
