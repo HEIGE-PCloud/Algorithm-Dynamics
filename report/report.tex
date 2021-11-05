@@ -565,6 +565,24 @@ I am taking an object-oriented approach to the design of the software. This is t
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{classDiagram}
 
 \subsubsection{\mintinline{text}{User}}
+
+The \mintinline{text}{User} object is used to manage the current user. Its data will be recorded attached to \mintinline{text}{Submission}, \mintinline{text}{Assignment} and \mintinline{text}{AssignmentSubmission}.
+
+\begin{tabulary}{\textwidth}{|l|l|L|}
+    \hline
+    Variable & Data type & Justification \\
+    \mintinline{text}{Uid} & \mintinline{text}{Guid} & global unique identifier \\
+    \hline
+    \mintinline{text}{FirstName} & \mintinline{text}{string} & first name of the user \\
+    \hline
+    \mintinline{text}{LastName} & \mintinline{text}{string} & last name of the user \\
+    \hline
+    \mintinline{text}{Email} & \mintinline{text}{string} & Email address of the user \\
+    \hline
+    \mintinline{text}{Role} & \mintinline{text}{enum Role} & Whether the user is a teacher or a student. \\
+    \hline
+\end{tabulary}
+
 \subsubsection{\mintinline{text}{Tag}}
 
 A \mintinline{text}{Tag} is a label used to categorize a \mintinline{text}{Problem}.
@@ -731,11 +749,31 @@ When a student finishes an \mintinline{text}{Assignment}, an \mintinline{text}{A
 
 The \mintinline{text}{Judger} is a static class, only eposes 4 functions to run and judge user's code. No variable is exposed and no data will be saved to the database. The private variables are discussed in the previous Algorithm design section.
 
-\subsubsection{\mintinline{text}{SubmissionResult}}
+\subsubsection{\mintinline{text}{TestCaseResult}}
+
+The judging result for each individual \mintinline{text}{TestCase}.
 
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
     Variable & Data type & Justification \\
+    \hline
+\end{tabulary}
+
+\subsubsection{\mintinline{text}{SubmissionResult}}
+
+When the \mintinline{text}{Judger} finishes judging a \mintinline{text}{Submission}, a \mintinline{text}{SubmissionResult} is created and stored. It includes the result and statistics about the \mintinline{text}{Submission}.
+
+\begin{tabulary}{\textwidth}{|l|l|L|}
+    \hline
+    Variable & Data type & Justification \\
+    \hline
+    \mintinline{text}{Id} & \mintinline{text}{int} & This \mintinline{text}{Id} is the local unique identifier for a \mintinline{text}{SubmissionResult}, it comes in handy when I need to store a \mintinline{text}{SubmissionResult} into the database.\\
+    \hline
+    \mintinline{text}{Submission} & \mintinline{text}{Submission} & store the corresponding submission \\
+    \hline
+    \mintinline{text}{StandardOutput} & \mintinline{text}{string} & qwq \\
+    \hline
+    \mintinline{text}{StandardError} & \mintinline{}{}
     \hline
 \end{tabulary}
 

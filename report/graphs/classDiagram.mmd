@@ -1,7 +1,7 @@
 classDiagram
     class Tag{
-        +int id
-        +string name
+        +int Id
+        +string Name
         +Tag()
     }
     class TestCase{
@@ -48,20 +48,30 @@ classDiagram
         +string Code
         +DateTime SubmittedTime
         +Language Language
+        +User Submitter
         +Submission()
+    }
+    class TestCaseResult {
+        +TestCase TestCase
+        +string StandardOutput
+        +string StandardError
+        +int ExitCode
+        +int CPUTime
+        +int MemoryUsage
+        +ResultCode ResultCode
+        +TestCaseResult()
     }
     class SubmissionResult{
         +int Id
         +Submission Submission
-        +string StandardOutput
-        +String StandardError
+        +List<TestCaseResult> TestCaseResults
         +SubmissionResult()
     }
     class AssignmentSubmission{
         +Guid Uid
         +User Submitter
         +Assignment Assignment
-        +List<Submission> SubmissionList
+        +List<Submission> Submissions
         +Status Status
         +AssignmentSubmission()
     }
@@ -120,7 +130,9 @@ classDiagram
     Language --> Submission
     ProblemList <--> Problem:One to many
     Assignment <--> Problem:One to many
-    User <--> Assignment:Create
-    User <--> AssignmentSubmission:Create
+    User --> Submission:Create
+    User --> Assignment:Create
+    User --> AssignmentSubmission:Create
     AssignmentSubmission --> Judger: Submit to a Judger
     Judger -->  AssignmentSubmissionResult: Return as the result
+    TestCaseResult --> SubmissionResult: One to many

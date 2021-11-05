@@ -10,8 +10,8 @@ namespace Algorithm_Dynamics.Core.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public Status ProblemStatus { get; set; }
-        public Difficulty ProblemDifficulty { get; set; }
+        public Status status { get; set; }
+        public Difficulty difficulty { get; set; }
         public string Description { get; set; }
         public int TimeLimit { get; set; }
         public int MemoryLimit { get; set; }
