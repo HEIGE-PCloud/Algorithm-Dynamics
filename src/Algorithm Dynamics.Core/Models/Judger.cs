@@ -9,7 +9,7 @@ using System.Threading;
 using System.Collections.ObjectModel;
 namespace Algorithm_Dynamics.Core.Models
 {
-    public class Judger
+    public static class Judger
     {
         public static string SourceCodeFilePath { get; set; }
         public static string SourceCodeFolderPath { get; set; }
@@ -69,6 +69,12 @@ namespace Algorithm_Dynamics.Core.Models
             await proc.WaitForExitAsync();
             proc.WaitForExit();
             return proc.ExitCode;
+        }
+        public static void SetSourceCodeFilePath(string FolderPath, string FileName)
+        {
+            SourceCodeFolderPath = FolderPath;
+            SourceCodeFilePath = Path.Combine(FolderPath, FileName) + ".txt";
+            ExecutableFilePath = Path.Combine(FolderPath, FileName) + ".exe";
         }
         public async static Task<SubmissionResult> RunCode(string UserCode, string Input, Language language)
         {

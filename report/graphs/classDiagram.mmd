@@ -74,12 +74,23 @@ classDiagram
     class Judger{
         -static string _StandardOutput
         -static string _StandardError
+        -static string _CompilationOutput
+        -static string _CompilationError
+        -static string _SourceCodeFilePath
+        -static string _SourceCodeFolderPath
+        -static string _ExecutableFilePath
+        +static void SetSourceCodeFilePath()
         +async static Task<SubmissionResult> RunCode()
-        +async static Task<SubmissionResult> Judge()
+        +async static Task<SubmissionResult> JudgeProblem()
         +async static Task<AssignmentSubmission> JudgeAssignment()
-        -static void Proc_Exited()
-        -static void Proc_OutputDataReceived()
-        -static void Proc_ErrorDataReceived()
+        -async static Task<int> Compile()
+        -async static Task<int> Execute()
+        -static void CompileProcess_Exited()
+        -static void CompileProcess_OutputDataReceived()
+        -static void CompileProcess_ErrorDataReceived()
+        -static void ExecuteProcess_Exited()
+        -static void ExecuteProcess_OutputDataReceived()
+        -static void ExecuteProcess_ErrorDataReceived()
         -static void Clear()
     }
     class User{
@@ -90,6 +101,15 @@ classDiagram
         +Role Role
         +User()
     }
+    class Language{
+        +string Name
+        +bool NeedCompile
+        +string CompileCommand
+        +string CompileArguments
+        +string RunCommand
+        +string RunArguments
+        +Language()
+    }
     List <|-- ProblemList: Inheritance
     ProblemList <|-- Assignment: Inheritance
     Submission --> Judger: Submit to a Judger
@@ -97,6 +117,7 @@ classDiagram
     Problem <--> Tag:One to many
     Problem <--> TestCase:One to many
     Problem <--> Submission:One to many
+    Language --> Submission
     ProblemList <--> Problem:One to many
     Assignment <--> Problem:One to many
     User <--> Assignment:Create
