@@ -80,6 +80,7 @@ namespace Algorithm_Dynamics.Core.Models
         {
             clear();
             SubmissionResult result = new();
+            Directory.CreateDirectory(SourceCodeFolderPath);
             await File.WriteAllTextAsync(SourceCodeFilePath, UserCode);
             if (language.NeedCompile)
             {
