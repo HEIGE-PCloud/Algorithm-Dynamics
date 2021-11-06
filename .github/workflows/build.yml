@@ -20,7 +20,7 @@ jobs:
           npm install @mermaid-js/mermaid-cli
           python report/graphs/build_graphs.py --command ./node_modules/.bin/mmdc
 
-      - name: Build report
+      - name: Build Report
         uses: xu-cheng/latex-action@v2
         with:
           root_file: report.tex
@@ -32,7 +32,7 @@ jobs:
       - name: Upload report
         uses: actions/upload-artifact@v2
         with:
-          name: report.pdf
+          name: Report
           path: report/report.pdf
 
   test-app:
@@ -123,7 +123,7 @@ jobs:
       - name: Prepare report
         uses: actions/download-artifact@v2
         with:
-          name: report.pdf
+          name: Report
           path: website/static
 
       - name: Prepare app
