@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.ApplicationModel;
@@ -17,6 +18,7 @@ namespace Algorithm_Dynamics.Pages
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
+    [SupportedOSPlatform("windows10.0.10240.0")]
     public sealed partial class SettingsPage : Page, INotifyPropertyChanged
     {
         public SettingsPage()

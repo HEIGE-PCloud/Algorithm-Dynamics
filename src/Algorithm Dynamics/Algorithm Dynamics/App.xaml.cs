@@ -2,16 +2,17 @@
 using Algorithm_Dynamics.Core.Models;
 using Windows.Storage;
 using System;
+using System.Runtime.Versioning;
 
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
-
 namespace Algorithm_Dynamics
 {
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.
     /// </summary>
+    [SupportedOSPlatform("windows10.0.10240.0")]
     public partial class App : Application
     {
         /// <summary>

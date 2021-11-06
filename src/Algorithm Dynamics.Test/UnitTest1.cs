@@ -15,7 +15,14 @@ namespace Algorithm_Dynamics.Test
             Assert.AreEqual("Hello World", result.StandardOutput);
         }
         [TestMethod]
-        public void TestMethod2()
+        public async Task TestMethod2()
+        {
+            Judger.SetSourceCodeFilePath("temp", "sol");
+            SubmissionResult s = await Judger.RunCode("print('hello world')", "", LanguageConfig.Python);
+            Assert.AreEqual(s.StandardOutput, "hello world\n");
+        }
+        [TestMethod]
+        public void TestMethod3()
         {
             Assert.AreEqual(1, 1);
         }

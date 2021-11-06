@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Navigation;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Runtime.Versioning;
 
 
 // To learn more about WinUI, the WinUI project structure,
@@ -15,6 +16,7 @@ namespace Algorithm_Dynamics.Pages
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
+    [SupportedOSPlatform("windows10.0.10240.0")]
     public sealed partial class HomePage : Page, INotifyPropertyChanged
     {
         public ObservableCollection<HomePageGridItem> Source { get; } = new ObservableCollection<HomePageGridItem>();

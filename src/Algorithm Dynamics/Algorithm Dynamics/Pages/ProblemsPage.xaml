@@ -84,11 +84,11 @@
                                    Grid.Column="0"
                                    Margin="4"/>
                         <TextBlock x:Name="ProblemDifficultyTextBlock"
-                                   Text="{x:Bind ProblemDifficulty}"
+                                   Text="{x:Bind difficulty}"
                                    Grid.Column="1"
                                    Margin="4"/>
                         <TextBlock x:Name="ProblemStatusTextBlock"
-                                   Text="{x:Bind ProblemStatus}"
+                                   Text="{x:Bind status}"
                                    Grid.Column="2"
                                    Margin="4"/>
                         <RelativePanel Grid.Column="3">

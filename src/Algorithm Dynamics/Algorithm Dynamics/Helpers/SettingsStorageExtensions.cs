@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.Versioning;
 using System.Threading.Tasks;
 
 using Algorithm_Dynamics.Core.Helpers;
@@ -11,6 +12,7 @@ namespace Algorithm_Dynamics.Helpers
 {
     // Use these extension methods to store and retrieve local and roaming app data
     // More details regarding storing and retrieving app data at https://docs.microsoft.com/windows/uwp/app-settings/store-and-retrieve-app-data
+    [SupportedOSPlatform("windows10.0.10240.0")]
     public static class SettingsStorageExtensions
     {
         private const string FileExtension = ".json";
