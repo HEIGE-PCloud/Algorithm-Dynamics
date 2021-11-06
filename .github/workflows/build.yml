@@ -34,14 +34,10 @@ jobs:
         with:
           name: report.pdf
           path: report/report.pdf
-  
-  build-app:
+
+  test-app:
+    name: Test App
     runs-on: windows-latest
-    env:
-      Solution_Name: Algorithm Dynamics.sln                                                         # Replace with your solution name, i.e. MyWpfApp.sln.
-      Test_Project_Path: src\Algorithm Dynamics.Test\Algorithm Dynamics.Test.csproj                 # Replace with the path to your test project, i.e. MyWpfApp.Tests\MyWpfApp.Tests.csproj.
-      Wap_Project_Directory: src\Algorithm Dynamics\Algorithm Dynamics (Package)                    # Replace with the Wap project directory relative to the solution, i.e. MyWpfApp.Package.
-      Wap_Project_Path: src\Algorithm Dynamics\Algorithm Dynamics (Package)\Algorithm Dynamics (Package).wapproj                   # Replace with the path to your Wap project, i.e. MyWpf.App.Package\MyWpfApp.Package.wapproj.
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -54,14 +50,28 @@ jobs:
       with:
         dotnet-version: 5.0.x
 
-    # Add MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
-    - name: Setup MSBuild.exe
-      uses: microsoft/setup-msbuild@v1.0.2
-
     # Execute all unit tests in the solution
     - name: Execute unit tests
       working-directory: src
       run: dotnet test
+
+  build-app:
+    name: Build App
+    runs-on: windows-latest
+    env:
+      Solution_Name: Algorithm Dynamics.sln                                                         # Replace with your solution name, i.e. MyWpfApp.sln.
+      Test_Project_Path: src\Algorithm Dynamics.Test\Algorithm Dynamics.Test.csproj                 # Replace with the path to your test project, i.e. MyWpfApp.Tests\MyWpfApp.Tests.csproj.
+      Wap_Project_Directory: src\Algorithm Dynamics\Algorithm Dynamics (Package)                    # Replace with the Wap project directory relative to the solution, i.e. MyWpfApp.Package.
+      Wap_Project_Path: src\Algorithm Dynamics\Algorithm Dynamics (Package)\Algorithm Dynamics (Package).wapproj                   # Replace with the path to your Wap project, i.e. MyWpf.App.Package\MyWpfApp.Package.wapproj.
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    # Add MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
+    - name: Setup MSBuild.exe
+      uses: microsoft/setup-msbuild@v1.0.2
 
     # Decode the base 64 encoded pfx and save the Signing_Certificate
     - name: Decode the pfx
@@ -97,7 +107,7 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-    needs: [build-report, build-app]
+    needs: [build-report, test-app, build-app]
     steps:
       - uses: actions/checkout@v2
         with:
