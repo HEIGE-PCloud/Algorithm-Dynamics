@@ -48,6 +48,10 @@ jobs:
         $certificatePath = Join-Path -Path $env:Wap_Project_Directory -ChildPath "Algorithm Dynamics (Package)_TemporaryKey.pfx"
         Remove-Item -path $certificatePath
 
+    - name: Configure web.config
+      working-directory: src\Algorithm Dynamics\Algorithm Dynamics (Package)
+      run: cp .\web.config .\AppPackages\web.config
+
     - name: Upload artifact for deployment job
       uses: actions/upload-artifact@v2
       with:
@@ -73,5 +77,5 @@ jobs:
       with:
         app-name: 'AlgorithmDynamicsDistribution'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_7383e6b51c3349be841fece818cfb1f3 }}
+        publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_6D4D2227DE284D5A92A8DE901A1BF38D }}
         package: .
