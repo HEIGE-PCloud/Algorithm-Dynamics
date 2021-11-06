@@ -48,7 +48,7 @@
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <GenerateTestArtifacts>True</GenerateTestArtifacts>
     <AppxBundlePlatforms>x86|x64|arm64</AppxBundlePlatforms>
-    <AppInstallerUri>https://algorithmdynamicsdistribution.azurewebsites.net/</AppInstallerUri>
+    <AppInstallerUri>https://algorithmdynamics.com/install</AppInstallerUri>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|arm64'">

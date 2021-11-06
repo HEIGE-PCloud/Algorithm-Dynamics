@@ -130,7 +130,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: MSIX Package Release
-          path: website/static
+          path: website/static/install
 
       - name: Build website
         run: | 
