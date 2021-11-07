@@ -3,7 +3,7 @@
 	Uri="https://algorithmdynamics.com/install/Algorithm Dynamics (Package).appinstaller"
 	Version="0.0.1.0" xmlns="http://schemas.microsoft.com/appx/appinstaller/2017/2">
 	<MainBundle
-		Name="4be0f190-55aa-4cfc-b027-866b30f6a7ee"
+		Name="55445HEIGE-PCloud.AlgorithmDynamics"
 		Version="0.0.1.0"
 		Publisher="CN=PCloud"
 		Uri="https://algorithmdynamics.com/install/Algorithm Dynamics (Package)_0.0.1.0_Test/Algorithm Dynamics (Package)_0.0.1.0_x86_x64_arm64.msixbundle" />
