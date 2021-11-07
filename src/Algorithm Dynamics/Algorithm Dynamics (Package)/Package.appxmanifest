@@ -7,13 +7,13 @@
   IgnorableNamespaces="uap rescap">
 
   <Identity
-    Name="4be0f190-55aa-4cfc-b027-866b30f6a7ee"
-    Publisher="CN=PCloud"
+    Name="55445HEIGE-PCloud.AlgorithmDynamics"
+    Publisher="CN=DAD0953E-64AB-4AA3-8399-0D99A4BBF913"
     Version="0.0.1.0" />
 
   <Properties>
     <DisplayName>Algorithm Dynamics</DisplayName>
-    <PublisherDisplayName>PCloud</PublisherDisplayName>
+    <PublisherDisplayName>HEIGE-PCloud</PublisherDisplayName>
     <Logo>Images\StoreLogo.png</Logo>
   </Properties>
 
