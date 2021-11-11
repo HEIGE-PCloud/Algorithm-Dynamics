@@ -52,6 +52,7 @@ classDiagram
         +Submission()
     }
     class TestCaseResult {
+        +int Id
         +TestCase TestCase
         +string StandardOutput
         +string StandardError
@@ -78,7 +79,7 @@ classDiagram
     class AssignmentSubmissionResult{
         +Guid Uid
         +AssignmentSubmission AssignmentSubmission
-        +List<SubmissionResult> SubmissionResultList
+        +List<SubmissionResult> SubmissionResult
         +AssignmentSubmissionResult()
     }
     class Judger{
