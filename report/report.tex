@@ -407,7 +407,7 @@ All the success criteria will first be tested through the unit tests created dur
 
 The Navigation View provides a global menu for the user to navigate between different pages in the software. There are six tabs in the navigation view, ``Home'', ``Problems'', ``Assignments'', ``Playground'', ``Account'', ``Settings''. By clicking on different tab, the main frame will display the corresponding page. The current selected tab will be highlighted.
 
-\subsubsection{Usability Feature}
+\subsubsection{Usability feature}
 
 The entire NavigationView is a usability feature. Users can always look it up by clicking the top left button. They will be able to know where they are and navigate to other pages by one click, which makes the program easier to use.
 
@@ -421,7 +421,7 @@ There are only buttons in the NavigationView for the user to click, so only vali
 
 On the top of the HomePage, there will be a beautiful background image under the `Algorithm Dynamics' title. This makes the interface looks pretty. Let users have a good mood every time they open this software.
 
-\subsubsection{Usability Feature}
+\subsubsection{Usability feature}
 
 The bottom half of the HomePage will be filled with buttons link to different functions of the software. The `Random' button starts a random problem for the user. The `Import' button calls the system file explorer for the user to import problems, problem lists, or assignments. The `Playground', `Problems', `Assignments' and `Account' button links the user to the corresponding page. The three buttons at the end link to three useful websites, when users click the button, the default web browser will be called and direct to these websites, which makes it easy for the user to look up speifications and revise content. All the useful functions of the software are grouped on the home page, which makes them easily accessible and makes the software easy to use.
 
@@ -435,7 +435,7 @@ There are only buttons in the HomePage for the user to click, so only valid acti
 
 The ProblemsPage displays problems in the database. The user can search, create, edit, delete, import, export or start working on one or multiple problems on this page.
 
-\subsubsection{Usability Feature}
+\subsubsection{Usability feature}
 
 The user can apply selection condition by either select different fields in the dropdown boxes or directly type into the search box. A scrollable list of problems that match the conditions will be shown bellow, with detailed information. The user can start working on a problem by clicking the start button on the right. They can also right click the problem to call a context menu that includes more actions for them to delete, edit or export the problem. By clicking the select button on the top, the user can select multiple problems at once and applie the same action to them at once. By clicking the Add button on the top right, a context menu will be displayed, allowing the user to create or import new problems or problem lists. When the user is typing into the search box, a flyout will display matching results to save typing.
 
@@ -449,7 +449,7 @@ Most components on this page are still buttons, user can only click them and no 
 
 The CodingPage is where the user works on a programming problem.
 
-\subsubsection{Usability Feature}
+\subsubsection{Usability feature}
 
 The question is displayed on the left and a code editor will be displayed on the top right. The input, output and error messages will be displayed on button right, the user can switch between them by clicking the corresponding tab. On the button, the user can select programming language use a dropdown menu, run code by clicking the run code button and submit their code for judging by clicking the submit button. The status field shows the status of the judger and 3 navigation buttons on the button right to make it easy navigating between different problems. There is a progress bar between the input output error section and the navigation buttons, it displays the judging progress.  
 
@@ -505,7 +505,7 @@ I choose to use SQLite to power this software. It is a small, self-contained, hi
 
 \section{Algorithm design}
 
-\subsection{Searchbox Searching Algorithm}
+\subsection{Searchbox searching algorithm}
 
 This algorithm will be used to power all the search boxes in the software. It will be packed into a function, taking in a list of item and the searching keyword input by the user, returning a list of results. To make the software easy to use, instead of simply using a linear search and returning all matching results, the algorithm will perform some fuzzy searching, so even the word is not typed in completely, matching results will be returned.
 
@@ -540,7 +540,7 @@ Next, I use two nested loops to perform linear search on each splitted keyword. 
 
 At the end, if no item is found, a not found notice is added to the list, which will be displayed to the user.
 
-\subsection{Judger RunCode Algorithm}
+\subsection{Judger RunCode algorithm}
 
 This algorithm is designed for the \mintinline{text}{Judger} to run a piece of code, pass input to the code and receive all the output and error. This is the basic function of the \mintinline{text}{Judger} and further judging will all based on this algorithm. An async function will be used so it will not block the main UI thread. It takes three input, \mintinline{text}{UserCode} for the code to be executed, \mintinline{text}{Input} for the input data, and TODO for the programming language. There are two types of programming languages, interpreted programming languages and complied programming languages, the procedure to run them is quite different, so I need to handle them separately. The configuration for each language is stored as \mintinline{text}{LanguageConfig}.
 
@@ -552,9 +552,9 @@ async function RunCode(string UserCode, string Input, Language language)
 endfunction
 \end{minted}
 
-\subsection{Judger Judge Problem Algorithm}
+\subsection{Judger Judge Problem algorithm}
 
-\subsection{Judger Judge Assignment Algorithm}
+\subsection{Judger Judge Assignment algorithm}
 
 \section{Data structure design}
 
@@ -848,20 +848,24 @@ The entire JSON file will be validated before any data is fetched. If the file d
 
 \subsection{Database design}
 
-\subsubsection{User Table}
+\subsubsection{User table}
+
+The User table will have \mintinline{text}{Uid} as its primary key. Since Sqlite does not support \mintinline{text}{Guid} data type natively, it will be converted into a string for storage. Same reason why the Role is stored in integer, and because the enumeration type is implemented in integer under the hood, there is no data converstion issue.
+
+All fields will be validated and no empty field is allowed.
 
 \begin{tabulary}{\textwidth}{|L|L|L|L|L|}
     \hline
     Uid & FirstName & LastName & Email & Role \\
     \hline
-    89270b1bebc34c0489169928568fa4ab & firstName & lastName & test@example.com & 0 \\
+    <GUID> & Lucy & Wilson & lucyw@test.com & 0 \\
     \hline
 \end{tabulary}
 
 \begin{minted}[linenos,tabsize=4,breaklines]{sql}
-CREATE TABLE Tag
+CREATE TABLE User
 (
-    PRIMARY KEY(Uid) TEXT NOT NULL,
+    PRIMARY KEY (Uid) TEXT NOT NULL,
     FirstName TEXT NOT NULL,
     LastName TEXT NOT NULL,
     Email TEXT NOT NULL,
@@ -869,7 +873,38 @@ CREATE TABLE Tag
 )
 \end{minted}
 
-\subsubsection{Tag Table}
+\subsubsection{Problem table}
+
+The Problem table will have an auto increment integer \mintinline{text}{Id} as its primary key. Both \mintinline{text}{Status} and \mintinline{text}{Difficulty} will be stored in integer for the same reason before.
+
+All fields will be validated and no empty field is allowed.
+
+\begin{tabulary}{\textwidth}{|L|L|L|L|L|L|L|}
+    \hline
+    Id & Name & Description & Status & Difficulty & TimeLimit & MemoryLimit \\
+    \hline
+    1 & Problem1 & Description1 & 0 & 0 & 1000 & 1000 \\
+    \hline
+\end{tabulary}
+
+\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+CREATE TABLE Problem
+(
+    PRIMARY KEY (Id) INTEGER NOT NULL AUTO_INCREMENT,
+    Name TEXT NOT NULL,
+    Description TEXT NOT NULL,
+    Status INTEGER NOT NULL,
+    Difficulty INTEGER NOT NULL,
+    TimeLimit INTEGER NOT NULL,
+    MemoryLimit INTEGER NOT NULL
+)
+\end{minted}
+
+\subsubsection{Tag table}
+
+The Tag Table will have an auto increment integer \mintinline{text}{Id} as its primary key.
+
+All fields will be validated and no empty field is allowed.
 
 \begin{tabulary}{\textwidth}{|L|L|}
     \hline
@@ -882,12 +917,96 @@ CREATE TABLE Tag
 \begin{minted}[linenos,tabsize=4,breaklines]{sql}
 CREATE TABLE Tag
 (
-    PRIMARY KEY(Id) INTEGER NOT NULL AUTO_INCREMENT,
+    PRIMARY KEY (Id) INTEGER NOT NULL AUTO_INCREMENT,
     Name TEXT NOT NULL
 )
 \end{minted}
 
-\subsubsection{ProblemTag Table}
+\subsubsection{TestCase table}
+
+The TestCase table will have an auto increment integer \mintinline{text}{Id} as its primary key. Since Sqlite does not support boolean data type, an integer will be used to store the data of \mintinline{text}{IsExample}, 0 will represent false and 1 will represent true.
+
+All fields will be validated and no empty field is allowed.
+
+The \mintinline{text}{TestCase} has a many-to-one relation to the \mintinline{text}{Problem}, one \mintinline{text}{Problem} can have multiple \mintinline{text}{TestCase} while one \mintinline{text}{TestCase} can only belong to one \mintinline{text}{Problem}. So, a foreign key \mintinline{text}{ProblemId} is enabled for the \mintinline{text}{TestCase} to store its corresponding \mintinline{text}{Problem}.
+
+\begin{tabulary}{\textwidth}{|L|L|L|L|L|}
+    \hline
+    Id & Input & Output & IsExample & ProblemId \\
+    \hline
+    1 & ``Input1'' & ``Output1'' & 1 & 1 \\
+    \hline
+\end{tabulary}
+
+\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+CREATE TABLE TestCase
+(
+    PRIMARY KEY (Id) INTEGER NOT NULL AUTO_INCREMENT,
+    Input TEXT NOT NULL,
+    Output TEXT NOT NULL,
+    IsExample INTEGER NOT NULL,
+    FOREIGN KEY (ProblemId) REFERENCES Problem(Id)
+)
+\end{minted}
+
+\subsubsection{Submission table}
+
+The Submission table will have an auto increment integer \mintinline{text}{Id} as its primary key. Since Sqlite does not support DateTime data type, the time will be converted to a string before storing. Similarly conversion will be done for Language and SubmitterId.
+
+All fields will be validated and no empty field is allowed, except for the \mintinline{text}{Code}, empty \mintinline{text}{Submission} is allowed.
+
+A \mintinline{text}{Submission} has a one-to-many relationship with a \mintinline{text}{Problem}, a \mintinline{text}{Problem} can have multiple \mintinline{text}{Submission} while a \mintinline{text}{Submission} can only be submitted to one \mintinline{text}{Problem}. It also has a many-to-one relation with a \mintinline{text}{User}. A \mintinline{text}{User} can create multiple \mintinline{text}{Submission} while a \mintinline{text}{Submission} can only be created by one \mintinline{text}{User}. So it will have two foreign keys to establish such relationship.
+
+\begin{tabulary}{\textwidth}{|L|L|L|L|L|L|}
+    \hline
+    Id & ProblemId & Code & SubmittedTime & Language & SubmitterId \\
+    \hline
+    1 & 1 & source code & 11/11/2021 14:20:04 & Python & <GUID> \\
+    \hline
+\end{tabulary}
+
+\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+CREATE TABLE Submission
+(
+    PRIMARY KEY (Id) INTEGER NOT NULL AUTO_INCREMENT,
+    FOREIGN KEY (ProblemId) REFERENCES Problem(Id),
+    Code TEXT,
+    SubmittedTime TEXT NOT NULL,
+    Language TEXT NOT NULL,
+    FOREIGN KEY (SubmitterId) REFERENCES User(Uid),
+)
+\end{minted}
+
+\subsubsection{ProblemList table}
+
+\begin{tabulary}{\textwidth}{|L|L|L|}
+    \hline
+    Id & Name & Description \\
+    \hline
+    1 & ProblemList 1 & Description for ProblemList 1 \\
+    \hline
+\end{tabulary}
+
+\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+CREATE TABLE Submission
+(
+    PRIMARY KEY (Id) INTEGER NOT NULL AUTO_INCREMENT,
+    Name TEXT NOT NULL,
+    Description TEXT
+)
+\end{minted}
+
+\subsubsection{Assignment table}
+
+\subsubsection{AssignmentSubmission table}
+
+\subsubsection{TestCaseResult table}
+
+\subsubsection{SubmissionResult table}
+
+\subsubsection{AssignmentSubmissionResult table}
+
+\subsubsection{ProblemTag table}
 
 The \mintinline{text}{Tag} has a many-to-many relation with the \mintinline{text}{Problem}. A \mintinline{text}{Problem} can have multiple \mintinline{text}{Tags} and a \mintinline{text}{Tag} can be assigned to multiple \mintinline{text}{Problems}. So a link table is required to normalize the data.
 
@@ -910,30 +1029,17 @@ CREATE TABLE ProblemTag
 )
 \end{minted}
 
-\subsubsection{TestCase Table}
+\subsection{Import/Export design}
 
-The \mintinline{text}{TestCase} has a many-to-one relation to the \mintinline{text}{Problem}, one \mintinline{text}{Problem} can have multiple \mintinline{text}{TestCase} while one \mintinline{text}{TestCase} can only belong to one \mintinline{text}{Problem}. So, a foreign key \mintinline{text}{ProblemId} is enabled for the \mintinline{text}{TestCase} to store its corresponding \mintinline{text}{Problem}.
+\subsubsection{Import/Export a Problem}
 
-\begin{tabulary}{\textwidth}{|L|L|L|L|L|}
-    \hline
-    Id & Input & Output & IsExample & ProblemId \\
-    \hline
-    1 & ``Input1'' & ``Output1'' & true & 1 \\
-    \hline
-\end{tabulary}
+\subsubsection{Import/Export a ProblemList}
 
-\begin{minted}[linenos,tabsize=4,breaklines]{sql}
-CREATE TABLE TestCase
-(
-    PRIMARY KEY(Id) INTEGER NOT NULL AUTO_INCREMENT,
-    Input TEXT NOT NULL,
-    Output TEXT NOT NULL,
-    IsExample INTEGER NOT NULL,
-    FOREIGN KEY (ProblemId) REFERENCES Problem(Id)
-)
-\end{minted}
+\subsubsection{Import/Export an Assignment}
 
-\subsection{Input Export design}
+\subsubsection{Import/Export an AssignmentSubmission}
+
+\subsubsection{Import/Export an AssignmentSubmissionResult}
 
 \section{Development testing}
 

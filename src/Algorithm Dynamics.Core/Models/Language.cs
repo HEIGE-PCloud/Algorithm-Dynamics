@@ -24,6 +24,10 @@ namespace Algorithm_Dynamics.Core.Models
             RunCommand = runCommand;
             RunArguments = runArguments;
         }
+        public override string ToString()
+        {
+            return Name;
+        }
     }
     public static class LanguageConfig
     {

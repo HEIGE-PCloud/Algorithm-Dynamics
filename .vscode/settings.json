@@ -163,5 +163,5 @@
             ]
         }
     ],
-    "latex-workshop.latex.recipe.default": "mmdc + latexmk",
+    "latex-workshop.latex.recipe.default": "latexmk",
 }
