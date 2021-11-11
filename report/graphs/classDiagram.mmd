@@ -129,8 +129,8 @@ classDiagram
     Problem <--> TestCase:One to many
     Problem <--> Submission:One to many
     Language --> Submission
-    ProblemList <--> Problem:One to many
-    Assignment <--> Problem:One to many
+    ProblemList <--> Problem:Many to many
+    Assignment <--> Problem:Many to many
     User --> Submission:Create
     User --> Assignment:Create
     User --> AssignmentSubmission:Create
