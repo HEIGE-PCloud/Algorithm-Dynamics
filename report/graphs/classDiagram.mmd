@@ -34,12 +34,10 @@ classDiagram
     }
     class Assignment{
         +Guid Uid
-        +string Name
         +DateTime DueDate
-        +string Description
-        +User Assigner
         +Status Status
         +Type Type
+        +User Assigner
         +Assignment()
     }
     class Submission{
@@ -106,8 +104,7 @@ classDiagram
     }
     class User{
         +Guid Uid
-        +string FirstName
-        +string LastName
+        +string Name
         +string Email
         +Role Role
         +User()
@@ -125,9 +122,9 @@ classDiagram
     ProblemList <|-- Assignment: Inheritance
     Submission --> Judger: Submit to a Judger
     Judger -->  SubmissionResult: Return as the result
-    Problem <--> Tag:One to many
-    Problem <--> TestCase:One to many
-    Problem <--> Submission:One to many
+    Problem <--> Tag:Many to many
+    Problem --> TestCase:One to many
+    Problem --> Submission:One to many
     Language --> Submission
     ProblemList <--> Problem:Many to many
     Assignment <--> Problem:Many to many
