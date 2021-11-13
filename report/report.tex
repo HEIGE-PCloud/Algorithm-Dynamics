@@ -801,6 +801,8 @@ When the \mintinline{text}{Judger} finishes judging a \mintinline{text}{Submissi
 
 \subsubsection{\mintinline{text}{AssignmentSubmissionResult}}
 
+When the \mintinline{text}{Judger} finishes judging a \mintinline{text}{AssignmentSubmission}, a \mintinline{text}{SubmissionResult} is created and stored. It includes the result and statistics about the \mintinline{text}{AssignmentSubmission}.
+
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
     Variable & Data type & Justification \\
@@ -862,18 +864,20 @@ The User table will have \mintinline{text}{Uid} as its primary key. Since Sqlite
 
 All fields will be validated and no empty field is allowed.
 
+The \mintinline{text}{GUID} will look like this: \mintinline{text}{149f3e41-dcdb-43d5-8964-75249489f6cf}. It is a long random unique string of characters. Because it is too long, in this section, a placeholder \mintinline{text}{<GUID>} will be used to represent a string of \mintinline{text}{GUID}.
+
 \begin{tabulary}{\textwidth}{|L|L|L|L|L|}
     \hline
     Uid & Name & Email & Role \\
     \hline
-    <GUID> & Lucy & Wilson & lucyw@test.com & 0 \\
+    <GUID> & ``UserName'' & ``UserName@test.com'' & 0 \\
     \hline
 \end{tabulary}
 
 \begin{minted}[linenos,tabsize=4,breaklines]{sql}
 CREATE TABLE User
 (
-    PRIMARY KEY (Uid) TEXT NOT NULL,
+    Uid TEXT PRIMARY KEY NOT NULL,
     Name TEXT NOT NULL,
     Email TEXT NOT NULL,
     Role INTEGER NOT NULL
@@ -890,7 +894,7 @@ All fields will be validated and no empty field is allowed.
     \hline
     Id & Name & Description & Status & Difficulty & TimeLimit & MemoryLimit \\
     \hline
-    1 & Problem1 & Description1 & 0 & 0 & 1000 & 1000 \\
+    1 & ``name'' & ``...'' & 0 & 0 & 1000 & 1000 \\
     \hline
 \end{tabulary}
 
@@ -909,7 +913,7 @@ CREATE TABLE Problem
 
 \subsubsection{Tag table}
 
-The Tag Table will have an auto increment integer \mintinline{text}{Id} as its primary key.
+The Tag table will have an auto increment integer \mintinline{text}{Id} as its primary key.
 
 All fields will be validated and no empty field is allowed.
 
@@ -917,7 +921,7 @@ All fields will be validated and no empty field is allowed.
     \hline
     Id & Name \\
     \hline
-    1 & Tag1 \\
+    1 & ``Tag1'' \\
     \hline
 \end{tabulary}
 
