@@ -57,6 +57,7 @@ jobs:
 
   build-app:
     name: Build App
+    if: ${{ false }}
     runs-on: windows-latest
     env:
       Solution_Name: Algorithm Dynamics.sln                                                         # Replace with your solution name, i.e. MyWpfApp.sln.
@@ -127,6 +128,7 @@ jobs:
           path: website/static
 
       - name: Prepare app
+        if: ${{ false }}
         uses: actions/download-artifact@v2
         with:
           name: MSIX Package Release

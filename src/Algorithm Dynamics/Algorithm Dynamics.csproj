@@ -10,6 +10,18 @@
     <UseWinUI>true</UseWinUI>
 	<EnablePreviewMsixTooling>true</EnablePreviewMsixTooling>
 	<PublishProfile>Properties\PublishProfiles\win10-$(Platform).pubxml</PublishProfile>
+	<GenerateAppInstallerFile>False</GenerateAppInstallerFile>
+	<AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
+	<PackageCertificateThumbprint>FF044AC3A6458332704DB4CD1F4DDE52A4268EDB</PackageCertificateThumbprint>
+	<AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
+	<AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
+	<AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
+	<GenerateTestArtifacts>True</GenerateTestArtifacts>
+	<AppxBundle>Always</AppxBundle>
+	<AppxBundlePlatforms>x86|x64|arm64</AppxBundlePlatforms>
+	<AppInstallerUri>https://algorithmdynamics.com/install</AppInstallerUri>
+	<HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
+	<GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Pages\AssignmentAssignedPage.xaml" />
@@ -47,7 +59,7 @@
 		<Content Include="Images\Wide310x150Logo.scale-200.png" />
 	</ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Algorithm Dynamics.Core\Algorithm Dynamics.Core.csproj" />
+    <ProjectReference Include="..\Algorithm Dynamics.Core\Algorithm Dynamics.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
