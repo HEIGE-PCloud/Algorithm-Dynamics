@@ -539,6 +539,10 @@ The AccountPage is used to manage the current user and display user statistics.
 
 The Judger module will handle all the juding and marking tasks. It takes in a \mintinline{text}{Submission}, compile and execute the user's code, judge whether it gives the correct output.
 
+I use concurrent processing to make sure the Judger runs smoothly. Because the Judger will take several seconds to judge each submission, the UI thread will be blocked and frozen if the Judger runs in the UI thread. Instead, a new process will be created for the user's code to run, and the Judger will provide the input and monitor the output of that separate process asynchronously, so the UI will still run smoothly while judging.
+
+The judging algorithm will be explained later in the \hyperref[sec:algorithm design]{Algorithm design section}.
+
 \subsection{Database module}
 
 Because this software will store many complex relational data, a relational database is needed to store all the data. Since the software runs locally, and every user will have different data, instead of a central SQL Server, a local SQL Database engine is required.
@@ -546,6 +550,8 @@ Because this software will store many complex relational data, a relational data
 I choose to use SQLite to power this software. It is a small, self-contained, high-reliability, full-featured SQL Database engine, which will be enough to handle all the data storing and querying requests. Details about the desgin of the database will be described in the Data structure design section.
 
 \subsection{REST API module}
+
+The API module will handle user login, Create and fetch assignments.
 
 \section{Algorithm design}
 \label{sec:algorithm design}

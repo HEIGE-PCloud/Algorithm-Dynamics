@@ -20,39 +20,50 @@
         <Grid Grid.Row="0"
               HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <AutoSuggestBox Grid.Column="0"
                             Margin="4"
                             PlaceholderText="Search..."
-                            x:Name="ProblemsSearchBox"/>
+                            x:Name="ProblemsSearchBox"
+                            HorizontalAlignment="Stretch"/>
             <ComboBox PlaceholderText="Difficulty"
                       Grid.Column="1"
-                      Margin="4"/>
+                      Margin="4"
+                      ItemsSource="{x:Bind Difficulties}"
+                      HorizontalAlignment="Stretch"/>
             <ComboBox PlaceholderText="Status"
                       Grid.Column="2"
-                      Margin="4"/>
+                      Margin="4"
+                      ItemsSource="{x:Bind Statuses}"
+                      HorizontalAlignment="Stretch"/>
             <ComboBox PlaceholderText="Tag"
                       Grid.Column="3"
-                      Margin="4"/>
-            <ComboBox PlaceholderText="Lists"
+                      Margin="4"
+                      HorizontalAlignment="Stretch"/>
+            <ComboBox PlaceholderText="List"
+                      x:Name="ListComboBox"
                       Grid.Column="4"
                       Margin="4"
-                      ItemsSource="{x:Bind Lists}"/>
-            <ToggleButton Content="Edit"
-                          Grid.Column="5"
-                          Margin="4"
-                          x:Name="SelectProblemsToggleButton"
-                          Click="SelectProblemsToggleButton_Click"/>
+                      ItemsSource="{x:Bind Lists}"
+                      RightTapped="ListComboBox_RightTapped"
+                      HorizontalAlignment="Stretch"/>
+            <Button Content="Edit"
+                    Grid.Column="5"
+                    Margin="4"
+                    x:Name="EditButton"
+                    HorizontalAlignment="Stretch"
+                    IsEnabled="False"/>
             <DropDownButton Content="Create"
                             Grid.Column="6"
-                            Margin="4">
+                            Margin="4"
+                            HorizontalAlignment="Stretch">
                 <DropDownButton.Flyout>
                     <MenuFlyout Placement="Bottom">
                         <MenuFlyoutItem Text="New Problem"/>
@@ -62,10 +73,11 @@
             </DropDownButton>
         </Grid>
         <ListView x:Name="ProblemsListView"
-                  SelectionMode="None"
+                  SelectionMode="Extended"
                   ItemsSource="{x:Bind ProblemListViewItemList, Mode=OneWay}"
                   Grid.Row="1"
-                  Width="auto">
+                  Width="auto"
+                  RightTapped="ProblemsListView_RightTapped">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -80,35 +92,57 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock x:Name="ProblemNameTextBlock"
                                    Text="{x:Bind Name}"
                                    Grid.Column="0"
                                    HorizontalAlignment="Left"
-                                   Margin="4"/>
+                                   VerticalAlignment="Center"/>
                         <TextBlock x:Name="ProblemDifficultyTextBlock"
-                                   Text="{x:Bind difficulty}"
+                                   Text="Easy"
                                    Grid.Column="1"
                                    HorizontalAlignment="Left"
-                                   Margin="4"/>
+                                   VerticalAlignment="Center"
+                                   Margin="16 0 0 0"/>
                         <TextBlock x:Name="ProblemStatusTextBlock"
-                                   Text="{x:Bind status}"
+                                   Text="ToDo"
                                    Grid.Column="2"
                                    HorizontalAlignment="Left"
-                                   Margin="4"/>
+                                   VerticalAlignment="Center"
+                                   Margin="16 0 0 0"/>
                         <TextBlock x:Name="ProblemTagTextBlock"
-                                   Text="{x:Bind status}"
+                                   Text="Tag1"
                                    Grid.Column="3"
+                                   Grid.ColumnSpan="3"
                                    HorizontalAlignment="Left"
-                                   Margin="4"/>
+                                   VerticalAlignment="Center"
+                                   TextTrimming="CharacterEllipsis"
+                                   Margin="16 0 0 0"/>
                         <Button x:Name="StartProblemButton" 
-                                Grid.Column="4"
+                                Grid.Column="6"
                                 Content="Start"
-                                HorizontalAlignment="Right"
-                                Margin="4"/>
+                                HorizontalAlignment="Stretch"
+                                Margin="12 0 0 0">
+                        </Button>
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
+            <ListView.Resources>
+                <MenuFlyout x:Name="SingleSelectedMenuFlyout">
+                    <MenuFlyout.Items>
+                        <MenuFlyoutItem Text="Edit" />
+                        <MenuFlyoutItem Text="Delete" />
+                    </MenuFlyout.Items>
+                </MenuFlyout>
+                <MenuFlyout x:Name="MultipleSelectedMenuFlyout">
+                    <MenuFlyout.Items>
+                        <MenuFlyoutItem Text="Delete" />
+                        <MenuFlyoutItem Text="Create Problem List..." />
+                    </MenuFlyout.Items>
+                </MenuFlyout>
+            </ListView.Resources>
         </ListView>
     </Grid>
 </Page>
