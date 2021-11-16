@@ -17,20 +17,21 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
+        <Grid Grid.Row="0"
+              HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
-            <ComboBox PlaceholderText="Lists"
-                      Grid.Column="0"
-                      Margin="4"
-                      ItemsSource="{x:Bind Lists}"/>
+            <AutoSuggestBox Grid.Column="0"
+                            Margin="4"
+                            PlaceholderText="Search..."
+                            x:Name="ProblemsSearchBox"/>
             <ComboBox PlaceholderText="Difficulty"
                       Grid.Column="1"
                       Margin="4"/>
@@ -40,11 +41,11 @@
             <ComboBox PlaceholderText="Tag"
                       Grid.Column="3"
                       Margin="4"/>
-            <AutoSuggestBox Grid.Column="4"
-                            Margin="4"
-                            PlaceholderText="Search..."
-                            x:Name="ProblemsSearchBox"/>
-            <ToggleButton Content="Select"
+            <ComboBox PlaceholderText="Lists"
+                      Grid.Column="4"
+                      Margin="4"
+                      ItemsSource="{x:Bind Lists}"/>
+            <ToggleButton Content="Edit"
                           Grid.Column="5"
                           Margin="4"
                           x:Name="SelectProblemsToggleButton"
@@ -74,37 +75,37 @@
                 <DataTemplate x:Name="SingleLineDataTemplate" x:DataType="models:Problem">
                     <Grid>
                         <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock x:Name="ProblemNameTextBlock"
                                    Text="{x:Bind Name}"
                                    Grid.Column="0"
+                                   HorizontalAlignment="Left"
                                    Margin="4"/>
                         <TextBlock x:Name="ProblemDifficultyTextBlock"
                                    Text="{x:Bind difficulty}"
                                    Grid.Column="1"
+                                   HorizontalAlignment="Left"
                                    Margin="4"/>
                         <TextBlock x:Name="ProblemStatusTextBlock"
                                    Text="{x:Bind status}"
                                    Grid.Column="2"
+                                   HorizontalAlignment="Left"
                                    Margin="4"/>
-                        <RelativePanel Grid.Column="3">
-                            <Button x:Name="StartProblemButton" 
+                        <TextBlock x:Name="ProblemTagTextBlock"
+                                   Text="{x:Bind status}"
+                                   Grid.Column="3"
+                                   HorizontalAlignment="Left"
+                                   Margin="4"/>
+                        <Button x:Name="StartProblemButton" 
+                                Grid.Column="4"
                                 Content="Start"
-                                RelativePanel.AlignRightWithPanel="True"
+                                HorizontalAlignment="Right"
                                 Margin="4"/>
-                            <Button x:Name="EditProblemButton"
-                                Content="Edit"
-                                RelativePanel.LeftOf="StartProblemButton"
-                                Margin="4"/>
-                            <Button x:Name="DeleteProblemButton"
-                                Content="Delete"
-                                RelativePanel.LeftOf="EditProblemButton"
-                                Margin="4"/>
-                        </RelativePanel>
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>

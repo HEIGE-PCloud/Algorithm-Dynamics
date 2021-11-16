@@ -29,6 +29,7 @@ namespace Algorithm_Dynamics
         /// will be used such as when the application is launched to open a specific file.
         /// </summary>
         /// <param name="args">Details about the launch request and process.</param>
+        [SupportedOSPlatform("windows10.0.10240.0")]
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
             PrepareSourceCodeFile();
@@ -36,13 +37,10 @@ namespace Algorithm_Dynamics
             m_window.Activate();
         }
 
-        private async void PrepareSourceCodeFile()
+        private void PrepareSourceCodeFile()
         {
             StorageFolder TemporaryFolder = ApplicationData.Current.TemporaryFolder;
-            StorageFile SourceCodeFile = await TemporaryFolder.CreateFileAsync("sol.txt", CreationCollisionOption.ReplaceExisting);
-            Judger.SourceCodeFilePath = SourceCodeFile.Path;
-            Judger.SourceCodeFolderPath = TemporaryFolder.Path;
-            Judger.ExecutableFilePath = SourceCodeFile.Path.Replace("sol.txt", "sol.exe");
+            Judger.SetSourceCodeFilePath(TemporaryFolder.Path, "sol");
         }
 
         internal Window m_window;
