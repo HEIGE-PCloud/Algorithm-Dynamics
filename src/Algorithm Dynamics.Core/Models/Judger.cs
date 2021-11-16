@@ -11,9 +11,9 @@ namespace Algorithm_Dynamics.Core.Models
 {
     public static class Judger
     {
-        public static string SourceCodeFilePath { get; set; }
-        public static string SourceCodeFolderPath { get; set; }
-        public static string ExecutableFilePath { get; set; }
+        private static string _SourceCodeFilePath;
+        private static string _SourceCodeFolderPath;
+        private static string _ExecutableFilePath;
         private static string _StandardOutput;
         private static string _StandardError;
         private static string _CompilationOutput;
@@ -24,8 +24,8 @@ namespace Algorithm_Dynamics.Core.Models
             {
                 StartInfo = new ProcessStartInfo
                 {
-                    FileName = language.CompileCommand.Replace("{SourceCodeFilePath}", SourceCodeFilePath).Replace("{ExecutableFilePath}", ExecutableFilePath),
-                    Arguments = language.CompileArguments.Replace("{SourceCodeFilePath}", SourceCodeFilePath).Replace("{ExecutableFilePath}", ExecutableFilePath),
+                    FileName = language.CompileCommand.Replace("{SourceCodeFilePath}", _SourceCodeFilePath).Replace("{ExecutableFilePath}", _ExecutableFilePath),
+                    Arguments = language.CompileArguments.Replace("{SourceCodeFilePath}", _SourceCodeFilePath).Replace("{ExecutableFilePath}", _ExecutableFilePath),
                     UseShellExecute = false,
                     CreateNoWindow = true,
                     RedirectStandardOutput = true,
@@ -48,8 +48,8 @@ namespace Algorithm_Dynamics.Core.Models
             {
                 StartInfo = new ProcessStartInfo
                 {
-                    FileName = language.RunCommand.Replace("{SourceCodeFilePath}", SourceCodeFilePath).Replace("{ExecutableFilePath}", ExecutableFilePath),
-                    Arguments = language.RunArguments.Replace("{SourceCodeFilePath}", SourceCodeFilePath).Replace("{ExecutableFilePath}", ExecutableFilePath),
+                    FileName = language.RunCommand.Replace("{SourceCodeFilePath}", _SourceCodeFilePath).Replace("{ExecutableFilePath}", _ExecutableFilePath),
+                    Arguments = language.RunArguments.Replace("{SourceCodeFilePath}", _SourceCodeFilePath).Replace("{ExecutableFilePath}", _ExecutableFilePath),
                     UseShellExecute = false,
                     RedirectStandardInput = true,
                     RedirectStandardOutput = true,
@@ -72,16 +72,16 @@ namespace Algorithm_Dynamics.Core.Models
         }
         public static void SetSourceCodeFilePath(string FolderPath, string FileName)
         {
-            SourceCodeFolderPath = FolderPath;
-            SourceCodeFilePath = Path.Combine(FolderPath, FileName) + ".txt";
-            ExecutableFilePath = Path.Combine(FolderPath, FileName) + ".exe";
+            _SourceCodeFolderPath = FolderPath;
+            _SourceCodeFilePath = Path.Combine(FolderPath, FileName) + ".txt";
+            _ExecutableFilePath = Path.Combine(FolderPath, FileName) + ".exe";
         }
         public async static Task<SubmissionResult> RunCode(string UserCode, string Input, Language language)
         {
             clear();
             SubmissionResult result = new();
-            Directory.CreateDirectory(SourceCodeFolderPath);
-            await File.WriteAllTextAsync(SourceCodeFilePath, UserCode);
+            Directory.CreateDirectory(_SourceCodeFolderPath);
+            await File.WriteAllTextAsync(_SourceCodeFilePath, UserCode);
             if (language.NeedCompile)
             {
                 if (await Compile(language) != 0)

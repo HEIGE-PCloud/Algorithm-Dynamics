@@ -419,11 +419,11 @@ There are only buttons in the NavigationView for the user to click, so only vali
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{HomePage-design}
 
-On the top of the HomePage, there will be a beautiful background image under the `Algorithm Dynamics' title. This makes the interface looks pretty. Let users have a good mood every time they open this software.
+The HomePage is the first page gets displayed to the user. On the top of the HomePage, there will be a beautiful background image under the `Algorithm Dynamics' title. On the buttom, there are 10 userful buttons link to different functions.
 
 \subsubsection{Usability feature}
 
-The bottom half of the HomePage will be filled with buttons link to different functions of the software. The `Random' button starts a random problem for the user. The `Import' button calls the system file explorer for the user to import problems, problem lists, or assignments. The `Playground', `Problems', `Assignments' and `Account' button links the user to the corresponding page. The three buttons at the end link to three useful websites, when users click the button, the default web browser will be called and direct to these websites, which makes it easy for the user to look up speifications and revise content. All the useful functions of the software are grouped on the home page, which makes them easily accessible and makes the software easy to use.
+The `Random' button starts a random problem for the user. The `Import' button calls the system file explorer for the user to import problems, problem lists, or assignments. The `Playground', `Problems', `Assignments' and `Account' button links the user to the corresponding page. The three buttons at the end link to three useful websites, when users click the button, the default web browser will be called and direct to these websites, which makes it easy for the user to look up speifications and revise content. All the useful functions of the software are grouped on the home page, which makes them easily accessible and makes the software easy to use.
 
 \subsubsection{Validation}
 
@@ -447,11 +447,13 @@ Most components on this page are still buttons, user can only click them and no 
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CodingPage-design}
 
-The CodingPage is where the user works on a programming problem.
+The CodingPage is where the user works on a programming problem. It contains a question panel, a code editor and an input output error panel.
 
 \subsubsection{Usability feature}
 
-The question is displayed on the left and a code editor will be displayed on the top right. The input, output and error messages will be displayed on button right, the user can switch between them by clicking the corresponding tab. On the button, the user can select programming language use a dropdown menu, run code by clicking the run code button and submit their code for judging by clicking the submit button. The status field shows the status of the judger and 3 navigation buttons on the button right to make it easy navigating between different problems. There is a progress bar between the input output error section and the navigation buttons, it displays the judging progress.  
+The question is displayed on the left and a code editor will be displayed on the top right. The input, output and error messages will be displayed on button right, the user can switch between them by clicking the corresponding tab. On the bottom, the user can select programming language use a dropdown menu, run code by clicking the run code button and submit their code for judging by clicking the submit button. The status field shows the status of the judger and 3 navigation buttons on the button right to make it easy navigating between different problems. There is a progress bar between the input output error section and the navigation buttons, it displays the judging progress.  
+
+The code editor will support line number, basic syntax highlighting and keyboard shortcuts to make it easy to use.
 
 \subsubsection{Validaton}
 
@@ -463,17 +465,57 @@ Again, most of the components on the page are either readonly (such as the quest
 
 The AssignmentPage is where the user interact with their assignments. For student users, they can work on their assignments, for teacher users, they can create and mark assignments.
 
+\subsubsection{Usability feature}
+
+The user can switch between different tabs by clicking the navigation bar at the top. They can enter the detailed view of an assignment by clicking one assignment. A dropdown button is placed on the top right for the user to create or import new assignment.
+
+\subsubsection{Validation}
+
+There are only buttons for the user to click, so only valid actions can be taken, no further data validation is required.
+
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{AssignmentsStudentDetailsPage-design}
 
+This is the assignment details page for students, which gets displayed when a student clicks on an assignment assigned.
+
+\subsubsection{Usability feature}
+
+The descriptions and due date of the assignment is displayed on the top left. A list of problems is displayed bellow, the user can see their status and start working on one by clicking it. When the user click the start button, he will be navigated to the CodingPage and the problems will be loaded. When he finishes all problems, he can click the submit button to either submit it through API or export to a file to send to the teacher for marking.
+
+\subsubsection{Validation}
+
+There are only buttons for the user to click, so only valid actions can be taken, no further data validation is required.
+
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{AssignmentsTeacherDetailsPage-design}
+
+This is the assignment details page for teachers, which gets displayed when a teacher clicks on an assignment created.
+
+\subsubsection{Usability feature}
+
+The teacher can click the Import Submissions button to import student's submissions, or click the edit button to edit the assignment, or the export button to distribute the assignment. A
+
+All student submissions and their status will be listed on the right, the teacher can click the mark button to mark all of them automatically and click the student submission to see the code details in the CodeingPage.
+
+After marking, the teacher can click the export results button to export all student's mark into a csv file for further data analysis.
+
+\subsubsection{Validation}
+
+There are only buttons for the user to click, so only valid actions can be taken, no further data validation is required.
 
 \subsection{PlaygroundPage}
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{PlaygroundPage-design}
 
+The PlaygroundPage is a free space for the user to run any code quickly. It is essentially the same page as the CodingPage but without a coding problem. The interface is slightly changed with a larger code editor and input output panel for better user experience.
+
 \subsection{AccountPage}
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{AccountPage-design}
+
+The AccountPage is used to manage the current user and display user statistics.
+
+\subsubsection{Usability feature}
+
+\subsubsection{Validation}
 
 \subsection{SettingsPage}
 
