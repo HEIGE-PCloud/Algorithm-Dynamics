@@ -248,7 +248,7 @@ The question section contains 4 tabs, `Description' tab displays the content of 
 
 \includegraphics[width=\linewidth]{Two-Sum-LeetCode-Submission}
 
-The code editor provides line number and syntax highlighting functions. User can change their programming language with a drop-down box. LeetCode supports all mainstream programming languages. My solution should be able to support multiple programming languages as well, which allows students with different backgrounds to use it easily.
+The code editor provides line number and syntax highlighting functions. User can change their programming language with a drop-down box. LeetCode supports all mainstream programming languages. My solution should be able to support multiple programming languages as well, which allows students with different backgrounds to use them easily.
 
 On the button, the user can `Run Code' to test their code against the examples before submission, and then click the `Submit' button to submit their solution formally.
 
@@ -274,7 +274,7 @@ LeetCode does not support custom questions or any functions for educators. It is
 
 \subsection{Codeforces}
 
-Codeforces is a competitive coding platform, it is mainly used by people to hold coding competition.
+Codeforces is a competitive coding platform, it is mainly used by people to hold coding competitions.
 
 \subsubsection{Main question layout}
 
@@ -314,11 +314,11 @@ A settings page contains all the setting options for the software. Users can adj
 
 The software will be written in C\# instead of web-based which means extra software needs to be downloaded by the user. I plan to use .NET 5 runtime and WinUI 3 library for my solution, so only the Windows 10 1809 or newer Windows operating systems will be supported. This should not cause many compatibility issues since most school computers are running the required version of the operating system. Downloading extra software is inconvenient and may violate the IT security policy of some schools.
 
-The judger can only accept code submission in limited programming languages and the user may require to configure their runtime environment. Creating a compiler for `OCR Pseudocode Programming Language' is too complex for this project. I will attempt to allow the user to add their preferred programming language and write documentation for them to make the process easier.
+The judger can only accept limited programming languages and the user may require to configure their runtime environment. Creating a compiler for `OCR Pseudocode Programming Language' is too complex for this project. I will attempt to allow the user to add their preferred programming language and write documentation for them to make the process easier.
 
 Unlike LeetCode, there are no Discussion pages for users to discuss questions because it is a desktop program instead of a web one. But this is not a big problem, students and teachers should use an existing product such as Microsoft Teams which has very good support in sharing code snippets. It is unnecessary to rebuild the wheel.
 
-Distributing the questions and assignments is still something inconvenient. Currently, distributing questions and assignments requires the teacher to first export the questions and assignments, then send them to the students through email or file-sharing platforms. When the students finish working, they need to send their results back through email or other apps. I have attempted to integrate the file-sharing function with the existing platform - the Microsoft Teams Assignment function. \sout{But unfortunately, the Graph API required for this operation is still in beta version, which means it can only be tested in the development environment and cannot be used in production. So for now, the users still have to use this inconvenient way to share questions and submissions. But in the future, the integration with some existing platforms may improve the experience.} (Update: the Microsoft Teams API is out of beta, now it is possible to integrate with it)
+Distributing the questions and assignments is still inconvenient. Currently, distributing questions and assignments requires the teacher to first export the questions and assignments, then send them to the students through email or file-sharing platforms. When the students finish working, they need to send their results back through email or other apps. I have attempted to integrate the file-sharing function with the existing platform - the Microsoft Teams Assignment function. \sout{But unfortunately, the Graph API required for this operation is still in beta version, which means it can only be tested in the development environment and cannot be used in production. So for now, the users still have to use this inconvenient way to share questions and submissions. But in the future, the integration with some existing platforms may improve the experience.} (Update: the Microsoft Teams API is out of beta, now it is possible to integrate with it)
 
 There are no good ways to maintain and distribute a large question database. Computer Science teachers are required to maintain a database for their students. But this is difficult work. Creating good test cases is much time consuming than writing a mark scheme, it is very likely for a wrong solution to pass the judging if the test cases are not good enough. It relies on the teacher who creates the questions to consider everything clearly to minimize its impact.
 
@@ -372,7 +372,7 @@ The judger can only simply compare the students' output with the expected output
     \hline
     The software can mark the assignments automatically. & This automates the marking process and reduces teachers' work.\\
     \hline
-    The software can perform simple data analysis to the assignments data. & This provides teachers with an overview of students' performance on their assignments and allows them to help their students better.\\
+    The software can perform simple data analysis to the assignments data. & This provides teachers with an overview of student's performance on their assignments and allows them to help their students better.\\
     \hline
     Users can export the assignment data to CSV files. & This allows the teachers to use advanced data analysis tools and import the data into their school system.\\
     \hline
@@ -465,11 +465,11 @@ Again, most of the components on the page are either read-only (such as the ques
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{AssignmentsPage-design}
 
-The AssignmentPage is where the user interacts with the assignments. For students, they can work on their assignments; while teachers can create and mark assignments.
+The AssignmentPage is where the user interacts with the assignments. For students, they can work on their assignments; for teachers, they can create and mark assignments.
 
 \subsubsection{Usability feature}
 
-The user can switch between different tabs by clicking the navigation bar at the top. They can enter the detailed view of an assignment by clicking one assignment. A dropdown button is placed on the top right for the user to create or import a new assignment.
+The user can switch between different tabs by clicking the navigation bar at the top. They can enter the detailed view of an assignment by clicking one assignment. A dropdown button is placed on the top right for the user to create or import a new assignment. All assignments will be displayed in a list with their due date.
 
 \subsubsection{Validation}
 
@@ -477,11 +477,11 @@ There are only buttons for the user to click, so only valid actions can be taken
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{AssignmentsStudentDetailsPage-design}
 
-This is the assignment details page for students, which gets displayed when a student clicks on an assignment assigned.
+This is the assignment details page for students, which gets displayed when a student clicks on an assignment.
 
 \subsubsection{Usability feature}
 
-The descriptions and due date of the assignment is displayed on the top left. A list of problems is displayed bellow, the user can see their status and start working on one by clicking it. When the user click the start button, he will be navigated to the CodingPage and the problems will be loaded. When he finishes all problems, he can click the submit button to either submit it through API or export to a file to send to the teacher for marking.
+The descriptions and due date of the assignment are displayed on the top left. A list of problems is displayed below where the user can see their status and start working on one by clicking it. When the user clicks the start button, he will be navigated to the CodingPage and the problems will be loaded. When he finishes all problems, he can click the submit button to either submit it through API or export it to a file to send to the teacher for marking.
 
 \subsubsection{Validation}
 
@@ -489,15 +489,13 @@ There are only buttons for the user to click, so only valid actions can be taken
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{AssignmentsTeacherDetailsPage-design}
 
-This is the assignment details page for teachers, which gets displayed when a teacher clicks on an assignment created.
+This is the assignment details page for teachers, which gets displayed when a teacher clicks on an assignment.
 
 \subsubsection{Usability feature}
 
-The teacher can click the Import Submissions button to import student's submissions, or click the edit button to edit the assignment, or the export button to distribute the assignment. A
+The teacher can click the Import Submissions button to import students' submissions or click the edit button to edit the assignment, or the export button to distribute the assignment. All student submissions and their status will be listed on the right, the teacher can click the mark button to mark all of them automatically and click the student submission to see the code details in the CodeingPage.
 
-All student submissions and their status will be listed on the right, the teacher can click the mark button to mark all of them automatically and click the student submission to see the code details in the CodeingPage.
-
-After marking, the teacher can click the export results button to export all student's mark into a csv file for further data analysis.
+After marking, the teacher can click the export results button to export all student's marks into a CSV file for further data analysis.
 
 \subsubsection{Validation}
 
@@ -507,7 +505,7 @@ There are only buttons for the user to click, so only valid actions can be taken
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{PlaygroundPage-design}
 
-The PlaygroundPage is a free space for the user to run any code quickly. It is essentially the same page as the CodingPage but without a coding problem. The interface is slightly changed with a larger code editor and input output panel for better user experience.
+The PlaygroundPage is a free space for the user to run any code quickly. It is essentially the same page as the CodingPage but without a coding problem. The interface is slightly changed with a larger code editor and a separate IO panel for a better user experience.
 
 \subsection{AccountPage}
 
@@ -517,73 +515,83 @@ The AccountPage is used to manage the current user and display user statistics.
 
 \subsubsection{Usability feature}
 
-If the user has login to his Microsoft account, the avatar, username, email and role will be managed by his Microsoft Account, the edito button will navigate to Microsoft account website, and the login button will be replaced to a logout button. If the user has login locally, he can edit his information by clicking the edit button and login to Microsoft account by clicking the login button.
+If the user has login into his Microsoft account, the avatar, username, email and role will be managed by his Microsoft Account, the edit button will navigate to the Microsoft account website, and the login button will be replaced with a logout button. If the user has a login locally, he can edit his information by clicking the edit button and log in to Microsoft account by clicking the login button.
 
-Some interesting statistics will be displayed in the button.
+Some interesting statistics will be displayed on the button.
 
 \subsubsection{Validation}
 
-When the user edit his local identity, the user name will not be allowed to exceed 32 characters, and a format check will be applied to the email address.
+When the user edits his local identity, the user name will not be allowed to exceed 32 characters, and a format check will be applied to the email address.
 
 \subsection{SettingsPage}
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{SettingsPage-design}
 
+The SettingsPage is where the user adjusts software settings.
+
+\subsubsection{Usability feature}
+
+The user can adjust the colour theme of the software to use a light theme, dark theme or system default theme. The user can also change the run code time limit and programming language profiles in the SettingsPage.
+
+\subsubsection{Validation}
+
+Radio buttons are used for colour theme selection so it is impossible to enter any invalid data. A number box is used for the time limit settings so only positive integers can be input. A dropdown list is used for the programming language setting so only valid input is accepted.
+
 \subsection{CreateNewProblemPage}
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CreateNewProblemPage-design}
 
-The CreateNewProblemPage is used to create new problem. It contains multiple textboxes for the user to input problem data.
+The CreateNewProblemPage is used to create new problems. It contains multiple text boxes for the user to input problem information.
 
 This page will be reused for editing existing problems. The title will be altered correspondingly.
 
 \subsubsection{Usability feature}
 
-The Tags field will be a tokenizing text box with auto suggestion to make input faster. The Difficulty field will be a drop down list for easy selection. The Time Limit and Memory Limit field will be a number box. The user can add new test case by clicking the add button and remove existing ones by clicking the delete button. If the user click the cancel button, a flyout will be display to confirm cancelation.
+The Tags field will be a tokenizing text box with an auto suggestion dropdown menu to make input faster. The Difficulty field will have a dropdown list for easy selection. The Time Limit and Memory Limit fields will be number boxes. The user can add a new test case by clicking the add button and removing existing ones by clicking the delete button. If the user clicks the cancel button, a flyout will be displayed to confirm cancellation.
 
 \subsubsection{Validation}
 
-There are many input boxes in this page, they will all be validated. For the Problem Name field, the user can enter 32 characters at maximum. In the Tags field, the user can enter 3 tags at maximum. In the Time Limit and Memory Limit field, the user can only enter numbers.
+There are many input boxes on this page, they will all be validated. For the Problem Name field, the user can enter 32 characters at maximum. In the Tags field, the user can enter 5 tags at maximum. In the Time Limit and Memory Limit fields, the user can only enter numbers.
 
 \subsection{CreateNewProblemListPage}
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CreateNewProblemListPage-design}
 
-The CreateNewProblemListPage is used to create new problem list. It contains multiple textboxes for the user to input problem list data.
+The CreateNewProblemListPage is used to create a new problem list. It contains multiple text boxes for the user to input problem list information.
 
 The page will be reused for editing existing problem lists. The title will be altered correspondingly.
 
 \subsubsection{Usability feature}
 
-There will be an auto suggest box for the user to search for problem and add them to the list. There is a export and a save button at the button for the user to export or save the problem list. If the user click the cancel button, a flyout will be display to confirm cancelation.
+There will be an autosuggest box for the user to search for problems and add them to the list. There is an export and a save button at the button for the user to export or save the problem list. If the user clicks the cancel button, a flyout will be displayed to confirm cancellation. The test cases will be a scrollable list to display multiple test cases.
 
 \subsubsection{Validation}
 
-For the List Name field, the user can enter 32 characters at maximum.
+A similar validation is performed just like the CreateNewProblempage. For the List Name field, the user can enter 32 characters at maximum.
 
 \subsection{CreateNewAssignmentPage}
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CreateNewAssignmentPage-design}
 
-The CreateNewAssignmentPage is used to create new Assignment. It contains multiple textboxes for the user to input assignment data.
+The CreateNewAssignmentPage is used to create new assignments. It contains multiple text boxes for the user to input assignment data.
 
-The page will be reused for editing existing assignment as well. The title will be altered correspondingly.
+The page will be reused for editing existing assignments as well. The title will be altered correspondingly.
 
 \subsubsection{Usability feature}
 
-The due date will be a datetime picker, a visual calendar will be displayed for the user to pick a due date. Same auto suggest box stuff.
+The due date will be a DateTime picker, a visual calendar will be displayed for the user to pick a due date. An autosuggest search box will be placed for the user to search for problems easily.
 
 \subsubsection{Validation}
 
-The name will be validate, the due date will be validated by the picker.
+The DateTime picker will prevent invalid dates from being input, the name field will have a maximum of 32 characters limit.
 
 \subsection{Judger module}
 
-The Judger module will handle all the juding and marking tasks. It takes in a \mintinline{text}{Submission}, compile and execute the user's code, judge whether it gives the correct output.
+The Judger module will handle all the judging and marking tasks. It takes in a \mintinline{text}{Submission}, compile and execute the user's code, judges whether it gives the correct output.
 
-The Judger will take a few seconds to judge each \mintinline{text}{Submission}, while it is juding, the other parts of the software need to keep working on their tasks. So I use concurrent processing to let the Judger run parallel with the main program.
+The Judger will take a few seconds to judge each \mintinline{text}{Submission}, while it is judging, the other parts of the software need to keep working on their tasks. So I use concurrent processing to let the Judger run parallel with the main program.
 
-When judging a single \mintinline{text}{TestCase}, the Judger will first start the compiler in a new process to compile the user's code. The Judger redirects the output of the compiler to an internal string variable to store all outputs. When the compiler finishes compiling, an interrupt is triggered and the Judger will be notified that the compilation has been done. It will check the compiler's exit code and its output, if there is any compilation errors, they will be reported back. Otherwise, the Judger will run the compiled executable, and feed the input to its \mintinline{text}{stdin} and redirects all \mintinline{text}{stdout} and \mintinline{text}{stderr} to internal string variables. On top of that, the Judger will start a countdown timer in a different process to track the time. When the countdown reaches zero, an interrupt will be sent to the Judger and it will terminate user's code and report a time limit exceed error, or if the user's code finishes first, then its output will be compared with the expected output, the result and all statistics will then be reported.
+When judging a single \mintinline{text}{TestCase}, the Judger will first start the compiler in a new process to compile the user's code. The Judger redirects the output of the compiler to an internal string variable to store all outputs. When the compiler finishes compiling, an interrupt is triggered and the Judger will be notified that the compilation has been done. It will check the compiler's exit code and its output, if there are any compilation errors, they will be reported back. Otherwise, the Judger will run the compiled executable, and feed the input to its \mintinline{text}{stdin} and redirects all \mintinline{text}{stdout} and \mintinline{text}{stderr} to internal string variables. On top of that, the Judger will start a countdown timer in a different process to track the time. When the countdown reaches zero, an interrupt will be sent to the Judger and it will terminate the user's code and report a time limit exceed error, or if the user's code finishes first, then its output will be compared with the expected output, the result and all statistics will then be reported.
 
 A problem may contain multiple test cases, so all test cases will be first pushed into a judging queue, and the judger will judge them one by one.
 
@@ -596,18 +604,22 @@ The detailed judging algorithm will be explained later in the
 
 Because this software will store many complex relational data, a relational database is needed to store all the data. Since the software runs locally, and every user will have different data, instead of a central SQL Server, a local SQL Database engine is required.
 
-I choose to use SQLite to power this software. It is a small, self-contained, high-reliability, full-featured SQL Database engine, which will be enough to handle all the data storing and querying requests. Details about the desgin of the database will be described in the Data structure design section.
+I choose to use SQLite to power this software. It is a small, self-contained, high-reliability, full-featured SQL Database engine, which will be enough to handle all the data storing and querying requests. Details about the design of the database will be described in the Data structure design section.
 
-\subsection{REST API module}
+\subsection{API module}
 
-The API module will handle user login, Create and fetch assignments.
+The API module will allow the user to login to their Microsoft Education account, and interact with Education Assignment function. Users will be able to create and manage assignments using education assignments APIs provided by Microsoft.
+
+When the user click the login button in the SettingsPage, the API module will handle the login requests. When a logged in user opens the AssignmentPage, the API module will fetch all assignments. The API module will also allowing the teachers to distribute assignments directly through API calls and the students to hand in submissions without any kinds of exporting.
+
+The API module will be implemented at the end, after all local functions are working correctly. The corresponding API calls and endpoints will be discussed later.
 
 \section{Algorithm design}
 \label{sec:algorithm design}
 
 \subsection{Searchbox searching algorithm}
 
-This algorithm will be used to power all the search boxes in the software. It will be packed into a function, taking in a list of item and the searching keyword input by the user, returning a list of results. To make the software easy to use, instead of simply using a linear search and returning all matching results, the algorithm will perform some fuzzy searching, so even the word is not typed in completely, matching results will be returned.
+This algorithm will be used to power all the search boxes in the software. It will be packed into a function, taking in a list of items and the searching keyword input by the user, returning a list of results. To make the software easy to use, instead of simply using a linear search and returning all matching results, the algorithm will perform some fuzzy searching, so even the word is not typed in completely, matching results will be returned.
 
 \begin{minted}[linenos,tabsize=4,breaklines]{text}
 function search(List<string> sourceList, string keyword)
@@ -636,13 +648,13 @@ endfunction
 
 In this algorithm, I first create an empty list to store the result. Then I split the keyword into a list by space. So the keyword \mintinline{text}{"A Long Problem Name"} will be splitted into \mintinline{text}{["A", "Long", "Problem", "Name"]}.
 
-Next, I use two nested loops to perform linear search on each splitted keyword. I choose to use linear search here because the list is not sorted, so only it will work. The overall time complexity here is $O(nm)$ where $n$ is the length of the \mintinline{text}{sourceList} and $m$ is the length of \mintinline{text}{splitKeyword}. This is not very fast, but in real word use cases, both $n$ and $m$ will be very small (less than 1000), so this algorithm will be fast enough to handle most of the cases. The increase in complexity brings a better searching experience. In this way, the algorithm will be able to match keywords like \mintinline{text}{prob} to result \mintinline{text}{A Long Problem List}, while normal linear search will not be able to do this.
+Next, I use two nested loops to perform a linear search on each keyword. I choose to use the linear search here because the list is not sorted, so only it will work. The overall time complexity here is $O(nm)$ where $n$ is the length of the \mintinline{text}{sourceList} and $m$ is the length of \mintinline{text}{splitKeyword}. This is not very fast, but in realworld use cases, both $n$ and $m$ will be very small (less than 1000), so this algorithm will be fast enough to handle most of the cases. The increase in complexity brings a better searching experience. In this way, the algorithm will be able to match keywords like \mintinline{text}{prob} to result in \mintinline{text}{A Long Problem List}, while normal linear search will not be able to do this.
 
-At the end, if no item is found, a not found notice is added to the list, which will be displayed to the user.
+In the end, if no item is found, a not found notice is added to the list, which will be displayed to the user.
 
 \subsection{Judger RunCode algorithm}
 
-This algorithm is designed for the \mintinline{text}{Judger} to run a piece of code, pass input to the code and receive all the output and error. This is the basic function of the \mintinline{text}{Judger} and further judging will all based on this algorithm. An async function will be used so it will not block the main UI thread. It takes three input, \mintinline{text}{UserCode} for the code to be executed, \mintinline{text}{Input} for the input data, and TODO for the programming language. There are two types of programming languages, interpreted programming languages and complied programming languages, the procedure to run them is quite different, so I need to handle them separately. The configuration for each language is stored as \mintinline{text}{LanguageConfig}.
+This algorithm is designed for the \mintinline{text}{Judger} to run a piece of code, pass input to the code and receive all the output and error. This is the basic function of the \mintinline{text}{Judger} and further judging will all base on this algorithm. An async function will be used so it will not block the main UI thread. It takes three input, \mintinline{text}{UserCode} for the code to be executed, \mintinline{text}{Input} for the input data, and TODO for the programming language. There are two types of programming languages, interpreted programming languages and complied programming languages, the procedure to run them is quite different, so I need to handle them separately. The configuration for each language is stored as \mintinline{text}{LanguageConfig}.
 
 
 \begin{minted}[linenos,tabsize=4,breaklines]{text}
@@ -666,7 +678,7 @@ I am taking an object-oriented approach to the design of the software. This is t
 
 \subsubsection{\mintinline{text}{User}}
 
-\mintinline{text}{User} is an object used to represent the current user. Its data will be attached to each \mintinline{text}{Submission}, \mintinline{text}{Assignment} and \mintinline{text}{AssignmentSubmission}, so the user can track identities and manage the data easily. Users will be asked to enter these information when they first open the software, an instance of \mintinline{text}{User} will be created and stored into the database.
+\mintinline{text}{User} is an object used to represent the current user. Its data will be attached to each \mintinline{text}{Submission}, \mintinline{text}{Assignment} and \mintinline{text}{}, so the user can track identities and manage the data easily. Users will be asked to enter this information when they first open the software, an instance of \mintinline{text}{User} will be created and stored in the database.
 
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
@@ -698,7 +710,7 @@ A \mintinline{text}{Tag} is a label used to categorize a \mintinline{text}{Probl
 
 \subsubsection{\mintinline{text}{TestCase}}
 
-A \mintinline{text}{TestCase} is one set of test input and output, which will be used by the \mintinline{text}{Judger} to judge user's submission.
+A \mintinline{text}{TestCase} is one set of test input and output, which will be used by the \mintinline{text}{Judger} to judge the user's submission.
 
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
@@ -716,7 +728,7 @@ A \mintinline{text}{TestCase} is one set of test input and output, which will be
 
 \subsubsection{\mintinline{text}{Problem}}
 
-The \mintinline{text}{Problem} is used to store and organize the data for each individual programming question.
+The \mintinline{text}{Problem} is used to store and organize the data for each programming question.
 
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
@@ -794,7 +806,7 @@ A \mintinline{text}{Submission} is created when the user submits a code solution
 
 \subsubsection{\mintinline{text}{ProblemList}}
 
-A \mintinline{text}{ProblemList} is a list of \mintinline{text}{Problem}, which allows the user to share multiple \mintinline{text}{Problem} easily. It is also the parent of \mintinline{text}{Assignment} and provides basic functions for it. The \mintinline{text}{ProblemList} is inheriate from the \mintinline{text}{List<Problem>} class, which is provded by the .NET 5 library. \mintinline{text}{List<Problem>} provides all basic functions for a list, such as add, remove, sort and find, so I don't need to reinvent the wheel. I choose a list instead of an array because the number of \mintinline{text}{Problem} inside the list will be changed during runtime, so a list is more appropriate for my use case.
+A \mintinline{text}{ProblemList} is a list of \mintinline{text}{Problem}, which allows the user to share multiple \mintinline{text}{Problem} easily. It is also the parent of \mintinline{text}{Assignment} and provides basic functions for it. The \mintinline{text}{ProblemList} is inherited from the \mintinline{text}{List<Problem>} class, which is provided by the .NET 5 library. \mintinline{text}{List<Problem>} provides all basic functions for a list, such as add, remove, sort and find, so I don't need to reinvent the wheel. I choose a list instead of an array because the number of \mintinline{text}{Problem} inside the list will be changed during runtime, so a list is more appropriate for my use case.
 
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
@@ -818,7 +830,7 @@ An \mintinline{text}{Assignment} is a \mintinline{text}{ProblemList} which gets 
     \hline
     Variable & Data type & Justification \\
     \hline
-    \mintinline{text}{Uid} & \mintinline{text}{Guid} & The \mintinline{text}{Assignment} uses a \mintinline{text}{Guid} value for its \mintinline{text}{Uid} instead of a normal \mintinline{text}{int} value to ensure the \mintinline{text}{Uid} is unique globally. So when the user import an \mintinline{text}{Assignment} into their database, the \mintinline{text}{Uid} will not conflict with any existing values, and it will not be changed (Unlike a \mintinline{text}{ProblemList}, for which will be assigned a new \mintinline{text}{Id} when importing). The \mintinline{text}{Uid} will be referenced by the \mintinline{text}{AssignmentSubmission} so the \mintinline{text}{Judger} will be able to know which \mintinline{text}{Assignment} it is judging. \\
+    \mintinline{text}{Uid} & \mintinline{text}{Guid} & The \mintinline{text}{Assignment} uses a \mintinline{text}{Guid} value for its \mintinline{text}{Uid} instead of a normal \mintinline{text}{int} value to ensure the \mintinline{text}{Uid} is unique globally. So when the user import an \mintinline{text}{Assignment} into their database, the \mintinline{text}{Uid} will not conflict with any existing values, and it will not be changed (Unlike a \mintinline{text}{ProblemList}, for which will be assigned a new \mintinline{text}{Id} when importing). The \mintinline{text}{Uid} will be referenced by the \mintinline{text}{} so the \mintinline{text}{Judger} will be able to know which \mintinline{text}{Assignment} it is judging. \\
     \hline
     \mintinline{text}{DueDate} & \mintinline{text}{DateTime} & The \mintinline{text}{DueDate} stores the time for the due date of the \mintinline{text}{Assignment}. Instead of using a \mintinline{text}{string} or an \mintinline{text}{int} value, I decide to use the native data type \mintinline{text}{DateTime} provided by C\#, which makes it easier to process date time, and prevent all formating issues. \\
     \hline
@@ -830,19 +842,19 @@ An \mintinline{text}{Assignment} is a \mintinline{text}{ProblemList} which gets 
     \hline
 \end{tabulary}
 
-\subsubsection{\mintinline{text}{AssignmentSubmission}}
+\subsubsection{\mintinline{text}{}}
 
-When a student finishes an \mintinline{text}{Assignment}, an \mintinline{text}{AssignmentSubmission} is created for the \mintinline{text}{Judger} to judge. The \mintinline{text}{AssignmentSubmission} can either be exported to file and sent to the teacher, or it can be uploaded using API. The teacher imports the \mintinline{text}{AssignmentSubmission} or uses API to load it, and the \mintinline{text}{Judger} will be able to mark it and return the result.
+When a student finishes an \mintinline{text}{Assignment}, an \mintinline{text}{} is created for the \mintinline{text}{Judger} to judge. The \mintinline{text}{} can either be exported to file and sent to the teacher, or it can be uploaded using API. The teacher imports the \mintinline{text}{} or uses API to load it, and the \mintinline{text}{Judger} will be able to mark it and return the result.
 
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
     Variable & Data type & Justification \\
     \hline
-    \mintinline{text}{Uid} & \mintinline{text}{Guid} & The \mintinline{text}{AssignmentSubmission} uses a \mintinline{text}{Guid} value for its \mintinline{text}{Uid} instead of a normal \mintinline{text}{int} value to ensure the \mintinline{text}{Uid} is unique globally. So when teachers import an \mintinline{text}{AssignmentSubmission} into their database, the \mintinline{text}{Uid} will not conflict with any existing values, and it will not be changed. \\
+    \mintinline{text}{Uid} & \mintinline{text}{Guid} & The \mintinline{text}{} uses a \mintinline{text}{Guid} value for its \mintinline{text}{Uid} instead of a normal \mintinline{text}{int} value to ensure the \mintinline{text}{Uid} is unique globally. So when teachers import an \mintinline{text}{} into their database, the \mintinline{text}{Uid} will not conflict with any existing values, and it will not be changed. \\
     \hline
-    \mintinline{text}{Submitter} & \mintinline{text}{User} & The user information is collected when exporting an \mintinline{text}{AssignmentSubmission}, so the teacher will be able to know who is the \mintinline{text}{Submitter}. This field needs to be normalized into \mintinline{text}{User.Uid} before storing into the database. \\
+    \mintinline{text}{Submitter} & \mintinline{text}{User} & The user information is collected when exporting an \mintinline{text}{}, so the teacher will be able to know who is the \mintinline{text}{Submitter}. This field needs to be normalized into \mintinline{text}{User.Uid} before storing into the database. \\
     \hline
-    \mintinline{text}{Assignment} & \mintinline{text}{Assignment} & The \mintinline{text}{Assignment} corresponding to this \mintinline{text}{AssignmentSubmission} is recorded, so the \mintinline{text}{Judger} knows how to judge it. This field needs to be normalized into \mintinline{text}{Assignment.Uid} before storing into the database. \\
+    \mintinline{text}{Assignment} & \mintinline{text}{Assignment} & The \mintinline{text}{Assignment} corresponding to this \mintinline{text}{} is recorded, so the \mintinline{text}{Judger} knows how to judge it. This field needs to be normalized into \mintinline{text}{Assignment.Uid} before storing into the database. \\
     \hline
     \mintinline{text}{Submissions} & \mintinline{text}{List<Submission>} & \mintinline{text}{Submissions} stores a list of \mintinline{text}{Submission}, which contains the user's \mintinline{text}{Submission} for each \mintinline{text}{Problem} assigned. \\
     \hline
@@ -896,9 +908,11 @@ When the \mintinline{text}{Judger} finishes judging a \mintinline{text}{Submissi
     \hline
  \end{tabulary}
 
-\subsubsection{\mintinline{text}{AssignmentSubmissionResult}}
+\subsubsection{\mintinline{text}{Result}}
 
-When the \mintinline{text}{Judger} finishes judging a \mintinline{text}{AssignmentSubmission}, a \mintinline{text}{SubmissionResult} is created and stored. It includes the result and statistics about the \mintinline{text}{AssignmentSubmission}.
+When the \mintinline{text}{Judger} finishes judging, a \mintinline{text}{Result} is created and stored.
+
+It includes the result and statistics about the \mintinline{text}{}.
 
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
@@ -906,7 +920,7 @@ When the \mintinline{text}{Judger} finishes judging a \mintinline{text}{Assignme
     \hline
     \mintinline{text}{Uid} & \mintinline{text}{Guid} & It uses a \mintinline{text}{Guid} value for its \mintinline{text}{Uid} instead of a normal \mintinline{text}{int} value to ensure the \mintinline{text}{Uid} is unique globally. \\
     \hline
-    \mintinline{text}{AssignmentSubmission} & \mintinline{text}{AssignmentSubmission} & It stores the corresponding submission of this result. It needs to be normalized into the \mintinline{text}{Id} before storing into the database. \\
+    \mintinline{text}{} & \mintinline{text}{} & It stores the corresponding submission of this result. It needs to be normalized into the \mintinline{text}{Id} before storing into the database. \\
     \hline
     \mintinline{text}{SubmisionResults} & \mintinline{text}{List<SubmissionResult>} & It is a list of \mintinline{text}{SubmissionResult}, storing result of each individual \mintinline{text}{Submission}. \\
     \hline
@@ -945,19 +959,19 @@ The settings will be stored in a JSON file.
 
 The \mintinline{text}{Theme} field stores the current color theme. There are three possible values, \mintinline{text}{Light}, \mintinline{text}{Dark} or \mintinline{text}{Default}. The data will be validated before applying, if it is empty or invalid, the \mintinline{text}{Default} theme will be applyed and write back to this field.
 
-The \mintinline{text}{SelectedLanguage} field stores the default programming language selected by the user. The value will be validated before applying, if it is empty or invalid, the internal default Python progrmaming language configuration will be applied and write back to this field.
+The \mintinline{text}{SelectedLanguage} field stores the default programming language selected by the user. The value will be validated before applying, if it is empty or invalid, the internal default Python programming language configuration will be applied and written back to this field.
 
-The \mintinline{text}{LanguageConfiguration} is a list of dictionarys allowing the user to configure custom programming languages. The data will be validated before applying, if a configuration is invalid, it will be ignored.
+The \mintinline{text}{LanguageConfiguration} is a list of dictionary allowing the user to configure custom programming languages. The data will be validated before applying, if a configuration is invalid, it will be ignored.
 
-The \mintinline{text}{CurrentUser} field stores the \mintinline{text}{Uid} of the \mintinline{text}{User}. The data will be validated. If the \mintinline{text}{Uid} is not found in the database or the field is empty, the user will be asked to login and a new value will be generated and written back to this field.
+The \mintinline{text}{CurrentUser} field stores the \mintinline{text}{Uid} of the \mintinline{text}{User}. The data will be validated. If the \mintinline{text}{Uid} is not found in the database or the field is empty, the user will be asked to log in and a new value will be generated and written back to this field.
 
-The entire JSON file will be validated before any data is fetched. If the file does not exist, a default template will be created. If the format or the encoding is wrong, a default templete will override the incorrect file.
+The entire JSON file will be validated before any data is fetched. If the file does not exist, a default template will be created. If the format or the encoding is wrong, a default template will override the incorrect file.
 
 \subsection{Database design}
 
 \subsubsection{User table}
 
-The User table will have \mintinline{text}{Uid} as its primary key. Since Sqlite does not support \mintinline{text}{Guid} data type natively, it will be converted into a string for storage. Same reason why the Role is stored in integer, and because the enumeration type is implemented in integer under the hood, there is no data converstion issue.
+The User table will have \mintinline{text}{Uid} as its primary key. Since SQLite does not support \mintinline{text}{Guid} data type natively, it will be converted into a string for storage. The same reason why the Role is stored in integer, and because the enumeration type is implemented in integer under the hood, there is no data conversion issue.
 
 All fields will be validated and no empty field is allowed.
 
@@ -987,11 +1001,19 @@ The Problem table will have an auto increment integer \mintinline{text}{Id} as i
 
 All fields will be validated and no empty field is allowed.
 
-\begin{tabulary}{\textwidth}{|L|L|L|L|L|L|L|}
+\begin{tabulary}{\textwidth}{|L|L|L|L|}
     \hline
-    Id & Name & Description & Status & Difficulty & TimeLimit & MemoryLimit \\
+    Id & Name & Description & Status  \\
     \hline
-    1 & ``name'' & ``...'' & 0 & 0 & 1000 & 1000 \\
+    1 & ``name'' & ``...'' & 0 \\
+    \hline
+\end{tabulary}
+
+\begin{tabulary}{\textwidth}{|L|L|L|}
+    \hline
+    Difficulty & TimeLimit & MemoryLimit \\
+    \hline
+    0 & 1000 & 1000 \\
     \hline
 \end{tabulary}
 
@@ -1010,7 +1032,7 @@ CREATE TABLE Problem
 
 \subsubsection{Tag table}
 
-The Tag table will have an auto increment integer \mintinline{text}{Id} as its primary key.
+The Tag table will have an auto-increment integer \mintinline{text}{Id} as its primary key.
 
 All fields will be validated and no empty field is allowed.
 
@@ -1032,7 +1054,7 @@ CREATE TABLE Tag
 
 \subsubsection{TestCase table}
 
-The TestCase table will have an auto increment integer \mintinline{text}{Id} as its primary key. Since Sqlite does not support boolean data type, an integer will be used to store the data of \mintinline{text}{IsExample}, 0 will represent false and 1 will represent true.
+The TestCase table will have an auto-increment integer \mintinline{text}{Id} as its primary key. Since SQLite does not support boolean data type, an integer will be used to store the data of \mintinline{text}{IsExample}, 0 will represent false and 1 will represent true.
 
 All fields will be validated and no empty field is allowed.
 
@@ -1059,7 +1081,7 @@ CREATE TABLE TestCase
 
 \subsubsection{Submission table}
 
-The Submission table will have an auto increment integer \mintinline{text}{Id} as its primary key. Since Sqlite does not support DateTime data type, the time will be converted to a string before storing. Similarly conversion will be done for Language and SubmitterId.
+The Submission table will have an auto-increment integer \mintinline{text}{Id} as its primary key. Since SQLite does not support the \mintinline{text}{DateTime} data type, the time will be converted to a string before storing. Similarly, conversion will be done for Language and SubmitterId.
 
 All fields will be validated and no empty field is allowed, except for the \mintinline{text}{Code}, empty \mintinline{text}{Submission} is allowed.
 
@@ -1106,13 +1128,13 @@ CREATE TABLE Submission
 
 \subsubsection{Assignment table}
 
-\subsubsection{AssignmentSubmission table}
+\subsubsection{ table}
 
 \subsubsection{TestCaseResult table}
 
 \subsubsection{SubmissionResult table}
 
-\subsubsection{AssignmentSubmissionResult table}
+\subsubsection{Result table}
 
 \subsubsection{ProblemTag table}
 
@@ -1145,9 +1167,9 @@ CREATE TABLE ProblemTag
 
 \subsubsection{Import/Export an Assignment}
 
-\subsubsection{Import/Export an AssignmentSubmission}
+\subsubsection{Import/Export an }
 
-\subsubsection{Import/Export an AssignmentSubmissionResult}
+\subsubsection{Import/Export an Result}
 
 \section{Development testing}
 
@@ -1203,7 +1225,7 @@ TODO: testing plan
     \hline
 \end{tabulary}
 
-\subsection{Milestone 5: Create the database}
+\subsection{Milestone 5: Create database}
 
 TODO: testing plan
 
@@ -1229,7 +1251,7 @@ TODO: testing plan
     \hline
     Test input & Expect output & Justification \\
     \hline
-    Click the login button in the Account page, and input the correct email and password. & Login successfully, the information on the Account page is updated correctly. & A normal test to make sure the software can process the login API correctly. \\
+    Click the login button on the Account page, and input the correct email and password. & Login successfully, the information on the Account page is updated correctly. & A normal test to make sure the software can process the login API correctly. \\
     \hline
 \end{tabulary}
 
