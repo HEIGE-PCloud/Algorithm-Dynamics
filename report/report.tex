@@ -933,6 +933,7 @@ The settings will be stored in a JSON file.
 \begin{minted}[linenos,tabsize=4,breaklines]{json}
 {
     "Theme": "Light",
+    "RunCodeTimeLimit": 1000,
     "SelectedLanguage": "Python",
     "LanguageConfiguration": 
     [
@@ -958,6 +959,8 @@ The settings will be stored in a JSON file.
 \end{minted}
 
 The \mintinline{text}{Theme} field stores the current color theme. There are three possible values, \mintinline{text}{Light}, \mintinline{text}{Dark} or \mintinline{text}{Default}. The data will be validated before applying, if it is empty or invalid, the \mintinline{text}{Default} theme will be applyed and write back to this field.
+
+The \mintinline{text}{RunCodeTimeLimit} field stores the max time allowed for the run code function. The data will be validated before applying, if it is not a positive integer, then a default 1000 will be applyed and write back to this field. 
 
 The \mintinline{text}{SelectedLanguage} field stores the default programming language selected by the user. The value will be validated before applying, if it is empty or invalid, the internal default Python programming language configuration will be applied and written back to this field.
 
