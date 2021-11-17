@@ -35,13 +35,13 @@ There are two types of stakeholders, Computer Science teachers, and Computer Sci
 
 \subsection{Computer Science teachers}
 
-Computer Science teachers find it is difficult to monitor their students' ability to design and implement algorithms, so they cannot provide efficient help to their students. This software allows them to create coding questions and send them to the students. After the students hand their solutions back, the software will automatically mark their answers and provide detailed statistical data with simple visualizations. This helps the teachers saving a lot of time and allows them to help the students better.
+Computer Science teachers find it is difficult to monitor their students' ability to design and implement algorithms, so they cannot provide efficient help to their students. This software allows them to create coding questions and send them to the students. After the students hand their solutions back, the software will automatically mark their answers and provide detailed statistical data with simple visualizations. This helps the teachers save a lot of time and allows them to help the students better.
 
 The stakeholder is Mr Grimwood, who is an experienced A Level Computer Science teacher who teaches a Year 12 CS group and a Year 13 CS group.
 
 \subsection{Computer Science students}
 
-Computer Science students find that they tend to lose marks on the algorithms coding questions, so they want more practice. But unlike ordinary questions, they may take a completely different approach towards the questions comparing to the mark scheme, so they do not know whether they get it correct. Students may also think they have got things right, but actually, they have made some mistakes. The software provides a free practice space that automatically marks their solutions and points out their mistakes in real-time. So the students can learn and revise more efficiently.
+Computer Science students find that they tend to lose marks on the algorithms coding questions, so they want more practice. But unlike ordinary questions, they may take a completely different approach towards the questions compared to the mark scheme, so they do not know whether they get it correct. Students may also think they have got things right, but actually, they have made some mistakes. The software provides a free practice space that automatically marks their solutions and points out their mistakes in real-time. So the students can learn and revise more efficiently.
 
 The stakeholders are Timofei and PCloud. They are both Year 13 students studying A Level Computer Science.
 
@@ -99,7 +99,7 @@ Question 1 to 3 is a series of proof-of-concept questions, which I expect my sta
     \item Have you ever heard about some online programming platforms?
     \item Have you ever tried some of the online programming platforms?
     \item If yes, what do you think about these platforms?
-    \item Do you think a similar solution can help you learning and practising?
+    \item Do you think a similar solution can help you learn and practise?
     \item If no, do you think the idea of software that provides coding questions and marks your answer instantly can help you learn and practice better?
     \item Do you have anything else to add?
 \end{enumerate}
@@ -173,20 +173,20 @@ Mr Grimwood has several valuable points here. He points out that the `partially 
 
     I enjoy the experience. They can provide instant feedback for my submissions. It provides very strong positive feedback when I solve a new question. I find myself learning faster and more efficiently with such platforms.
 
-    \item Do you think a similar solution can help you learning and practising?
+    \item Do you think a similar solution can help you learn and practise?
 
     Absolutely. The existing platforms do not provide A Level related content. So if a software solution can be altered for A Level Computer Science course, that will help a lot.
 
     \item (*) How do you think it should be optimized for A Level CS content?
 
-    You can add past exam questions practising. Add a timed practice mode will be helpful.
+    You can add past exam questions practising. Adding a timed practice mode will be helpful.
 
     \item Do you have anything else to add?
 
     No.
 \end{enumerate}
 
-PCloud confirms that such a solution will help him learning and practising more efficiently. The instant feedback of whether he gets the question correctly is very important to him. Instead of sending the user's submission to a remote server, my solution should judge the user's answer on their computer. This can avoid the instabilities caused by the remote server's availability and the network connection. He also gives me some good ideas about the content. I can add past exam questions for users to do timed practice, which enables users to practice algorithms and exam techniques at the same time.
+PCloud confirms that such a solution will help him learn and practise more efficiently. The instant feedback of whether he gets the question correctly is very important to him. Instead of sending the user's submission to a remote server, my solution should judge the user's answer on their computer. This can avoid the instabilities caused by the remote server's availability and the network connection. He also gives me some good ideas about the content. I can add past exam questions for users to do timed practice, which enables users to practice algorithms and exam techniques at the same time.
 
 \subsubsection{Computer Science student - Timofei}
 
@@ -212,7 +212,7 @@ PCloud confirms that such a solution will help him learning and practising more 
 
     I think they are quite helpful. But I find their marking is too specific, if I get a single character wrong in my output, it gets marked incorrect.
 
-    \item Do you think a similar solution can help you learning and practising?
+    \item Do you think a similar solution can help you learn and practise?
 
     Yes.
 
@@ -258,7 +258,7 @@ The split view design is clean and handy. The user can see the question and writ
 
 \includegraphics[width=\linewidth]{LeetCode-Problems}
 
-Every question in LeetCode has many different attributes (Lists, Difficulty, Status, Tags, Title, Acceptance), so it is very easy for a user to find a suitable question to practice. My solution can similarly organize the question database and provide a corresponding query interface for a better user experience. The `Pick One' button on the top right is a very handy feature as well. Users can simply click that button to start working on a quick random question. The idea of `a list of questions' is great. Users can organize a series of questions to practice and share.
+Every question in LeetCode has many different attributes (Lists, Difficulty, Status, Tags, Title, Acceptance), so it is very easy for a user to find a suitable question to practice. My solution can similarly organize the question database and provide a corresponding query interface for a better user experience. The Pick One button on the top right is a very handy feature as well. Users can simply click that button to start working on a quick random question. The idea of a list of questions is great. Users can organize a series of questions to practice and share.
 
 \subsubsection{Pricing}
 
@@ -274,7 +274,7 @@ LeetCode does not support custom questions or any functions for educators. It is
 
 \subsection{Codeforces}
 
-Codeforces is a competitive coding platform, it is mainly used by people to the held coding competition.
+Codeforces is a competitive coding platform, it is mainly used by people to hold coding competition.
 
 \subsubsection{Main question layout}
 
@@ -302,9 +302,9 @@ A problem database with a graphical user interface. The GUI will have a search b
 
 An interface for users to create new problems and share them with others. This interface will have multiple text fields for the user to input the descriptions to the problem, the expected input/output data. Then the problem is saved to the database and can be exported to a JSON file allowing the user to share it with others. Users can also create a `list' of problems and export the entire list into a JSON file and share it with others. This enables teachers to create custom problems and share them with the students. It is a core feature that differentiates my solution from the existing ones.
 
-An interface for teachers to create assignments. An assignment is a `list' of problems with some extra data, such as the due date and total mark. It can be exported to a JSON file and share with students. The student's submission will be exported into a JSON file as well and can be sent back to the teacher. The solution will also integrate with the assignment function in Microsoft Teams for Education, which makes it even easier to do. The students' submissions will be automatically marked by the software and detailed data will be provided to the teacher. A simple data analysis interface will be provided to the teacher so they can have a brief look at the result. The teacher can also export the data into a CSV file so they can import it to their school system or analysis it with professional software. This automates the entire process from creating assignments, distribute assignments, collecting assignments, and marking assignments. Teachers will have more time analysis the student's performance and provide corresponding help timely. It is a core feature that differentiates my solution from the existing ones.
+An interface for teachers to create assignments. An assignment is a `list' of problems with some extra data, such as the due date and total mark. It can be exported to a JSON file and shared with students. The student's submission will be exported into a JSON file as well and can be sent back to the teacher. The solution will also integrate with the assignment function in Microsoft Teams for Education, which makes it even easier to do. The students' submissions will be automatically marked by the software and detailed data will be provided to the teacher. A simple data analysis interface will be provided to the teacher so they can have a brief look at the result. The teacher can also export the data into a CSV file so they can import it to their school system or analysis it with professional software. This automates the entire process from creating assignments, distributing assignments, collecting assignments, and marking assignments. Teachers will have more time analysis the student's performance and provide corresponding help timely. It is a core feature that differentiates my solution from the existing ones.
 
-An interface displaying the problem and the code editor. The solution provides a `Run Code' button for the student to pre-run their code before submission, a `Submit' button for the student to submit their code. This allows the students to read the question and write their code solution without switch between different windows. The `Run Code' function also makes it easier to debug their code.
+An interface displaying the problem and the code editor. The solution provides a `Run Code' button for the student to pre-run their code before submission, a `Submit' button for the student to submit their code. This allows the students to read the question and write their code solution without switching between different windows. The `Run Code' function also makes it easier to debug their code.
 
 A playground with a code editor and runtime environment. This allows the software to be used in class teaching as well, the students can experiment with different algorithms and programming languages in the playground easily.
 
@@ -312,13 +312,13 @@ A settings page contains all the setting options for the software. Users can adj
 
 \section{Limitations}
 
-The software will be written in C\# instead of web-based which means extra software needs to be downloaded by the user. I plan to use .NET 5 runtime and WinUI 3 library for my solution, so only the Windows 10 1809 or newer Windows operating systems will be supported. This should not cause many compatibility issues since most school computers are running the required version of the operating system. Downloading an extra software is inconvenient and may violate the IT security policy of some schools.
+The software will be written in C\# instead of web-based which means extra software needs to be downloaded by the user. I plan to use .NET 5 runtime and WinUI 3 library for my solution, so only the Windows 10 1809 or newer Windows operating systems will be supported. This should not cause many compatibility issues since most school computers are running the required version of the operating system. Downloading extra software is inconvenient and may violate the IT security policy of some schools.
 
 The judger can only accept code submission in limited programming languages and the user may require to configure their runtime environment. Creating a compiler for `OCR Pseudocode Programming Language' is too complex for this project. I will attempt to allow the user to add their preferred programming language and write documentation for them to make the process easier.
 
 Unlike LeetCode, there are no Discussion pages for users to discuss questions because it is a desktop program instead of a web one. But this is not a big problem, students and teachers should use an existing product such as Microsoft Teams which has very good support in sharing code snippets. It is unnecessary to rebuild the wheel.
 
-Distribute the questions and assignments is still something inconvenient. Currently, distributing questions and assignments requires the teacher to first export the questions and assignments, then send them to the students through email or file-sharing platforms. When the students finish working, they need to send their results back through email or other apps. I have attempted to integrate the file-sharing function with the existing platform - the Microsoft Teams Assignment function. \sout{But unfortunately, the Graph API required for this operation is still in beta version, which means it can only be tested in the development environment and cannot be used in production. So for now, the users still have to use this inconvenient way to share questions and submissions. But in the future, the integration with some existing platforms may improve the experience.} (Update: the Microsoft Teams API is out of beta, now it is possible to integrate with it)
+Distributing the questions and assignments is still something inconvenient. Currently, distributing questions and assignments requires the teacher to first export the questions and assignments, then send them to the students through email or file-sharing platforms. When the students finish working, they need to send their results back through email or other apps. I have attempted to integrate the file-sharing function with the existing platform - the Microsoft Teams Assignment function. \sout{But unfortunately, the Graph API required for this operation is still in beta version, which means it can only be tested in the development environment and cannot be used in production. So for now, the users still have to use this inconvenient way to share questions and submissions. But in the future, the integration with some existing platforms may improve the experience.} (Update: the Microsoft Teams API is out of beta, now it is possible to integrate with it)
 
 There are no good ways to maintain and distribute a large question database. Computer Science teachers are required to maintain a database for their students. But this is difficult work. Creating good test cases is much time consuming than writing a mark scheme, it is very likely for a wrong solution to pass the judging if the test cases are not good enough. It relies on the teacher who creates the questions to consider everything clearly to minimize its impact.
 
@@ -368,11 +368,11 @@ The judger can only simply compare the students' output with the expected output
     \hline
     Users can create submissions for assignments and export them into a file. & This allows the students to complete and hand in assignments easily.\\
     \hline
-    Correctly access and interact with the Microsoft Teams API & Allowing teachers and students to manage assignments through Microsoft Teams.\\
+    Correctly access and interact with the Microsoft Teams API & Allow teachers and students to manage assignments through Microsoft Teams.\\
     \hline
     The software can mark the assignments automatically. & This automates the marking process and reduces teachers' work.\\
     \hline
-    The software can perform simple data analysis to the assignments data. & This provides teachers with an overview of student's performance on their assignments and allowing them to help their students better.\\
+    The software can perform simple data analysis to the assignments data. & This provides teachers with an overview of students' performance on their assignments and allows them to help their students better.\\
     \hline
     Users can export the assignment data to CSV files. & This allows the teachers to use advanced data analysis tools and import the data into their school system.\\
     \hline
@@ -386,7 +386,7 @@ The judger can only simply compare the students' output with the expected output
     \hline
     Split the core functions and class into a core library. & Allowing easier maintenance. \\
     \hline
-    Using sensible variable names and add comments to each function. & Makes the code easy to understand and make maintenance easier.\\
+    Use sensible variable names and add comments to each function. & Makes the code easy to understand and make maintenance easier.\\
     \hline
     Create CI/CD pipelines to build and deploy the application automatically. & It allows the software to be tested and deployed automatically so users always receive the latest features and security updates.\\
     \hline
@@ -399,17 +399,19 @@ All the success criteria will first be tested through the unit tests created dur
 \chapter{Design}
 \section{Decomposition}
 
+As shown in the decomposition diagram on the next page, the entire problem will be decomposed into 5 main sub-problems: user interface, judger module, database module, data structure design and API module. Each of which will be further decomposed as explained below.
+
 \includepdf[pages=-]{graphs/decomposition-design.pdf}
 
 \subsection{NavigationView}
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{NavigationView-design}
 
-The Navigation View provides a global menu for the user to navigate between different pages in the software. There are six tabs in the navigation view, ``Home'', ``Problems'', ``Assignments'', ``Playground'', ``Account'', ``Settings''. By clicking on different tab, the main frame will display the corresponding page. The current selected tab will be highlighted.
+The NavigationView provides a global menu for the user to navigate between different pages in the software. There are six tabs in the NavigationView, ``Home'', ``Problems'', ``Assignments'', ``Playground'', ``Account'', ``Settings''. By clicking on a different tab, the mainframe will display the corresponding page. The currently selected tab will be highlighted.
 
 \subsubsection{Usability feature}
 
-The entire NavigationView is a usability feature. Users can always look it up by clicking the top left button. They will be able to know where they are and navigate to other pages by one click, which makes the program easier to use.
+The entire NavigationView is a usability feature. Users can always look it up by clicking the top left button. They will be able to know where they are and navigate to other pages with one click, which makes the program easier to use.
 
 \subsubsection{Validation}
 
@@ -419,11 +421,11 @@ There are only buttons in the NavigationView for the user to click, so only vali
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{HomePage-design}
 
-The HomePage is the first page gets displayed to the user. On the top of the HomePage, there will be a beautiful background image under the `Algorithm Dynamics' title. On the buttom, there are 10 userful buttons link to different functions.
+The HomePage is the first page that gets displayed to the user. On the top of the HomePage, there will be a beautiful background image under the `Algorithm Dynamics' title. On the bottom, there are 10 useful buttons link to different functions.
 
 \subsubsection{Usability feature}
 
-The `Random' button starts a random problem for the user. The `Import' button calls the system file explorer for the user to import problems, problem lists, or assignments. The `Playground', `Problems', `Assignments' and `Account' button links the user to the corresponding page. The three buttons at the end link to three useful websites, when users click the button, the default web browser will be called and direct to these websites, which makes it easy for the user to look up speifications and revise content. All the useful functions of the software are grouped on the home page, which makes them easily accessible and makes the software easy to use.
+The `Random' button starts a random problem for the user. The `Import' button calls the system file explorer for the user to import problems, problem lists, or assignments. The `Playground', `Problems', `Assignments' and `Account' button links the user to the corresponding page. The three buttons at the end link to three useful websites, when users click the button, the default web browser will be called and directed to these websites, which makes it easy for the user to look up specifications and revise content. All the useful functions of the software are grouped on the HomePage, which makes them easily accessible and makes the software easy to use.
 
 \subsubsection{Validation}
 
@@ -433,41 +435,41 @@ There are only buttons in the HomePage for the user to click, so only valid acti
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{ProblemsPage-design}
 
-The ProblemsPage displays problems in the database. The user can search, create, edit, delete, import, export or start working on one or multiple problems on this page.
+The ProblemsPage displays all problems in the database. The user can search, create, edit, delete, import, export or start working on one or multiple problems on this page.
 
 \subsubsection{Usability feature}
 
-The user can apply selection condition by either select different fields in the dropdown boxes or directly type into the search box. A scrollable list of problems that match the conditions will be shown bellow, with detailed information. The user can start working on a problem by clicking the start button on the right. They can also right click the problem to call a context menu that includes more actions for them to delete, edit or export the problem. By clicking the select button on the top, the user can select multiple problems at once and applie the same action to them at once. By clicking the Add button on the top right, a context menu will be displayed, allowing the user to create or import new problems or problem lists. When the user is typing into the search box, a flyout will display matching results to save typing.
+The user can apply the selection condition by either selecting different fields in the dropdown boxes or directly typing into the search box. A scrollable list of problems that match the conditions will be shown below with detailed information. The user can start working on a problem by clicking the start button on the right. They can also right-click the problem to call a context menu that includes more actions for them to delete, edit or export the problem. By clicking the select button on the top, the user can select multiple problems at once and apply the same action to them at once. By clicking the Add button on the top right, a context menu will be displayed, allowing the user to create or import new problems or problem lists. When the user is typing into the search box, a flyout will display matching results to save typing. I will implement an advanced searching algorithm to improve the quality of the search results, and I will explain the algorithm in the algorithm design section.
 
 \subsubsection{Validation}
 
-Most components on this page are still buttons, user can only click them and no invalid data can be input. The search box is where the user can input some text only, first, a flyout will be displayed to promote the user to click the button instead of inputting data themselves. Next, a length check will be applied, The user can only enter a maximum of 32 characters so they cannot crash the search box and the searching algorithm. Instead of passing the search keywords directly to the database, a custom searching algorithm will be used to search and sanitise the search keyword, which prevent SQL injection and provide a better searching experience.
+Most components on this page are still buttons, users can only click them and no invalid data can be input. The search box is where the user can input some text only. First, a flyout will be displayed to promote the user to click the button instead of inputting data themselves. Next, a length check will be applied, The user can only enter a maximum of 32 characters so they cannot crash the search box or the searching algorithm. Instead of passing the search keywords directly to the database, a custom searching algorithm will be used to search and sanitise the search keyword, which prevents SQL injection and provide a better searching experience.
 
 \subsection{CodingPage}
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CodingPage-design}
 
-The CodingPage is where the user works on a programming problem. It contains a question panel, a code editor and an input output error panel.
+The CodingPage is where the user works on a programming problem. It contains a question panel, a code editor and an IO panel.
 
 \subsubsection{Usability feature}
 
-The question is displayed on the left and a code editor will be displayed on the top right. The input, output and error messages will be displayed on button right, the user can switch between them by clicking the corresponding tab. On the bottom, the user can select programming language use a dropdown menu, run code by clicking the run code button and submit their code for judging by clicking the submit button. The status field shows the status of the judger and 3 navigation buttons on the button right to make it easy navigating between different problems. There is a progress bar between the input output error section and the navigation buttons, it displays the judging progress.  
+The question is displayed on the left and a code editor will be displayed on the top right. The input, output and error messages will be displayed on the button right, the user can switch between them by clicking the corresponding tab. On the bottom, the user can select programming language using a dropdown menu, run code by clicking the run code button and submit their code for judging by clicking the submit button. The status field shows the status of the judger and 3 navigation buttons on the button right to make it easy to navigate between different problems. There is a progress bar between the IO panel and the navigation buttons, it displays the judging progress.
 
-The code editor will support line number, basic syntax highlighting and keyboard shortcuts to make it easy to use.
+The code editor will support line numbers, basic syntax highlighting and keyboard shortcuts to make it easy to use.
 
 \subsubsection{Validaton}
 
-Again, most of the components on the page are either readonly (such as the question section) or buttons. The code editor is the only place for the user to input text, and the text inside will be validate by the compiler or ther intrepreter of the selected programming language. However, the input, output and error panel requires further validation. To prevent the user from printing out a huge amount of data which might results in poor performance, the input output error panel will perform a length check and only display the first 2048 characters of the output. 
+Again, most of the components on the page are either read-only (such as the question section) or buttons. The code editor is the only place for the user to input text, and the text inside will be validated by the compiler or the interpreter of the selected programming language. However, the IO panel requires further validation. To prevent the user from printing out a huge amount of data which might result in poor performance, the IO panel will perform a length check and only display the first 2048 characters of the output.
 
 \subsection{AssignmentsPage}
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{AssignmentsPage-design}
 
-The AssignmentPage is where the user interact with their assignments. For student users, they can work on their assignments, for teacher users, they can create and mark assignments.
+The AssignmentPage is where the user interacts with the assignments. For students, they can work on their assignments; while teachers can create and mark assignments.
 
 \subsubsection{Usability feature}
 
-The user can switch between different tabs by clicking the navigation bar at the top. They can enter the detailed view of an assignment by clicking one assignment. A dropdown button is placed on the top right for the user to create or import new assignment.
+The user can switch between different tabs by clicking the navigation bar at the top. They can enter the detailed view of an assignment by clicking one assignment. A dropdown button is placed on the top right for the user to create or import a new assignment.
 
 \subsubsection{Validation}
 
@@ -515,7 +517,13 @@ The AccountPage is used to manage the current user and display user statistics.
 
 \subsubsection{Usability feature}
 
+If the user has login to his Microsoft account, the avatar, username, email and role will be managed by his Microsoft Account, the edito button will navigate to Microsoft account website, and the login button will be replaced to a logout button. If the user has login locally, he can edit his information by clicking the edit button and login to Microsoft account by clicking the login button.
+
+Some interesting statistics will be displayed in the button.
+
 \subsubsection{Validation}
+
+When the user edit his local identity, the user name will not be allowed to exceed 32 characters, and a format check will be applied to the email address.
 
 \subsection{SettingsPage}
 
@@ -525,23 +533,64 @@ The AccountPage is used to manage the current user and display user statistics.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CreateNewProblemPage-design}
 
-\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CreateNewProblemPage-Expand-design}
+The CreateNewProblemPage is used to create new problem. It contains multiple textboxes for the user to input problem data.
+
+This page will be reused for editing existing problems. The title will be altered correspondingly.
+
+\subsubsection{Usability feature}
+
+The Tags field will be a tokenizing text box with auto suggestion to make input faster. The Difficulty field will be a drop down list for easy selection. The Time Limit and Memory Limit field will be a number box. The user can add new test case by clicking the add button and remove existing ones by clicking the delete button. If the user click the cancel button, a flyout will be display to confirm cancelation.
+
+\subsubsection{Validation}
+
+There are many input boxes in this page, they will all be validated. For the Problem Name field, the user can enter 32 characters at maximum. In the Tags field, the user can enter 3 tags at maximum. In the Time Limit and Memory Limit field, the user can only enter numbers.
 
 \subsection{CreateNewProblemListPage}
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CreateNewProblemListPage-design}
 
+The CreateNewProblemListPage is used to create new problem list. It contains multiple textboxes for the user to input problem list data.
+
+The page will be reused for editing existing problem lists. The title will be altered correspondingly.
+
+\subsubsection{Usability feature}
+
+There will be an auto suggest box for the user to search for problem and add them to the list. There is a export and a save button at the button for the user to export or save the problem list. If the user click the cancel button, a flyout will be display to confirm cancelation.
+
+\subsubsection{Validation}
+
+For the List Name field, the user can enter 32 characters at maximum.
+
 \subsection{CreateNewAssignmentPage}
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CreateNewAssignmentPage-design}
+
+The CreateNewAssignmentPage is used to create new Assignment. It contains multiple textboxes for the user to input assignment data.
+
+The page will be reused for editing existing assignment as well. The title will be altered correspondingly.
+
+\subsubsection{Usability feature}
+
+The due date will be a datetime picker, a visual calendar will be displayed for the user to pick a due date. Same auto suggest box stuff.
+
+\subsubsection{Validation}
+
+The name will be validate, the due date will be validated by the picker.
 
 \subsection{Judger module}
 
 The Judger module will handle all the juding and marking tasks. It takes in a \mintinline{text}{Submission}, compile and execute the user's code, judge whether it gives the correct output.
 
-I use concurrent processing to make sure the Judger runs smoothly. Because the Judger will take several seconds to judge each submission, the UI thread will be blocked and frozen if the Judger runs in the UI thread. Instead, a new process will be created for the user's code to run, and the Judger will provide the input and monitor the output of that separate process asynchronously, so the UI will still run smoothly while judging.
+The Judger will take a few seconds to judge each \mintinline{text}{Submission}, while it is juding, the other parts of the software need to keep working on their tasks. So I use concurrent processing to let the Judger run parallel with the main program.
 
-The judging algorithm will be explained later in the \hyperref[sec:algorithm design]{Algorithm design section}.
+When judging a single \mintinline{text}{TestCase}, the Judger will first start the compiler in a new process to compile the user's code. The Judger redirects the output of the compiler to an internal string variable to store all outputs. When the compiler finishes compiling, an interrupt is triggered and the Judger will be notified that the compilation has been done. It will check the compiler's exit code and its output, if there is any compilation errors, they will be reported back. Otherwise, the Judger will run the compiled executable, and feed the input to its \mintinline{text}{stdin} and redirects all \mintinline{text}{stdout} and \mintinline{text}{stderr} to internal string variables. On top of that, the Judger will start a countdown timer in a different process to track the time. When the countdown reaches zero, an interrupt will be sent to the Judger and it will terminate user's code and report a time limit exceed error, or if the user's code finishes first, then its output will be compared with the expected output, the result and all statistics will then be reported.
+
+A problem may contain multiple test cases, so all test cases will be first pushed into a judging queue, and the judger will judge them one by one.
+
+Similarly, an assignment may contain multiple problems, all problems will be first pushed into a problem queue, and each problem will be processed one by one.
+
+The detailed judging algorithm will be explained later in the 
+\hyperref[sec:algorithm design]{Algorithm design section}.
 
 \subsection{Database module}
 
