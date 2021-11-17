@@ -678,7 +678,7 @@ I am taking an object-oriented approach to the design of the software. This is t
 
 \subsubsection{\mintinline{text}{User}}
 
-\mintinline{text}{User} is an object used to represent the current user. Its data will be attached to each \mintinline{text}{Submission}, \mintinline{text}{Assignment} and \mintinline{text}{}, so the user can track identities and manage the data easily. Users will be asked to enter this information when they first open the software, an instance of \mintinline{text}{User} will be created and stored in the database.
+\mintinline{text}{User} is an object used to represent the current user. Its data will be attached to each \mintinline{text}{Submission}, \mintinline{text}{Assignment} and \mintinline{text}{AssignmentSubmission}, so the user can track identities and manage the data easily. Users will be asked to enter this information when they first open the software, an instance of \mintinline{text}{User} will be created and stored in the database.
 
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
@@ -830,7 +830,7 @@ An \mintinline{text}{Assignment} is a \mintinline{text}{ProblemList} which gets 
     \hline
     Variable & Data type & Justification \\
     \hline
-    \mintinline{text}{Uid} & \mintinline{text}{Guid} & The \mintinline{text}{Assignment} uses a \mintinline{text}{Guid} value for its \mintinline{text}{Uid} instead of a normal \mintinline{text}{int} value to ensure the \mintinline{text}{Uid} is unique globally. So when the user import an \mintinline{text}{Assignment} into their database, the \mintinline{text}{Uid} will not conflict with any existing values, and it will not be changed (Unlike a \mintinline{text}{ProblemList}, for which will be assigned a new \mintinline{text}{Id} when importing). The \mintinline{text}{Uid} will be referenced by the \mintinline{text}{} so the \mintinline{text}{Judger} will be able to know which \mintinline{text}{Assignment} it is judging. \\
+    \mintinline{text}{Uid} & \mintinline{text}{Guid} & The \mintinline{text}{Assignment} uses a \mintinline{text}{Guid} value for its \mintinline{text}{Uid} instead of a normal \mintinline{text}{int} value to ensure the \mintinline{text}{Uid} is unique globally. So when the user import an \mintinline{text}{Assignment} into their database, the \mintinline{text}{Uid} will not conflict with any existing values, and it will not be changed (Unlike a \mintinline{text}{ProblemList}, for which will be assigned a new \mintinline{text}{Id} when importing). The \mintinline{text}{Uid} will be referenced by the \mintinline{text}{AssignmentSubmission} so the \mintinline{text}{Judger} will be able to know which \mintinline{text}{Assignment} it is judging. \\
     \hline
     \mintinline{text}{DueDate} & \mintinline{text}{DateTime} & The \mintinline{text}{DueDate} stores the time for the due date of the \mintinline{text}{Assignment}. Instead of using a \mintinline{text}{string} or an \mintinline{text}{int} value, I decide to use the native data type \mintinline{text}{DateTime} provided by C\#, which makes it easier to process date time, and prevent all formating issues. \\
     \hline
@@ -842,19 +842,19 @@ An \mintinline{text}{Assignment} is a \mintinline{text}{ProblemList} which gets 
     \hline
 \end{tabulary}
 
-\subsubsection{\mintinline{text}{}}
+\subsubsection{\mintinline{text}{AssignmentSubmission}}
 
-When a student finishes an \mintinline{text}{Assignment}, an \mintinline{text}{} is created for the \mintinline{text}{Judger} to judge. The \mintinline{text}{} can either be exported to file and sent to the teacher, or it can be uploaded using API. The teacher imports the \mintinline{text}{} or uses API to load it, and the \mintinline{text}{Judger} will be able to mark it and return the result.
+When a student finishes an \mintinline{text}{Assignment}, an \mintinline{text}{AssignmentSubmission} is created for the \mintinline{text}{Judger} to judge. The \mintinline{text}{AssignmentSubmission} can either be exported to file and sent to the teacher, or it can be uploaded using API. The teacher imports the \mintinline{text}{AssignmentSubmission} or uses API to load it, and the \mintinline{text}{Judger} will be able to mark it and return the result.
 
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
     Variable & Data type & Justification \\
     \hline
-    \mintinline{text}{Uid} & \mintinline{text}{Guid} & The \mintinline{text}{} uses a \mintinline{text}{Guid} value for its \mintinline{text}{Uid} instead of a normal \mintinline{text}{int} value to ensure the \mintinline{text}{Uid} is unique globally. So when teachers import an \mintinline{text}{} into their database, the \mintinline{text}{Uid} will not conflict with any existing values, and it will not be changed. \\
+    \mintinline{text}{Uid} & \mintinline{text}{Guid} & The \mintinline{text}{AssignmentSubmission} uses a \mintinline{text}{Guid} value for its \mintinline{text}{Uid} instead of a normal \mintinline{text}{int} value to ensure the \mintinline{text}{Uid} is unique globally. So when teachers import an \mintinline{text}{AssignmentSubmission} into their database, the \mintinline{text}{Uid} will not conflict with any existing values, and it will not be changed. \\
     \hline
-    \mintinline{text}{Submitter} & \mintinline{text}{User} & The user information is collected when exporting an \mintinline{text}{}, so the teacher will be able to know who is the \mintinline{text}{Submitter}. This field needs to be normalized into \mintinline{text}{User.Uid} before storing into the database. \\
+    \mintinline{text}{Submitter} & \mintinline{text}{User} & The user information is collected when exporting an \mintinline{text}{AssignmentSubmission}, so the teacher will be able to know who is the \mintinline{text}{Submitter}. This field needs to be normalized into \mintinline{text}{User.Uid} before storing into the database. \\
     \hline
-    \mintinline{text}{Assignment} & \mintinline{text}{Assignment} & The \mintinline{text}{Assignment} corresponding to this \mintinline{text}{} is recorded, so the \mintinline{text}{Judger} knows how to judge it. This field needs to be normalized into \mintinline{text}{Assignment.Uid} before storing into the database. \\
+    \mintinline{text}{Assignment} & \mintinline{text}{Assignment} & The \mintinline{text}{Assignment} corresponding to this \mintinline{text}{AssignmentSubmission} is recorded, so the \mintinline{text}{Judger} knows how to judge it. This field needs to be normalized into \mintinline{text}{Assignment.Uid} before storing into the database. \\
     \hline
     \mintinline{text}{Submissions} & \mintinline{text}{List<Submission>} & \mintinline{text}{Submissions} stores a list of \mintinline{text}{Submission}, which contains the user's \mintinline{text}{Submission} for each \mintinline{text}{Problem} assigned. \\
     \hline
@@ -908,11 +908,11 @@ When the \mintinline{text}{Judger} finishes judging a \mintinline{text}{Submissi
     \hline
  \end{tabulary}
 
-\subsubsection{\mintinline{text}{Result}}
+\subsubsection{\mintinline{text}{AssignmentSubmissionResult}}
 
-When the \mintinline{text}{Judger} finishes judging, a \mintinline{text}{Result} is created and stored.
+When the \mintinline{text}{Judger} finishes judging, a \mintinline{text}{AssignmentSubmissionResult} is created and stored.
 
-It includes the result and statistics about the \mintinline{text}{}.
+It includes the result and statistics about the \mintinline{text}{AssignmentSubmission}.
 
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
@@ -920,7 +920,7 @@ It includes the result and statistics about the \mintinline{text}{}.
     \hline
     \mintinline{text}{Uid} & \mintinline{text}{Guid} & It uses a \mintinline{text}{Guid} value for its \mintinline{text}{Uid} instead of a normal \mintinline{text}{int} value to ensure the \mintinline{text}{Uid} is unique globally. \\
     \hline
-    \mintinline{text}{} & \mintinline{text}{} & It stores the corresponding submission of this result. It needs to be normalized into the \mintinline{text}{Id} before storing into the database. \\
+    \mintinline{text}{AssignmentSubmission} & \mintinline{text}{AssignmentSubmission} & It stores the corresponding submission of this result. It needs to be normalized into the \mintinline{text}{Id} before storing into the database. \\
     \hline
     \mintinline{text}{SubmisionResults} & \mintinline{text}{List<SubmissionResult>} & It is a list of \mintinline{text}{SubmissionResult}, storing result of each individual \mintinline{text}{Submission}. \\
     \hline
@@ -1131,13 +1131,13 @@ CREATE TABLE Submission
 
 \subsubsection{Assignment table}
 
-\subsubsection{ table}
+\subsubsection{AssignmentSubmission table}
 
 \subsubsection{TestCaseResult table}
 
 \subsubsection{SubmissionResult table}
 
-\subsubsection{Result table}
+\subsubsection{AssignmentSubmissionResult table}
 
 \subsubsection{ProblemTag table}
 
@@ -1170,9 +1170,9 @@ CREATE TABLE ProblemTag
 
 \subsubsection{Import/Export an Assignment}
 
-\subsubsection{Import/Export an }
+\subsubsection{Import/Export an AssignmentSubmission}
 
-\subsubsection{Import/Export an Result}
+\subsubsection{Import/Export an AssignmentSubmissionResult}
 
 \section{Development testing}
 
