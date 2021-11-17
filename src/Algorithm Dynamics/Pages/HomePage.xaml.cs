@@ -26,13 +26,13 @@ namespace Algorithm_Dynamics.Pages
         {
             this.InitializeComponent();
         }
-        private async void OnItemClick(object sender, ItemClickEventArgs e)
+        private void OnItemClick(object sender, ItemClickEventArgs e)
         {
-            MainWindow m_window = (MainWindow)((App)Application.Current).m_window;
-            if (e.ClickedItem is HomePageGridItem item)
-            {
-                item?.Invoke(m_window);
-            }
+            //MainWindow m_window = (MainWindow)((App)Application.Current).m_window;
+            //if (e.ClickedItem is HomePageGridItem item)
+            //{
+            //    item?.Invoke();
+            //}
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -40,11 +40,11 @@ namespace Algorithm_Dynamics.Pages
             base.OnNavigatedTo(e);
             Source.Clear();
             Source.Add(new HomePageGridItem("Random Problem", Symbol.Home));
-            Source.Add(new HomePageGridItem("Playground", Symbol.Edit, () => (MainWindow)((App)Application.Current).m_window.SelectMenuItemIndex(3)));
-            Source.Add(new HomePageGridItem("Assignments", Symbol.Library, () => (MainWindow)((App)Application.Current).m_window.SelectMenuItemIndex(2)));
-            Source.Add(new HomePageGridItem("Problems", Symbol.List, () => (MainWindow)((App)Application.Current).m_window.SelectMenuItemIndex(1)));
-            Source.Add(new HomePageGridItem("Settings", Symbol.Setting, () => (MainWindow)((App)Application.Current).m_window.SelectSettingItem()));
-            Source.Add(new HomePageGridItem("Account", Symbol.Contact, () => (MainWindow)((App)Application.Current).m_window.SelectFooterItemIndex(0)));
+            Source.Add(new HomePageGridItem("Playground", Symbol.Edit));
+            Source.Add(new HomePageGridItem("Assignments", Symbol.Library));
+            Source.Add(new HomePageGridItem("Problems", Symbol.List));
+            Source.Add(new HomePageGridItem("Settings", Symbol.Setting));
+            Source.Add(new HomePageGridItem("Account", Symbol.Contact));
             Source.Add(new HomePageGridItem("Import", Symbol.Import));
             Source.Add(new HomePageGridItem("BBC Bitesize", Symbol.Link, async () => await Windows.System.Launcher.LaunchUriAsync(new Uri(@"https://www.bbc.co.uk/bitesize/subjects/z34k7ty"))));
             Source.Add(new HomePageGridItem("AQA A Level CS", Symbol.Link, async () => await Windows.System.Launcher.LaunchUriAsync(new Uri(@"https://www.aqa.org.uk/subjects/computer-science-and-it/as-and-a-level/computer-science-7516-7517"))));

@@ -26,6 +26,7 @@ namespace Algorithm_Dynamics.Pages
         public UserAccountPage()
         {
             this.InitializeComponent();
+
         }
     }
 }

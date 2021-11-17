@@ -5,6 +5,7 @@ using System;
 using System.Runtime.Versioning;
 
 
+
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 namespace Algorithm_Dynamics
@@ -29,7 +30,6 @@ namespace Algorithm_Dynamics
         /// will be used such as when the application is launched to open a specific file.
         /// </summary>
         /// <param name="args">Details about the launch request and process.</param>
-        [SupportedOSPlatform("windows10.0.10240.0")]
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
             PrepareSourceCodeFile();
