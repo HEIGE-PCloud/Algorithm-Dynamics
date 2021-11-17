@@ -41,13 +41,9 @@ namespace Algorithm_Dynamics
                 }
             }
         }
-        public void SetSelectedNavigationItem(int index)
-        {
-            MainNavigationView.SelectedItem = MainNavigationView.MenuItems[index];
-        }
-        public void SetSelectedNavigationItem(NavigationViewItem item)
-        {
-            MainNavigationView.SelectedItem = item;
-        }
+        public void SelectItem(NavigationViewItem item) => MainNavigationView.SelectedItem = item;
+        public void SelectMenuItemIndex(int index) => SelectItem((NavigationViewItem)MainNavigationView.MenuItems[index]);
+        public void SelectFooterItemIndex(int index) => SelectItem((NavigationViewItem)MainNavigationView.FooterMenuItems[index]);
+        public void SelectSettingItem() => MainNavigationView.SelectedItem = MainNavigationView.SettingsItem;
     }
 }

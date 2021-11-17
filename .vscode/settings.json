@@ -164,4 +164,23 @@
         }
     ],
     "latex-workshop.latex.recipe.default": "latexmk",
+    "grammarly.overrides": [
+        {
+            "files": [
+                "**/report/report.tex"
+            ],
+            "config": {
+                "audience": "general",
+                "dialect": "british",
+                "domain": "academic",
+                "emotions": [
+                    "neutral"
+                ],
+                "goals": [
+                    "describe",
+                    "tellStory"
+                ]
+            }
+        }
+    ],
 }
