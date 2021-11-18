@@ -10,7 +10,7 @@ namespace Algorithm_Dynamics.Test
         [TestMethod]
         public void TestMethod1()
         {
-            SubmissionResult result = new();
+            TestCaseResult result = new();
             result.StandardOutput = "Hello World";
             Assert.AreEqual("Hello World", result.StandardOutput);
         }
@@ -18,7 +18,7 @@ namespace Algorithm_Dynamics.Test
         public async Task TestMethod2()
         {
             Judger.SetSourceCodeFilePath("temp", "sol");
-            SubmissionResult s = await Judger.RunCode("print('hello world')", "", LanguageConfig.Python);
+            TestCaseResult s = await Judger.RunCode("print('hello world')", "", LanguageConfig.Python, 1000);
             Assert.AreEqual(s.StandardOutput, "hello world\n");
         }
         [TestMethod]
