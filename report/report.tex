@@ -695,7 +695,7 @@ partial class Judger
 endclass
 \end{minted}
 
-Now, it is ready to run the compiler. I first clear the old outputs, then set up the arguments for the compiler, next bind the two event handlers to the process and finally start the compile process.
+Now, it is ready to run the compiler. Before it can start compiling, the old outputs need to be cleaned. I design two magic variables in the language configurations allowing more flexible arguments, these magic variables need to be pre-processed before compiling. A process start info needs to be created to let the Judger know how to start the new process. After binding the event handlers, the compiler can start running.
 
 \begin{minted}[linenos,tabsize=4,breaklines]{text}
 partial class Judger
@@ -856,7 +856,7 @@ partial class Judger
 endclass
 \end{minted}
 
-Now I have everything I need to build the \mintinline{text}{RunCode} function. It takes in the user's code, input data, language configuration and time limit, outputs a test case result containing all the running information.
+Now I have everything I need to build the \mintinline{text}{RunCode} function. It takes in the user's code, input data, language configuration and time limit, outputs a \mintinline{text}{TestCaseResult} containing all the running information. I also need to set up a stopwatch to measure how long the code has been executed, unlike the timer before, this stopwatch only provide data for statistics record. At the end, the \mintinline{text}{RunCode} function will handle some basic errors, it will judge whether the user's code run, but it will not judge whether the user's code provides the correct output. The \mintinline{text}{RunCode} algorithm only runs the code and further judging will be handed over to other algorithms.
 
 \begin{minted}[linenos,tabsize=4,breaklines]{text}
 partial class Judger
@@ -919,7 +919,7 @@ endclass
 
 \subsection{Judger Judge TestCase algorithm}
 
-This algorithm is designed to allow the Judger to judge a test case. On top of the \mintinline{text}{RunCode} function, this algorithm compare user's output with the expected output, so it can judge whether the user's code works correctly. The \mintinline{text}{JudgeTestCase} function also returns a test case result, but it will contain more information.
+This algorithm is designed to allow the Judger to judge a test case. On top of the \mintinline{text}{RunCode} function, this algorithm compare user's output with the expected output, so it can judge whether the user's code works correctly. The \mintinline{text}{JudgeTestCase} function also returns a \mintinline{text}{TestCaseResult}, but it will contain more information.
 
 \begin{minted}[linenos,tabsize=4,breaklines]{text}
 partial class Judger
@@ -971,7 +971,7 @@ endclass
 
 \subsection{Judger Judge Assignment algorithm}
 
-This algorithm is designed to judge an assignment submission. I set up a judging queue and push all problems in to the queue. Then I take them out and judge them one by one. A queue is suitable for this usecase because I want the first test case entered to be judged first. An assignment submission result will be returned at the end.
+This algorithm is designed to judge an assignment submission. I set up a judging queue and push all problems in to the queue. Then I take them out and judge them one by one. A queue is suitable for this usecase because I want the first problem entered to be judged first. An assignment submission result will be returned at the end.
 
 \begin{minted}[linenos,tabsize=4,breaklines]{text}
 partial class Judger
