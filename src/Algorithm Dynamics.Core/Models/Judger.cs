@@ -138,38 +138,25 @@ namespace Algorithm_Dynamics.Core.Models
             }
             return result;
         }
-        public async static Task<SubmissionResult> JudgeProblem(Problem problem, Submission submission, Language language)
+        public async static Task<SubmissionResult> JudgeProblem(Submission Submission, Language Language)
         {
             SubmissionResult result = new();
-            result.Submission = submission;
-            Queue<TestCase> JudgeQueue = new();
-            foreach (var TestCase in problem.TestCases)
-            {
-                JudgeQueue.Enqueue(TestCase);
-            }
+            result.Submission = Submission;
+            Queue<TestCase> JudgeQueue = new(Submission.Problem.TestCases);
             while (JudgeQueue.Count > 0)
             {
-                result.TestCaseResults.Append(await RunCode(submission.Code, JudgeQueue.Dequeue().Input, language, problem.TimeLimit));
+                result.TestCaseResults.Append(await JudgeTestCase(Submission.Code, JudgeQueue.Dequeue(), Language, Submission.Problem.TimeLimit));
             }
             return result;
         }
-        public async static Task<AssignmentSubmissionResult> JudgeAssignment(Assignment assignment, AssignmentSubmission assignmentSubmission, Language language)
+        public async static Task<AssignmentSubmissionResult> JudgeAssignment(Assignment Assignment, AssignmentSubmission AssignmentSubmission, Language Language)
         {
             AssignmentSubmissionResult result = new();
-            result.AssignmentSubmission = assignmentSubmission;
-            Queue<Problem> ProblemQueue = new();
-            Queue<Submission> SubmissionQueue = new();
-            foreach (var Problem in assignment)
+            result.AssignmentSubmission = AssignmentSubmission;
+            Queue<Submission> SubmissionQueue = new(AssignmentSubmission.Submissions);
+            while (SubmissionQueue.Count > 0)
             {
-                ProblemQueue.Enqueue(Problem);
-            }
-            foreach (var Submission in assignmentSubmission.Submissions)
-            {
-                SubmissionQueue.Enqueue(Submission);
-            }
-            while (ProblemQueue.Count > 0 && SubmissionQueue.Count > 0)
-            {
-                result.SubmissionResults.Append(await JudgeProblem(ProblemQueue.Dequeue(), SubmissionQueue.Dequeue(), language));
+                result.SubmissionResults.Append(await JudgeProblem(SubmissionQueue.Dequeue(), Language));
             }
             return result;
         }
