@@ -18,7 +18,7 @@ namespace Algorithm_Dynamics.Test
         public async Task TestMethod2()
         {
             Judger.SetSourceCodeFilePath("temp", "sol");
-            TestCaseResult s = await Judger.RunCode("print('hello world')", new TestCase(), LanguageConfig.Python, 1000);
+            TestCaseResult s = await Judger.RunCode("print('hello world')", "", LanguageConfig.Python, 1000);
             Assert.AreEqual(s.StandardOutput, "hello world\n");
         }
         [TestMethod]
