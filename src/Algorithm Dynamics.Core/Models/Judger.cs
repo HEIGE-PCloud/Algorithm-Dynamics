@@ -18,8 +18,11 @@ namespace Algorithm_Dynamics.Core.Models
         private static string _StandardError;
         private static string _CompilationOutput;
         private static string _CompilationError;
+        private static StatusCode _StatusCode;
         private async static Task<int> Compile(Language language)
         {
+            _CompilationOutput = "";
+            _CompilationError = "";
             Process CompileProcess = new()
             {
                 StartInfo = new ProcessStartInfo
@@ -33,7 +36,6 @@ namespace Algorithm_Dynamics.Core.Models
                 },
                 EnableRaisingEvents = true
             };
-            // Timer CompileTimer = new Timer(delegate { CompileProcess.Kill(); }, null, 10000, Timeout.Infinite);
             CompileProcess.OutputDataReceived += new DataReceivedEventHandler(CompileProcess_OutputDataReceived);
             CompileProcess.ErrorDataReceived += new DataReceivedEventHandler(CompileProcess_ErrorDataReceived);
             CompileProcess.Start();
@@ -42,8 +44,11 @@ namespace Algorithm_Dynamics.Core.Models
             await CompileProcess.WaitForExitAsync();
             return CompileProcess.ExitCode;
         }
-        private async static Task<int> Execute(string Input, Language language)
+        private async static Task<int> Execute(string Input, Language language, int TimeLimit)
         {
+            _StandardOutput = "";
+            _StandardError = "";
+            _StatusCode = StatusCode.PENDING;
             Process ExecuteProcess = new()
             {
                 StartInfo = new ProcessStartInfo
@@ -61,13 +66,20 @@ namespace Algorithm_Dynamics.Core.Models
             ExecuteProcess.OutputDataReceived += new DataReceivedEventHandler(ExecuteProcess_OutputDataReceived);
             ExecuteProcess.ErrorDataReceived += new DataReceivedEventHandler(ExecuteProcess_ErrorDataReceived);
             ExecuteProcess.Exited += new EventHandler(ExecuteProcess_Exited);
-            Timer timer = new Timer(delegate { ExecuteProcess.Kill(); }, null, 2000, Timeout.Infinite);
+            Timer timer = new Timer(delegate 
+            {
+            if (_StatusCode == StatusCode.RUNNING)
+                {
+                    ExecuteProcess.Kill();
+                    _StatusCode = StatusCode.TIME_LIMIT_EXCEEDED;
+                }
+            }, null, TimeLimit, Timeout.Infinite);
+            _StatusCode = StatusCode.RUNNING;
             ExecuteProcess.Start();
             ExecuteProcess.BeginOutputReadLine();
             ExecuteProcess.BeginErrorReadLine();
             ExecuteProcess.StandardInput.WriteLine(Input);
             await ExecuteProcess.WaitForExitAsync();
-            ExecuteProcess.WaitForExit();
             return ExecuteProcess.ExitCode;
         }
         public static void SetSourceCodeFilePath(string FolderPath, string FileName)
@@ -76,10 +88,10 @@ namespace Algorithm_Dynamics.Core.Models
             _SourceCodeFilePath = Path.Combine(FolderPath, FileName) + ".txt";
             _ExecutableFilePath = Path.Combine(FolderPath, FileName) + ".exe";
         }
-        public async static Task<SubmissionResult> RunCode(string UserCode, string Input, Language language)
+        public async static Task<TestCaseResult> RunCode(string UserCode, TestCase testCase, Language language, int TimeLimit)
         {
-            clear();
-            SubmissionResult result = new();
+            TestCaseResult result = new();
+            result.TestCase = testCase;
             Directory.CreateDirectory(_SourceCodeFolderPath);
             await File.WriteAllTextAsync(_SourceCodeFilePath, UserCode);
             if (language.NeedCompile)
@@ -88,20 +100,58 @@ namespace Algorithm_Dynamics.Core.Models
                 {
                     result.StandardOutput = _CompilationOutput;
                     result.StandardError = _CompilationError;
-                    result.resultCode = SubmissionResult.ResultCode.COMPILE_ERROR;
+                    result.resultCode = ResultCode.COMPILE_ERROR;
                     return result;
                 }
             }
-            int exitCode = await Execute(Input, language);
+            var watch = new Stopwatch();
+            watch.Start();
+            int exitCode = await Execute(testCase.Input, language, TimeLimit);
+            watch.Stop();
             result.StandardOutput = _StandardOutput;
             result.StandardError = _StandardError;
+            result.CPUTime = (int)watch.ElapsedMilliseconds;
             if (exitCode == 0)
             {
-                result.resultCode = SubmissionResult.ResultCode.SUCCESS;
+                result.resultCode = ResultCode.SUCCESS;
             }
             return result;
         }
-
+        public async static Task<SubmissionResult> JudgeProblem(Problem problem, Submission submission, Language language)
+        {
+            SubmissionResult result = new();
+            result.Submission = submission;
+            Queue<TestCase> JudgeQueue = new();
+            foreach (var TestCase in problem.TestCases)
+            {
+                JudgeQueue.Enqueue(TestCase);
+            }
+            while (JudgeQueue.Count > 0)
+            {
+                result.TestCaseResults.Append(await RunCode(submission.Code, JudgeQueue.Dequeue(), language, problem.TimeLimit));
+            }
+            return result;
+        }
+        public async static Task<AssignmentSubmissionResult> JudgeAssignment(Assignment assignment, AssignmentSubmission assignmentSubmission, Language language)
+        {
+            AssignmentSubmissionResult result = new();
+            result.AssignmentSubmission = assignmentSubmission;
+            Queue<Problem> ProblemQueue = new();
+            Queue<Submission> SubmissionQueue = new();
+            foreach (var Problem in assignment)
+            {
+                ProblemQueue.Enqueue(Problem);
+            }
+            foreach (var Submission in assignmentSubmission.Submissions)
+            {
+                SubmissionQueue.Enqueue(Submission);
+            }
+            while (ProblemQueue.Count > 0 && SubmissionQueue.Count > 0)
+            {
+                result.SubmissionResults.Append(await JudgeProblem(ProblemQueue.Dequeue(), SubmissionQueue.Dequeue(), language));
+            }
+            return result;
+        }
         private static void CompileProcess_ErrorDataReceived(object sender, DataReceivedEventArgs e)
         {
             if (!string.IsNullOrEmpty(e.Data))
@@ -117,10 +167,12 @@ namespace Algorithm_Dynamics.Core.Models
                 _CompilationOutput += e.Data + '\n';
             }
         }
-
         private static void ExecuteProcess_Exited(object sender, EventArgs e)
         {
-
+            if (_StatusCode != StatusCode.TIME_LIMIT_EXCEEDED)
+            {
+                _StatusCode = StatusCode.FINISHED;
+            }
         }
         private static void ExecuteProcess_OutputDataReceived(object sender, DataReceivedEventArgs e)
         {
@@ -137,12 +189,12 @@ namespace Algorithm_Dynamics.Core.Models
                 _StandardError += e.Data + '\n';
             }
         }
-        private static void clear()
-        {
-            _StandardOutput = "";
-            _StandardError = "";
-            _CompilationOutput = "";
-            _CompilationError = "";
-        }
+    }
+    public enum StatusCode
+    {
+        PENDING,
+        RUNNING,
+        FINISHED,
+        TIME_LIMIT_EXCEEDED
     }
 }
