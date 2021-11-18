@@ -64,7 +64,7 @@ namespace Algorithm_Dynamics.Pages
             StandardOutput.Clear();
             StandardError.Clear();;
 
-            SubmissionResult result = await Judger.RunCode(Code, InputTextBlock.Text, LanguageConfig.Cpp);
+            TestCaseResult result = await Judger.RunCode(Code, InputTextBlock.Text, LanguageConfig.Cpp, 2000);
 
             // Enable UI Elemnts
             RunCodeButton.IsEnabled = true;
@@ -72,6 +72,7 @@ namespace Algorithm_Dynamics.Pages
             // Update output
             OutputTextBlock.Text = result.StandardOutput;
             ErrorTextBlock.Text = result.StandardError;
+            ResultTextBlock.Text = result.resultCode.ToString();
         }
     }
     public class EditorSetting

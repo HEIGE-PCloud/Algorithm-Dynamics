@@ -16,6 +16,13 @@ namespace Algorithm_Dynamics.Core.Models
         public int CPUTime { get; set; }
         public int MemoryUsage { get; set; }
         public ResultCode resultCode { get; set; }
+        public TestCaseResult()
+        {
+        }
+        public TestCaseResult(TestCase testCase)
+        {
+            TestCase = testCase;
+        }
     }
     public class SubmissionResult
     {

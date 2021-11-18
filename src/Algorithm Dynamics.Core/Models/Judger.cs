@@ -88,10 +88,9 @@ namespace Algorithm_Dynamics.Core.Models
             _SourceCodeFilePath = Path.Combine(FolderPath, FileName) + ".txt";
             _ExecutableFilePath = Path.Combine(FolderPath, FileName) + ".exe";
         }
-        public async static Task<TestCaseResult> RunCode(string UserCode, TestCase testCase, Language language, int TimeLimit)
+        public async static Task<TestCaseResult> RunCode(string UserCode, string Input, Language language, int TimeLimit)
         {
             TestCaseResult result = new();
-            result.TestCase = testCase;
             Directory.CreateDirectory(_SourceCodeFolderPath);
             await File.WriteAllTextAsync(_SourceCodeFilePath, UserCode);
             if (language.NeedCompile)
@@ -106,14 +105,36 @@ namespace Algorithm_Dynamics.Core.Models
             }
             var watch = new Stopwatch();
             watch.Start();
-            int exitCode = await Execute(testCase.Input, language, TimeLimit);
+            int exitCode = await Execute(Input, language, TimeLimit);
             watch.Stop();
             result.StandardOutput = _StandardOutput;
             result.StandardError = _StandardError;
             result.CPUTime = (int)watch.ElapsedMilliseconds;
+            if (!string.IsNullOrEmpty(result.StandardError))
+            {
+                result.resultCode = ResultCode.RUNTIME_ERROR;
+                return result;
+            }
+            if (_StatusCode == StatusCode.TIME_LIMIT_EXCEEDED)
+            {
+                result.resultCode = ResultCode.TIME_LIMIT_EXCEEDED;
+                return result;
+            }
             if (exitCode == 0)
             {
                 result.resultCode = ResultCode.SUCCESS;
+            }
+            return result;
+        }
+        public async static Task<TestCaseResult> JudgeTestCase(string UserCode, TestCase TestCase, Language Language, int TimeLimit)
+        {
+            TestCaseResult result = await RunCode(UserCode, TestCase.Input, Language, TimeLimit);
+            if (result.resultCode == ResultCode.SUCCESS)
+            {
+                if (result.StandardOutput.Trim() != TestCase.Output.Trim())
+                {
+                    result.resultCode = ResultCode.WRONG_ANSWER;
+                }
             }
             return result;
         }
@@ -128,7 +149,7 @@ namespace Algorithm_Dynamics.Core.Models
             }
             while (JudgeQueue.Count > 0)
             {
-                result.TestCaseResults.Append(await RunCode(submission.Code, JudgeQueue.Dequeue(), language, problem.TimeLimit));
+                result.TestCaseResults.Append(await RunCode(submission.Code, JudgeQueue.Dequeue().Input, language, problem.TimeLimit));
             }
             return result;
         }
