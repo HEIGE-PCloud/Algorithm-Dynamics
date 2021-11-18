@@ -858,7 +858,7 @@ partial class Judger
 endclass
 \end{minted}
 
-Now I have everything I need to build the \mintinline{text}{RunCode} function. It takes in the user's code, input data, language configuration and time limit, outputs a \mintinline{text}{TestCaseResult} containing all the running information. I also need to set up a stopwatch to measure how long the code has been executed, unlike the timer before, this stopwatch only provide data for statistics record. At the end, the \mintinline{text}{RunCode} function will handle some basic errors, it will judge whether the user's code run, but it will not judge whether the user's code provides the correct output. The \mintinline{text}{RunCode} algorithm only runs the code and further judging will be handed over to other algorithms.
+Now I have everything I need to build the \mintinline{text}{RunCode} function. It takes in the user's code, input data, language configuration and time limit, outputs a \mintinline{text}{TestCaseResult} containing all the running information. I also need to set up a stopwatch to measure how long the code has been executed, unlike the timer before, this stopwatch only provides data for statistics records. In the end, the \mintinline{text}{RunCode} function will handle some basic errors, it will judge whether the user's code run, but it will not judge whether the user's code provides the correct output. The \mintinline{text}{RunCode} algorithm only runs the code and further judging will be handed over to other algorithms.
 
 \begin{minted}[linenos,tabsize=4,breaklines]{text}
 partial class Judger
@@ -921,7 +921,7 @@ endclass
 
 \subsection{Judger Judge TestCase algorithm}
 
-This algorithm is designed to allow the Judger to judge a test case. On top of the \mintinline{text}{RunCode} function, this algorithm compare user's output with the expected output, so it can judge whether the user's code works correctly. The \mintinline{text}{JudgeTestCase} function also returns a \mintinline{text}{TestCaseResult}, but it will contain more information.
+This algorithm is designed to allow the Judger to judge a test case. On top of the \mintinline{text}{RunCode} function, this algorithm compare the user's output with the expected output, so it can judge whether the user's code works correctly. The \mintinline{text}{JudgeTestCase} function also returns a \mintinline{text}{TestCaseResult}, but it will contain more information.
 
 \begin{minted}[linenos,tabsize=4,breaklines]{text}
 partial class Judger
@@ -950,7 +950,7 @@ endclass
 
 \subsection{Judger Judge Problem algorithm}
 
-This algorithm is designed to judge a submission. I set up a judging queue and push all test cases in to the queue. Then I take them out and judge them one by one. A queue is suitable for this usecase because I want the first test case entered to be judged first. A submission result will be returned at the end.
+This algorithm is designed to judge a submission. I set up a judging queue and push all test cases into the queue. Then I take them out and judge them one by one. A queue is suitable for this use case because I want the first test case entered to be judged first. A submission result will be returned at the end.
 
 \begin{minted}[linenos,tabsize=4,breaklines]{text}
 partial class Judger
@@ -959,12 +959,16 @@ partial class Judger
         SubmissionResult result = new SubmissionResult()
         result.Submission = Submission
 
-        // Create the judge queue
+        // Create the judging queue
         Queue JudgeQueue = new Queue(Submission.Problem.TestCases)
 
         // Keep judging until the queue is empty
         while len(JudgeQueue) > 0
-            result.TestCaseResults.Append(JudgeTestCase(Submission.Code, JudgeQueue.Dequeue(), Language, Submission.Problem.TimeLimit))
+            Code = Submission.Code
+            TestCase = JudgeQueue.Dequeue()
+            TimeLimit = Submission.Problem.TimeLimit
+            TestCaseResult = JudgeTestCase(Code, TestCase, Language, TimeLimit)
+            result.TestCaseResults.Append(TestCaseResult)
         endwhile
         return result
     endfunction
@@ -973,7 +977,7 @@ endclass
 
 \subsection{Judger Judge Assignment algorithm}
 
-This algorithm is designed to judge an assignment submission. I set up a judging queue and push all problems in to the queue. Then I take them out and judge them one by one. A queue is suitable for this usecase because I want the first problem entered to be judged first. An assignment submission result will be returned at the end.
+This algorithm is designed to judge an assignment submission. I set up a judging queue and push all problems into the queue. Then I take them out and judge them one by one. A queue is suitable for this use case because I want the first problem entered to be judged first. An assignment submission result will be returned at the end.
 
 \begin{minted}[linenos,tabsize=4,breaklines]{text}
 partial class Judger
@@ -982,12 +986,14 @@ partial class Judger
         AssignmentSubmissionResult result = new AssignmentSubmissionResult()
         result.AssignmentSubmission = AssignmentSubmission
 
-        // Create the judge queue
+        // Create the judging queue
         Queue JudgeQueue = new Queue(AssignmentSubmission.Submissions)
 
         // Keep judging until the queue is empty
         while len(JudgeQueue) > 0
-            result.SubmissionResults.Append(JudgeProblem(SubmissionQueue.Dequeue(), Language))
+            Submission = JudgeQueue.Dequeue()
+            SubmissionResult = JudgeProblem(Submission, Language)
+            result.SubmissionResults.Append(SubmissionResult)
         endwhile
         return result
     endfunction
