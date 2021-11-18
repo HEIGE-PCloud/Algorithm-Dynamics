@@ -604,7 +604,9 @@ The detailed judging algorithm will be explained later in the
 
 Because this software will store many complex relational data, a relational database is needed to store all the data. Since the software runs locally, and every user will have different data, instead of a central SQL Server, a local SQL Database engine is required.
 
-I choose to use SQLite to power this software. It is a small, self-contained, high-reliability, full-featured SQL Database engine, which will be enough to handle all the data storing and querying requests. I choose to use Microsoft.Data.SQLite for the database interface, which allows me to send SQL requests to the database. Details about the design of the database and queries will be described in the \hyperref[subsec:database design]{Database design section}.
+I choose to use SQLite to power this software. It is a small, self-contained, high-reliability, full-featured SQL Database engine, which will be enough to handle all the data storing and querying requests.
+
+I choose to use Microsoft.Data.SQLite for the database interface, which allows me to send SQL requests to the database. Details about the design of the database and queries will be described in the \hyperref[subsec:database design]{Database design section}.
 
 \subsection{API module}
 
@@ -1284,11 +1286,11 @@ The settings will be stored in a JSON file.
 
 The \mintinline{text}{Theme} field stores the current color theme. There are three possible values, \mintinline{text}{Light}, \mintinline{text}{Dark} or \mintinline{text}{Default}. The data will be validated before applying, if it is empty or invalid, the \mintinline{text}{Default} theme will be applyed and write back to this field.
 
-The \mintinline{text}{RunCodeTimeLimit} field stores the max time allowed for the run code function. The data will be validated before applying, if it is not a positive integer, then a default 1000 will be applyed and write back to this field. 
+The \mintinline{text}{RunCodeTimeLimit} field stores the max time allowed for the run code function. The data will be validated before applying, if it is not a positive integer, then a default 1000 will be applied and written back to this field. 
 
 The \mintinline{text}{SelectedLanguage} field stores the default programming language selected by the user. The value will be validated before applying, if it is empty or invalid, the internal default Python programming language configuration will be applied and written back to this field.
 
-The \mintinline{text}{LanguageConfiguration} is a list of dictionary allowing the user to configure custom programming languages. The data will be validated before applying, if a configuration is invalid, it will be ignored.
+The \mintinline{text}{LanguageConfiguration} is a list of dictionaries allowing the user to configure custom programming languages. The data will be validated before applying, if a configuration is invalid, it will be ignored.
 
 The \mintinline{text}{CurrentUser} field stores the \mintinline{text}{Uid} of the \mintinline{text}{User}. The data will be validated. If the \mintinline{text}{Uid} is not found in the database or the field is empty, the user will be asked to log in and a new value will be generated and written back to this field.
 
@@ -1409,7 +1411,7 @@ CREATE TABLE TestCase
 
 \subsubsection{Submission table}
 
-The Submission table will have an auto-increment integer \mintinline{text}{Id} as its primary key. Since SQLite does not support the \mintinline{text}{DateTime} data type, the time will be converted to a string before storing. Similarly, conversion will be done for Language and SubmitterId.
+The Submission table will have an auto-increment integer \mintinline{text}{Id} as its primary key. Since SQLite does not support the \mintinline{text}{DateTime} data type, the time will be converted to a string before storing. Similarly, the conversion will be done for Language and SubmitterId.
 
 All fields will be validated and no empty field is allowed, except for the \mintinline{text}{Code}, empty \mintinline{text}{Submission} is allowed.
 
