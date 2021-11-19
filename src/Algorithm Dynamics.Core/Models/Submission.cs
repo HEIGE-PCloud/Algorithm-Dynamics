@@ -12,5 +12,7 @@ namespace Algorithm_Dynamics.Core.Models
         public Problem Problem { get; set; }
         public string Code { get; set; }
         public DateTime SubmittedTime { get; set; }
+        public Language Language { get; set; }
+        public User Submitter { get; set; }
     }
 }

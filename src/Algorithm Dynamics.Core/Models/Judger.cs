@@ -88,9 +88,9 @@ namespace Algorithm_Dynamics.Core.Models
             _SourceCodeFilePath = Path.Combine(FolderPath, FileName) + ".txt";
             _ExecutableFilePath = Path.Combine(FolderPath, FileName) + ".exe";
         }
-        public async static Task<TestCaseResult> RunCode(string UserCode, string Input, Language language, int TimeLimit)
+        public async static Task<RunCodeResult> RunCode(string UserCode, string Input, Language language, int TimeLimit)
         {
-            TestCaseResult result = new();
+            RunCodeResult result = new();
             Directory.CreateDirectory(_SourceCodeFolderPath);
             await File.WriteAllTextAsync(_SourceCodeFilePath, UserCode);
             if (language.NeedCompile)
@@ -99,7 +99,7 @@ namespace Algorithm_Dynamics.Core.Models
                 {
                     result.StandardOutput = _CompilationOutput;
                     result.StandardError = _CompilationError;
-                    result.resultCode = ResultCode.COMPILE_ERROR;
+                    result.ResultCode = ResultCode.COMPILE_ERROR;
                     return result;
                 }
             }
@@ -112,53 +112,53 @@ namespace Algorithm_Dynamics.Core.Models
             result.CPUTime = (int)watch.ElapsedMilliseconds;
             if (!string.IsNullOrEmpty(result.StandardError))
             {
-                result.resultCode = ResultCode.RUNTIME_ERROR;
+                result.ResultCode = ResultCode.RUNTIME_ERROR;
                 return result;
             }
             if (_StatusCode == StatusCode.TIME_LIMIT_EXCEEDED)
             {
-                result.resultCode = ResultCode.TIME_LIMIT_EXCEEDED;
+                result.ResultCode = ResultCode.TIME_LIMIT_EXCEEDED;
                 return result;
             }
             if (exitCode == 0)
             {
-                result.resultCode = ResultCode.SUCCESS;
+                result.ResultCode = ResultCode.SUCCESS;
             }
             return result;
         }
         public async static Task<TestCaseResult> JudgeTestCase(string UserCode, TestCase TestCase, Language Language, int TimeLimit)
         {
-            TestCaseResult result = await RunCode(UserCode, TestCase.Input, Language, TimeLimit);
-            if (result.resultCode == ResultCode.SUCCESS)
+            TestCaseResult result = new(TestCase, await RunCode(UserCode, TestCase.Input, Language, TimeLimit));
+            if (result.ResultCode == ResultCode.SUCCESS)
             {
                 if (result.StandardOutput.Trim() != TestCase.Output.Trim())
                 {
-                    result.resultCode = ResultCode.WRONG_ANSWER;
+                    result.ResultCode = ResultCode.WRONG_ANSWER;
                 }
             }
             return result;
         }
         public async static Task<SubmissionResult> JudgeProblem(Submission Submission, Language Language)
         {
-            SubmissionResult result = new();
-            result.Submission = Submission;
+            SubmissionResult Result = new();
+            Result.Submission = Submission;
             Queue<TestCase> JudgeQueue = new(Submission.Problem.TestCases);
             while (JudgeQueue.Count > 0)
             {
-                result.TestCaseResults.Append(await JudgeTestCase(Submission.Code, JudgeQueue.Dequeue(), Language, Submission.Problem.TimeLimit));
+                Result.Add(await JudgeTestCase(Submission.Code, JudgeQueue.Dequeue(), Language, Submission.Problem.TimeLimit));
             }
-            return result;
+            return Result;
         }
         public async static Task<AssignmentSubmissionResult> JudgeAssignment(Assignment Assignment, AssignmentSubmission AssignmentSubmission, Language Language)
         {
-            AssignmentSubmissionResult result = new();
-            result.AssignmentSubmission = AssignmentSubmission;
+            AssignmentSubmissionResult Result = new();
+            Result.AssignmentSubmission = AssignmentSubmission;
             Queue<Submission> SubmissionQueue = new(AssignmentSubmission.Submissions);
             while (SubmissionQueue.Count > 0)
             {
-                result.SubmissionResults.Append(await JudgeProblem(SubmissionQueue.Dequeue(), Language));
+                Result.Add(await JudgeProblem(SubmissionQueue.Dequeue(), Language));
             }
-            return result;
+            return Result;
         }
         private static void CompileProcess_ErrorDataReceived(object sender, DataReceivedEventArgs e)
         {

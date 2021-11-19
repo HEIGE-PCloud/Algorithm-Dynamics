@@ -27,21 +27,21 @@ namespace Algorithm_Dynamics.Pages
         public AssignmentAssignedPage()
         {
             this.InitializeComponent();
-            AssignmentList.Add(new("Assignment 1", "", DateTime.Today, new ProblemList()));
-            AssignmentList.Add(new("Assignment 2", "", DateTime.Today, new ProblemList()));
-            AssignmentList.Add(new("Assignment 3", "", DateTime.Today, new ProblemList()));
-            AssignmentList.Add(new("Assignment 4", "", DateTime.Today, new ProblemList()));
-            AssignmentList.Add(new("Assignment 5", "", DateTime.Today, new ProblemList()));
-            AssignmentList.Add(new("Assignment 6", "", DateTime.Today, new ProblemList()));
-            AssignmentList.Add(new("Assignment 7", "", DateTime.Today, new ProblemList()));
-            AssignmentList.Add(new("Assignment 8", "", DateTime.Today, new ProblemList()));
-            AssignmentList.Add(new("Assignment 9", "", DateTime.Today, new ProblemList()));
-            AssignmentList.Add(new("Assignment 10", "", DateTime.Today, new ProblemList()));
-            AssignmentList.Add(new("Assignment 11", "", DateTime.Today, new ProblemList()));
-            AssignmentList.Add(new("Assignment 12", "", DateTime.Today, new ProblemList()));
-            AssignmentList.Add(new("Assignment 13", "", DateTime.Today, new ProblemList()));
-            AssignmentList.Add(new("Assignment 14", "", DateTime.Today, new ProblemList()));
-            AssignmentList.Add(new("Assignment 15", "", DateTime.Today, new ProblemList()));
+            AssignmentList.Add(new("Assignment 1", "", DateTime.Today));
+            AssignmentList.Add(new("Assignment 2", "", DateTime.Today));
+            AssignmentList.Add(new("Assignment 3", "", DateTime.Today));
+            AssignmentList.Add(new("Assignment 4", "", DateTime.Today));
+            AssignmentList.Add(new("Assignment 5", "", DateTime.Today));
+            AssignmentList.Add(new("Assignment 6", "", DateTime.Today));
+            AssignmentList.Add(new("Assignment 7", "", DateTime.Today));
+            AssignmentList.Add(new("Assignment 8", "", DateTime.Today));
+            AssignmentList.Add(new("Assignment 9", "", DateTime.Today));
+            AssignmentList.Add(new("Assignment 10", "", DateTime.Today));
+            AssignmentList.Add(new("Assignment 11", "", DateTime.Today));
+            AssignmentList.Add(new("Assignment 12", "", DateTime.Today));
+            AssignmentList.Add(new("Assignment 13", "", DateTime.Today));
+            AssignmentList.Add(new("Assignment 14", "", DateTime.Today));
+            AssignmentList.Add(new("Assignment 15", "", DateTime.Today));
         }
         private List<Assignment> AssignmentList = new();
     }
