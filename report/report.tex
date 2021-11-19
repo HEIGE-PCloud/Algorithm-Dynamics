@@ -616,6 +616,12 @@ When the user clicks the login button in the SettingsPage, the API module will h
 
 The API module will be implemented at the end after all local functions are working correctly. The corresponding API calls and endpoints will be discussed later.
 
+\subsection{Stakeholder feedback}
+
+Homepage: remove links
+Account page: more intreesting stats
+Settings page: adjust text size and more color theme
+
 \section{Algorithm design}
 \label{sec:algorithm design}
 
@@ -858,13 +864,13 @@ partial class Judger
 endclass
 \end{minted}
 
-Now I have everything I need to build the \mintinline{text}{RunCode} function. It takes in the user's code, input data, language configuration and time limit, outputs a \mintinline{text}{TestCaseResult} containing all the running information. I also need to set up a stopwatch to measure how long the code has been executed, unlike the timer before, this stopwatch only provides data for statistics records. In the end, the \mintinline{text}{RunCode} function will handle some basic errors, it will judge whether the user's code run, but it will not judge whether the user's code provides the correct output. The \mintinline{text}{RunCode} algorithm only runs the code and further judging will be handed over to other algorithms.
+Now I have everything I need to build the \mintinline{text}{RunCode} function. It takes in the user's code, input data, language configuration and time limit, outputs a \mintinline{text}{RunCodeResult} containing all the running information. I also need to set up a stopwatch to measure how long the code has been executed, unlike the timer before, this stopwatch only provides data for statistics records. In the end, the \mintinline{text}{RunCode} function will handle some basic errors, it will judge whether the user's code run, but it will not judge whether the user's code provides the correct output. The \mintinline{text}{RunCode} algorithm only runs the code and further judging will be handed over to other algorithms.
 
 \begin{minted}[linenos,tabsize=4,breaklines]{text}
 partial class Judger
     public function RunCode(string UserCode, string Input, Language language, int TimeLimit)
         // Create a new TestCaseResult
-        TestCaseResult result = new TestCaseResult()
+        RunCodeResult result = new RunCodeResult()
 
         // Write the source code to file
         sourceCodeFile = openWrite(_SourceCodeFilePath)
@@ -880,13 +886,13 @@ partial class Judger
             if exitCode != 0 then
                 result.StandardOutput = _CompilationOutput
                 result.StandardError = _CompilationError
-                result.resultCode = ResultCode.COMPILE_ERROR
+                result.ResultCode = ResultCode.COMPILE_ERROR
                 return result
             endif
         endif
 
         // Set up a Stopwatch to record the running time
-        var watch = new Stopwatch()
+        Stopwatch watch = new Stopwatch()
         watch.Start()
 
         // Execute the code
@@ -902,18 +908,18 @@ partial class Judger
         // If receive a error or exit code is not zero
         // Return a runtime error
         if string.IsNullOrEmpty(result.StandardError) == False or exitCode != 0 then
-            result.resultCode = ResultCode.RUNTIME_ERROR
+            result.ResultCode = ResultCode.RUNTIME_ERROR
             return result
         endif
 
         // If time limit exceed then return TLE
         if _StatusCode == StatusCode.TIME_LIMIT_EXCEEDED then
-            result.resultCode = ResultCode.TIME_LIMIT_EXCEEDED
+            result.ResultCode = ResultCode.TIME_LIMIT_EXCEEDED
             return result
         endif
 
         // Otherwise, return success
-        result.resultCode = ResultCode.SUCCESS
+        result.ResultCode = ResultCode.SUCCESS
         return result
     endfunction
 endclass
@@ -921,17 +927,18 @@ endclass
 
 \subsection{Judger Judge TestCase algorithm}
 
-This algorithm is designed to allow the Judger to judge a test case. On top of the \mintinline{text}{RunCode} function, this algorithm compare the user's output with the expected output, so it can judge whether the user's code works correctly. The \mintinline{text}{JudgeTestCase} function also returns a \mintinline{text}{TestCaseResult}, but it will contain more information.
+This algorithm is designed to allow the Judger to judge a test case. On top of the \mintinline{text}{RunCode} function, this algorithm compare the user's output with the expected output, so it can judge whether the user's code works correctly. The \mintinline{text}{JudgeTestCase} function returns a \mintinline{text}{TestCaseResult} containing more information.
 
 \begin{minted}[linenos,tabsize=4,breaklines]{text}
 partial class Judger
     public function JudgeTestCase(string UserCode, TestCase TestCase, Language Language, int TimeLimit)
         // Run the code with RunCode and get the result
-        TestCaseResult result = RunCode(UserCode, TestCase.Input, Language, TimeLimit)
+        TestCaseResult result = (TestCaseResult)RunCode(UserCode, TestCase.Input, Language, TimeLimit)
+        result.TestCase = TestCase
 
         // If the code is executed successfully
         // Judge whether its output matches the expected output
-        if result.resultCode == ResultCode.SUCCESS then
+        if result.ResultCode == ResultCode.SUCCESS then
 
             // Trim the trailing spaces before comparing
             userOutput = result.StandardOutput.Trim()
@@ -940,7 +947,7 @@ partial class Judger
             // If they are not matched
             // Report wrong answer
             if userOutput != expectedOutput then
-                result.resultCode = ResultCode.WRONG_ANSWER
+                result.ResultCode = ResultCode.WRONG_ANSWER
             endif
         endif
         return result
@@ -1512,16 +1519,16 @@ CREATE TABLE ProblemTag
 \subsection{Milestones}
 
 \begin{enumerate}
-    \item Create the main interface
-    \item Handle settings
-    \item Implement the Judger
+    \item Create the UI
     \item Implement data structures
+    \item Implement the Judger
     \item Create the database
     \item Handle data import/export
+    \item Handle settings
     \item Handle API calls
 \end{enumerate}
 
-\subsection{Milestone 1: Create the main interface}
+\subsection{Milestone 1: Create the UI}
 
 TODO: testing plan
 
@@ -1531,7 +1538,7 @@ TODO: testing plan
     \hline
 \end{tabulary}
 
-\subsection{Milestone 2: Handle settings}
+\subsection{Milestone 2: Implement data structures}
 
 TODO: testing plan
 
@@ -1551,7 +1558,7 @@ TODO: testing plan
     \hline
 \end{tabulary}
 
-\subsection{Milestone 4: Implement data structures}
+\subsection{Milestone 4: Create database}
 
 TODO: testing plan
 
@@ -1561,7 +1568,7 @@ TODO: testing plan
     \hline
 \end{tabulary}
 
-\subsection{Milestone 5: Create database}
+\subsection{Milestone 5: Handle data import/export}
 
 TODO: testing plan
 
@@ -1571,7 +1578,7 @@ TODO: testing plan
     \hline
 \end{tabulary}
 
-\subsection{Milestone 6: Handle data import/export}
+\subsection{Milestone 6: Handle settings}
 
 TODO: testing plan
 

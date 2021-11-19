@@ -5,26 +5,16 @@ using System.Threading.Tasks;
 namespace Algorithm_Dynamics.Test
 {
     [TestClass]
-    public class UnitTest1
+    public class TestJudger
     {
         [TestMethod]
-        public void TestMethod1()
-        {
-            TestCaseResult result = new();
-            result.StandardOutput = "Hello World";
-            Assert.AreEqual("Hello World", result.StandardOutput);
-        }
-        [TestMethod]
-        public async Task TestMethod2()
+        [DataRow("print('hello world')", "",  1000, "hello world\n")]
+
+        public async Task TestRunCode(string code, string input, int timeLimit, string expected)
         {
             Judger.SetSourceCodeFilePath("temp", "sol");
-            TestCaseResult s = await Judger.RunCode("print('hello world')", "", LanguageConfig.Python, 1000);
-            Assert.AreEqual(s.StandardOutput, "hello world\n");
-        }
-        [TestMethod]
-        public void TestMethod3()
-        {
-            Assert.AreEqual(1, 1);
+            RunCodeResult result = await Judger.RunCode(code, input, LanguageConfig.Python, timeLimit);
+            Assert.AreEqual(result.StandardOutput, expected);
         }
     }
 }

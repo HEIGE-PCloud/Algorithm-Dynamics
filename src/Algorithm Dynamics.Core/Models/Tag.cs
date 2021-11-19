@@ -12,6 +12,7 @@ namespace Algorithm_Dynamics.Core.Models
         {
             Name = name;
         }
+        public int Id { get; set; }
         public string Name { get; set; }
 
     }

@@ -23,13 +23,11 @@ classDiagram
         +List<Tag> Tags
         +Problem()
     }
-    class List~Problem~ {
-        # Library Class System.Collections.Generic
-    }
     class ProblemList{
         +int Id
         +string Name
         +string Description
+        +List<Problem> Problems
         +ProblemList()
     }
     class Assignment{
@@ -49,35 +47,38 @@ classDiagram
         +User Submitter
         +Submission()
     }
-    class TestCaseResult {
-        +int Id
-        +TestCase TestCase
+    class RunCodeResult {
         +string StandardOutput
         +string StandardError
         +int ExitCode
         +int CPUTime
         +int MemoryUsage
         +ResultCode ResultCode
+        +RunCodeResult()
+    }
+    class TestCaseResult {
+        +int Id
+        +TestCase TestCase
         +TestCaseResult()
     }
     class SubmissionResult{
         +int Id
         +Submission Submission
-        +List<TestCaseResult> TestCaseResults
+        +List<TestCaseResults> Results
         +SubmissionResult()
     }
     class AssignmentSubmission{
         +Guid Uid
         +User Submitter
         +Assignment Assignment
-        +List<Submission> Submissions
         +Status Status
+        +List<Submission> Submissions
         +AssignmentSubmission()
     }
     class AssignmentSubmissionResult{
         +Guid Uid
         +AssignmentSubmission AssignmentSubmission
-        +List<SubmissionResult> SubmissionResult
+        +List<SubmissionResult> Results
         +AssignmentSubmissionResult()
     }
     class Judger{
@@ -88,19 +89,19 @@ classDiagram
         -static string _SourceCodeFilePath
         -static string _SourceCodeFolderPath
         -static string _ExecutableFilePath
+        -static StatusCode _StatusCode
         +static void SetSourceCodeFilePath()
         +async static Task<SubmissionResult> RunCode()
+        +async static Task<SubmissionResult> JudgeTestCase()
         +async static Task<SubmissionResult> JudgeProblem()
         +async static Task<AssignmentSubmission> JudgeAssignment()
         -async static Task<int> Compile()
         -async static Task<int> Execute()
-        -static void CompileProcess_Exited()
         -static void CompileProcess_OutputDataReceived()
         -static void CompileProcess_ErrorDataReceived()
         -static void ExecuteProcess_Exited()
         -static void ExecuteProcess_OutputDataReceived()
         -static void ExecuteProcess_ErrorDataReceived()
-        -static void Clear()
     }
     class User{
         +Guid Uid
@@ -118,7 +119,6 @@ classDiagram
         +string RunArguments
         +Language()
     }
-    List <|-- ProblemList: Inheritance
     ProblemList <|-- Assignment: Inheritance
     Submission --> Judger: Submit to a Judger
     Judger -->  SubmissionResult: Return as the result
@@ -133,4 +133,5 @@ classDiagram
     User --> AssignmentSubmission:Create
     AssignmentSubmission --> Judger: Submit to a Judger
     Judger -->  AssignmentSubmissionResult: Return as the result
+    RunCodeResult <|-- TestCaseResult: Inheritance
     TestCaseResult --> SubmissionResult: One to many
