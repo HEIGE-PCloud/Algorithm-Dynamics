@@ -975,7 +975,7 @@ partial class Judger
             TestCase = JudgeQueue.Dequeue()
             TimeLimit = Submission.Problem.TimeLimit
             TestCaseResult = JudgeTestCase(Code, TestCase, Language, TimeLimit)
-            result.TestCaseResults.Append(TestCaseResult)
+            result.Add(TestCaseResult)
         endwhile
         return result
     endfunction
@@ -1000,7 +1000,7 @@ partial class Judger
         while len(JudgeQueue) > 0
             Submission = JudgeQueue.Dequeue()
             SubmissionResult = JudgeProblem(Submission, Language)
-            result.SubmissionResults.Append(SubmissionResult)
+            result.Add(SubmissionResult)
         endwhile
         return result
     endfunction
@@ -1145,7 +1145,7 @@ A \mintinline{text}{Submission} is created when the user submits a code solution
 
 \subsubsection{\mintinline{text}{ProblemList}}
 
-A \mintinline{text}{ProblemList} is a list of \mintinline{text}{Problem}, which allows the user to share multiple \mintinline{text}{Problem} easily. It is also the parent of \mintinline{text}{Assignment} and provides basic functions for it. The \mintinline{text}{ProblemList} is inherited from the \mintinline{text}{List<Problem>} class, which is provided by the .NET 5 library. \mintinline{text}{List<Problem>} provides all basic functions for a list, such as add, remove, sort and find, so I don't need to reinvent the wheel. I choose a list instead of an array because the number of \mintinline{text}{Problem} inside the list will be changed during runtime, so a list is more appropriate for my use case.
+A \mintinline{text}{ProblemList} is a list of \mintinline{text}{Problem}, which allows the user to share multiple \mintinline{text}{Problem} easily. It is also the parent of \mintinline{text}{Assignment} and provides basic functions for it. The \mintinline{text}{ProblemList} contains a \mintinline{text}{List<Problem>} variable, which provides all basic functions for a list, such as add, remove, sort and find, so I don't need to reinvent the wheel. I choose a list instead of an array because the number of \mintinline{text}{Problem} inside the list will be changed during runtime, so a list is more appropriate for my use case.
 
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
@@ -1156,6 +1156,8 @@ A \mintinline{text}{ProblemList} is a list of \mintinline{text}{Problem}, which 
     \mintinline{text}{Name} & \mintinline{text}{string} & \mintinline{text}{Name} stores the name of the \mintinline{text}{Problem List}. \\
     \hline
     \mintinline{text}{Description} & \mintinline{text}{string} & \mintinline{text}{Description} stores the description of the \mintinline{text}{ProblemList}. \\
+    \hline
+    \mintinline{text}{Problems} & \mintinline{text}{List<Problem>} & \mintinline{text}{Problems} is a list of \mintinline{text}{Problem}, which supports basic functions to manipulate a list of data. \\
     \hline
 \end{tabulary}
 
@@ -1203,19 +1205,15 @@ When a student finishes an \mintinline{text}{Assignment}, an \mintinline{text}{A
 
 \subsubsection{\mintinline{text}{Judger}}
 
-The \mintinline{text}{Judger} is a static class, only eposes 4 functions to run and judge user's code. The \mintinline{text}{Judger} takes a \mintinline{text}{Submission} as an input, and outputs a \mintinline{text}{SubmissionResult}. No variable is exposed and no data will be saved to the database. The private variables are discussed in the \hyperref[sec:algorithm design]{Algorithm design section}.
+The \mintinline{text}{Judger} is a static class, only eposes 5 functions to run and judge user's code. The \mintinline{text}{Judger} takes a \mintinline{text}{Submission} as an input, and outputs a \mintinline{text}{SubmissionResult}. No variable is exposed. The private attributes and methods are discussed in the \hyperref[sec:algorithm design]{Algorithm design section}.
 
-\subsubsection{\mintinline{text}{TestCaseResult}}
+\subsubsection{\mintinline{text}{RunCodeResult}}
 
-\mintinline{text}{TestCaseResult} stores the judging result for each individual \mintinline{text}{TestCase}.
+\mintinline{text}{RunCodeResult} stores the judging result for a piece of code. It does not store the information about whether the output is correct, it only stores the runtime statistics and whether the code has been compiled and executed correctly. This result will not be stored into the database, so there is no \mintinline{text}{Id} attribute.
 
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
     Variable & Data type & Justification \\
-    \hline
-    \mintinline{text}{Id} & \mintinline{text}{int} & The \mintinline{text}{Id} is the local unique identifier for a \mintinline{text}{TestCaseResult}. It is used to uniquely determine a \mintinline{text}{TestCaseResult} in the database. \\
-    \hline
-    \mintinline{text}{TestCase} & \mintinline{text}{TestCase} & \mintinline{text}{TestCase} stores the corresponding \mintinline{text}{TestCase} that produces this result. This field will be normalized into \mintinline{text}{TestCase.Id} before storing into the database. \\
     \hline
     \mintinline{text}{StandardOutput} & \mintinline{text}{string} & \mintinline{text}{StandardOutput} stores the content output by the user's code. \\
     \hline
@@ -1228,6 +1226,20 @@ The \mintinline{text}{Judger} is a static class, only eposes 4 functions to run 
     \mintinline{text}{MemoryUsage} & \mintinline{text}{int} & \mintinline{text}{MemoryUsage} stores the memory usage record for the user's code. \\
     \hline
     \mintinline{text}{ResultCode} & \mintinline{text}{enum ResultCode} & \mintinline{text}{ResultCode} is a custom enumeration type storing the judging result. It has 7 possible values, \mintinline{text}{WRONG_ANSWER}, \mintinline{text}{SUCCESS}, \mintinline{text}{COMPILE_ERROR}, \mintinline{text}{TIME_LIMIT_EXCEEDED}, \mintinline{text}{MEMORY_LIMIT_EXCEEDED}, \mintinline{text}{RUNTIME_ERROR} or \mintinline{text}{SYSTEM_ERROR}. \\
+    \hline
+\end{tabulary}
+
+\subsubsection{\mintinline{text}{TestCaseResult}}
+
+\mintinline{text}{TestCaseResult} stores the judging result for each individual \mintinline{text}{TestCase}. It is inheriated from the \mintinline{text}{RunCodeResult} to inheriate all the statistics.
+
+\begin{tabulary}{\textwidth}{|l|l|L|}
+    \hline
+    Variable & Data type & Justification \\
+    \hline
+    \mintinline{text}{Id} & \mintinline{text}{int} & The \mintinline{text}{Id} is the local unique identifier for a \mintinline{text}{TestCaseResult}. It is used to uniquely determine a \mintinline{text}{TestCaseResult} in the database. \\
+    \hline
+    \mintinline{text}{TestCase} & \mintinline{text}{TestCase} & \mintinline{text}{TestCase} stores the corresponding \mintinline{text}{TestCase} that produces this result. This field will be normalized into \mintinline{text}{TestCase.Id} before storing into the database. \\
     \hline
 \end{tabulary}
 

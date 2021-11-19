@@ -19,10 +19,14 @@ namespace Algorithm_Dynamics.Core.Models
     }
     public enum AssignmentStatus
     {
+        Draft,
+        Scheduled,
+        Published,
+        Assigned,
         NotStarted,
         InProgress,
         Completed,
-        OverDue
+        Overdue
     }
     public enum AssignmentType
     {
