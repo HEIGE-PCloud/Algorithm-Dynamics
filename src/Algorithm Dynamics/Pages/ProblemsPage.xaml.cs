@@ -21,7 +21,7 @@ namespace Algorithm_Dynamics.Pages
             ProblemListViewItemList = new List<Problem>();
             for (int i = 1; i <= 100; i++)
             {
-                ProblemListViewItemList.Add(new Problem(i, $"Problem {i}", ProblemStatus.Todo, Difficulty.Easy, "", 0, 0, new List<TestCase> (), new List<Tag> { new Tag("Tag") }));
+                ProblemListViewItemList.Add(new Problem(System.Guid.NewGuid(), $"Problem {i}", ProblemStatus.Todo, Difficulty.Easy, "", 0, 0, new List<TestCase> (), new List<Tag> { new Tag("Tag") }));
             }
             Lists.Add("List 1");
             Lists.Add("List 2");

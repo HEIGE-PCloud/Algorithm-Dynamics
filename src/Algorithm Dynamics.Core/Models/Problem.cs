@@ -8,13 +8,13 @@ namespace Algorithm_Dynamics.Core.Models
 {
     public class Problem
     {
-        public int Id { get; set; }
+        public Guid Uid { get; set; }
         public string Name { get; set; }
         public ProblemStatus Status { get; set; }
         public Difficulty Difficulty { get; set; }
         public string Description { get; set; }
         public int TimeLimit { get; set; }
-        public int MemoryLimit { get; set; }
+        public long MemoryLimit { get; set; }
         public List<TestCase> TestCases { get; set; }
         public List<Tag> Tags { get; set; }
         public Problem(string name)
@@ -22,9 +22,9 @@ namespace Algorithm_Dynamics.Core.Models
             Name = name;
         }
 
-        public Problem(int id, string name, ProblemStatus status, Difficulty difficulty, string description, int timeLimit, int memoryLimit, List<TestCase> testCases, List<Tag> tags)
+        public Problem(Guid uid, string name, ProblemStatus status, Difficulty difficulty, string description, int timeLimit, int memoryLimit, List<TestCase> testCases, List<Tag> tags)
         {
-            Id = id;
+            Uid = uid;
             Name = name;
             Status = status;
             Difficulty = difficulty;

@@ -64,12 +64,13 @@ namespace Algorithm_Dynamics.Pages
             StandardOutput.Clear();
             StandardError.Clear();;
 
-            RunCodeResult result = await Judger.RunCode(Code, InputTextBlock.Text, LanguageConfig.Cpp, 2000);
+            RunCodeResult result = await Judger.RunCode(Code, InputTextBlock.Text, LanguageConfig.Cpp, 2000, (long)64*1024*1024);
 
             // Enable UI Elemnts
             RunCodeButton.IsEnabled = true;
             RunCodeProgressRing.IsActive = false;
             // Update output
+            InputTextBlock.Text = ((double)result.MemoryUsage / 1024.0 / 1024.0).ToString() + " MB\nExit Code: " + result.ExitCode.ToString();
             OutputTextBlock.Text = result.StandardOutput;
             ErrorTextBlock.Text = result.StandardError;
             ResultTextBlock.Text = result.ResultCode.ToString();

@@ -18,6 +18,7 @@ namespace Algorithm_Dynamics.Core.Models
         private static string _StandardError;
         private static string _CompilationOutput;
         private static string _CompilationError;
+        private static long _WorkingSet64;
         private static StatusCode _StatusCode;
         private async static Task<int> Compile(Language language)
         {
@@ -44,11 +45,12 @@ namespace Algorithm_Dynamics.Core.Models
             await CompileProcess.WaitForExitAsync();
             return CompileProcess.ExitCode;
         }
-        private async static Task<int> Execute(string Input, Language language, int TimeLimit)
+        private async static Task<int> Execute(string Input, Language language, int TimeLimit, long MemoryLimit)
         {
             _StandardOutput = "";
             _StandardError = "";
             _StatusCode = StatusCode.PENDING;
+            _WorkingSet64 = 0;
             Process ExecuteProcess = new()
             {
                 StartInfo = new ProcessStartInfo
@@ -66,9 +68,9 @@ namespace Algorithm_Dynamics.Core.Models
             ExecuteProcess.OutputDataReceived += new DataReceivedEventHandler(ExecuteProcess_OutputDataReceived);
             ExecuteProcess.ErrorDataReceived += new DataReceivedEventHandler(ExecuteProcess_ErrorDataReceived);
             ExecuteProcess.Exited += new EventHandler(ExecuteProcess_Exited);
-            Timer timer = new Timer(delegate 
+            Timer timer = new(delegate
             {
-            if (_StatusCode == StatusCode.RUNNING)
+                if (_StatusCode == StatusCode.RUNNING && ExecuteProcess.HasExited == false)
                 {
                     ExecuteProcess.Kill();
                     _StatusCode = StatusCode.TIME_LIMIT_EXCEEDED;
@@ -79,6 +81,20 @@ namespace Algorithm_Dynamics.Core.Models
             ExecuteProcess.BeginOutputReadLine();
             ExecuteProcess.BeginErrorReadLine();
             ExecuteProcess.StandardInput.WriteLine(Input);
+            Thread MemoryMonitorThread = new(() =>
+            {
+                while (ExecuteProcess.HasExited == false)
+                {
+                    ExecuteProcess.Refresh();
+                    _WorkingSet64 = ExecuteProcess.PeakWorkingSet64;
+                    if (_WorkingSet64 > MemoryLimit)
+                    {
+                        ExecuteProcess.Kill();
+                        _StatusCode = StatusCode.MEMORY_LIMIT_EXCEEDED;
+                    }
+                }
+            });
+            MemoryMonitorThread.Start();
             await ExecuteProcess.WaitForExitAsync();
             return ExecuteProcess.ExitCode;
         }
@@ -88,7 +104,7 @@ namespace Algorithm_Dynamics.Core.Models
             _SourceCodeFilePath = Path.Combine(FolderPath, FileName) + ".txt";
             _ExecutableFilePath = Path.Combine(FolderPath, FileName) + ".exe";
         }
-        public async static Task<RunCodeResult> RunCode(string UserCode, string Input, Language language, int TimeLimit)
+        public async static Task<RunCodeResult> RunCode(string UserCode, string Input, Language language, int TimeLimit, long MemoryLimit)
         {
             RunCodeResult result = new();
             Directory.CreateDirectory(_SourceCodeFolderPath);
@@ -105,30 +121,36 @@ namespace Algorithm_Dynamics.Core.Models
             }
             var watch = new Stopwatch();
             watch.Start();
-            int exitCode = await Execute(Input, language, TimeLimit);
+            result.ExitCode = await Execute(Input, language, TimeLimit, MemoryLimit);
             watch.Stop();
             result.StandardOutput = _StandardOutput;
             result.StandardError = _StandardError;
-            result.CPUTime = (int)watch.ElapsedMilliseconds;
-            if (!string.IsNullOrEmpty(result.StandardError))
-            {
-                result.ResultCode = ResultCode.RUNTIME_ERROR;
-                return result;
-            }
+            result.CPUTime = watch.ElapsedMilliseconds;
+            result.MemoryUsage = _WorkingSet64;
             if (_StatusCode == StatusCode.TIME_LIMIT_EXCEEDED)
             {
                 result.ResultCode = ResultCode.TIME_LIMIT_EXCEEDED;
                 return result;
             }
-            if (exitCode == 0)
+            if (_StatusCode == StatusCode.MEMORY_LIMIT_EXCEEDED)
+            {
+                result.ResultCode = ResultCode.MEMORY_LIMIT_EXCEEDED;
+                return result;
+            }
+            if (!string.IsNullOrEmpty(result.StandardError) || result.ExitCode != 0)
+            {
+                result.ResultCode = ResultCode.RUNTIME_ERROR;
+                return result;
+            }
+            if (result.ExitCode == 0)
             {
                 result.ResultCode = ResultCode.SUCCESS;
             }
             return result;
         }
-        public async static Task<TestCaseResult> JudgeTestCase(string UserCode, TestCase TestCase, Language Language, int TimeLimit)
+        public async static Task<TestCaseResult> JudgeTestCase(string UserCode, TestCase TestCase, Language Language, int TimeLimit, long MemoryLimit)
         {
-            TestCaseResult result = new(TestCase, await RunCode(UserCode, TestCase.Input, Language, TimeLimit));
+            TestCaseResult result = new(TestCase, await RunCode(UserCode, TestCase.Input, Language, TimeLimit, MemoryLimit));
             if (result.ResultCode == ResultCode.SUCCESS)
             {
                 if (result.StandardOutput.Trim() != TestCase.Output.Trim())
@@ -145,7 +167,7 @@ namespace Algorithm_Dynamics.Core.Models
             Queue<TestCase> JudgeQueue = new(Submission.Problem.TestCases);
             while (JudgeQueue.Count > 0)
             {
-                Result.Add(await JudgeTestCase(Submission.Code, JudgeQueue.Dequeue(), Language, Submission.Problem.TimeLimit));
+                Result.Add(await JudgeTestCase(Submission.Code, JudgeQueue.Dequeue(), Language, Submission.Problem.TimeLimit, Submission.Problem.MemoryLimit));
             }
             return Result;
         }
@@ -177,7 +199,7 @@ namespace Algorithm_Dynamics.Core.Models
         }
         private static void ExecuteProcess_Exited(object sender, EventArgs e)
         {
-            if (_StatusCode != StatusCode.TIME_LIMIT_EXCEEDED)
+            if (_StatusCode != StatusCode.TIME_LIMIT_EXCEEDED && _StatusCode != StatusCode.MEMORY_LIMIT_EXCEEDED)
             {
                 _StatusCode = StatusCode.FINISHED;
             }
@@ -203,6 +225,7 @@ namespace Algorithm_Dynamics.Core.Models
         PENDING,
         RUNNING,
         FINISHED,
-        TIME_LIMIT_EXCEEDED
+        TIME_LIMIT_EXCEEDED,
+        MEMORY_LIMIT_EXCEEDED
     }
 }

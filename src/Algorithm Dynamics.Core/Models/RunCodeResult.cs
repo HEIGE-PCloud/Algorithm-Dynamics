@@ -5,8 +5,8 @@
         public string StandardOutput { get; set; }
         public string StandardError { get; set; }
         public int ExitCode { get; set; }
-        public int CPUTime { get; set; }
-        public int MemoryUsage { get; set; }
+        public long CPUTime { get; set; }
+        public long MemoryUsage { get; set; }
         public ResultCode ResultCode { get; set; }
     }
     public enum ResultCode

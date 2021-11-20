@@ -431,6 +431,12 @@ The `Random' button starts a random problem for the user. The `Import' button ca
 
 There are only buttons in the HomePage for the user to click, so only valid actions can be taken, no further data validation is required.
 
+\subsubsection{Stakeholder feedback}
+
+Timofei thinks putting the links on the same page makes it messy. He thinks those websites and resources can be easily find on the Internet, so there is no need to put extra links on the HomePage.
+
+PCloud points out that the icon grid needs to be responsive, so when he uses the software on a small screen, all buttons should still be displayed properly.
+
 \subsection{ProblemsPage}
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{ProblemsPage-design}
@@ -439,11 +445,11 @@ The ProblemsPage displays all problems in the database. The user can search, cre
 
 \subsubsection{Usability feature}
 
-The user can apply the selection condition by either selecting different fields in the dropdown boxes or directly typing into the search box. A scrollable list of problems that match the conditions will be shown below with detailed information. The user can start working on a problem by clicking the start button on the right. They can also right-click the problem to call a context menu that includes more actions for them to delete, edit or export the problem. By clicking the select button on the top, the user can select multiple problems at once and apply the same action to them at once. By clicking the Add button on the top right, a context menu will be displayed, allowing the user to create or import new problems or problem lists. When the user is typing into the search box, a flyout will display matching results to save typing. I will implement an advanced searching algorithm to improve the quality of the search results, and I will explain the algorithm in the algorithm design section.
+The user can apply the selection condition by either selecting different fields in the dropdown boxes or directly typing into the search box. A scrollable list of problems that match the conditions will be shown below with detailed information. The user can start working on a problem by clicking the start button on the right. They can also right-click the problem to call a context menu that includes more actions for them to delete, edit or export the problem. By clicking the select button on the top, the user can select multiple problems at once and apply the same action to them at once. By clicking the Add button on the top right, a context menu will be displayed, allowing the user to create or import new problems or problem lists. When the user is typing into the search box, a flyout will display matching results to save typing. I will implement an advanced searching algorithm to improve the quality of the search results, and I will explain the algorithm in the \hyperref[sec:algorithm design]{algorithm design section}.
 
 \subsubsection{Validation}
 
-Most components on this page are still buttons, users can only click them and no invalid data can be input. The search box is where the user can input some text only. First, a flyout will be displayed to promote the user to click the button instead of inputting data themselves. Next, a length check will be applied, The user can only enter a maximum of 32 characters so they cannot crash the search box or the searching algorithm. Instead of passing the search keywords directly to the database, a custom searching algorithm will be used to search and sanitise the search keyword, which prevents SQL injection and provide a better searching experience.
+Most components on this page are still buttons, users can only click them and no invalid data can be input. The search box is where the user can input some text only. A flyout will be displayed to promote the user to click the button instead of inputting data themselves. Also, a length check will be applied. The user can only enter a maximum of 32 characters so they cannot crash the search box or the searching algorithm. Instead of passing the search keywords directly to the database, a custom searching algorithm will be used to search and sanitise the search keyword, which prevents SQL injection and provide a better searching experience.
 
 \subsection{CodingPage}
 
@@ -523,6 +529,10 @@ Some interesting statistics will be displayed on the button.
 
 When the user edits his local identity, the user name will not be allowed to exceed 32 characters, and a format check will be applied to the email address.
 
+\subsubsection{Stakeholder feedback}
+
+Timofei thinks there can be more interesting statistics, such as favourite variable names, and total time spend in the software.
+
 \subsection{SettingsPage}
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{SettingsPage-design}
@@ -536,6 +546,10 @@ The user can adjust the colour theme of the software to use a light theme, dark 
 \subsubsection{Validation}
 
 Radio buttons are used for colour theme selection so it is impossible to enter any invalid data. A number box is used for the time limit settings so only positive integers can be input. A dropdown list is used for the programming language setting so only valid input is accepted.
+
+\subsubsection{Stakeholder feedback}
+
+Timofei likes the idea of being able to switch between a light theme and a dark theme. He thinks it will be better if users are allowed to create their own custom theme. He also suggests that allowing the user to change the font size manually may help a lot.
 
 \subsection{CreateNewProblemPage}
 
@@ -598,7 +612,7 @@ A problem may contain multiple test cases, so all test cases will be first pushe
 Similarly, an assignment may contain multiple problems, all problems will be first pushed into a problem queue, and each problem will be processed one by one.
 
 The detailed judging algorithm will be explained later in the 
-\hyperref[sec:algorithm design]{Algorithm design section}.
+\hyperref[sec:algorithm design]{algorithm design section}.
 
 \subsection{Database module}
 
@@ -615,12 +629,6 @@ The API module will allow the user to log in to their Microsoft Education accoun
 When the user clicks the login button in the SettingsPage, the API module will handle the login requests. When a logged-in user opens the AssignmentPage, the API module will fetch all assignments. The API module will also allow the teachers to distribute assignments directly through API calls and the students to hand in submissions without any kind of exporting.
 
 The API module will be implemented at the end after all local functions are working correctly. The corresponding API calls and endpoints will be discussed later.
-
-\subsection{Stakeholder feedback}
-
-Homepage: remove links
-Account page: more intreesting stats
-Settings page: adjust text size and more color theme
 
 \section{Algorithm design}
 \label{sec:algorithm design}
@@ -1073,7 +1081,7 @@ The \mintinline{text}{Problem} is used to store and organize the data for each p
     \hline
     Variable & Data type & Justification \\
     \hline
-    \mintinline{text}{Id} & \mintinline{text}{int} & The \mintinline{text}{Id} is the local unique identifier for a \mintinline{text}{Problem}. It is used to uniquely determine a \mintinline{text}{Problem} in the database. When exporting a \mintinline{text}{Problem}, the \mintinline{text}{Id} will not be exported. Instead, a new \mintinline{text}{Id} is given when the other user imports the \mintinline{text}{Problem}. \\
+    \mintinline{text}{Uid} & \mintinline{text}{Guid} & The \mintinline{text}{Problem} uses a \mintinline{text}{Guid} value for its \mintinline{text}{Uid} instead of a normal \mintinline{text}{int} value to ensure the \mintinline{text}{Uid} is unique globally. So when students import an \mintinline{text}{Assignment} with multiple \mintinline{text}{Problems} into their database, the \mintinline{text}{Uid} will not conflict with any existing values, and it will not be changed. \\
     \hline
     \mintinline{text}{Name} & \mintinline{text}{string} & The \mintinline{text}{Name} is a string contains the name of a \mintinline{text}{Problem}. \\
     \hline
@@ -1205,7 +1213,7 @@ When a student finishes an \mintinline{text}{Assignment}, an \mintinline{text}{A
 
 \subsubsection{\mintinline{text}{Judger}}
 
-The \mintinline{text}{Judger} is a static class, only eposes 5 functions to run and judge user's code. The \mintinline{text}{Judger} takes a \mintinline{text}{Submission} as an input, and outputs a \mintinline{text}{SubmissionResult}. No variable is exposed. The private attributes and methods are discussed in the \hyperref[sec:algorithm design]{Algorithm design section}.
+The \mintinline{text}{Judger} is a static class, only eposes 5 functions to run and judge user's code. The \mintinline{text}{Judger} takes a \mintinline{text}{Submission} as an input, and outputs a \mintinline{text}{SubmissionResult}. No variable is exposed. The private attributes and methods are discussed in the \hyperref[sec:algorithm design]{algorithm design section}.
 
 \subsubsection{\mintinline{text}{RunCodeResult}}
 
@@ -1516,11 +1524,172 @@ CREATE TABLE ProblemTag
 
 \subsection{Import/Export design}
 
+All data will be exported into JSON files.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{json}
+{
+    "FileType": "Algorithm Dynamics Exported Data",
+    "DataType": "Problem",
+    "Data": ...
+}
+\end{minted}
+
+Apart from the raw data, two extra fields are added to help validate the JSON file. The \mintinline{text}{FileType} will always be \mintinline{text}{"Algorithm Dynamics Exported Data"}. This field will be validated first to make sure the correct file is imported. The \mintinline{text}{DataType} determines the type of the \mintinline{text}{Data} and helps the module to deserialize the data.
+
 \subsubsection{Import/Export a Problem}
 
+\begin{minted}[linenos,tabsize=4,breaklines]{json}
+{
+    "FileType": "Algorithm Dynamics Exported Data",
+    "DataType": "Problem",
+    "Data": {
+        "Name": "Problem 1",
+        "Difficulty": 2,
+        "Description": "Problem description 1",
+        "TimeLimit": 1000,
+        "MemoryLimit": 1000,
+        "TestCases": [
+            {
+                "Input": "3 4",
+                "Output": "5",
+                "IsExample": true
+            },
+            {
+                "Input": "echo",
+                "Output": "echo",
+                "IsExample": false
+            }
+        ],
+        "Tags": [
+            {
+                "Name": "Tag1"
+            },
+            {
+                "Name": "Tag2"
+            }
+        ]
+    }
+}
+\end{minted}
+
 \subsubsection{Import/Export a ProblemList}
+\begin{minted}[linenos,tabsize=4,breaklines]{json}
+{
+    "FileType": "Algorithm Dynamics Exported Data",
+    "DataType": "ProblemList",
+    "Data": {
+        "Name": "Problem List 1",
+        "Description": "Problem list description 1",
+        "Problems": [
+            {
+                "Name": "Problem 1",
+                "Difficulty": 2,
+                "Description": "Problem description 1",
+                "TimeLimit": 1000,
+                "MemoryLimit": 1000,
+                "TestCases": [
+                    {
+                        "Input": "3 4",
+                        "Output": "5",
+                        "IsExample": true
+                    },
+                    {
+                        "Input": "echo",
+                        "Output": "echo",
+                        "IsExample": false
+                    }
+                ],
+                "Tags": [
+                    {
+                        "Name": "Tag1"
+                    },
+                    {
+                        "Name": "Tag2"
+                    }
+                ]
+            },
+            {
+                "Name": "Problem 2",
+                "Difficulty": 0,
+                "Description": "Problem description 2",
+                "TimeLimit": 2000,
+                "MemoryLimit": 2000,
+                "TestCases": [
+                    {
+                        "Input": "",
+                        "Output": "Hello world",
+                        "IsExample": true
+                    }
+                ],
+                "Tags": []
+            }
+        ],
+        "Count": 2
+    }
+}
+\end{minted}
 
 \subsubsection{Import/Export an Assignment}
+
+\begin{minted}[linenos,tabsize=4,breaklines]{json}
+{
+    "FileType": "Algorithm Dynamics Exported Data",
+    "DataType": "Assignment",
+    "Data": {
+        "Uid": "b527fe24-e872-4ef6-b1a7-7b78c9ebe110",
+        "DueDate": "2021-11-19T00:00:00+00:00",
+        "Status": 0,
+        "Type": 0,
+        "Assigner": {
+            "Uid": "359a2d2b-d1c1-4169-a255-9289fcfff4e6",
+            "Name": "User1",
+            "Email": "user1@example.com",
+            "Role": 1
+        },
+        "Name": "Assignment 1",
+        "Description": "Assignmet description 1",
+        "Problems": [
+            {
+                "Name": "Problem 1",
+                "Difficulty": 2,
+                "Description": "Problem description 1",
+                "TimeLimit": 1000,
+                "MemoryLimit": 1000,
+                "TestCases": [
+                    {
+                        "Input": "3 4",
+                        "Output": "5",
+                        "IsExample": true
+                    }
+                ],
+                "Tags": [
+                    {
+                        "Name": "Tag1"
+                    },
+                    {
+                        "Name": "Tag2"
+                    }
+                ]
+            },
+            {
+                "Name": "Problem 2",
+                "Difficulty": 0,
+                "Description": "Problem description 2",
+                "TimeLimit": 2000,
+                "MemoryLimit": 2000,
+                "TestCases": [
+                    {
+                        "Input": "",
+                        "Output": "Hello world",
+                        "IsExample": true
+                    }
+                ],
+                "Tags": []
+            }
+        ]
+    }
+}
+\end{minted}
 
 \subsubsection{Import/Export an AssignmentSubmission}
 
