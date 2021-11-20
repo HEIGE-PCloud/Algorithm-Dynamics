@@ -620,7 +620,9 @@ Because this software will store many complex relational data, a relational data
 
 I choose to use SQLite to power this software. It is a small, self-contained, high-reliability, full-featured SQL Database engine, which will be enough to handle all the data storing and querying requests.
 
-I choose to use Microsoft.Data.SQLite for the database interface, which allows me to send SQL requests to the database. Details about the design of the database and queries will be described in the \hyperref[subsec:database design]{Database design section}.
+The SQLite database has some limitations. It only supports five data types. \mintinline{text}{TEXT}, \mintinline{text}{INTEGER}, \mintinline{text}{NULL}, \mintinline{text}{REAL} and \mintinline{text}{BLOB}. So other data types such as \mintinline{text}{DateTime} and \mintinline{text}{Guid} will need to be converted before storing.
+
+I choose to use Microsoft.Data.SQLite for the database interface, which allows me to send SQL requests to the database, handle errors and provide safety features to prevent SQL injection. Details about the design of the database and queries will be described in the \hyperref[subsec:database design]{Database design section}.
 
 \subsection{API module}
 
@@ -1366,7 +1368,7 @@ The \mintinline{text}{GUID} will look like this: \mintinline{text}{149f3e41-dcdb
     \hline
     Uid & Name & Email & Role \\
     \hline
-    <GUID> & ``UserName'' & ``UserName@test.com'' & 0 \\
+    \mintinline{text}{<GUID>} & ``UserName'' & ``UserName@test.com'' & 0 \\
     \hline
 \end{tabulary}
 
@@ -1382,15 +1384,15 @@ CREATE TABLE User
 
 \subsubsection{Problem table}
 
-The Problem table will have an auto increment integer \mintinline{text}{Id} as its primary key. Both \mintinline{text}{Status} and \mintinline{text}{Difficulty} will be stored in integer for the same reason before.
+The Problem table will have \mintinline{text}{Uid} as its primary key. Both \mintinline{text}{Status} and \mintinline{text}{Difficulty} will be stored in integer for the same reason before.
 
 All fields will be validated and no empty field is allowed.
 
 \begin{tabulary}{\textwidth}{|L|L|L|L|}
     \hline
-    Id & Name & Description & Status  \\
+    Uid & Name & Description & Status  \\
     \hline
-    1 & ``name'' & ``...'' & 0 \\
+    \mintinline{text}{<GUID>} & ``name'' & ``Problem description'' & 0 \\
     \hline
 \end{tabulary}
 
@@ -1405,7 +1407,7 @@ All fields will be validated and no empty field is allowed.
 \begin{minted}[linenos,tabsize=4,breaklines]{sql}
 CREATE TABLE Problem
 (
-    Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    Uid TEXT PRIMARY KEY NOT NULL,
     Name TEXT NOT NULL,
     Description TEXT NOT NULL,
     Status INTEGER NOT NULL,
@@ -1437,19 +1439,42 @@ CREATE TABLE Tag
 )
 \end{minted}
 
+\subsubsection{TagRecord table}
+
+The \mintinline{text}{Tag} has a many-to-many relation with the \mintinline{text}{Problem}. A \mintinline{text}{Problem} can have multiple \mintinline{text}{Tags} and a \mintinline{text}{Tag} can be assigned to multiple \mintinline{text}{Problems}. So a link table is required to normalize the data.
+
+\begin{tabulary}{\textwidth}{|L|L|L|}
+    \hline
+    Id & ProblemUid & TagId \\
+    \hline
+    1 & \mintinline{text}{<GUID>} & 1 \\
+    \hline
+    2 & \mintinline{text}{<GUID>} & 2 \\
+    \hline
+\end{tabulary}
+
+\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+CREATE TABLE TagRecord
+(
+    PRIMARY KEY(Id) INTEGER NOT NULL AUTO_INCREMENT,
+    FOREIGN KEY (ProblemUid) REFERENCES Problem(Id),
+    FOREIGN KEY (TagId) REFERENCES Tag(Id),
+)
+\end{minted}
+
 \subsubsection{TestCase table}
 
 The TestCase table will have an auto-increment integer \mintinline{text}{Id} as its primary key. Since SQLite does not support boolean data type, an integer will be used to store the data of \mintinline{text}{IsExample}, 0 will represent false and 1 will represent true.
 
 All fields will be validated and no empty field is allowed.
 
-The \mintinline{text}{TestCase} has a many-to-one relation to the \mintinline{text}{Problem}, one \mintinline{text}{Problem} can have multiple \mintinline{text}{TestCase} while one \mintinline{text}{TestCase} can only belong to one \mintinline{text}{Problem}. So, a foreign key \mintinline{text}{ProblemId} is enabled for the \mintinline{text}{TestCase} to store its corresponding \mintinline{text}{Problem}.
+The \mintinline{text}{TestCase} has a many-to-one relation to the \mintinline{text}{Problem}, one \mintinline{text}{Problem} can have multiple \mintinline{text}{TestCase} while one \mintinline{text}{TestCase} can only belong to one \mintinline{text}{Problem}. So, a foreign key \mintinline{text}{ProblemUid} is enabled for the \mintinline{text}{TestCase} to store its corresponding \mintinline{text}{Problem}.
 
 \begin{tabulary}{\textwidth}{|L|L|L|L|L|}
     \hline
-    Id & Input & Output & IsExample & ProblemId \\
+    Id & Input & Output & IsExample & ProblemUid \\
     \hline
-    1 & ``Input1'' & ``Output1'' & 1 & 1 \\
+    1 & ``Input1'' & ``Output1'' & 1 & \mintinline{text}{<GUID>} \\
     \hline
 \end{tabulary}
 
@@ -1460,23 +1485,31 @@ CREATE TABLE TestCase
     Input TEXT NOT NULL,
     Output TEXT NOT NULL,
     IsExample INTEGER NOT NULL,
-    FOREIGN KEY (ProblemId) REFERENCES Problem(Id)
+    FOREIGN KEY (ProblemUid) REFERENCES Problem(Uid)
 )
 \end{minted}
 
 \subsubsection{Submission table}
 
-The Submission table will have an auto-increment integer \mintinline{text}{Id} as its primary key. Since SQLite does not support the \mintinline{text}{DateTime} data type, the time will be converted to a string before storing. Similarly, the conversion will be done for Language and SubmitterId.
+The Submission table will have an auto-increment integer \mintinline{text}{Id} as its primary key. Since SQLite does not support the \mintinline{text}{DateTime} data type, the time will be converted to a string before storing. Similarly, the conversion will be done for Language and UserUid.
 
 All fields will be validated and no empty field is allowed, except for the \mintinline{text}{Code}, empty \mintinline{text}{Submission} is allowed.
 
 A \mintinline{text}{Submission} has a one-to-many relationship with a \mintinline{text}{Problem}, a \mintinline{text}{Problem} can have multiple \mintinline{text}{Submission} while a \mintinline{text}{Submission} can only be submitted to one \mintinline{text}{Problem}. It also has a many-to-one relation with a \mintinline{text}{User}. A \mintinline{text}{User} can create multiple \mintinline{text}{Submission} while a \mintinline{text}{Submission} can only be created by one \mintinline{text}{User}. So it will have two foreign keys to establish such relationship.
 
-\begin{tabulary}{\textwidth}{|L|L|L|L|L|L|}
+\begin{tabulary}{\textwidth}{|L|L|L|L|}
     \hline
-    Id & ProblemId & Code & SubmittedTime & Language & SubmitterId \\
+    Id & ProblemUid & Code & Time \\
     \hline
-    1 & 1 & source code & 11/11/2021 14:20:04 & Python & <GUID> \\
+    1 & \mintinline{text}{<GUID>} & ``source code'' & ``11/11/2021 14:20:04`` \\
+    \hline
+\end{tabulary}
+
+\begin{tabulary}{\textwidth}{|L|L|}
+    \hline
+    Language & UserUid \\
+    \hline
+    ``Python'' & \mintinline{text}{<GUID>} \\
     \hline
 \end{tabulary}
 
@@ -1484,15 +1517,17 @@ A \mintinline{text}{Submission} has a one-to-many relationship with a \mintinlin
 CREATE TABLE Submission
 (
     PRIMARY KEY (Id) INTEGER NOT NULL AUTO_INCREMENT,
-    FOREIGN KEY (ProblemId) REFERENCES Problem(Id),
+    FOREIGN KEY (ProblemUid) REFERENCES Problem(Uid),
     Code TEXT,
-    SubmittedTime TEXT NOT NULL,
+    Time TEXT NOT NULL,
     Language TEXT NOT NULL,
-    FOREIGN KEY (SubmitterId) REFERENCES User(Uid),
+    FOREIGN KEY (UserUid) REFERENCES User(Uid),
 )
 \end{minted}
 
 \subsubsection{ProblemList table}
+
+The ProblemList table will have an auto-increment integer \mintinline{text}{Id} as its primary key. The description is allowed to be empty for easy sharing.
 
 \begin{tabulary}{\textwidth}{|L|L|L|}
     \hline
@@ -1511,6 +1546,18 @@ CREATE TABLE Submission
 )
 \end{minted}
 
+\subsubsection{ProblemListRecord table}
+
+The \mintinline{text}{ProblemList} and \mintinline{text}{Problem} has a many-to-many relationship, so a ProblemListRecord table is used to normalize the data.
+
+\begin{tabulary}{\textwidth}{|L|L|L|}
+    \hline
+    Id & ProblemUid & ProblemListId \\
+    \hline
+    1 & \mintinline{text}{<Guid>} & 1 \\
+    \hline
+\end{tabulary}
+
 \subsubsection{Assignment table}
 
 \subsubsection{AssignmentSubmission table}
@@ -1521,28 +1568,7 @@ CREATE TABLE Submission
 
 \subsubsection{AssignmentSubmissionResult table}
 
-\subsubsection{ProblemTag table}
 
-The \mintinline{text}{Tag} has a many-to-many relation with the \mintinline{text}{Problem}. A \mintinline{text}{Problem} can have multiple \mintinline{text}{Tags} and a \mintinline{text}{Tag} can be assigned to multiple \mintinline{text}{Problems}. So a link table is required to normalize the data.
-
-\begin{tabulary}{\textwidth}{|L|L|L|}
-    \hline
-    Id & ProblemId & TagId \\
-    \hline
-    1 & 1 & 1 \\
-    \hline
-    2 & 1 & 2 \\
-    \hline
-\end{tabulary}
-
-\begin{minted}[linenos,tabsize=4,breaklines]{sql}
-CREATE TABLE ProblemTag
-(
-    PRIMARY KEY(Id) INTEGER NOT NULL AUTO_INCREMENT,
-    FOREIGN KEY (ProblemId) REFERENCES Problem(Id),
-    FOREIGN KEY (TagId) REFERENCES Tag(Id),
-)
-\end{minted}
 
 \subsection{Import/Export design}
 
@@ -1721,6 +1747,8 @@ Apart from the raw data, two extra fields are added to help validate the JSON fi
 
 \subsection{Milestones}
 
+There are seven major milestones for the development of the solution.
+
 \begin{enumerate}
     \item Create the UI
     \item Implement data structures
@@ -1735,11 +1763,174 @@ Apart from the raw data, two extra fields are added to help validate the JSON fi
 
 TODO: testing plan
 
+The user interface is created first. At this stage, all buttons and layouts are created, but there is no code behind them. So I will do dry run tests to see whether the rendering, navigation and input box validation works correctly.
+
 \begin{tabulary}{\textwidth}{|L|L|L|}
     \hline
     Test input & Expect output & Justification \\
     \hline
+    Click different buttons on the NavigationView. & The main frame switches to the correct page. & A normal test to make sure the NavigationView is working correctly. \\
+    \hline
+    Click different buttons on the MainPage. & The main frame switches to different functions correctly. & A normal test to make sure the HomePage is working correctly. \\
+    \hline
+    Input a long string to the search box. & Only the first 32 characters are registered. & An erroneous test to make sure the length limit is working. Since at this stage, the searching algorithm is not implemented yet, the search result is not tested. \\ 
+    \hline
+    Select different items in the difficulty, list, tag dropdown boxes. & Items can be selected correctly. & A normal test to make sure the dropdown boxes are working. \\
+    \hline
+    Click the start button on the problem. & Navigate to the CodingPage correctly. & A normal test to make sure the start navigation is working correctly. \\
+    \hline
+    Input the Markdown test data below to the Problem section. & The Markdown text should be rendered and formatted correctly. & A normal test to see whether the Markdown text can be rendered correctly. \\
+    \hline
+    Input the Code test data below to the code editor. & The line number shows up correctly. The syntax highlighting works correctly. The shortcuts work correctly. & A normal test to make sure the code editor is working correctly. \\
+    \hline
 \end{tabulary}
+
+\subsubsection{Markdown test data}
+
+\begin{minted}[linenos,tabsize=4,breaklines]{markdown}
+# Markdown Tests
+
+## Headers
+
+### heading 3
+
+Under heading 3
+
+#### heading 4
+
+Under heading 4
+
+##### heading 5
+
+Under heading 5
+
+###### heading 6
+
+Under heading 6
+
+## Comment
+
+<!-- You cannot see this comment -->
+
+## Horizontal Rules
+
+---
+
+___
+
+***
+
+## Emphasis
+
+*This text will be italic*
+
+_This will also be italic_
+
+**This text will be bold**
+
+__This will also be bold__
+
+~~Strike through this text.~~
+
+_You **can** combine them_
+
+***bold and italics***
+
+~~**strikethrough and bold**~~
+
+~~*strikethrough and italics*~~
+
+~~***bold, italics and strikethrough***~~
+
+## Blockquotes
+
+> Donec massa lacus, ultricies a ullamcorper in, fermentum sed augue.
+Nunc augue augue, aliquam non hendrerit ac, commodo vel nisi.
+>> Sed adipiscing elit vitae augue consectetur a gravida nunc vehicula. Donec auctor
+odio non est accumsan facilisis. Aliquam id turpis in dolor tincidunt mollis ac eu diam.
+
+
+## Lists
+
+* Item 1
+* Item 2
+  * Item 2a
+  * Item 2b
+
+1. Item 1
+1. Item 2
+1. Item 3
+   1. Item 3a
+   1. Item 3b
+
+- [x] Task 1
+- [ ] Task 2
+- [ ] Task 3
+
+## Code
+
+`Inline Code`
+
+```cpp
+#include <iostream>
+int main()
+{
+    std::cout << "Hello world!" << endl;
+    return 0;
+}
+```
+
+## Tables
+
+| Option | Description |
+|:------:| -----------:|
+| data   | path to data files to supply the data that will be passed into templates. |
+| engine | engine to be used for processing templates. Handlebars is the default. |
+| ext    | extension to be used for dest files. |
+
+## Links
+
+<https://assemble.io>
+
+<contact@revolunet.com>
+
+[Assemble](https://assemble.io)
+
+[Upstage](https://github.com/upstage/ "Visit Upstage!")
+
+* [Chapter 1](#headers)
+* [Chapter 2](#comment)
+* [Chapter 3](#horizontal-rules)
+
+## Footnotes
+
+This is a digital footnote[^1].
+This is a footnote with "label"[^label]
+
+[^1]: This is a digital footnote
+[^label]: This is a footnote with "label"
+
+## Images
+
+![Minion](https://octodex.github.com/images/minion.png)
+
+![Alt text](https://octodex.github.com/images/stormtroopocat.jpg "The Stormtroopocat")
+
+\end{minted}
+
+\subsubsection{Code test data}
+
+\begin{minted}[linenos,tabsize=4,breaklines]{cpp}
+#include <iostream>
+using namespace std;
+int main()
+{
+    int a, b;
+    cin >> a >> b;
+    cout << a + b << endl;
+    return 0;
+}
+\end{minted}
 
 \subsection{Milestone 2: Implement data structures}
 
@@ -1804,8 +1995,22 @@ TODO: testing plan
 \section{Post-development testing}
 
 \subsection{Alpha testing}
+
+During the alpha testing, I will test the code myself. I will create a unit test project and write unit test cases to test the data structures, database, judger and data import and export automatically. The unit test will execute as a black-box test, creating some test input and testing whether the output matches. By automating the testing process, it will save me a lot of time hand inputting all the test data and comparing the output, which improves the development speed and the code quality.
+
+I will use the code coverage to measure whether the code is well tested. The code coverage calculates how many codes are executed during the unit test. A higher code coverage indicates the code is better tested.
+
+Any failed test cases will be investigated and at the end of the alpha testing, all unit tests must be passed with a code coverage higher than 90\%.
+
 \subsection{Beta testing}
-\subsection{Integration testing}
+
+During the beta testing stage. I will invite my stakeholders to use the software. First, the deployment of the software is tested. I will test how difficult it is for my stakeholders to download and install the software on their computer, identify and fix any compatibility issues that occur during this process.
+
+I will create some test coding problems for the students to import and practice on. During this process, the import function, the coding page, the judger and the user interface is tested. After that, I will invite the students to play with the software themselves and identify and fix any issues they meet.
+
+I will guide the teacher to create test problems, problem lists and assignments to test the user interface and the database. Then export all the problems and assignments created to test the export function. I will provide some test assignment submissions for the teacher to test the assignment management function. After that, I will invite the teacher to play with the software himself and identify and fix any issues he meets.
+
+In the end, I will conduct an integration test by inviting the teacher and the students to work on a real programming assignment using this software. All functions of the software are tested during this stage and any issues identified during this stage will be fixed.
 
 \chapter{Development}
 
