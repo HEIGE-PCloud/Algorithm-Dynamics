@@ -541,15 +541,15 @@ The SettingsPage is where the user adjusts software settings.
 
 \subsubsection{Usability feature}
 
-The user can adjust the colour theme of the software to use a light theme, dark theme or system default theme. The user can also change the run code time limit and programming language profiles in the SettingsPage.
+The user can adjust the colour theme of the software to use a light theme, dark theme or system default theme. The user can also change the run code time limit, memory limit and programming language profiles in the SettingsPage.
 
 \subsubsection{Validation}
 
-Radio buttons are used for colour theme selection so it is impossible to enter any invalid data. A number box is used for the time limit settings so only positive integers can be input. A dropdown list is used for the programming language setting so only valid input is accepted.
+Radio buttons are used for colour theme selection so it is impossible to enter any invalid data. A number box is used for the time limit and memory limit settings so only positive integers can be input. A dropdown list is used for the programming language setting so only valid input is accepted.
 
 \subsubsection{Stakeholder feedback}
 
-Timofei likes the idea of being able to switch between a light theme and a dark theme. He thinks it will be better if users are allowed to create their custom theme. He also suggests that allowing the user to change the font size manually may help a lot.
+Timofei likes the idea of being able to switch between a light theme and a dark theme. He thinks it will be better if users are allowed to create their custom themes. He also suggests that allowing the user to change the font size manually may help a lot.
 
 \subsection{CreateNewProblemPage}
 
@@ -1317,6 +1317,7 @@ The settings will be stored in a JSON file.
 {
     "Theme": "Light",
     "RunCodeTimeLimit": 1000,
+    "RunCodeMemoryLimit": 67108864,
     "SelectedLanguage": "Python",
     "LanguageConfiguration": 
     [
@@ -1344,6 +1345,8 @@ The settings will be stored in a JSON file.
 The \mintinline{text}{Theme} field stores the current color theme. There are three possible values, \mintinline{text}{Light}, \mintinline{text}{Dark} or \mintinline{text}{Default}. The data will be validated before applying, if it is empty or invalid, the \mintinline{text}{Default} theme will be applyed and write back to this field.
 
 The \mintinline{text}{RunCodeTimeLimit} field stores the max time allowed for the run code function. The data will be validated before applying, if it is not a positive integer, then a default 1000 will be applied and written back to this field. 
+
+The \mintinline{text}{RunCodeMemoryLimit} field stores the max memory allowed for the run code function. The data will be validated before applying, if it is not a positive integer, then a default 67108864, which is 64MB will be applied and written back to this field.
 
 The \mintinline{text}{SelectedLanguage} field stores the default programming language selected by the user. The value will be validated before applying, if it is empty or invalid, the internal default Python programming language configuration will be applied and written back to this field.
 
@@ -2042,6 +2045,7 @@ TODO: testing plan
 {
     "Theme": "Light",
     "RunCodeTimeLimit": 1000,
+    "RunCodeMemoryLimit": 67108864,
     "SelectedLanguage": "Python",
     "LanguageConfiguration": 
     [
@@ -2077,6 +2081,7 @@ TODO: testing plan
 {
     "Theme": "RandomTheme",
     "RunCodeTimeLimit": 1000,
+    "RunCodeMemoryLimit": 67108864,
     "SelectedLanguage": "Python"
 }
 
