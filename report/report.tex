@@ -433,7 +433,7 @@ There are only buttons in the HomePage for the user to click, so only valid acti
 
 \subsubsection{Stakeholder feedback}
 
-Timofei thinks putting the links on the same page makes it messy. He thinks those websites and resources can be easily find on the Internet, so there is no need to put extra links on the HomePage.
+Timofei thinks putting the links on the same page makes it messy. He thinks those websites and resources can be easily found on the Internet, so there is no need to put extra links on the HomePage.
 
 PCloud points out that the icon grid needs to be responsive, so when he uses the software on a small screen, all buttons should still be displayed properly.
 
@@ -531,7 +531,7 @@ When the user edits his local identity, the user name will not be allowed to exc
 
 \subsubsection{Stakeholder feedback}
 
-Timofei thinks there can be more interesting statistics, such as favourite variable names, and the total time spend in the software.
+Timofei thinks there can be more interesting statistics, such as favourite variable names, and the total time spends in the software.
 
 \subsection{SettingsPage}
 
@@ -1105,9 +1105,11 @@ The \mintinline{text}{Problem} is used to store and organize the data for each p
     \hline
     Variable & Data type & Justification \\
     \hline
-    \mintinline{text}{Uid} & \mintinline{text}{Guid} & The \mintinline{text}{Problem} uses a \mintinline{text}{Guid} value for its \mintinline{text}{Uid} instead of a normal \mintinline{text}{int} value to ensure the \mintinline{text}{Uid} is unique globally. So when students import an \mintinline{text}{Assignment} with multiple \mintinline{text}{Problems} into their database, the \mintinline{text}{Uid} will not conflict with any existing values, and it will not be changed. \\
+    \mintinline{text}{Id} & \mintinline{text}{int} & The \mintinline{text}{Id} is the local unique identifier for a \mintinline{text}{Problem}. It is used to uniquely determine a \mintinline{text}{Problem} in the database. When a \mintinline{text}{Problem} is imported in to the database, a new \mintinline{text}{Id} is given. \\
     \hline
     \mintinline{text}{Name} & \mintinline{text}{string} & The \mintinline{text}{Name} is a string contains the name of a \mintinline{text}{Problem}. \\
+    \hline
+    \mintinline{text}{SourceHash} & \mintinline{text}{string} & This field is \mintinline{text}{null} for all normal \mintinline{text}{Problem}. It is only set for \mintinline{text}{Problem} which comes with an \mintinline{text}{Assignment}, and it is set to the hash value of the original \mintinline{text}{Problem}. This value will be recorded for \mintinline{text}{Submission}. \\
     \hline
 \end{tabulary}
 
@@ -1241,7 +1243,7 @@ The \mintinline{text}{Judger} is a static class, only eposes 5 functions to run 
 
 \subsubsection{\mintinline{text}{RunCodeResult}}
 
-\mintinline{text}{RunCodeResult} stores the judging result for a piece of code. It does not store the information about whether the output is correct, it only stores the runtime statistics and whether the code has been compiled and executed correctly. This result will not be stored into the database, so there is no \mintinline{text}{Id} attribute.
+\mintinline{text}{RunCodeResult} stores the judging result for a piece of code. It does not store the information about whether the output is correct, it only stores the runtime statistics and whether the code has been compiled and executed correctly. This result will not be stored in the database, so there is no \mintinline{text}{Id} attribute.
 
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
@@ -1387,9 +1389,9 @@ CREATE TABLE User
 
 \subsubsection{Problem table}
 
-The Problem table will have \mintinline{text}{Uid} as its primary key. Both \mintinline{text}{Status} and \mintinline{text}{Difficulty} will be stored in integer for the same reason before.
+The Problem table will have \mintinline{text}{Id} as its primary key. Both \mintinline{text}{Status} and \mintinline{text}{Difficulty} will be stored in integer for the same reason before.
 
-All fields will be validated and no empty field is allowed.
+All fields will be validated and only the \mintinline{text}{SourceHash} is allowed to be null as explained in the data structure design section.
 
 \begin{tabulary}{\textwidth}{|L|L|L|L|}
     \hline
@@ -1399,11 +1401,11 @@ All fields will be validated and no empty field is allowed.
     \hline
 \end{tabulary}
 
-\begin{tabulary}{\textwidth}{|L|L|L|}
+\begin{tabulary}{\textwidth}{|L|L|L|L|}
     \hline
-    Difficulty & TimeLimit & MemoryLimit \\
+    Difficulty & TimeLimit & MemoryLimit & SourceHash \\
     \hline
-    0 & 1000 & 1000 \\
+    0 & 1000 & 1000 & null \\
     \hline
 \end{tabulary}
 
@@ -1416,7 +1418,8 @@ CREATE TABLE Problem
     Status INTEGER NOT NULL,
     Difficulty INTEGER NOT NULL,
     TimeLimit INTEGER NOT NULL,
-    MemoryLimit INTEGER NOT NULL
+    MemoryLimit INTEGER NOT NULL,
+    SourceHash TEXT
 )
 \end{minted}
 
@@ -1448,19 +1451,19 @@ The \mintinline{text}{Tag} has a many-to-many relation with the \mintinline{text
 
 \begin{tabulary}{\textwidth}{|L|L|L|}
     \hline
-    Id & ProblemUid & TagId \\
+    Id & ProblemId & TagId \\
     \hline
-    1 & \mintinline{text}{<GUID>} & 1 \\
+    1 & 1 & 1 \\
     \hline
-    2 & \mintinline{text}{<GUID>} & 2 \\
+    2 & 1 & 2 \\
     \hline
 \end{tabulary}
 
 \begin{minted}[linenos,tabsize=4,breaklines]{sql}
 CREATE TABLE TagRecord
 (
-    PRIMARY KEY(Id) INTEGER NOT NULL AUTO_INCREMENT,
-    FOREIGN KEY (ProblemUid) REFERENCES Problem(Id),
+    PRIMARY KEY (Id) INTEGER NOT NULL AUTO_INCREMENT,
+    FOREIGN KEY (ProblemId) REFERENCES Problem(Id),
     FOREIGN KEY (TagId) REFERENCES Tag(Id),
 )
 \end{minted}
@@ -1469,15 +1472,15 @@ CREATE TABLE TagRecord
 
 The TestCase table will have an auto-increment integer \mintinline{text}{Id} as its primary key. Since SQLite does not support boolean data type, an integer will be used to store the data of \mintinline{text}{IsExample}, 0 will represent false and 1 will represent true.
 
-All fields will be validated and no empty field is allowed.
+The \mintinline{text}{TestCase} has a many-to-one relation to the \mintinline{text}{Problem}, one \mintinline{text}{Problem} can have multiple \mintinline{text}{TestCase} while one \mintinline{text}{TestCase} can only belong to one \mintinline{text}{Problem}. So, a foreign key \mintinline{text}{ProblemId} is enabled for the \mintinline{text}{TestCase} to store its corresponding \mintinline{text}{Problem}.
 
-The \mintinline{text}{TestCase} has a many-to-one relation to the \mintinline{text}{Problem}, one \mintinline{text}{Problem} can have multiple \mintinline{text}{TestCase} while one \mintinline{text}{TestCase} can only belong to one \mintinline{text}{Problem}. So, a foreign key \mintinline{text}{ProblemUid} is enabled for the \mintinline{text}{TestCase} to store its corresponding \mintinline{text}{Problem}.
+All fields will be validated and no empty field is allowed.
 
 \begin{tabulary}{\textwidth}{|L|L|L|L|L|}
     \hline
-    Id & Input & Output & IsExample & ProblemUid \\
+    Id & Input & Output & IsExample & ProblemId \\
     \hline
-    1 & ``Input1'' & ``Output1'' & 1 & \mintinline{text}{<GUID>} \\
+    1 & ``Input1'' & ``Output1'' & 1 & 1 \\
     \hline
 \end{tabulary}
 
@@ -1488,7 +1491,7 @@ CREATE TABLE TestCase
     Input TEXT NOT NULL,
     Output TEXT NOT NULL,
     IsExample INTEGER NOT NULL,
-    FOREIGN KEY (ProblemUid) REFERENCES Problem(Uid)
+    FOREIGN KEY (ProblemId) REFERENCES Problem(Id)
 )
 \end{minted}
 
@@ -1496,23 +1499,23 @@ CREATE TABLE TestCase
 
 The Submission table will have an auto-increment integer \mintinline{text}{Id} as its primary key. Since SQLite does not support the \mintinline{text}{DateTime} data type, the time will be converted to a string before storing. Similarly, the conversion will be done for Language and UserUid.
 
-All fields will be validated and no empty field is allowed, except for the \mintinline{text}{Code}, empty \mintinline{text}{Submission} is allowed.
+A \mintinline{text}{Submission} has a one-to-many relationship with a \mintinline{text}{Problem}, a \mintinline{text}{Problem} can have multiple \mintinline{text}{Submission} while a \mintinline{text}{Submission} can only be submitted to one \mintinline{text}{Problem}. It also has a many-to-one relationship with a \mintinline{text}{User}. A \mintinline{text}{User} can create multiple \mintinline{text}{Submission} while a \mintinline{text}{Submission} can only be created by one \mintinline{text}{User}. It also has a many-to-one relationship with a \mintinline{text}{AssignmentSubmission}. So it will have three foreign keys to establish such relationships.
 
-A \mintinline{text}{Submission} has a one-to-many relationship with a \mintinline{text}{Problem}, a \mintinline{text}{Problem} can have multiple \mintinline{text}{Submission} while a \mintinline{text}{Submission} can only be submitted to one \mintinline{text}{Problem}. It also has a many-to-one relation with a \mintinline{text}{User}. A \mintinline{text}{User} can create multiple \mintinline{text}{Submission} while a \mintinline{text}{Submission} can only be created by one \mintinline{text}{User}. So it will have two foreign keys to establish such relationship.
+All fields will be validated and no empty field is allowed, except for the Code, empty \mintinline{text}{Submission} is allowed and for the AssignmentSubmissionResultUid, if the \mintinline{text}{Submission} does not belong to an \mintinline{text}{Assignment}, a null value is allowed.
 
 \begin{tabulary}{\textwidth}{|L|L|L|L|}
     \hline
-    Id & ProblemUid & Code & Time \\
+    Id & ProblemId & Code & Time \\
     \hline
-    1 & \mintinline{text}{<GUID>} & ``source code'' & ``11/11/2021 14:20:04`` \\
+    1 & 1 & ``source code'' & ``11/11/2021 14:20:04`` \\
     \hline
 \end{tabulary}
 
-\begin{tabulary}{\textwidth}{|L|L|}
+\begin{tabulary}{\textwidth}{|L|L|L|}
     \hline
-    Language & UserUid \\
+    Language & UserUid & AssignmentSubmissionUid \\
     \hline
-    ``Python'' & \mintinline{text}{<GUID>} \\
+    ``Python'' & \mintinline{text}{<GUID>} & \mintinline{text}{<GUID>} \\
     \hline
 \end{tabulary}
 
@@ -1520,23 +1523,24 @@ A \mintinline{text}{Submission} has a one-to-many relationship with a \mintinlin
 CREATE TABLE Submission
 (
     PRIMARY KEY (Id) INTEGER NOT NULL AUTO_INCREMENT,
-    FOREIGN KEY (ProblemUid) REFERENCES Problem(Uid),
+    FOREIGN KEY (ProblemId) REFERENCES Problem(Id),
     Code TEXT,
     Time TEXT NOT NULL,
     Language TEXT NOT NULL,
     FOREIGN KEY (UserUid) REFERENCES User(Uid),
+    FOREIGN KEY (AssignmentSubmissionResultUid) REFERENCES AssignmentSubmission(Uid),
 )
 \end{minted}
 
 \subsubsection{ProblemList table}
 
-The ProblemList table will have an auto-increment integer \mintinline{text}{Id} as its primary key. The description is allowed to be empty for easy sharing.
+The ProblemList table has an auto-increment integer \mintinline{text}{Id} as its primary key. The description is allowed to be empty for easy sharing.
 
 \begin{tabulary}{\textwidth}{|L|L|L|}
     \hline
     Id & Name & Description \\
     \hline
-    1 & ProblemList 1 & Description for ProblemList 1 \\
+    1 & ``ProblemList 1'' & ``Description for ProblemList 1'' \\
     \hline
 \end{tabulary}
 
@@ -1555,9 +1559,9 @@ The \mintinline{text}{ProblemList} and \mintinline{text}{Problem} has a many-to-
 
 \begin{tabulary}{\textwidth}{|L|L|L|}
     \hline
-    Id & ProblemUid & ProblemListId \\
+    Id & ProblemId & ProblemListId \\
     \hline
-    1 & \mintinline{text}{<Guid>} & 1 \\
+    1 & 1 & 1 \\
     \hline
 \end{tabulary}
 
@@ -1565,22 +1569,128 @@ The \mintinline{text}{ProblemList} and \mintinline{text}{Problem} has a many-to-
 CREATE TABLE ProblemListRecord
 (
     PRIMARY KEY (Id) INTEGER NOT NULL AUTO_INCREMENT,
-    ProblemUid TEXT NOT NULL,
-    ProblemListId INTEGER NOT NULL
+    FOREIGN KEY (ProblemId) REFERENCES Problem(Id),
+    FOREIGN KEY (ProblemListId) REFERENCES ProblemList(Id)
 )
 \end{minted}
 
 \subsubsection{Assignment table}
 
+The Assignment table will have \mintinline{text}{Uid} as its primary key. It will have a one-to-many relationship with \mintinline{text}{User}, so a \mintinline{text}{UserUid} field is used to record this relationship.
+
+\begin{tabulary}{\textwidth}{|L|L|L|L|L|}
+    \hline
+    Uid & DueDate & Status & Type & UserUid \\
+    \hline
+    \mintinline{text}{<GUID>} & ``11/11/2021 14:20:04`` & 1 & 0 & \mintinline{text}{<GUID>} \\
+    \hline
+\end{tabulary}
+
+\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+CREATE TABLE Assignment
+(
+    Uid TEXT PRIMARY KEY NOT NULL,
+    DueDate TEXT NOT NULL,
+    Status INTEGER NOT NULL,
+    Type INTEGER NOT NULL,
+    FOREIGN KEY (UserUid) REFERENCES User(Uid)
+)
+\end{minted}
+
+\subsubsection{AssignmentRecord table}
+
+\mintinline{text}{Assignment} has a many-to-many relationship with the \mintinline{text}{Problem} so an AssignmentRecord table is used to normalize the data.
+
+\begin{tabulary}{\textwidth}{|L|L|L|L|}
+    \hline
+    Id & AssignmentUid & ProblemId & SourceHash \\
+    \hline
+    1 & \mintinline{text}{<GUID>} & 1 & \mintinline{text}{<Hash>} \\
+    \hline
+\end{tabulary}
+
+\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+CREATE TABLE AssignmentRecord
+(
+    PRIMARY KEY (Id) INTEGER NOT NULL AUTO_INCREMENT,
+    FOREIGN KEY (AssignmentUid) REFERENCES Assignment(Uid),
+    FOREIGN KEY (ProblemId) REFERENCES Problem(Id),
+    SourceHash TEXT NOT NULL
+)
+\end{minted}
+
 \subsubsection{AssignmentSubmission table}
+
+\begin{tabulary}{\textwidth}{|L|L|L|L|}
+    \hline
+    Uid & AssignmentUid & UserUid & Status \\
+    \hline
+    \mintinline{text}{<GUID>} & \mintinline{text}{<GUID>} & \mintinline{text}{<GUID>} & 0 \\
+    \hline
+\end{tabulary}
+
+\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+CREATE TABLE AssignmentSubmission
+(
+    Uid TEXT PRIMARY KEY NOT NULL,
+    FOREIGN KEY (AssignmentUid) REFERENCES Assignment(Uid),
+    FOREIGN KEY (UserUid) REFERENCES User(Uid),
+    Status INTEGER NOT NULL
+)
+\end{minted}
 
 \subsubsection{TestCaseResult table}
 
+\begin{tabulary}{\textwidth}{|L|L|L|L|}
+    \hline
+    Id & TestCaseId & StandardOutput & StandardError \\
+    \hline
+    1 & 1 & ``Standard output'' & ``Standard error'' \\
+    \hline
+\end{tabulary}
+
+
+\begin{tabulary}{\textwidth}{|L|L|L|L|L|}
+    \hline
+    ExitCode & CPUTime & MemoryUsage & ResultCode & SubmissionId\\
+    \hline
+    0 & 1000 & 1000 & 0 & 1 \\
+    \hline
+\end{tabulary}
+
+\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+CREATE TABLE TestCaseResult
+(
+)
+\end{minted}
+
 \subsubsection{SubmissionResult table}
+
+\begin{tabulary}{\textwidth}{|L|L|L|}
+    \hline
+    Id & SubmissionId & AssignmentSubmissionResultUid \\
+    \hline
+\end{tabulary}
+
+\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+CREATE TABLE SubmissionResult
+(
+)
+\end{minted}
 
 \subsubsection{AssignmentSubmissionResult table}
 
+\begin{tabulary}{\textwidth}{|L|L|}
+    \hline
+    Uid & AssignmentSubmissionUid \\
+    \hline
+\end{tabulary}
 
+\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+CREATE TABLE AssignmentSubmissionResult
+(
+)
+\end{minted}
 
 \subsection{Import/Export design}
 
@@ -1816,9 +1926,9 @@ The user interface is created first. At this stage, all buttons and layouts are 
     \hline
     Test input & Expect output & Justification \\
     \hline
-    Click different buttons on the NavigationView. & The main frame switches to the correct page. & A normal test to make sure the NavigationView is working correctly. \\
+    Click different buttons on the NavigationView. & The mainframe switches to the correct page. & A normal test to make sure the NavigationView is working correctly. \\
     \hline
-    Click different buttons on the MainPage. & The main frame switches to different functions correctly. & A normal test to make sure the HomePage is working correctly. \\
+    Click different buttons on the MainPage. & The mainframe switches to different functions correctly. & A normal test to make sure the HomePage is working correctly. \\
     \hline
     Input a long string to the search box. & Only the first 32 characters are registered. & An erroneous test to make sure the length limit is working. Since at this stage, the searching algorithm is not implemented yet, the search result is not tested. \\ 
     \hline
@@ -2031,9 +2141,9 @@ TODO: testing plan
     \hline
     Adjust the settings in the SettingsPage. & The settings file has been updated correctly. & A normal test to make sure the settings can be saved correctly. \\
     \hline
-    No settings file. & A default settings file is generated. & An extreme test simluates the suitation when the software is first installed and there is no existing settings file. A correct default settings file must be created correctly. \\
+    No settings file. & A default settings file is generated. & An extreme test simulates the situation when the software is first installed and there is no existing settings file. A correct default settings file must be created correctly. \\
     \hline
-    A settings file with incorrect JSON format. & A default settings file overrides the incorrect file. & An erroneous test to make sure the settings module can process files with incorrect format. \\
+    Settings file with incorrect JSON format. & A default settings file overrides the incorrect file. & An erroneous test to make sure the settings module can process files with an incorrect format. \\
     \hline
     A settings file with incorrect or missing values. & A default value is written back to all incorrect or missing fields. The correct fields are not affected. & An erroneous test to make sure the settings module can deal with incorrect or missing values. \\
     \hline
@@ -2095,7 +2205,7 @@ TODO: testing plan
     \hline
     Click the login button on the Account page, and input the wrong email and password. & Login failed with correct error message displayed. & A erroneous test to make sure the software handles login failure correctly. \\
     \hline
-    Login with a teacher account, navigate to the assignment page. & All local assignments and remote assignments create by the teacher show up correctly. & A normal test to make sure the assignments can be fetched correctly. \\
+    Login with a teacher account, navigate to the assignment page. & All local assignments and remote assignments created by the teacher show up correctly. & A normal test to make sure the assignments can be fetched correctly. \\
     \hline
     Login with a teacher account, publish a new assignment. & The assignment gets published correctly. & A normal test to make sure the assignments can be distributed through API correctly. \\
     \hline
@@ -2105,7 +2215,7 @@ TODO: testing plan
     \hline
     Login with a student account, submit a submission to an assignment. & The submission gets submitted successfully. & A normal test to make sure the submission API works correctly. \\
     \hline
-    Click the logout button on the Account page. & The user gets logout correctly. & A normal test to make sure the user can logout correctly. \\
+    Click the logout button on the Account page. & The user gets logged out correctly. & A normal test to make sure the user can log out correctly. \\
     \hline
 \end{tabulary}
 

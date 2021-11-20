@@ -12,7 +12,7 @@ classDiagram
         +TestCase()
     }
     class Problem{
-        +Guid Uid
+        +int Id
         +string Name
         +Status Status
         +Difficulty Difficulty
@@ -21,6 +21,7 @@ classDiagram
         +int MemoryLimit
         +List<TestCase> TestCases
         +List<Tag> Tags
+        +string SourceHash
         +Problem()
     }
     class ProblemList{
