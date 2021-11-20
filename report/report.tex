@@ -1558,6 +1558,15 @@ The \mintinline{text}{ProblemList} and \mintinline{text}{Problem} has a many-to-
     \hline
 \end{tabulary}
 
+\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+CREATE TABLE ProblemListRecord
+(
+    PRIMARY KEY (Id) INTEGER NOT NULL AUTO_INCREMENT,
+    ProblemUid TEXT NOT NULL,
+    ProblemListId INTEGER NOT NULL
+)
+\end{minted}
+
 \subsubsection{Assignment table}
 
 \subsubsection{AssignmentSubmission table}
@@ -1586,11 +1595,16 @@ Apart from the raw data, two extra fields are added to help validate the JSON fi
 
 \subsubsection{Import/Export a Problem}
 
+When the user exports a problem, the problem instance will be serialized. The test cases and tags associated with the problem will be converted into a list, and their Ids will be removed.
+
+This is a sample exported file.
+
 \begin{minted}[linenos,tabsize=4,breaklines]{json}
 {
     "FileType": "Algorithm Dynamics Exported Data",
     "DataType": "Problem",
     "Data": {
+        "Uid": "2b2bc7d4-603f-4af0-b77f-d6395d9997cd",
         "Name": "Problem 1",
         "Difficulty": 2,
         "Description": "Problem description 1",
@@ -1620,7 +1634,28 @@ Apart from the raw data, two extra fields are added to help validate the JSON fi
 }
 \end{minted}
 
+When the problem is imported, if the problem already exists, its data is updated, otherwise, a new record is created.
+
+The problem and test cases are imported first.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+INSERT OR REPLACE INTO Problem VALUES (Uid, Name, Difficulty, Description, TimeLimit, MemoryLimit)
+INSERT OR REPLACE INTO TestCase VALUES (Input, Output, IsExample, Uid)
+\end{minted}
+
+After that, the tags are imported and the corresponding TagRecord table is updated.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+INSERT OR REPLACE INTO Tag VALUES (Name)
+INSERT INTO TagRecord VALUES (Uid, last_insert_rowid)
+\end{minted}
+
 \subsubsection{Import/Export a ProblemList}
+
+When the user exports a problem list, several problems are wrapped into a list and additional information is added. The Id of the original problem list is not included in the exported file, a new Id will be assigned when the list is imported.
+
+This is a sample exported file.
+
 \begin{minted}[linenos,tabsize=4,breaklines]{json}
 {
     "FileType": "Algorithm Dynamics Exported Data",
@@ -1630,6 +1665,7 @@ Apart from the raw data, two extra fields are added to help validate the JSON fi
         "Description": "Problem list description 1",
         "Problems": [
             {
+                "Uid": "da58f27b-e1f6-4d12-8137-6054677c91cb"
                 "Name": "Problem 1",
                 "Difficulty": 2,
                 "Description": "Problem description 1",
@@ -1657,6 +1693,7 @@ Apart from the raw data, two extra fields are added to help validate the JSON fi
                 ]
             },
             {
+                "Uid": "76ef1041-9a2a-4672-af34-c3f76b0fdeac",
                 "Name": "Problem 2",
                 "Difficulty": 0,
                 "Description": "Problem description 2",
@@ -1675,6 +1712,13 @@ Apart from the raw data, two extra fields are added to help validate the JSON fi
         "Count": 2
     }
 }
+\end{minted}
+
+When a problem list is imported, all problems are imported in the same way. Then the information about the problem list itself is imported and the ProblemListRecord table is updated.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+INSERT OR REPLACE INTO ProblemList VALUES (Name, Description)
+INSERT OR REPLACE INTO ProblemListRecord VALUES (Uid, last_insert_rowid)
 \end{minted}
 
 \subsubsection{Import/Export an Assignment}
@@ -1980,7 +2024,61 @@ TODO: testing plan
     \hline
     Test input & Expect output & Justification \\
     \hline
+    A normal settings file. & The settings can be loaded and processed correctly. & A normal test to make sure the settings can be loaded correctly. \\ 
+    \hline
+    Adjust the settings in the SettingsPage. & The settings file has been updated correctly. & A normal test to make sure the settings can be saved correctly. \\
+    \hline
+    No settings file. & A default settings file is generated. & An extreme test simluates the suitation when the software is first installed and there is no existing settings file. A correct default settings file must be created correctly. \\
+    \hline
+    A settings file with incorrect JSON format. & A default settings file overrides the incorrect file. & An erroneous test to make sure the settings module can process files with incorrect format. \\
+    \hline
+    A settings file with incorrect or missing values. & A default value is written back to all incorrect or missing fields. The correct fields are not affected. & An erroneous test to make sure the settings module can deal with incorrect or missing values. \\
+    \hline
 \end{tabulary}
+
+\subsubsection{Normal settings file}
+
+\begin{minted}[linenos,tabsize=4,breaklines]{json}
+{
+    "Theme": "Light",
+    "RunCodeTimeLimit": 1000,
+    "SelectedLanguage": "Python",
+    "LanguageConfiguration": 
+    [
+        {
+            "Name": "C++",
+            "NeedCompile": true,
+            "CompileCommand": "g++",
+            "CompileArguments": "-x c++ {SourceCodeFilePath} -o {ExecutableFilePath}",
+            "RunCommand": "{ExecutableFilePath}",
+            "RunArguments": ""
+        },
+        {
+            "Name": "Python",
+            "NeedCompile": false,
+            "CompileCommand": "",
+            "CompileArguments": "",
+            "RunCommand": "python",
+            "RunArguments": "{SourceCodeFilePath}"
+        }
+    ],
+    "CurrentUser": "6ee2ebef-3f50-43b7-adf4-78c460339fd0"
+}
+\end{minted}
+
+\subsubsection{A settings file with incorrect format}
+\begin{minted}[linenos,tabsize=4,breaklines]{json}
+{
+    "Theme": "Light,
+\end{minted}
+
+\subsubsection{A settings file with incorrect and missing fields}
+
+{
+    "Theme": "RandomTheme",
+    "RunCodeTimeLimit": 1000,
+    "SelectedLanguage": "Python"
+}
 
 \subsection{Milestone 7: Handle API calls}
 
@@ -1989,6 +2087,20 @@ TODO: testing plan
     Test input & Expect output & Justification \\
     \hline
     Click the login button on the Account page, and input the correct email and password. & Login successfully, the information on the Account page is updated correctly. & A normal test to make sure the software can process the login API correctly. \\
+    \hline
+    Click the login button on the Account page, and input the wrong email and password. & Login failed with correct error message displayed. & A erroneous test to make sure the software handles login failure correctly. \\
+    \hline
+    Login with a teacher account, navigate to the assignment page. & All local assignments and remote assignments create by the teacher show up correctly. & A normal test to make sure the assignments can be fetched correctly. \\
+    \hline
+    Login with a teacher account, publish a new assignment. & The assignment gets published correctly. & A normal test to make sure the assignments can be distributed through API correctly. \\
+    \hline
+    Login with a teacher account, enter a published assignment, click the mark button to mark all submissions. & All submissions are marked automatically. & A normal test to make sure all submissions can be processed correctly. \\
+    \hline
+    Login with a student account, navigate to the assignment page. & All local assignments and remote assignments show up correctly. & A normal test to make sure the assignments can be fetched correctly. \\
+    \hline
+    Login with a student account, submit a submission to an assignment. & The submission gets submitted successfully. & A normal test to make sure the submission API works correctly. \\
+    \hline
+    Click the logout button on the Account page. & The user gets logout correctly. & A normal test to make sure the user can logout correctly. \\
     \hline
 \end{tabulary}
 

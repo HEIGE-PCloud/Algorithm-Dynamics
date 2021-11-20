@@ -3,10 +3,9 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Web.WebView2.Core;
 using System;
-using System.Diagnostics;
+using Windows.ApplicationModel;
 using System.Text;
 using System.Text.Json;
-using System.Threading;
 using Windows.Storage;
 
 namespace Algorithm_Dynamics.Pages
@@ -28,9 +27,15 @@ namespace Algorithm_Dynamics.Pages
         async void InitializeAsync()
         {
             await myWebView.EnsureCoreWebView2Async();
-            myWebView.CoreWebView2.WebMessageReceived += CoreWebView2_WebMessageReceived;
-            Windows.Storage.StorageFolder AssetsDirectory = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync(@"Assets");
-            myWebView.CoreWebView2.SetVirtualHostNameToFolderMapping("localeditor.algorithmdynamics.com", AssetsDirectory.Path, CoreWebView2HostResourceAccessKind.Allow);
+            myWebView.CoreWebView2.WebMessageReceived 
+                += CoreWebView2_WebMessageReceived;
+            StorageFolder AssetsDirectory 
+                = await Package.Current.InstalledLocation.GetFolderAsync(@"Assets");
+            myWebView.CoreWebView2.SetVirtualHostNameToFolderMapping(
+                "localeditor.algorithmdynamics.com",
+                AssetsDirectory.Path,
+                CoreWebView2HostResourceAccessKind.Allow
+            );
             myWebView.Source = new Uri("http://localeditor.algorithmdynamics.com/Editor.html");
         }
 
@@ -64,15 +69,15 @@ namespace Algorithm_Dynamics.Pages
             StandardOutput.Clear();
             StandardError.Clear();;
 
-            RunCodeResult result = await Judger.RunCode(Code, InputTextBlock.Text, LanguageConfig.Cpp, 2000, (long)64*1024*1024);
+            RunCodeResult result = await Judger.RunCode(Code, InputTextBlock.Text, LanguageConfig.Cpp, 2000, 64*1024*1024);
 
             // Enable UI Elemnts
             RunCodeButton.IsEnabled = true;
             RunCodeProgressRing.IsActive = false;
             // Update output
-            InputTextBlock.Text = ((double)result.MemoryUsage / 1024.0 / 1024.0).ToString() + " MB\nExit Code: " + result.ExitCode.ToString();
+            ErrorTextBlock.Text = ((double)result.MemoryUsage / 1024.0 / 1024.0).ToString() + " MB\nExit Code: " + result.ExitCode.ToString();
             OutputTextBlock.Text = result.StandardOutput;
-            ErrorTextBlock.Text = result.StandardError;
+            //ErrorTextBlock.Text = result.StandardError;
             ResultTextBlock.Text = result.ResultCode.ToString();
         }
     }
