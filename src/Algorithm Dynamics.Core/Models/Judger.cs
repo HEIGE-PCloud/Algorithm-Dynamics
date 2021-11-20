@@ -28,8 +28,12 @@ namespace Algorithm_Dynamics.Core.Models
             {
                 StartInfo = new ProcessStartInfo
                 {
-                    FileName = language.CompileCommand.Replace("{SourceCodeFilePath}", _SourceCodeFilePath).Replace("{ExecutableFilePath}", _ExecutableFilePath),
-                    Arguments = language.CompileArguments.Replace("{SourceCodeFilePath}", _SourceCodeFilePath).Replace("{ExecutableFilePath}", _ExecutableFilePath),
+                    FileName = language.CompileCommand
+                        .Replace("{SourceCodeFilePath}", _SourceCodeFilePath)
+                        .Replace("{ExecutableFilePath}", _ExecutableFilePath),
+                    Arguments = language.CompileArguments
+                        .Replace("{SourceCodeFilePath}", _SourceCodeFilePath)
+                        .Replace("{ExecutableFilePath}", _ExecutableFilePath),
                     UseShellExecute = false,
                     CreateNoWindow = true,
                     RedirectStandardOutput = true,
@@ -39,9 +43,11 @@ namespace Algorithm_Dynamics.Core.Models
             };
 
             // Bind event handler
-            CompileProcess.OutputDataReceived += new DataReceivedEventHandler(CompileProcess_OutputDataReceived);
-            CompileProcess.ErrorDataReceived += new DataReceivedEventHandler(CompileProcess_ErrorDataReceived);
-            
+            CompileProcess.OutputDataReceived +=
+                new DataReceivedEventHandler(CompileProcess_OutputDataReceived);
+            CompileProcess.ErrorDataReceived +=
+                new DataReceivedEventHandler(CompileProcess_ErrorDataReceived);
+
             // Start the process
             CompileProcess.Start();
             CompileProcess.BeginOutputReadLine();
@@ -64,8 +70,12 @@ namespace Algorithm_Dynamics.Core.Models
             {
                 StartInfo = new ProcessStartInfo
                 {
-                    FileName = language.RunCommand.Replace("{SourceCodeFilePath}", _SourceCodeFilePath).Replace("{ExecutableFilePath}", _ExecutableFilePath),
-                    Arguments = language.RunArguments.Replace("{SourceCodeFilePath}", _SourceCodeFilePath).Replace("{ExecutableFilePath}", _ExecutableFilePath),
+                    FileName = language.RunCommand
+                        .Replace("{SourceCodeFilePath}", _SourceCodeFilePath)
+                        .Replace("{ExecutableFilePath}", _ExecutableFilePath),
+                    Arguments = language.RunArguments
+                        .Replace("{SourceCodeFilePath}", _SourceCodeFilePath)
+                        .Replace("{ExecutableFilePath}", _ExecutableFilePath),
                     UseShellExecute = false,
                     RedirectStandardInput = true,
                     RedirectStandardOutput = true,
@@ -76,17 +86,19 @@ namespace Algorithm_Dynamics.Core.Models
             };
 
             // Bind the event handler
-            ExecuteProcess.OutputDataReceived += new DataReceivedEventHandler(ExecuteProcess_OutputDataReceived);
-            ExecuteProcess.ErrorDataReceived += new DataReceivedEventHandler(ExecuteProcess_ErrorDataReceived);
-            ExecuteProcess.Exited += new EventHandler(ExecuteProcess_Exited);
-        
+            ExecuteProcess.OutputDataReceived +=
+                new DataReceivedEventHandler(ExecuteProcess_OutputDataReceived);
+            ExecuteProcess.ErrorDataReceived +=
+                new DataReceivedEventHandler(ExecuteProcess_ErrorDataReceived);
+            ExecuteProcess.Exited +=
+                new EventHandler(ExecuteProcess_Exited);
 
             // Start running
-            _StatusCode = StatusCode.RUNNING;
             ExecuteProcess.Start();
             ExecuteProcess.BeginOutputReadLine();
             ExecuteProcess.BeginErrorReadLine();
             ExecuteProcess.StandardInput.WriteLine(Input);
+            _StatusCode = StatusCode.RUNNING;
 
             // Start the time monitor
             Timer timer = new(delegate
@@ -99,7 +111,7 @@ namespace Algorithm_Dynamics.Core.Models
             }, null, TimeLimit, Timeout.Infinite);
 
             // Create the memory monitor
-            Thread MemoryMonitorThread = new(() =>
+            Thread MemoryMonitor = new(() =>
             {
                 while (ExecuteProcess.HasExited == false)
                 {
@@ -112,7 +124,7 @@ namespace Algorithm_Dynamics.Core.Models
                     }
                 }
             });
-            MemoryMonitorThread.Start();
+            MemoryMonitor.Start();
 
             // Wait for exit
             await ExecuteProcess.WaitForExitAsync();
@@ -157,7 +169,8 @@ namespace Algorithm_Dynamics.Core.Models
                 result.ResultCode = ResultCode.MEMORY_LIMIT_EXCEEDED;
                 return result;
             }
-            if (!string.IsNullOrEmpty(result.StandardError) || result.ExitCode != 0)
+            if (!string.IsNullOrEmpty(result.StandardError)
+                || result.ExitCode != 0)
             {
                 result.ResultCode = ResultCode.RUNTIME_ERROR;
                 return result;
@@ -180,25 +193,33 @@ namespace Algorithm_Dynamics.Core.Models
             }
             return result;
         }
-        public async static Task<SubmissionResult> JudgeProblem(Submission Submission, Language Language)
+        public async static Task<SubmissionResult> JudgeProblem(Submission Submission)
         {
             SubmissionResult Result = new();
             Result.Submission = Submission;
             Queue<TestCase> JudgeQueue = new(Submission.Problem.TestCases);
             while (JudgeQueue.Count > 0)
             {
-                Result.Add(await JudgeTestCase(Submission.Code, JudgeQueue.Dequeue(), Language, Submission.Problem.TimeLimit, Submission.Problem.MemoryLimit));
+                Result.Add(
+                    await JudgeTestCase(
+                        Submission.Code,
+                        JudgeQueue.Dequeue(),
+                        Submission.Language,
+                        Submission.Problem.TimeLimit,
+                        Submission.Problem.MemoryLimit
+                    )
+                );
             }
             return Result;
         }
-        public async static Task<AssignmentSubmissionResult> JudgeAssignment(Assignment Assignment, AssignmentSubmission AssignmentSubmission, Language Language)
+        public async static Task<AssignmentSubmissionResult> JudgeAssignment(AssignmentSubmission AssignmentSubmission)
         {
             AssignmentSubmissionResult Result = new();
             Result.AssignmentSubmission = AssignmentSubmission;
             Queue<Submission> SubmissionQueue = new(AssignmentSubmission.Submissions);
             while (SubmissionQueue.Count > 0)
             {
-                Result.Add(await JudgeProblem(SubmissionQueue.Dequeue(), Language));
+                Result.Add(await JudgeProblem(SubmissionQueue.Dequeue()));
             }
             return Result;
         }
@@ -219,7 +240,8 @@ namespace Algorithm_Dynamics.Core.Models
         }
         private static void ExecuteProcess_Exited(object sender, EventArgs e)
         {
-            if (_StatusCode != StatusCode.TIME_LIMIT_EXCEEDED && _StatusCode != StatusCode.MEMORY_LIMIT_EXCEEDED)
+            if (_StatusCode != StatusCode.TIME_LIMIT_EXCEEDED
+                && _StatusCode != StatusCode.MEMORY_LIMIT_EXCEEDED)
             {
                 _StatusCode = StatusCode.FINISHED;
             }
