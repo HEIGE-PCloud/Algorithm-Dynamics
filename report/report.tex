@@ -1717,8 +1717,8 @@ This is a sample exported file.
     "FileType": "Algorithm Dynamics Exported Data",
     "DataType": "Problem",
     "Data": {
-        "Uid": "2b2bc7d4-603f-4af0-b77f-d6395d9997cd",
         "Name": "Problem 1",
+        "SourceHash": null,
         "Difficulty": 2,
         "Description": "Problem description 1",
         "TimeLimit": 1000,
@@ -1747,20 +1747,20 @@ This is a sample exported file.
 }
 \end{minted}
 
-When the problem is imported, if the problem already exists, its data is updated, otherwise, a new record is created.
+When the problem is imported, a new Id will be created for it.
 
 The problem and test cases are imported first.
 
 \begin{minted}[linenos,tabsize=4,breaklines]{sql}
-INSERT OR REPLACE INTO Problem VALUES (Uid, Name, Difficulty, Description, TimeLimit, MemoryLimit)
-INSERT OR REPLACE INTO TestCase VALUES (Input, Output, IsExample, Uid)
+INSERT OR REPLACE INTO Problem VALUES (Name, Difficulty, Description, TimeLimit, MemoryLimit, SourceHash)
+INSERT OR REPLACE INTO TestCase VALUES (Input, Output, IsExample, last_insert_rowid)
 \end{minted}
 
 After that, the tags are imported and the corresponding TagRecord table is updated.
 
 \begin{minted}[linenos,tabsize=4,breaklines]{sql}
 INSERT OR REPLACE INTO Tag VALUES (Name)
-INSERT INTO TagRecord VALUES (Uid, last_insert_rowid)
+INSERT INTO TagRecord VALUES (Problem.last_insert_rowid, Tag.last_insert_rowid)
 \end{minted}
 
 \subsubsection{Import/Export a ProblemList}
@@ -1778,8 +1778,8 @@ This is a sample exported file.
         "Description": "Problem list description 1",
         "Problems": [
             {
-                "Uid": "da58f27b-e1f6-4d12-8137-6054677c91cb"
                 "Name": "Problem 1",
+                "SourceHash": null,
                 "Difficulty": 2,
                 "Description": "Problem description 1",
                 "TimeLimit": 1000,
@@ -1806,8 +1806,8 @@ This is a sample exported file.
                 ]
             },
             {
-                "Uid": "76ef1041-9a2a-4672-af34-c3f76b0fdeac",
                 "Name": "Problem 2",
+                "SourceHash": null,
                 "Difficulty": 0,
                 "Description": "Problem description 2",
                 "TimeLimit": 2000,
@@ -1827,14 +1827,18 @@ This is a sample exported file.
 }
 \end{minted}
 
-When a problem list is imported, all problems are imported in the same way. Then the information about the problem list itself is imported and the ProblemListRecord table is updated.
+When a problem list is imported, all problems are imported as individual problems. Then the information about the problem list itself is imported and the ProblemListRecord table is updated.
 
 \begin{minted}[linenos,tabsize=4,breaklines]{sql}
 INSERT OR REPLACE INTO ProblemList VALUES (Name, Description)
-INSERT OR REPLACE INTO ProblemListRecord VALUES (Uid, last_insert_rowid)
+INSERT OR REPLACE INTO ProblemListRecord VALUES (Problem.last_insert_rowid, ProblemList.last_insert_rowid)
 \end{minted}
 
 \subsubsection{Import/Export an Assignment}
+
+When an assignment is exported, a SourceHash value is computed and attached to each problem, all test cases that are not examples are removed. Data about the assigner, due date, status and type are also attached to the exported file.
+
+This is a sample exported file.
 
 \begin{minted}[linenos,tabsize=4,breaklines]{json}
 {
@@ -1856,6 +1860,7 @@ INSERT OR REPLACE INTO ProblemListRecord VALUES (Uid, last_insert_rowid)
         "Problems": [
             {
                 "Name": "Problem 1",
+                "SourceHash": "DFEFB848F705D65C7A861D36BD358F3F",
                 "Difficulty": 2,
                 "Description": "Problem description 1",
                 "TimeLimit": 1000,
@@ -1878,6 +1883,7 @@ INSERT OR REPLACE INTO ProblemListRecord VALUES (Uid, last_insert_rowid)
             },
             {
                 "Name": "Problem 2",
+                "SourceHash": "F9B9B7578BFA6C949A146821C8F78DD3",
                 "Difficulty": 0,
                 "Description": "Problem description 2",
                 "TimeLimit": 2000,
@@ -1896,9 +1902,135 @@ INSERT OR REPLACE INTO ProblemListRecord VALUES (Uid, last_insert_rowid)
 }
 \end{minted}
 
+When an assignment gets imported, the assigner is first added to the User table.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+INSERT OR REPLACE INTO User VALUES (Uid, Email, Name, Role)
+\end{minted}
+
+Next, the record of the assignment is insert into the Assignment table.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+INSERT OR REPLACE INTO Assignment VALUES (Uid, DueDate, Status, Type, UserUid)
+\end{minted}
+
+Finally, all the problems are imported as individual problems and the ProblemListRecord table is updated.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+INSERT OR REPLACE INTO ProblemListRecord VALUES (Uid, Problem.last_insert_rowid, SourceHash)
+\end{minted}
+
 \subsubsection{Import/Export an AssignmentSubmission}
 
+When an AssignmentSubmission is exported, the Assignment field will be normalized and only the Uid field will be kept. The Problem field will be normalized and only the SourceHash will be kept. The Language field will be normalized and only the language name will be kept. So the exported file will not contain any redundent information and at have an optimal size.
+
+This is a sample exported file.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{json}
+{
+    "FileType": "Algorithm Dynamics Exported Data",
+    "DataType": "AssignmentSubmission",
+    "Data": {
+        "Uid": "5872e4f1-731d-4e49-ab28-37971827fabe",
+        "Submitter": {
+            "Uid": "f84b5ec9-6156-4278-a9b1-d097e24409c1",
+            "Name": "student1",
+            "Email": "student1@example.com",
+            "Role": 0
+        },
+        "Assignment": {
+            "Uid": "977255d2-523b-4538-a472-872109bd1fc2",
+        },
+        "Status": 0,
+        "Submissions": [
+            {
+                "Problem": {
+                    "SourceHash": "DFEFB848F705D65C7A861D36BD358F3F"
+                },
+                "Code": "print(7)",
+                "SubmittedTime": "2021-11-20T22:21:07.0812049+00:00",
+                "Language": {
+                    "Name": "Python",
+                }
+            }
+        ]
+    }
+}
+\end{minted}
+
+When the AssignmentSubmission is imported into the database, the Submitter will be imported first.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+INSERT OR REPLACE INTO User VALUES (Uid, Email, Name, Role)
+\end{minted}
+
+Next, the problem Id is determined using the SourceHash, and the list of submissions will be imported to the Submission table.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+INSERT INTO Submission VALUES (ProblemId, Code, Time, Language, UserUid, AssignmentUid)
+\end{minted}
+
+At the end, the record in AssignmentSubmission table will be updated.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+INSERT INTO AssignmentSubmission VALUES (Uid, AssignmentUid, UserUid, Status)
+\end{minted}
+
 \subsubsection{Import/Export an AssignmentSubmissionResult}
+
+When an AssignmentSubmissionResult is exported, the AssignmentSubmission field is normalized so only the Uid is left. For each SubmissionResult, the SourceHash of the Problem is kept to determine the Submission.
+
+This is a sample exported file.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{json}
+{
+    "FileType": "Algorithm Dynamics Exported Data",
+    "DataType": "AssignmentSubmissionResult",
+    "Data": {
+        "Uid": "8593d2cd-1b0e-4b26-aed0-37d4dc54a5a2",
+        "AssignmentSubmission": {
+            "Uid": "a2a9062c-18eb-48ad-bee8-ccb37f208bf5"
+        },
+        "Results": [
+            {
+                "Submission": {
+                    "Problem": {
+                        "SourceHash": "DFEFB848F705D65C7A861D36BD358F3F"
+                    }
+                },
+                "Results": [
+                    {
+                        "StandardOutput": "7",
+                        "StandardError": "",
+                        "ExitCode": 0,
+                        "CPUTime": 1000,
+                        "MemoryUsage": 1000,
+                        "ResultCode": 1
+                    }
+                ]
+            }
+        ]
+    }
+}
+\end{minted}
+
+When the AssignmentSubmissionResult is imported into the database, the AssignmentSubmissionResult table is updated first.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+INSERT INTO AssignmentSubmissionResult VALUES (Uid, AssignmentSubmissionResultUid)
+\end{minted}
+
+Next, each SubmissionResult is imported into the SubmissionResult table. The SubmissionId can be determined by the SourceHash.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+INSERT INTO SubmissionResult VALUES (SubmissionId, AssignmentSubmissionResultUid)
+\end{minted}
+
+At the end, the TestCaseResult table is updated. The TestCaseId will be left to null.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+INSERT INTO TestCaseResult VALUES (null, StandardOutput, StandardError, ExitCode, CPUTime, MemoryUsage, ResultCode, SubmissionId)
+\end{minted}
 
 \section{Development testing}
 
