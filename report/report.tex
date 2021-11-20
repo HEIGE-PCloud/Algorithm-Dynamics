@@ -638,7 +638,7 @@ The API module will be implemented at the end after all local functions are work
 This algorithm will be used to power all the search boxes in the software. It will be packed into a function, taking in a list of items and the searching keyword input by the user, returning a list of results. To make the software easy to use, instead of simply using a linear search and returning all matching results, the algorithm will perform some fuzzy searching, so even the word is not typed in completely, matching results will be returned.
 
 \begin{minted}[linenos,tabsize=4,breaklines]{text}
-function search(List<string> sourceList, string keyword)
+function search(sourceList, keyword)
     // Create an empty list to store the results
     resultList = new List<string>()
     // Split the keyword into pieces by space
@@ -680,7 +680,7 @@ partial class Judger
     private _SourceCodeFolderPath
     private _ExecutableFilePath
 
-    public procedure SetSourceCodeFilePath(string FolderPath, string FileName)
+    public procedure SetSourceCodeFilePath(FolderPath, FileName)
         _SourceCodeFolderPath = FolderPath
         _SourceCodeFilePath = FolderPath + FileName + ".txt"
         _ExecutableFilePath = FolderPath + FilePath + ".exe"
@@ -695,14 +695,14 @@ partial class Judger
     private _CompilationOutput
     private _CompilationError
 
-    private procedure CompileProcess_ErrorDataReceived(object sender, DataReceivedEventArgs e)
+    private procedure CompileProcess_ErrorDataReceived(sender, e)
         // Validate the data before storing
         if string.IsNullOrEmpty(e.Data) == False then
             _CompilationError += e.Data + '\n'
         endif
     endprocedure
 
-    private procedure CompileProcess_OutputDataReceived(object sender, DataReceivedEventArgs e)
+    private procedure CompileProcess_OutputDataReceived(sender, e)
         // Validate the data before storing
         if string.IsNullOrEmpty(e.Data) == False then
             _CompilationOutput += e.Data + '\n
@@ -772,30 +772,30 @@ partial class Judger
 endclass
 \end{minted}
 
-\mintinline{text}{StatusCode} has four possible values, \mintinline{text}{PENDING} is set when the code is waiting to be run. When it starts executing, the status code will be set to \mintinline{text}{RUNNING}. If it finishes in time, its status will be set to \mintinline{text}{FINISHED}. If it needs to be killed by the Judger, a \mintinline{text}{TIME_LIMITED_EXCEEDED} status will be recorded.
+\mintinline{text}{StatusCode} has five possible values, \mintinline{text}{PENDING} is set when the code is waiting to be run. When it starts executing, the status code will be set to \mintinline{text}{RUNNING}. If it finishes in time, its status will be set to \mintinline{text}{FINISHED}. If it exceeds the time limit, the process will be killed by the Judger and a \mintinline{text}{TLE} will be recorded. If it exceeds the memory limit, the process will be killed by the Judger and a \mintinline{text}{MLE} will be recorded.
 
-Similarly, I will use event handlers to record all the output from the user's code. I add a third handler to process the exit event, which will set the \mintinline{text}{_StatusCode} mentioned above.
+Similarly, I will use event handlers to record all the outputs from the user's code. I add a third handler to process the exit event, which will determine the \mintinline{text}{_StatusCode} mentioned above.
 
 \begin{minted}[linenos,tabsize=4,breaklines]{text}
 partial class Judger
     private _StandardOutput
     private _StandardError
 
-    private procedure ExecuteProcess_Exited(object sender, EventArgs e)
-        // Only successfully finished when the status code is not TLE
-        if _StatusCode != StatusCode.TIME_LIMIT_EXCEEDED then
+    private procedure ExecuteProcess_Exited(sender, e)
+        // Only successfully finished when the status code is not TLE or MLE
+        if _StatusCode != StatusCode.TIME_LIMIT_EXCEEDED and _StatusCode != StatusCode.MEMORY_LIMIT_EXCEED then
             _StatusCode = StatusCode.FINISHED
         endif
     endprocedure
 
-    private procedure ExecuteProcess_OutputDataReceived(object sender, DataReceivedEventArgs e)
+    private procedure ExecuteProcess_OutputDataReceived(sender, e)
         // Validate the data before storing
         if string.IsNullOrEmpty(e.Data) == False then
             _StandardOutput += e.Data + '\n'
         endif
     endprocedure
 
-    private procedure ExecuteProcess_ErrorDataReceived(object sender, DataReceivedEventArgs e)
+    private procedure ExecuteProcess_ErrorDataReceived(sender, e)
         // Validate the data before storing
         if string.IsNullOrEmpty(e.Data) == False then
             _StandardError += e.Data + '\n'
@@ -804,21 +804,23 @@ partial class Judger
 endclass
 \end{minted}
 
-The \mintinline{text}{Execute} function has a similar design with the \mintinline{text}{Compile} function, but it starts a timer concurrently to count the time and kill the process if needed.
+The \mintinline{text}{Execute} function has a similar design with the \mintinline{text}{Compile} function. It configures all the running information and event handlers as usual. However, this time I add two extra processes running concurrently with the execution process. The first one is a timer, which countdown the time limit. When the timer counts to zero, it checks whether the execute process is still running, if it does, then the execution process will be killed and a \mintinline{text}{TLE} will be reported. The second one is a memory monitor, which checks the peak memory usage of the execution process every 10 milliseconds. If the memory usage is larger than the memory limit, then the execution process will be killed and a \mintinline{text}{MLE} will be reported.
 
 \begin{minted}[linenos,tabsize=4,breaklines]{text}
 partial class Judger
-    private function Execute(string Input, Language language, int TimeLimit)
+    private _WorkingSet64;
+    private function Execute(Input, Language, TimeLimit, MemoryLimit)
         // Clear the old data
         _StandardOutput = ""
         _StandardInput = ""
+        _WorkingSet64 = 0
 
-        // Initialize statuc code
+        // Initialize status code
         _StatusCode = StatusCode.PENDING
 
         // Pre-process language run command and arguments
-        string fileName = language.RunCommand.Replace("{SourceCodeFilePath}", _SourceCodeFilePath).Replace("{ExecutableFilePath}", _ExecutableFilePath)
-        string arguments = language.RunArguments.Replace("{SourceCodeFilePath}", _SourceCodeFilePath).Replace("{ExecutableFilePath}", _ExecutableFilePath)
+        string fileName = Language.RunCommand.Replace("{SourceCodeFilePath}", _SourceCodeFilePath).Replace("{ExecutableFilePath}", _ExecutableFilePath)
+        string arguments = Language.RunArguments.Replace("{SourceCodeFilePath}", _SourceCodeFilePath).Replace("{ExecutableFilePath}", _ExecutableFilePath)
 
         // Create a new process start info
         ProcessStartInfo StartInfo = new ProcessStartInfo
@@ -839,30 +841,41 @@ partial class Judger
         ExecuteProcess.OutputDataReceived += new DataReceivedEventHandler(ExecuteProcess_OutputDataReceived)
         ExecuteProcess.ErrorDataReceived += new DataReceivedEventHandler(ExecuteProcess_ErrorDataReceived)
         ExecuteProcess.Exited += new EventHandler(ExecuteProcess_Exited)
+        
+        // Start the execute process
+        ExecuteProcess.Start()
+        ExecuteProcess.BeginOutputReadLine()
+        ExecuteProcess.BeginErrorReadLine()
+        ExecuteProcess.StandardInput.WriteLine(Input);
 
-        // Start the timer
+        // Set the status code to Running
+        _StatusCode = StatusCode.RUNNING
+        
+       // Start the timer
         Timer timer = new Timer(() => 
         {
             // If the user's code is still running 
             // when the timer has finished
             // Kill the user's code and record a TLE
-            if (_StatusCode == StatusCode.RUNNING)
-            {
+            if ExecuteProcess.HasExited == false then
                 ExecuteProcess.Kill()
                 _StatusCode = StatusCode.TIME_LIMIT_EXCEEDED
-            }
+            endif
         }, null, TimeLimit, Timeout.Infinite)
 
-        // Set the status code to Running
-        _StatusCode = StatusCode.RUNNING
-
-        // Start the execute process
-        ExecuteProcess.Start()
-        ExecuteProcess.BeginOutputReadLine()
-        ExecuteProcess.BeginErrorReadLine()
-
-        // Input the test data to the process
-        ExecuteProcess.StandardInput.WriteLine(Input)
+        // Start the memory monitor
+        Thread MemoryMonitor = new Thread(() =>
+        {
+            while ExecuteProcess.HasExited == false
+                ExecuteProcess.Refresh()
+                _WorkingSet64 = ExecuteProcess.PeakWorkingSet64
+                if _WorkingSet64 > MemoryLimit then
+                    ExecuteProcess.Kill()
+                    _StatusCode = StatusCode.MEMORY_LIMIT_EXCEEDED
+                endif
+            endwhile
+        });
+        MemoryMonitor.Start()
 
         // Wait the process to finish
         ExecuteProcess.WaitForExitAsync()
@@ -873,11 +886,11 @@ partial class Judger
 endclass
 \end{minted}
 
-Now I have everything I need to build the \mintinline{text}{RunCode} function. It takes in the user's code, input data, language configuration and time limit, outputs a \mintinline{text}{RunCodeResult} containing all the running information. I also need to set up a stopwatch to measure how long the code has been executed, unlike the timer before, this stopwatch only provides data for statistics records. In the end, the \mintinline{text}{RunCode} function will handle some basic errors, it will judge whether the user's code run, but it will not judge whether the user's code provides the correct output. The \mintinline{text}{RunCode} algorithm only runs the code and further judging will be handed over to other algorithms.
+Now I have everything I need to build the \mintinline{text}{RunCode} function. It takes in the user's code, input data, language configuration, time limit and memory limit, outputs a \mintinline{text}{RunCodeResult} containing all the running information. I also need to set up a stopwatch to measure how long the code has been executed, unlike the timer before, this stopwatch only provides data for statistics records. In the end, the \mintinline{text}{RunCode} function will handle some basic errors, it will judge whether the user's code run, but it will not judge whether the user's code provides the correct output. The \mintinline{text}{RunCode} algorithm only runs the code and further judging will be handed over to other algorithms.
 
 \begin{minted}[linenos,tabsize=4,breaklines]{text}
 partial class Judger
-    public function RunCode(string UserCode, string Input, Language language, int TimeLimit)
+    public function RunCode(UserCode, Input, Language, TimeLimit, MemoryLimit)
         // Create a new TestCaseResult
         RunCodeResult result = new RunCodeResult()
 
@@ -887,9 +900,9 @@ partial class Judger
         sourceCodeFile.close()
 
         // Compile if needed
-        if language.NeedCompile then
+        if Language.NeedCompile then
             // Compile and record the exit code
-            exitCode = Compile(language)
+            exitCode = Compile(Language)
 
             // If compile failed then return a COMPILE_ERROR
             if exitCode != 0 then
@@ -905,25 +918,31 @@ partial class Judger
         watch.Start()
 
         // Execute the code
-        int exitCode = Execute(Input, language, TimeLimit)
+        exitCode = Execute(Input, Language, TimeLimit)
 
         watch.Stop()
 
         // Store the stats to the result
         result.StandardOutput = _StandardOutput
         result.StandardError = _StandardError
-        result.CPUTime = (int)watch.ElapsedMilliseconds
+        result.CPUTime = watch.ElapsedMilliseconds
+
+        // If time limit exceed, return TLE
+        if _StatusCode == StatusCode.TIME_LIMIT_EXCEEDED then
+            result.ResultCode = ResultCode.TIME_LIMIT_EXCEEDED
+            return result
+        endif
+
+        // If memory limit exceed, return MLE
+        if _StatusCode == StatusCode.MEMORY_LIMIT_EXCEEDED then
+            result.ResultCode = ResultCode.MEMORY_LIMIT_EXCEEDED
+            return result
+        endif
 
         // If receive a error or exit code is not zero
         // Return a runtime error
         if string.IsNullOrEmpty(result.StandardError) == False or exitCode != 0 then
             result.ResultCode = ResultCode.RUNTIME_ERROR
-            return result
-        endif
-
-        // If time limit exceed then return TLE
-        if _StatusCode == StatusCode.TIME_LIMIT_EXCEEDED then
-            result.ResultCode = ResultCode.TIME_LIMIT_EXCEEDED
             return result
         endif
 
@@ -940,7 +959,7 @@ This algorithm is designed to allow the Judger to judge a test case. On top of t
 
 \begin{minted}[linenos,tabsize=4,breaklines]{text}
 partial class Judger
-    public function JudgeTestCase(string UserCode, TestCase TestCase, Language Language, int TimeLimit)
+    public function JudgeTestCase(UserCode, TestCase, Language, TimeLimit)
         // Run the code with RunCode and get the result
         TestCaseResult result = (TestCaseResult)RunCode(UserCode, TestCase.Input, Language, TimeLimit)
         result.TestCase = TestCase
@@ -970,7 +989,7 @@ This algorithm is designed to judge a submission. I set up a judging queue and p
 
 \begin{minted}[linenos,tabsize=4,breaklines]{text}
 partial class Judger
-    public function JudgeProblem(Submission Submission, Language Language)
+    public function JudgeProblem(Submission)
         // Create the submission result
         SubmissionResult result = new SubmissionResult()
         result.Submission = Submission
@@ -982,8 +1001,10 @@ partial class Judger
         while len(JudgeQueue) > 0
             Code = Submission.Code
             TestCase = JudgeQueue.Dequeue()
+            Language = Submission.Language
             TimeLimit = Submission.Problem.TimeLimit
-            TestCaseResult = JudgeTestCase(Code, TestCase, Language, TimeLimit)
+            MemoryLimit = Submission.Problem.MemoryLimit
+            TestCaseResult = JudgeTestCase(Code, TestCase, Language, TimeLimit, MemoryLimit)
             result.Add(TestCaseResult)
         endwhile
         return result
@@ -997,7 +1018,7 @@ This algorithm is designed to judge an assignment submission. I set up a judging
 
 \begin{minted}[linenos,tabsize=4,breaklines]{text}
 partial class Judger
-    public function JudgeAssignment(Assignment Assignment, AssignmentSubmission AssignmentSubmission, Language Language)
+    public function JudgeAssignment(AssignmentSubmission)
         // Create the assignment submission result
         AssignmentSubmissionResult result = new AssignmentSubmissionResult()
         result.AssignmentSubmission = AssignmentSubmission
@@ -1008,7 +1029,7 @@ partial class Judger
         // Keep judging until the queue is empty
         while len(JudgeQueue) > 0
             Submission = JudgeQueue.Dequeue()
-            SubmissionResult = JudgeProblem(Submission, Language)
+            SubmissionResult = JudgeProblem(Submission)
             result.Add(SubmissionResult)
         endwhile
         return result
