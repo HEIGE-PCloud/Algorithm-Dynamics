@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.IO;
 using System.Threading.Tasks;
 using System.Threading;
-using System.Collections.ObjectModel;
 namespace Algorithm_Dynamics.Core.Models
 {
     public static class Judger
@@ -22,8 +19,11 @@ namespace Algorithm_Dynamics.Core.Models
         private static StatusCode _StatusCode;
         private async static Task<int> Compile(Language language)
         {
+            // Clear old output
             _CompilationOutput = "";
             _CompilationError = "";
+
+            // Create compile process
             Process CompileProcess = new()
             {
                 StartInfo = new ProcessStartInfo
@@ -37,20 +37,29 @@ namespace Algorithm_Dynamics.Core.Models
                 },
                 EnableRaisingEvents = true
             };
+
+            // Bind event handler
             CompileProcess.OutputDataReceived += new DataReceivedEventHandler(CompileProcess_OutputDataReceived);
             CompileProcess.ErrorDataReceived += new DataReceivedEventHandler(CompileProcess_ErrorDataReceived);
+            
+            // Start the process
             CompileProcess.Start();
             CompileProcess.BeginOutputReadLine();
             CompileProcess.BeginErrorReadLine();
+
+            // Wait for exit
             await CompileProcess.WaitForExitAsync();
             return CompileProcess.ExitCode;
         }
         private async static Task<int> Execute(string Input, Language language, int TimeLimit, long MemoryLimit)
         {
+            // Clear the old data
             _StandardOutput = "";
             _StandardError = "";
             _StatusCode = StatusCode.PENDING;
             _WorkingSet64 = 0;
+
+            // Create the execute process
             Process ExecuteProcess = new()
             {
                 StartInfo = new ProcessStartInfo
@@ -65,9 +74,21 @@ namespace Algorithm_Dynamics.Core.Models
                 },
                 EnableRaisingEvents = true
             };
+
+            // Bind the event handler
             ExecuteProcess.OutputDataReceived += new DataReceivedEventHandler(ExecuteProcess_OutputDataReceived);
             ExecuteProcess.ErrorDataReceived += new DataReceivedEventHandler(ExecuteProcess_ErrorDataReceived);
             ExecuteProcess.Exited += new EventHandler(ExecuteProcess_Exited);
+        
+
+            // Start running
+            _StatusCode = StatusCode.RUNNING;
+            ExecuteProcess.Start();
+            ExecuteProcess.BeginOutputReadLine();
+            ExecuteProcess.BeginErrorReadLine();
+            ExecuteProcess.StandardInput.WriteLine(Input);
+
+            // Start the time monitor
             Timer timer = new(delegate
             {
                 if (_StatusCode == StatusCode.RUNNING && ExecuteProcess.HasExited == false)
@@ -76,11 +97,8 @@ namespace Algorithm_Dynamics.Core.Models
                     _StatusCode = StatusCode.TIME_LIMIT_EXCEEDED;
                 }
             }, null, TimeLimit, Timeout.Infinite);
-            _StatusCode = StatusCode.RUNNING;
-            ExecuteProcess.Start();
-            ExecuteProcess.BeginOutputReadLine();
-            ExecuteProcess.BeginErrorReadLine();
-            ExecuteProcess.StandardInput.WriteLine(Input);
+
+            // Create the memory monitor
             Thread MemoryMonitorThread = new(() =>
             {
                 while (ExecuteProcess.HasExited == false)
@@ -95,6 +113,8 @@ namespace Algorithm_Dynamics.Core.Models
                 }
             });
             MemoryMonitorThread.Start();
+
+            // Wait for exit
             await ExecuteProcess.WaitForExitAsync();
             return ExecuteProcess.ExitCode;
         }
