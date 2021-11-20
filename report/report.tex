@@ -2050,9 +2050,9 @@ There are seven major milestones for the development of the solution.
 
 \subsection{Milestone 1: Create the UI}
 
-TODO: testing plan
-
 The user interface is created first. At this stage, all buttons and layouts are created, but there is no code behind them. So I will do dry run tests to see whether the rendering, navigation and input box validation works correctly.
+
+The SettingsPage will be tested after the settings module is implemented. The Create pages will be tested after the Database is implemented. The AccountPage will be tested after the API handler is implemented. 
 
 \begin{tabulary}{\textwidth}{|L|L|L|}
     \hline
@@ -2223,47 +2223,175 @@ int main()
 
 \subsection{Milestone 2: Implement data structures}
 
-TODO: testing plan
-
-\begin{tabulary}{\textwidth}{|L|L|L|}
-    \hline
-    Test input & Expect output & Justification \\
-    \hline
-\end{tabulary}
+At this milestone, the data structure is implemented. Testing the data structure itself is meaningless because it is just some structures using to store data, but whether the design of the data structure is appropriate will be tested throughout further development.
 
 \subsection{Milestone 3: Implement the Judger}
 
-TODO: testing plan
+At this milestone, the Judger is implemented. A series of tests are designed to test whether the Judger works correctly.
 
 \begin{tabulary}{\textwidth}{|L|L|L|}
     \hline
     Test input & Expect output & Justification \\
+    \hline
+    The Normal RunCode test data below. & The number 7 gets output. No error gets reported. & A normal test to make sure the Judger can compile and execute the user's code correctly. \\
+    \hline
+    The CE RunCode test data below. & A compile error is reported. & An erroneous test to make sure if the user's code does not compile, the correct error is reported. \\
+    \hline
+    The TLE RunCode test data below. & A time limit exceed error is reported. The process is terminated. & An erroneous test to make sure if the user's code exceeds the time limit, it gets terminated and the error is reported correctly. \\
+    \hline
+    The MLE RunCode test data below. & A memory limit exceed error is reported. The process is terminated. & An erroneous test to make sure if the user's code exceeds the memory limit, it gets terminated and the error is reported correctly. \\
+    \hline
+    The RE RunCode test data below. & A runtime error is reported. & An erroneous test to make sure if the user's code crashes itself, the error can be identified and reported correctly. \\
+    \hline
+    The Normal Submission test data below. & The user's code is executed correctly, and a success is returned. & A normal test to make sure the Judger can judge a Submission. \\
+    \hline
+    The WA Submission test data below. & The user's code is executed correctly, and a wrong answer is returned. & A erroneous test to make sure if the user's output does not match the expected one, an error is reported correctly. \\
     \hline
 \end{tabulary}
 
+\subsubsection{Normal RunCode test data}
+
+\begin{minted}[linenos,tabsize=4,breaklines]{text}
+Input:
+3 4    
+\end{minted}
+
+\begin{minted}[linenos,tabsize=4,breaklines]{cpp}
+#include <iostream>
+using namespace std;
+int main()
+{
+    int a, b;
+    cin >> a >> b;
+    cout << a + b << endl;
+}
+\end{minted}
+
+\subsubsection{CE RunCode test data}
+
+\begin{minted}[linenos,tabsize=4,breaklines]{cpp}
+int main()
+{
+    a
+}
+\end{minted}
+
+\subsubsection{TLE RunCode test data}
+
+\begin{minted}[linenos,tabsize=4,breaklines]{cpp}
+int main()
+{
+    while (true) {}
+}
+\end{minted}
+
+\subsubsection{MLE RunCode test data}
+
+\begin{minted}[linenos,tabsize=4,breaklines]{cpp}
+int a[100000000];
+int main()
+{
+    for (int i = 0; i < 100000000; i ++)
+        a[i] = i;
+}
+\end{minted}
+
+\subsubsection{RE RunCode test data}
+
+\begin{minted}[linenos,tabsize=4,breaklines]{cpp}
+int main()
+{
+    return -1;
+}
+\end{minted}
+
+\subsubsection{Normal Submission test data}
+
+\begin{minted}[linenos,tabsize=4,breaklines]{text}
+Input:
+3 4
+Expected Output:
+7 
+\end{minted}
+
+\begin{minted}[linenos,tabsize=4,breaklines]{cpp}
+#include <iostream>
+int main()
+{
+    std::cout << 7;
+}
+\end{minted}
+
+\subsubsection{WA Submission test data}
+
+\begin{minted}[linenos,tabsize=4,breaklines]{text}
+Input:
+3 4
+Expected Output:
+7 
+\end{minted}
+
+\begin{minted}[linenos,tabsize=4,breaklines]{cpp}
+#include <iostream>
+int main()
+{
+    std::cout << 8;
+}
+\end{minted}
+
 \subsection{Milestone 4: Create database}
 
-TODO: testing plan
+At thie milestone, the database is implemented. A series of tests are designed to query, insert, update and delete data from the database to see whether it works correctly.
 
 \begin{tabulary}{\textwidth}{|L|L|L|}
     \hline
     Test input & Expect output & Justification \\
+    \hline
+    Search an existing problem in the ProblemsPage. Set the List, Tag, Status and Difficulty to their values. & The matching problems show up correctly. & A normal test to make sure database query is working correctly. \\
+    \hline
+    Create/Edit a Problem in the CreateNewProblemPage & The Problem is created successfully. & A normal test to make sure the database insert/update is working correctly. \\
+    \hline
+    Create/Edit a Problem with invalid data & The change is rejected. & A erroneous test to make sure the data validation is working correctly. \\
+    \hline
+    Create/Edit a ProblemList in the CreateNewProblemListPage & The ProblemList is created successfully. & A normal test to make sure the database insert/update is working correctly. \\
+    \hline
+    Create/Edit a ProblemList with invalid data & The change is rejected. & A erroneous test to make sure the data validation is working correctly. \\
+    \hline
+    Create/Edit a Assignment in the CreateNewAssignmentPage & The Assignment is created successfully. & A normal test to make sure the database insert/update is working correctly. \\
+    \hline
+    Create/Edit a Assignment with invalid data & The change is rejected. & A erroneous test to make sure the data validation is working correctly. \\
+    \hline
+    Delete a Problem/ProblemList/Assignment & The data is deleted from the database successfuly. & A normal test to make sure the database delete is working correctly. \\
     \hline
 \end{tabulary}
 
 \subsection{Milestone 5: Handle data import/export}
 
-TODO: testing plan
+At this milestone, the data import/export module is implemented. A series of tests designed to test whether the software can export and import data correctly.
 
 \begin{tabulary}{\textwidth}{|L|L|L|}
     \hline
     Test input & Expect output & Justification \\
     \hline
+    Export/Import a Problem. & The Problem gets exported to a JSON file correctly/The Problem is imported correctly. & A normal test to make sure the export/import function is working correctly. \\
+    \hline
+    Export/Import a ProblemList. & The ProblemList gets exported to a JSON file correctly/The ProblemList is imported correctly. & A normal test to make sure the export/import function is working correctly. \\
+    \hline
+    Export/Import a Assignment. & The Assignment gets exported to a JSON file correctly/The Assignment is imported correctly. & A normal test to make sure the export/import function is working correctly. \\
+    \hline
+    Export/Import a AssignmentSubmission. & The AssignmentSubmission gets exported to a JSON file correctly/The AssignmentSubmission is imported correctly. & A normal test to make sure the export/import function is working correctly. \\
+    \hline
+    Export/Import a AssignmentSubmissionResult. & The AssignmentSubmissionResult gets exported to a JSON file correctly/The AssignmentSubmissionResult is imported correctly. & A normal test to make sure the export/import function is working correctly. \\
+    \hline
+    Import a blank file. & Refuse to import. & A erroneous test to make sure any invalid data are rejected. \\
+    \hline
+    Import a non-JSON file. & Refuse to import. & A erroneous test to make sure any invalid data are rejected. \\
+    \hline
 \end{tabulary}
 
 \subsection{Milestone 6: Handle settings}
 
-TODO: testing plan
+At this milestone, the settings in the SettingsPage are implemented. A series of settings are designed to test whether the software can process the settings correctly.
 
 \begin{tabulary}{\textwidth}{|L|L|L|}
     \hline
@@ -2328,6 +2456,8 @@ TODO: testing plan
 }
 
 \subsection{Milestone 7: Handle API calls}
+
+At this milestone, the API calls are implemented. A series of test data are designed to test whether the software can handle API calls correctly.
 
 \begin{tabulary}{\textwidth}{|L|L|L|}
     \hline
