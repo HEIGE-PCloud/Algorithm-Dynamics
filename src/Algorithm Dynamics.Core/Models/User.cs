@@ -12,6 +12,13 @@ namespace Algorithm_Dynamics.Core.Models
         public string Name { get; set; }
         public string Email { get; set; }
         public Role Role { get; set; }
+        public User(string name, string email, Role role)
+        {
+            Uid = Guid.NewGuid();
+            Name = name;
+            Email = email;
+            Role = role;
+        }
     }
     public enum Role
     {
