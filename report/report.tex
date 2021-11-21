@@ -1534,7 +1534,9 @@ CREATE TABLE Submission
 
 \subsubsection{ProblemList table}
 
-The ProblemList table has an auto-increment integer \mintinline{text}{Id} as its primary key. The description is allowed to be empty for easy sharing.
+The ProblemList table will have an auto-increment \mintinline{text}{Id} as its primary key.
+
+All fields will be validated and no null field is allowed.
 
 \begin{tabulary}{\textwidth}{|L|L|L|}
     \hline
@@ -1549,7 +1551,7 @@ CREATE TABLE Submission
 (
     PRIMARY KEY (Id) INTEGER NOT NULL AUTO_INCREMENT,
     Name TEXT NOT NULL,
-    Description TEXT
+    Description TEXT NOT NULL
 )
 \end{minted}
 
@@ -1576,7 +1578,9 @@ CREATE TABLE ProblemListRecord
 
 \subsubsection{Assignment table}
 
-The Assignment table will have \mintinline{text}{Uid} as its primary key. It will have a one-to-many relationship with \mintinline{text}{User}, so a \mintinline{text}{UserUid} field is used to record this relationship.
+The Assignment table will have \mintinline{text}{Uid} as its primary key. It has a one-to-many relationship with a User, so a \mintinline{text}{UserUid} field is used to record this relationship.
+
+All fields will be validated and no null field is allowed.
 
 \begin{tabulary}{\textwidth}{|L|L|L|L|L|}
     \hline
@@ -1589,7 +1593,7 @@ The Assignment table will have \mintinline{text}{Uid} as its primary key. It wil
 \begin{minted}[linenos,tabsize=4,breaklines]{sql}
 CREATE TABLE Assignment
 (
-    Uid TEXT PRIMARY KEY NOT NULL,
+    PRIMARY KEY (Uid) TEXT NOT NULL,
     DueDate TEXT NOT NULL,
     Status INTEGER NOT NULL,
     Type INTEGER NOT NULL,
@@ -1621,6 +1625,8 @@ CREATE TABLE AssignmentRecord
 
 \subsubsection{AssignmentSubmission table}
 
+The AssignmentSubmission table will have \mintinline{text}{Uid} as its primary key. It has a many-to-one relationship with an Assignment, so a \mintinline{text}{AssignmentUid} field is used to record this relationship. It has a many-to-one relationship with a User, so a \mintinline{text}{UserUid} field is used to record this relationship.
+
 \begin{tabulary}{\textwidth}{|L|L|L|L|}
     \hline
     Uid & AssignmentUid & UserUid & Status \\
@@ -1641,30 +1647,49 @@ CREATE TABLE AssignmentSubmission
 
 \subsubsection{TestCaseResult table}
 
-\begin{tabulary}{\textwidth}{|L|L|L|L|}
+The TestCaseResult table will have an auto-increment \mintinline{text}{Id} as its primary key.
+
+It has a many-to-one relationship with a TestCase, so a \mintinline{text}{TestCaseId} field is used to record this relationship. It has a many-to-one relationship with a SubmissionResult, so a \mintinline{text}{SubmissionResultId} field is used to record this relationship.
+
+All fields will be validated and no null field is allowed.
+
+\begin{tabulary}{\textwidth}{|L|L|L|L|L|}
     \hline
-    Id & TestCaseId & StandardOutput & StandardError \\
+    Id & TestCaseId & StandardOutput & StandardError & ExitCode \\
     \hline
-    1 & 1 & ``Standard output'' & ``Standard error'' \\
+    1 & 1 & ``Standard output'' & ``Standard error'' & 0 \\
     \hline
 \end{tabulary}
 
 
-\begin{tabulary}{\textwidth}{|L|L|L|L|L|}
+\begin{tabulary}{\textwidth}{|L|L|L|L|}
     \hline
-    ExitCode & CPUTime & MemoryUsage & ResultCode & SubmissionId\\
+    CPUTime & MemoryUsage & ResultCode & SubmissionResultId \\
     \hline
-    0 & 1000 & 1000 & 0 & 1 \\
+    1000 & 1000 & 0 & 1 \\
     \hline
 \end{tabulary}
 
 \begin{minted}[linenos,tabsize=4,breaklines]{sql}
 CREATE TABLE TestCaseResult
 (
+    PRIMARY KEY (Id) INTEGER NOT NULL AUTO_INCREMENT,
+    FOREIGN KEY (TestCaseId) REFERENCES TestCase(Id),
+    StandardOutput TEXT NOT NULL,
+    StandardError TEXT NOT NULL,
+    ExitCode INTEGER NOT NULL,
+    CPUTime INTEGER NOT NULL,
+    MemoryUsage INTEGER NOT NULL,
+    ResultCode INTEGER NOT NULL,
+    FOREIGN KEY (SubmissionResultId) REFERENCES SubmissionResult(Id),
 )
 \end{minted}
 
 \subsubsection{SubmissionResult table}
+
+The SubmissionResult table will have an auto-increment \mintinline{text}{Id} as its primary key.
+
+It has a one-to-one relationship with a Submission, so a \mintinline{text}{SubmissionId} field is used to record this relationship. It may have a many-to-one relationship with a AssignmentSubmissionResult, so a AssignmentSubmissionResultUid field is used to record this relationship. 
 
 \begin{tabulary}{\textwidth}{|L|L|L|}
     \hline
@@ -1675,20 +1700,29 @@ CREATE TABLE TestCaseResult
 \begin{minted}[linenos,tabsize=4,breaklines]{sql}
 CREATE TABLE SubmissionResult
 (
+    PRIMARY KEY (Id) INTEGER NOT NULL AUTO_INCREMENT,
+    FOREIGN KEY (SubmissionId) REFERENCES Submission(Id),
+    FOREIGN KEY (AssignmentSubmissionResultUid) REFERENCES AssignmentSubmissionResult(Uid)
 )
 \end{minted}
 
 \subsubsection{AssignmentSubmissionResult table}
 
+The AssignmentSubmission table will have \mintinline{text}{Uid} as its primary key. It has a one-to-one relationship with a AssignmentSubmission, so a \mintinline{text}{AssignmentSubmissionId} field is used to record this relationship.
+
 \begin{tabulary}{\textwidth}{|L|L|}
     \hline
     Uid & AssignmentSubmissionUid \\
+    \hline
+    \mintinline{text}{<GUID>} & \mintinline{text}{<GUID>} \\
     \hline
 \end{tabulary}
 
 \begin{minted}[linenos,tabsize=4,breaklines]{sql}
 CREATE TABLE AssignmentSubmissionResult
 (
+    Uid TEXT PRIMARY KEY NOT NULL,
+    FOREIGN KEY (AssignmentSubmissionUid) REFERENCES AssignmentSubmission(Uid)
 )
 \end{minted}
 
@@ -2448,12 +2482,14 @@ At this milestone, the settings in the SettingsPage are implemented. A series of
 
 \subsubsection{A settings file with incorrect and missing fields}
 
+\begin{minted}[linenos,tabsize=4,breaklines]{json}
 {
     "Theme": "RandomTheme",
     "RunCodeTimeLimit": 1000,
     "RunCodeMemoryLimit": 67108864,
     "SelectedLanguage": "Python"
 }
+\end{minted}
 
 \subsection{Milestone 7: Handle API calls}
 
@@ -2503,9 +2539,6 @@ In the end, I will conduct an integration test by inviting the teacher and the s
 
 \chapter{Development}
 
-
 \chapter{Evaluation}
-
- (TODO): Add evaluation chapter
 
 \end{document}
