@@ -8,21 +8,23 @@
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d">
     <Grid>
-        <NavigationView x:Name="MainNavigationView"
+        <muxc:NavigationView x:Name="MainNavigationView"
                         SelectionChanged="MainNavigationView_SelectionChanged"
-                        IsBackButtonVisible="Collapsed">
-            <NavigationView.MenuItems>
+                        IsBackButtonVisible="Collapsed"
+                             Background="{ThemeResource SolidBrush}">
+            <muxc:NavigationView.MenuItems>
                 <NavigationViewItem x:Name="HomePageNavigationViewItem" Icon="Home"  Content="Home" Tag="HomePage" />
                 <NavigationViewItem x:Name="ProblemsPageNavigationViewItem" Icon="List" Content="Problems" Tag="ProblemsPage" />
                 <NavigationViewItem x:Name="AssignmentsPageNavigationViewItem" Icon="Library" Content="Assignments" Tag="AssignmentsPage"/>
                 <NavigationViewItem x:Name="PlaygroundPageNavigationViewItem" Icon="Edit" Content="Playground" Tag="PlaygroundPage"/>
-            </NavigationView.MenuItems>
-            <NavigationView.FooterMenuItems>
+            </muxc:NavigationView.MenuItems>
+            <muxc:NavigationView.FooterMenuItems>
                 <NavigationViewItem x:Name="UserAccountNavigationViewItem" Icon="Contact" Content="Account" Tag="UserAccountPage"/>
-            </NavigationView.FooterMenuItems>
+            </muxc:NavigationView.FooterMenuItems>
             <Frame x:Name="contentFrame"
-                   Padding="0, 0, 0, 0"/>
-        </NavigationView>
+                   Padding="0, 0, 0, 0"
+                   Visibility="Visible"/>
+        </muxc:NavigationView>
 
     </Grid>
 </Window>
