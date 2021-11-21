@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0-windows10.0.19041.0</TargetFramework>
@@ -12,7 +12,7 @@
 	<PublishProfile>Properties\PublishProfiles\win10-$(Platform).pubxml</PublishProfile>
 	<GenerateAppInstallerFile>False</GenerateAppInstallerFile>
 	<AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
-	<PackageCertificateThumbprint>FF044AC3A6458332704DB4CD1F4DDE52A4268EDB</PackageCertificateThumbprint>
+	<PackageCertificateThumbprint>05EC1FC0D89007576CDDDB1FCBD8E6A73B233715</PackageCertificateThumbprint>
 	<AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
 	<AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
 	<AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
