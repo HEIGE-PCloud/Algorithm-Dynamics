@@ -432,14 +432,23 @@ The `Random' button starts a random problem for the user. The `Import' button ca
 There are only buttons in the HomePage for the user to click, so only valid actions can be taken, no further data validation is required.
 
 \subsubsection{Stakeholder feedback}
+\label{subsubsec:homepage stakeholder feedback}
 
 Timofei thinks putting the links on the same page makes it messy. He thinks those websites and resources can be easily found on the Internet, so there is no need to put extra links on the HomePage.
 
 PCloud points out that the icon grid needs to be responsive, so when he uses the software on a small screen, all buttons should still be displayed properly.
 
+Mr Grimwood says it will be great if some greeting messages with recommendations can be displayed, such as ``You have 6 assignments to do this week.'' or ``You did pretty bad on data structures problems last time, maybe try this problem list to help you revise better.''
+
 \subsubsection{Response}
 
-Timofei has a good point here, those links will not be implemented. The UI will be responsive to different window size, and this will be tested.
+Timofei has a good point here, and I decide to remove these links. The UI will be responsive to different window sizes, and this will be tested.
+
+The greeting message and recommendations is a great idea. I will add an additional row below the image to display the greeting and recommendations.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{HomePage-Updated-design}
+
+This is the redesigned HomePage. It adds greeting messages and recommendations. It has a responsive grid and a scroller is displayed when the item does not fit in one page. The useless links are removed.
 
 \subsection{ProblemsPage}
 
@@ -534,12 +543,16 @@ Some interesting statistics will be displayed on the button.
 When the user edits his local identity, the user name will not be allowed to exceed 32 characters, and a format check will be applied to the email address.
 
 \subsubsection{Stakeholder feedback}
+\label{subsubsec:accountpage stakeholder feedback}
 
 Timofei thinks there can be more interesting statistics, such as favourite variable names, and the total time spends in the software.
 
-\subsubsection{Response}
+Mr Grimwood suggests that ``topic needs more revision'' can be added to the statistics.
 
+\subsubsection{Response}
 It may be too difficult to implement such statistics but this is an interesting idea. This feature is put in the backlog and will not be implemented for now.
+
+``Topic needs more revision'' will be put as a recommendation, on the HomePage instead, which will make it more useful.
 
 \subsection{SettingsPage}
 
@@ -556,6 +569,7 @@ The user can adjust the colour theme of the software to use a light theme, dark 
 Radio buttons are used for colour theme selection so it is impossible to enter any invalid data. A number box is used for the time limit and memory limit settings so only positive integers can be input. A dropdown list is used for the programming language setting so only valid input is accepted.
 
 \subsubsection{Stakeholder feedback}
+\label{subsubsec:settingspage stakeholder feedback}
 
 Timofei likes the idea of being able to switch between a light theme and a dark theme. He thinks it will be better if users are allowed to create their custom themes. He also suggests that allowing the user to change the font size manually may help a lot.
 
@@ -643,6 +657,10 @@ The API module will allow the user to log in to their Microsoft Education accoun
 When the user clicks the login button in the SettingsPage, the API module will handle the login requests. When a logged-in user opens the AssignmentPage, the API module will fetch all assignments. The API module will also allow the teachers to distribute assignments directly through API calls and the students to hand in submissions without any kind of exporting.
 
 The API module will be implemented at the end after all local functions are working correctly. The corresponding API calls and endpoints will be discussed later.
+
+\subsection{Stakeholder feedback}
+
+I conduct an interview with each stakeholder after designing all the user interface elements. The statkeholders are generally very satisfying with the design. Suggestions are mainly about the \hyperref[subsubsec:homepage stakeholder feedback]{HomePage design} and the \hyperref[subsubsec:accountpage stakeholder feedback]{AccountPage design}, I have recorded their suggestions and my responses in those sections.
 
 \section{Algorithm design}
 \label{sec:algorithm design}
@@ -1701,7 +1719,7 @@ CREATE TABLE TestCaseResult
 
 The SubmissionResult table will have an auto-increment \mintinline{text}{Id} as its primary key.
 
-It has a one-to-one relationship with a Submission, so a \mintinline{text}{SubmissionId} field is used to record this relationship. It may have a many-to-one relationship with a AssignmentSubmissionResult, so a AssignmentSubmissionResultUid field is used to record this relationship. 
+It has a one-to-one relationship with a Submission, so a \mintinline{text}{SubmissionId} field is used to record this relationship. It may have a many-to-one relationship with an AssignmentSubmissionResult, so an AssignmentSubmissionResultUid field is used to record this relationship. 
 
 \begin{tabulary}{\textwidth}{|L|L|L|}
     \hline
@@ -1954,7 +1972,7 @@ When an assignment gets imported, the assigner is first added to the User table.
 INSERT OR REPLACE INTO User VALUES (Uid, Email, Name, Role)
 \end{minted}
 
-Next, the record of the assignment is insert into the Assignment table.
+Next, the record of the assignment is inserted into the Assignment table.
 
 \begin{minted}[linenos,tabsize=4,breaklines]{sql}
 INSERT OR REPLACE INTO Assignment VALUES (Uid, DueDate, Status, Type, UserUid)
@@ -1968,7 +1986,7 @@ INSERT OR REPLACE INTO ProblemListRecord VALUES (Uid, Problem.last_insert_rowid,
 
 \subsubsection{Import/Export an AssignmentSubmission}
 
-When an AssignmentSubmission is exported, the Assignment field will be normalized and only the Uid field will be kept. The Problem field will be normalized and only the SourceHash will be kept. The Language field will be normalized and only the language name will be kept. So the exported file will not contain any redundent information and at have an optimal size.
+When an AssignmentSubmission is exported, the Assignment field will be normalized and only the Uid field will be kept. The Problem field will be normalized and only the SourceHash will be kept. The Language field will be normalized and only the language name will be kept. So the exported file will not contain any redundant information and at have an optimal size.
 
 This is a sample exported file.
 
@@ -2016,7 +2034,7 @@ Next, the problem Id is determined using the SourceHash, and the list of submiss
 INSERT INTO Submission VALUES (ProblemId, Code, Time, Language, UserUid, AssignmentUid)
 \end{minted}
 
-At the end, the record in AssignmentSubmission table will be updated.
+In the end, the record in the AssignmentSubmission table will be updated.
 
 \begin{minted}[linenos,tabsize=4,breaklines]{sql}
 INSERT INTO AssignmentSubmission VALUES (Uid, AssignmentUid, UserUid, Status)
@@ -2072,7 +2090,7 @@ Next, each SubmissionResult is imported into the SubmissionResult table. The Sub
 INSERT INTO SubmissionResult VALUES (SubmissionId, AssignmentSubmissionResultUid)
 \end{minted}
 
-At the end, the TestCaseResult table is updated. The TestCaseId will be left to null.
+In the end, the TestCaseResult table is updated. The TestCaseId will be left null.
 
 \begin{minted}[linenos,tabsize=4,breaklines]{sql}
 INSERT INTO TestCaseResult VALUES (null, StandardOutput, StandardError, ExitCode, CPUTime, MemoryUsage, ResultCode, SubmissionId)
@@ -2269,7 +2287,7 @@ int main()
 
 \subsection{Milestone 2: Implement data structures}
 
-At this milestone, the data structure is implemented. Testing the data structure itself is meaningless because it is just some structures using to store data, but whether the design of the data structure is appropriate will be tested throughout further development.
+At this milestone, the data structure is implemented. Testing the data structure itself is meaningless because it is just some structures used to store data, but whether the design of the data structure is appropriate will be tested throughout further development.
 
 \subsection{Milestone 3: Implement the Judger}
 
@@ -2283,13 +2301,13 @@ At this milestone, the Judger is implemented. A series of tests are designed to 
     \hline
     The CE RunCode test data below. & A compile error is reported. & An erroneous test to make sure if the user's code does not compile, the correct error is reported. \\
     \hline
-    The TLE RunCode test data below. & A time limit exceed error is reported. The process is terminated. & An erroneous test to make sure if the user's code exceeds the time limit, it gets terminated and the error is reported correctly. \\
+    The TLE RunCode test data below. & A TIME_LIMIT_EXCEED error is reported. The process is terminated. & An erroneous test to make sure if the user's code exceeds the time limit, it gets terminated and the error is reported correctly. \\
     \hline
-    The MLE RunCode test data below. & A memory limit exceed error is reported. The process is terminated. & An erroneous test to make sure if the user's code exceeds the memory limit, it gets terminated and the error is reported correctly. \\
+    The MLE RunCode test data below. & A MEMORY_LIMIT_EXCEED error is reported. The process is terminated. & An erroneous test to make sure if the user's code exceeds the memory limit, it gets terminated and the error is reported correctly. \\
     \hline
     The RE RunCode test data below. & A runtime error is reported. & An erroneous test to make sure if the user's code crashes itself, the error can be identified and reported correctly. \\
     \hline
-    The Normal Submission test data below. & The user's code is executed correctly, and a success is returned. & A normal test to make sure the Judger can judge a Submission. \\
+    The Normal Submission test data below. & The user's code is executed correctly, and success is returned. & A normal test to make sure the Judger can judge a Submission. \\
     \hline
     The WA Submission test data below. & The user's code is executed correctly, and a wrong answer is returned. & A erroneous test to make sure if the user's output does not match the expected one, an error is reported correctly. \\
     \hline
@@ -2387,7 +2405,7 @@ int main()
 
 \subsection{Milestone 4: Create database}
 
-At thie milestone, the database is implemented. A series of tests are designed to query, insert, update and delete data from the database to see whether it works correctly.
+At this milestone, the database is implemented. A series of tests are designed to query, insert, update and delete data from the database to see whether it works correctly.
 
 \begin{tabulary}{\textwidth}{|L|L|L|}
     \hline
@@ -2403,11 +2421,11 @@ At thie milestone, the database is implemented. A series of tests are designed t
     \hline
     Create/Edit a ProblemList with invalid data & The change is rejected. & A erroneous test to make sure the data validation is working correctly. \\
     \hline
-    Create/Edit a Assignment in the CreateNewAssignmentPage & The Assignment is created successfully. & A normal test to make sure the database insert/update is working correctly. \\
+    Create/Edit an Assignment in the CreateNewAssignmentPage & The Assignment is created successfully. & A normal test to make sure the database insert/update is working correctly. \\
     \hline
-    Create/Edit a Assignment with invalid data & The change is rejected. & A erroneous test to make sure the data validation is working correctly. \\
+    Create/Edit an Assignment with invalid data & The change is rejected. & A erroneous test to make sure the data validation is working correctly. \\
     \hline
-    Delete a Problem/ProblemList/Assignment & The data is deleted from the database successfuly. & A normal test to make sure the database delete is working correctly. \\
+    Delete a Problem/ProblemList/Assignment & The data is deleted from the database successfully. & A normal test to make sure the database delete is working correctly. \\
     \hline
 \end{tabulary}
 
@@ -2425,7 +2443,7 @@ At this milestone, the data import/export module is implemented. A series of tes
     \hline
     Export/Import a Assignment. & The Assignment gets exported to a JSON file correctly/The Assignment is imported correctly. & A normal test to make sure the export/import function is working correctly. \\
     \hline
-    Export/Import a AssignmentSubmission. & The AssignmentSubmission gets exported to a JSON file correctly/The AssignmentSubmission is imported correctly. & A normal test to make sure the export/import function is working correctly. \\
+    Export/Import an AssignmentSubmission. & The AssignmentSubmission gets exported to a JSON file correctly/The AssignmentSubmission is imported correctly. & A normal test to make sure the export/import function is working correctly. \\
     \hline
     Export/Import a AssignmentSubmissionResult. & The AssignmentSubmissionResult gets exported to a JSON file correctly/The AssignmentSubmissionResult is imported correctly. & A normal test to make sure the export/import function is working correctly. \\
     \hline
@@ -2505,7 +2523,7 @@ At this milestone, the settings in the SettingsPage are implemented. A series of
 
 \subsection{Milestone 7: Handle API calls}
 
-At this milestone, the API calls are implemented. A series of test data are designed to test whether the software can handle API calls correctly.
+At this milestone, the API calls are implemented. A series of test data is designed to test whether the software can handle API calls correctly.
 
 \begin{tabulary}{\textwidth}{|L|L|L|}
     \hline
