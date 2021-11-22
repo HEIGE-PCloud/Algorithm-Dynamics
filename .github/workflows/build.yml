@@ -59,8 +59,8 @@ jobs:
     name: Build App
     runs-on: windows-latest
     env:
-      Solution_Name: Algorithm Dynamics.sln   # Replace with your solution name, i.e. MyWpfApp.sln.
-      Project_Directory: src                  # Replace with the Wap project directory relative to the solution, i.e. MyWpfApp.Package.
+      Solution_Name: Algorithm Dynamics.sln        # Replace with your solution name, i.e. MyWpfApp.sln.
+      Project_Directory: src\Algorithm Dynamics    # Replace with the Wap project directory relative to the solution, i.e. MyWpfApp.Package.
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -96,7 +96,7 @@ jobs:
         Configuration: Release
         Appx_Package_Build_Mode: StoreUpload
         Appx_Bundle: Never
-        Appx_Package_Dir: ..\AppPackages\
+        Appx_Package_Dir: AppPackages\
     # msbuild "Algorithm Dynamics.sln" /restore /p:Platform="x64" /p:Configuration=Release /p:UapAppxPackageBuildMode=StoreUpload /p:AppxBundle=Always /p:GenerateAppxPackageOnBuild=true /p:AppxPackageDir="..\\Packages\\" -m
 
     # Remove the pfx
