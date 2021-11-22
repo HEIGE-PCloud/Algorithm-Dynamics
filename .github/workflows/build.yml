@@ -67,6 +67,14 @@ jobs:
       with:
         fetch-depth: 0
 
+    # Auto increment version
+    - name: File Regex Replace
+      uses: mingjun97/file-regex-replace@v1
+      with:
+        regex: 'Version="([0-9\.]*)"'
+        replacement: 'Version="0.${{ github.run_number }}.${{ github.run_attempt }}.0"'
+        include: Package.appxmanifest
+
     # Add MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v1.0.2
@@ -80,14 +88,16 @@ jobs:
 
     - name: Create the app package
       working-directory: src
-      run: msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=AlgorithmDynamics_TemporaryKey.pfx /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
+      run: msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=AlgorithmDynamics_TemporaryKey.pfx /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
       env:
         Solution_Name: Algorithm Dynamics.sln
         Appx_Bundle_Platforms: x86|x64|arm64
+        Platform: x64
         Configuration: Release
         Appx_Package_Build_Mode: StoreUpload
         Appx_Bundle: Never
-        Appx_Package_Dir: AppPackages\
+        Appx_Package_Dir: ..\AppPackages\
+    # msbuild "Algorithm Dynamics.sln" /restore /p:Platform="x64" /p:Configuration=Release /p:UapAppxPackageBuildMode=StoreUpload /p:AppxBundle=Always /p:GenerateAppxPackageOnBuild=true /p:AppxPackageDir="..\\Packages\\" -m
 
     # Remove the pfx
     - name: Remove the pfx
