@@ -100,9 +100,9 @@ jobs:
         Appx_Package_Dir: AppPackages\
         Package_Path: Algorithm Dynamics\AppPackages\Algorithm Dynamics_0.${{ github.run_number }}.${{ github.run_attempt }}.0_Test\Algorithm Dynamics_0.${{ github.run_number }}.${{ github.run_attempt }}.0_x86.msix
       run: |
-      msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=AlgorithmDynamics_TemporaryKey.pfx /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
-      mkdir Bundle
-      copy-item $env:Package_Path Bundle
+        msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=AlgorithmDynamics_TemporaryKey.pfx /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
+        mkdir Bundle
+        copy-item $env:Package_Path Bundle
 
     - name: Create the x64 app package
       working-directory: src
@@ -116,8 +116,8 @@ jobs:
         Appx_Package_Dir: AppPackages\
         Package_Path: Algorithm Dynamics\AppPackages\Algorithm Dynamics_0.${{ github.run_number }}.${{ github.run_attempt }}.0_Test\Algorithm Dynamics_0.${{ github.run_number }}.${{ github.run_attempt }}.0_x64.msix
       run: |
-      msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=AlgorithmDynamics_TemporaryKey.pfx /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
-      copy-item $env:Package_Path Bundle
+        msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=AlgorithmDynamics_TemporaryKey.pfx /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
+        copy-item $env:Package_Path Bundle
 
     - name: Create the arm64 app package
       working-directory: src
@@ -131,8 +131,8 @@ jobs:
         Appx_Package_Dir: AppPackages\
         Package_Path: Algorithm Dynamics\AppPackages\Algorithm Dynamics_0.${{ github.run_number }}.${{ github.run_attempt }}.0_Test\Algorithm Dynamics_0.${{ github.run_number }}.${{ github.run_attempt }}.0_arm64.msix
       run: |
-      msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=AlgorithmDynamics_TemporaryKey.pfx /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
-      copy-item $env:Package_Path Bundle
+        msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=AlgorithmDynamics_TemporaryKey.pfx /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
+        copy-item $env:Package_Path Bundle
 
     - name: Create MSIX Bundle
       working-directory: src
