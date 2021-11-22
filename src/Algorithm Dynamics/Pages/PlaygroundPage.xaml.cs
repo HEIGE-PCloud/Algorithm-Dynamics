@@ -75,7 +75,7 @@ namespace Algorithm_Dynamics.Pages
             RunCodeButton.IsEnabled = true;
             RunCodeProgressRing.IsActive = false;
             // Update output
-            ErrorTextBlock.Text = ((double)result.MemoryUsage / 1024.0 / 1024.0).ToString() + " MB\nExit Code: " + result.ExitCode.ToString();
+            ErrorTextBlock.Text = result.StandardError + "\n" + ((double)result.MemoryUsage / 1024.0 / 1024.0).ToString() + " MB\nExit Code: " + result.ExitCode.ToString();
             OutputTextBlock.Text = result.StandardOutput;
             //ErrorTextBlock.Text = result.StandardError;
             ResultTextBlock.Text = result.ResultCode.ToString();
