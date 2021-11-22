@@ -81,14 +81,31 @@ jobs:
 
     # Decode the base 64 encoded pfx and save the Signing_Certificate
     - name: Decode the pfx
+      id: decodepfx
       run: |
         $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.AlgorithmDynamics_TemporaryKey }}")
         $certificatePath = Join-Path -Path $env:Project_Directory -ChildPath AlgorithmDynamics_TemporaryKey.pfx
         [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
+        echo "::set-output name=cert_path::$certificatePath"
 
-    - name: Create the app package
+    - name: Create the x86 app package
       working-directory: src
-      run: msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=AlgorithmDynamics_TemporaryKey.pfx /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
+      env:
+        Solution_Name: Algorithm Dynamics.sln
+        Appx_Bundle_Platforms: x86|x64|arm64
+        Platform: x86
+        Configuration: Release
+        Appx_Package_Build_Mode: StoreUpload
+        Appx_Bundle: Never
+        Appx_Package_Dir: AppPackages\
+        Package_Path: Algorithm Dynamics\AppPackages\Algorithm Dynamics_0.${{ github.run_number }}.${{ github.run_attempt }}.0_Test\Algorithm Dynamics_0.${{ github.run_number }}.${{ github.run_attempt }}.0_x86.msix
+      run: |
+      msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=AlgorithmDynamics_TemporaryKey.pfx /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
+      mkdir Bundle
+      copy-item $env:Package_Path Bundle
+
+    - name: Create the x64 app package
+      working-directory: src
       env:
         Solution_Name: Algorithm Dynamics.sln
         Appx_Bundle_Platforms: x86|x64|arm64
@@ -97,6 +114,35 @@ jobs:
         Appx_Package_Build_Mode: StoreUpload
         Appx_Bundle: Never
         Appx_Package_Dir: AppPackages\
+        Package_Path: Algorithm Dynamics\AppPackages\Algorithm Dynamics_0.${{ github.run_number }}.${{ github.run_attempt }}.0_Test\Algorithm Dynamics_0.${{ github.run_number }}.${{ github.run_attempt }}.0_x64.msix
+      run: |
+      msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=AlgorithmDynamics_TemporaryKey.pfx /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
+      copy-item $env:Package_Path Bundle
+
+    - name: Create the arm64 app package
+      working-directory: src
+      env:
+        Solution_Name: Algorithm Dynamics.sln
+        Appx_Bundle_Platforms: x86|x64|arm64
+        Platform: arm64
+        Configuration: Release
+        Appx_Package_Build_Mode: StoreUpload
+        Appx_Bundle: Never
+        Appx_Package_Dir: AppPackages\
+        Package_Path: Algorithm Dynamics\AppPackages\Algorithm Dynamics_0.${{ github.run_number }}.${{ github.run_attempt }}.0_Test\Algorithm Dynamics_0.${{ github.run_number }}.${{ github.run_attempt }}.0_arm64.msix
+      run: |
+      msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=AlgorithmDynamics_TemporaryKey.pfx /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
+      copy-item $env:Package_Path Bundle
+
+    - name: Create MSIX Bundle
+      working-directory: src
+      uses: LanceMcCarthy/Action-MsixBundler@latest
+      with:
+        msix-folder: "Bundle"
+        msixbundle-filepath: "MyApp_0.${{ github.run_number }}.${{ github.run_attempt }}.0_x86_x64.msixbundle"
+        msixbundle-version: "0.${{ github.run_number }}.${{ github.run_attempt }}.0"
+        enable-bundle-signing: true
+        certificate-path: ${{ steps.decodepfx.outputs.cert_path }}
 
     # Remove the pfx
     - name: Remove the pfx
@@ -109,7 +155,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: MSIX Package Release
-        path: ${{ env.Project_Directory }}\AppPackages
+        path: src\Bundle
 
   deploy:
     name: Deploy
@@ -152,10 +198,10 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: website/public
           
-      - name: Delete Artifact
-        uses: GeekyEggo/delete-artifact@v1.0.0
-        with:
-          name: |
-            Report
-            MSIX Package Release
-          failOnError: false
+      # - name: Delete Artifact
+      #   uses: GeekyEggo/delete-artifact@v1.0.0
+      #   with:
+      #     name: |
+      #       Report
+      #       MSIX Package Release
+      #     failOnError: false
