@@ -57,13 +57,10 @@ jobs:
 
   build-app:
     name: Build App
-    if: ${{ false }}
     runs-on: windows-latest
     env:
-      Solution_Name: Algorithm Dynamics.sln                                                         # Replace with your solution name, i.e. MyWpfApp.sln.
-      Test_Project_Path: src\Algorithm Dynamics.Test\Algorithm Dynamics.Test.csproj                 # Replace with the path to your test project, i.e. MyWpfApp.Tests\MyWpfApp.Tests.csproj.
-      Wap_Project_Directory: src\Algorithm Dynamics\Algorithm Dynamics (Package)                    # Replace with the Wap project directory relative to the solution, i.e. MyWpfApp.Package.
-      Wap_Project_Path: src\Algorithm Dynamics\Algorithm Dynamics (Package)\Algorithm Dynamics (Package).wapproj                   # Replace with the path to your Wap project, i.e. MyWpf.App.Package\MyWpfApp.Package.wapproj.
+      Solution_Name: Algorithm Dynamics.sln   # Replace with your solution name, i.e. MyWpfApp.sln.
+      Project_Directory: src                  # Replace with the Wap project directory relative to the solution, i.e. MyWpfApp.Package.
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -78,24 +75,23 @@ jobs:
     - name: Decode the pfx
       run: |
         $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.TEMPORARYKEY_ENCODED }}")
-        $certificatePath = Join-Path -Path $env:Wap_Project_Directory -ChildPath "Algorithm Dynamics (Package)_TemporaryKey.pfx"
+        $certificatePath = Join-Path -Path $env:Project_Directory -ChildPath "AlgorithmDynamics_TemporaryKey.pfx"
         [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
 
-    # Build the Windows Application Packaging project
-    - name: Build the Windows Application Packaging Project (wapproj)
+    - name: Create the app package
       working-directory: src
-      run: msbuild $env:Solution_Name /restore /p:Platform=$env:TargetPlatform /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:BuildMode /p:AppxBundle=$env:AppxBundle /p:PackageCertificateKeyFile=$env:PfxPath /p:PackageCertificatePassword="${{ secrets.Pfx_Key }}" -m
+      run: msbuild $env:Solution_Name /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=AlgorithmDynamics_TemporaryKey.pfx /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true
       env:
-        AppxBundle: Always
-        BuildMode: SideLoadOnly
+        Appx_Bundle: Never
+        Appx_Bundle_Platforms: x86|x64|arm64
+        Appx_Package_Build_Mode: StoreUpload
+        Appx_Package_Dir: AppPackages\
         Configuration: Release
-        TargetPlatform: x64
-        PfxPath: Algorithm Dynamics (Package)_TemporaryKey.pfx
 
     # Remove the pfx
     - name: Remove the pfx
       run: |
-        $certificatePath = Join-Path -Path $env:Wap_Project_Directory -ChildPath "Algorithm Dynamics (Package)_TemporaryKey.pfx"
+        $certificatePath = Join-Path -Path $env:Project_Directory -ChildPath "AlgorithmDynamics_TemporaryKey.pfx"
         Remove-Item -path $certificatePath
 
     # Upload the MSIX package: https://github.com/marketplace/actions/upload-a-build-artifact
@@ -103,7 +99,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: MSIX Package Release
-        path: ${{ env.Wap_Project_Directory }}\AppPackages
+        path: ${{ env.Project_Directory }}\AppPackages
 
   deploy:
     name: Deploy
