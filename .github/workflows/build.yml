@@ -83,7 +83,7 @@ jobs:
     - name: Decode the pfx
       run: |
         $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.TEMPORARYKEY_ENCODED }}")
-        $certificatePath = Join-Path -Path $env:Project_Directory -ChildPath "AlgorithmDynamics_TemporaryKey.pfx"
+        $certificatePath = Join-Path -Path src -ChildPath "AlgorithmDynamics_TemporaryKey.pfx"
         [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
 
     - name: Create the app package
