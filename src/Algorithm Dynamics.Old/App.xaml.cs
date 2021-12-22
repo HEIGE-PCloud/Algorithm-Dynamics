@@ -1,29 +1,19 @@
 ﻿using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using Microsoft.UI.Xaml.Shapes;
+using Algorithm_Dynamics.Core.Models;
+using Windows.Storage;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.ApplicationModel;
-using Windows.ApplicationModel.Activation;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using System.Runtime.Versioning;
+
+
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
-
 namespace Algorithm_Dynamics
 {
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.
     /// </summary>
+    [SupportedOSPlatform("windows10.0.10240.0")]
     public partial class App : Application
     {
         /// <summary>
@@ -42,10 +32,17 @@ namespace Algorithm_Dynamics
         /// <param name="args">Details about the launch request and process.</param>
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
+            PrepareSourceCodeFile();
             m_window = new MainWindow();
             m_window.Activate();
         }
 
-        private Window m_window;
+        private void PrepareSourceCodeFile()
+        {
+            StorageFolder TemporaryFolder = ApplicationData.Current.TemporaryFolder;
+            Judger.SetSourceCodeFilePath(TemporaryFolder.Path, "sol");
+        }
+
+        internal Window m_window;
     }
 }
