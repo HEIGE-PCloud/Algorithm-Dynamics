@@ -105,13 +105,13 @@
                                    Grid.Column="1"
                                    HorizontalAlignment="Left"
                                    VerticalAlignment="Center"
-                                   Margin="16 0 0 0"/>
+                                   Margin="10 0 0 0"/>
                         <TextBlock x:Name="ProblemStatusTextBlock"
                                    Text="ToDo"
                                    Grid.Column="2"
                                    HorizontalAlignment="Left"
                                    VerticalAlignment="Center"
-                                   Margin="16 0 0 0"/>
+                                   Margin="14 0 0 0"/>
                         <TextBlock x:Name="ProblemTagTextBlock"
                                    Text="Tag1"
                                    Grid.Column="3"
