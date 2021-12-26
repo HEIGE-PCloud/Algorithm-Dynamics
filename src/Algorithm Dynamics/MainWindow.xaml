@@ -33,7 +33,7 @@
                 <NavigationViewItem x:Name="UserAccountNavItem"
                                     Icon="Contact"
                                     Content="Account"
-                                    Tag="UserAccountPage"/>
+                                    Tag="AccountPage"/>
             </NavigationView.FooterMenuItems>
             <Frame x:Name="ContentFrame"
                    Padding="0"
