@@ -2688,9 +2688,186 @@ As expected, a window with a button shows up correctly. After clicking the butto
 
 \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{Prototype-Button-Clicked.png}
 
-This means the development environment and the building tools are setup correct. And I can start developing the more complex user interface.
+This means the development environment and the building tools are 
+set up correct. And I can start developing a more complex user interface.
+
+\subsection{Create the NavigationView}
+
+First, I will write the NavigationView. In the \mintinline{text}{MainWindow.xaml} file, I add the NavigationView control.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+<NavigationView x:Name="MainNavView"
+                IsBackButtonVisible="Collapsed"
+                SelectionChanged="MainNavView_SelectionChanged">
+</NavigationView>
+\end{minted}
+
+I assign a name \mintinline{text}{MainNavView} to the control so I can call it later in the code behind. I decide to hide the back button, which prevent the user to navigate the page in an unintended way. I also assign a \mintinline{text}{SelectionChanged} event handler to the control, which will be used to handle the navigation.
+
+I then need to add different options to the navigation menu.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+<NavigationView.MenuItems>
+    <NavigationViewItem x:Name="HomePageNavViewItem"
+                        Icon="Home"
+                        Content="Home"
+                        Tag="HomePage" />
+    <NavigationViewItem x:Name="ProblemsPageNavViewItem"
+                        Icon="List"
+                        Content="Problems"
+                        Tag="ProblemsPage" />
+    <NavigationViewItem x:Name="AssignmentsPageNavViewItem"
+                        Icon="Library"
+                        Content="Assignments"
+                        Tag="AssignmentsPage"/>
+    <NavigationViewItem x:Name="PlaygroundPageNavViewItem"
+                        Icon="Edit"
+                        Content="Playground"
+                        Tag="PlaygroundPage"/>
+</NavigationView.MenuItems>
+\end{minted}
+
+There are four options in the menu as designed. Each of which is assigned a name, icon, content and tag. The content and icon will be displayed to the user. The tag is used to identify the page that will be displayed when the option is clicked.
+
+I add the account option to the footer.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+<NavigationView.FooterMenuItems>
+    <NavigationViewItem x:Name="UserAccountNavItem"
+                        Icon="Contact"
+                        Content="Account"
+                        Tag="UserAccountPage"/>
+</NavigationView.FooterMenuItems>
+\end{minted}
+
+I add the content frame used to contain different pages.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+<Frame x:Name="ContentFrame"
+        Padding="0"
+        Visibility="Visible"/>
+\end{minted}
+
+Now the layout of the NavigationView is finished. I need to add the code to initialize the control and handle the navigation.
+
+When the main window is first initialized, the HomePage should be selected, and the title of the window should be set correctly. So I update the constructor of the main window to set the values.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+public MainWindow()
+{
+    InitializeComponent();
+    Title = "Algorithm Dynamics";
+    // Select HomePage when first loaded
+    MainNavView.SelectedItem = MainNavView.MenuItems[0];
+}
+\end{minted}
+
+Next, I need to handle the \mintinline{text}{SelectionChanged} event, this event gets triggered when the user clicks on a navigation item, and it will update the content frame to display the corresponding page.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+/// <summary>
+/// Handle the SelectionChanged event of the MainNavView
+/// Navigate to the corresponding page when the selection is changed
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="args"></param>
+private void MainNavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
+{
+    if (args.IsSettingsSelected)
+    {
+        // If the settings is selected, navigate to the settings page
+        ContentFrame.Navigate(typeof(Pages.SettingsPage));
+    }
+    else
+    {
+        // Otherwise, get the selected item. If it is not null, get its Tag
+        // Navigate to Algorithm_Dynamics.Pages.<Tag>
+        NavigationViewItem selectedItem = args.SelectedItem as NavigationViewItem;
+        if (selectedItem != null)
+        {
+            string tag = selectedItem.Tag as string;
+            string pageName = "Algorithm_Dynamics.Pages." + tag;
+            Type pageType = Type.GetType(pageName);
+            ContentFrame.Navigate(pageType);
+        }
+    }
+}
+\end{minted}
 
 
+Now, if I build and run the application, I should see the \mintinline{text}{NavigationView} works correctly. However, I get a runtime exception.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{text}
+System.NullReferenceException
+  HResult=0x80004003
+  Message=Object reference not set to an instance of an object.
+  Source=WinRT.Runtime
+  StackTrace:
+   at ABI.System.Type.ToAbi(Type value)
+   at ABI.System.Type.CreateMarshaler(Type value)
+   at ABI.Microsoft.UI.Xaml.Controls.INavigate.global::Microsoft.UI.Xaml.Controls.INavigate.Navigate(Type sourcePageType)
+   at Microsoft.UI.Xaml.Controls.Frame.Navigate(Type sourcePageType)
+   at Algorithm_Dynamics.MainWindow.MainNavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args) in C:\Algorithm-Dynamics\src\Algorithm Dynamics\MainWindow.xaml.cs:line 43
+\end{minted}
+
+
+It says object reference not set to an instance of an object when executing \mintinline{text}{ContentFrame.Navigate(pageType);}. This means the \mintinline{text}{pageType} does not exist. This is because I forget to create an actual HomePage, so it attempts to load a null object, failed, and throws the exception.  
+
+I should create all pages under the \mintinline{text}{Algorithm_Dynamics.Pages} namespace. For now, all of them will only contain a text block showing their name. Here is an example of the HomePage.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+<Page
+    x:Class="Algorithm_Dynamics.Pages.HomePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Algorithm_Dynamics.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <TextBlock Text="HomePage"/>
+    </Grid>
+</Page>
+\end{minted}
+
+
+\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+using Microsoft.UI.Xaml.Controls;
+
+namespace Algorithm_Dynamics.Pages
+{
+    public sealed partial class HomePage : Page
+    {
+        public HomePage()
+        {
+            this.InitializeComponent();
+        }
+    }
+}
+\end{minted}
+
+Now, the software build and run successfully. The HomePage is correctly selected when it is launched and the TextBlock HomePage shows up correctly means that the right page is loaded.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{HomePage-Draft-TextBlock}
+
+
+When I click on other tabs on the NavigationView, the corresponding page is loaded correctly as well.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{PlaygroundPage-Draft-TextBlock}
+
+Now, I can conclude that the NavigationView is built and tested. I will continue to build the other components in the next section.
+
+\subsection{Create the HomePage}
+
+\subsection{Create the ProblemsPage}
+
+\subsection{Create the AssignmentsPage}
+
+\subsection{Create the PlaygroundPage}
+
+\subsection{Create the SettingsPage}
 
 \section{Milestone 2: Implement the data structures}
 
