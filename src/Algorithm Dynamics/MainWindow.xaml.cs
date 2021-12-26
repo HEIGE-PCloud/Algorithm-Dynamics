@@ -1,4 +1,6 @@
 ﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using System;
 
 namespace Algorithm_Dynamics
 {
@@ -10,11 +12,37 @@ namespace Algorithm_Dynamics
         public MainWindow()
         {
             InitializeComponent();
+            Title = "Algorithm Dynamics";
+            // Select HomePage when first loaded
+            MainNavView.SelectedItem = MainNavView.MenuItems[0];
         }
 
-        private void myButton_Click(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Handle the SelectionChanged event of the MainNavView
+        /// Navigate to the corresponding page when the selection is changed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void MainNavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
-            myButton.Content = "Clicked";
+            if (args.IsSettingsSelected)
+            {
+                // If the settings is selected, navigate to the settings page
+                ContentFrame.Navigate(typeof(Pages.SettingsPage));
+            }
+            else
+            {
+                // Otherwise, get the selected item. If it is not null, get its Tag
+                // Navigate to Algorithm_Dynamics.Pages.<Tag>
+                NavigationViewItem selectedItem = args.SelectedItem as NavigationViewItem;
+                if (selectedItem != null)
+                {
+                    string tag = selectedItem.Tag as string;
+                    string pageName = "Algorithm_Dynamics.Pages." + tag;
+                    Type pageType = Type.GetType(pageName);
+                    ContentFrame.Navigate(pageType);
+                }
+            }
         }
     }
 }
