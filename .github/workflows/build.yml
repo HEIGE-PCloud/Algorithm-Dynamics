@@ -52,9 +52,8 @@ jobs:
 
     # Execute all unit tests in the solution
     - name: Execute unit tests
-      working-directory: src
+      working-directory: src\Algorithm Dynamics.Test
       run: dotnet test
-      continue-on-error: true
 
   build-app:
     name: Build App
