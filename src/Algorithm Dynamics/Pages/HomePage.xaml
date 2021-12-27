@@ -42,7 +42,8 @@
                     Text="Quick Access"
                     Grid.Row="0"
                     Style="{ThemeResource SubtitleTextBlockStyle}"/>
-                <controls:AdaptiveGridView 
+                <controls:AdaptiveGridView
+                    x:Name="QAGridView"
                     Grid.Row="1"
                     Margin="4"
                     ItemsSource="{x:Bind QAItems}"
@@ -51,30 +52,27 @@
                     ItemHeight="160"
                     DesiredWidth="160"
                     SelectionMode="None"
-                    IsItemClickEnabled="True">
+                    IsItemClickEnabled="True"
+                    ItemClick="QAGridView_ItemClick">
                     <GridView.ItemTemplate>
                         <DataTemplate x:DataType="models:QuickAccessItem">
-                            <Grid 
-                                Width="160"
-                                Height="160">
-                                <StackPanel 
-                                    VerticalAlignment="Center"
-                                    HorizontalAlignment="Center"
-                                    Orientation="Vertical">
-                                    <SymbolIcon 
-                                        x:Name="ItemIcon"
-                                        Symbol="{x:Bind Icon}"/>
-                                    <TextBlock Text="{x:Bind Name}" />
-                                </StackPanel>
-                            </Grid>
+                            <StackPanel 
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                                Orientation="Vertical">
+                                <SymbolIcon 
+                                    x:Name="ItemIcon"
+                                    Symbol="{x:Bind Icon}"/>
+                                <TextBlock Text="{x:Bind Name}" />
+                            </StackPanel>
                         </DataTemplate>
                     </GridView.ItemTemplate>
                 </controls:AdaptiveGridView>
-                <TextBlock 
+                <!--<TextBlock 
                     Text="Recommended"
                     Grid.Row="2"
                     Style="{ThemeResource SubtitleTextBlockStyle}"/>
-                <controls:AdaptiveGridView 
+                <controls:AdaptiveGridView
                     Grid.Row="3"
                     Margin="4"
                     ItemsSource="{x:Bind RecItems}"
@@ -92,13 +90,14 @@
                                     HorizontalAlignment="Left"
                                     Orientation="Vertical"
                                     Margin="8">
-                                    <TextBlock Text="{x:Bind Title}"/>
+                                    <TextBlock Text="{x:Bind Title}"
+                                               Style="{ThemeResource BodyStrongTextBlockStyle}"/>
                                     <TextBlock Text="{x:Bind Description}"/>
                                 </StackPanel>
                             </Grid>
                         </DataTemplate>
                     </GridView.ItemTemplate>
-                </controls:AdaptiveGridView>
+                </controls:AdaptiveGridView>-->
             </Grid>
         </Grid>
     </ScrollViewer>

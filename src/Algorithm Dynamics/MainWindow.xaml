@@ -8,36 +8,44 @@
     mc:Ignorable="d">
 
     <Grid>
-        <NavigationView x:Name="MainNavView"
-                        IsBackButtonVisible="Collapsed"
-                        SelectionChanged="MainNavView_SelectionChanged">
+        <NavigationView 
+            x:Name="MainNavView"
+            x:FieldModifier="public"
+            IsBackButtonVisible="Collapsed"
+            SelectionChanged="MainNavView_SelectionChanged">
             <NavigationView.MenuItems>
-                <NavigationViewItem x:Name="HomePageNavViewItem"
-                                    Icon="Home"
-                                    Content="Home"
-                                    Tag="HomePage" />
-                <NavigationViewItem x:Name="ProblemsPageNavViewItem"
-                                    Icon="List"
-                                    Content="Problems"
-                                    Tag="ProblemsPage" />
-                <NavigationViewItem x:Name="AssignmentsPageNavViewItem"
-                                    Icon="Library"
-                                    Content="Assignments"
-                                    Tag="AssignmentsPage"/>
-                <NavigationViewItem x:Name="PlaygroundPageNavViewItem"
-                                    Icon="Edit"
-                                    Content="Playground"
-                                    Tag="PlaygroundPage"/>
+                <NavigationViewItem
+                    x:Name="HomePageNavViewItem"
+                    Icon="Home"
+                    Content="Home"
+                    Tag="HomePage" />
+                <NavigationViewItem
+                    x:Name="ProblemsPageNavViewItem"
+                    Icon="List"
+                    Content="Problems"
+                    Tag="ProblemsPage" />
+                <NavigationViewItem
+                    x:Name="AssignmentsPageNavViewItem"
+                    Icon="Library"
+                    Content="Assignments"
+                    Tag="AssignmentsPage"/>
+                <NavigationViewItem
+                    x:Name="PlaygroundPageNavViewItem"
+                    Icon="Edit"
+                    Content="Playground"
+                    Tag="PlaygroundPage"/>
             </NavigationView.MenuItems>
             <NavigationView.FooterMenuItems>
-                <NavigationViewItem x:Name="UserAccountNavItem"
-                                    Icon="Contact"
-                                    Content="Account"
-                                    Tag="AccountPage"/>
+                <NavigationViewItem
+                    x:Name="UserAccountNavItem"
+                    Icon="Contact"
+                    Content="Account"
+                    Tag="AccountPage"/>
             </NavigationView.FooterMenuItems>
-            <Frame x:Name="ContentFrame"
-                   Padding="0"
-                   Visibility="Visible"/>
+            <Frame
+                x:Name="ContentFrame"
+                Padding="0"
+                Visibility="Visible"/>
         </NavigationView>
     </Grid>
 </Window>
