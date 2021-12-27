@@ -44,5 +44,9 @@ namespace Algorithm_Dynamics
                 }
             }
         }
+        public void NavigateTo()
+        {
+
+        }
     }
 }
