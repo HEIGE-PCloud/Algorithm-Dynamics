@@ -4,73 +4,102 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Algorithm_Dynamics.Pages"
     xmlns:models="using:Algorithm_Dynamics.Models"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-  
-    <Page.Resources>
-        <DataTemplate x:Key="GridViewItemTemplate" x:DataType="models:HomePageGridViewItem">
-            <Grid Width="160"
-                  Height="160">
-                <StackPanel VerticalAlignment="Center"
-                            HorizontalAlignment="Center"
-                            Orientation="Vertical">
-                    <SymbolIcon x:Name="ItemIcon"
-                                Symbol="{x:Bind Icon}"/>
-                    <TextBlock Text="{x:Bind Name}" />
-                </StackPanel>
-            </Grid>
-        </DataTemplate>
-    </Page.Resources>
 
     <ScrollViewer>
-        <StackPanel>
-            <Grid>
-                <Image Source="/Assets/HomePageBackgroundImage.jpg" 
-               Height="256"
-               Stretch="UniformToFill"/>
-                <TextBlock Text="{x:Bind WelcomeMessage, Mode=OneTime, FallbackValue='Welcome User'}"
-                       HorizontalAlignment="Right"
-                       VerticalAlignment="Bottom"
-                       Margin="8"
-                       Foreground="White"
-                       Style="{ThemeResource TitleTextBlockStyle}"/>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Image 
+                    Source="/Assets/HomePageBackgroundImage.jpg" 
+                    Height="256"
+                    Stretch="UniformToFill"/>
+                <TextBlock 
+                    Text="{x:Bind WelcomeMessage, Mode=OneTime, FallbackValue='Welcome User'}"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Margin="8"
+                    Foreground="White"
+                    Style="{ThemeResource TitleTextBlockStyle}"/>
             </Grid>
-            <StackPanel Margin="24">
-                <TextBlock Text="Recommended"
-                       Style="{ThemeResource SubtitleTextBlockStyle}"/>
-                <Grid Margin="4">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <StackPanel x:Name="ProblemRecPanel"
-                                Grid.Column="0">
-                        <HyperlinkButton Content="Problem 1"/>
-                        <HyperlinkButton Content="Problem 2"/>
-                        <HyperlinkButton Content="Problem 3"/>
-                    </StackPanel>
-                    <StackPanel x:Name="AssignmentRecPanel"
-                                Grid.Column="1">
-                        <HyperlinkButton Content="Assignment 1"/>
-                        <HyperlinkButton Content="Assignment 2"/>
-                        <HyperlinkButton Content="Assignment 3"/>
-                    </StackPanel>
-                </Grid>
-                <TextBlock Text="All"
-                           Style="{ThemeResource SubtitleTextBlockStyle}"/>
-                <GridView x:Name="HomePageGridView"
-                      Margin="4"
-                      ItemsSource="{x:Bind Items}"
-                      ItemTemplate="{StaticResource GridViewItemTemplate}"
-                      IsItemClickEnabled="True"
-                      CanDragItems="False"
-                      AllowDrop="False"
-                      CanReorderItems="False"
-                      SelectionMode="Single"
-                      FlowDirection="LeftToRight"/>
-            </StackPanel>
-        </StackPanel>
+            <Grid 
+                Margin="24"
+                Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock 
+                    Text="Quick Access"
+                    Grid.Row="0"
+                    Style="{ThemeResource SubtitleTextBlockStyle}"/>
+                <controls:AdaptiveGridView 
+                    Grid.Row="1"
+                    Margin="4"
+                    ItemsSource="{x:Bind QAItems}"
+                    StretchContentForSingleRow="True"
+                    OneRowModeEnabled="True"
+                    ItemHeight="160"
+                    DesiredWidth="160"
+                    SelectionMode="None"
+                    IsItemClickEnabled="True">
+                    <GridView.ItemTemplate>
+                        <DataTemplate x:DataType="models:QuickAccessItem">
+                            <Grid 
+                                Width="160"
+                                Height="160">
+                                <StackPanel 
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Center"
+                                    Orientation="Vertical">
+                                    <SymbolIcon 
+                                        x:Name="ItemIcon"
+                                        Symbol="{x:Bind Icon}"/>
+                                    <TextBlock Text="{x:Bind Name}" />
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </GridView.ItemTemplate>
+                </controls:AdaptiveGridView>
+                <TextBlock 
+                    Text="Recommended"
+                    Grid.Row="2"
+                    Style="{ThemeResource SubtitleTextBlockStyle}"/>
+                <controls:AdaptiveGridView 
+                    Grid.Row="3"
+                    Margin="4"
+                    ItemsSource="{x:Bind RecItems}"
+                    StretchContentForSingleRow="False"
+                    OneRowModeEnabled="False"
+                    ItemHeight="80"
+                    DesiredWidth="320"
+                    SelectionMode="None"
+                    IsItemClickEnabled="True">
+                    <GridView.ItemTemplate>
+                        <DataTemplate x:DataType="models:RecommendItem">
+                            <Grid HorizontalAlignment="Stretch">
+                                <StackPanel 
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Left"
+                                    Orientation="Vertical"
+                                    Margin="8">
+                                    <TextBlock Text="{x:Bind Title}"/>
+                                    <TextBlock Text="{x:Bind Description}"/>
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </GridView.ItemTemplate>
+                </controls:AdaptiveGridView>
+            </Grid>
+        </Grid>
     </ScrollViewer>
 </Page>
