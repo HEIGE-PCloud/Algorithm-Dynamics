@@ -3117,8 +3117,117 @@ System.NotImplementedException
    at ABI.Microsoft.UI.Xaml.Controls.ItemClickEventHandler.Do_Abi_Invoke(IntPtr thisPtr, IntPtr sender, IntPtr e)
 \end{minted}
 
+The recommendation control is similar. I create the \mintinline{text}{RecommendItem} class and add the items to the collection.
 
+\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+namespace Algorithm_Dynamics.Models
+{
+    public class RecommendItem
+    {
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public RecommendItem(string title, string description)
+        {
+            Title = title;
+            Description = description;
+        }
+    }
+}
+\end{minted}
 
+\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+public ObservableCollection<RecommendItem> RecItems { get; } = new ObservableCollection<RecommendItem>();
+\end{minted}
+
+Then bind the AdaptiveGridView to the collection.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+<TextBlock 
+    Text="Recommended"
+    Grid.Row="2"
+    Style="{ThemeResource SubtitleTextBlockStyle}"/>
+<controls:AdaptiveGridView
+    x:Name="RecGridView"
+    Grid.Row="3"
+    Margin="4"
+    ItemsSource="{x:Bind RecItems}"
+    StretchContentForSingleRow="False"
+    OneRowModeEnabled="False"
+    ItemHeight="80"
+    DesiredWidth="320"
+    SelectionMode="None"
+    IsItemClickEnabled="True"
+    ItemClick="RecGridView_ItemClick">
+    <GridView.ItemTemplate>
+        <DataTemplate x:DataType="models:RecommendItem">
+            <Grid HorizontalAlignment="Stretch">
+                <StackPanel 
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Left"
+                    Orientation="Vertical"
+                    Margin="8">
+                    <TextBlock Text="{x:Bind Title}"
+                                Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                    <TextBlock Text="{x:Bind Description}"/>
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+    </GridView.ItemTemplate>
+</controls:AdaptiveGridView>
+\end{minted}
+
+For now, because the database and the data structure are not ready, I just add some dummy data to the collection. The recommendation logic will be added later.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+public HomePage()
+{
+    SetWelcomeMessage();
+    InitializeQAItems();
+    InitializeRecItems();
+    InitializeComponent();
+}
+/// <summary>
+/// TODO: Generate Recommendation from database.
+/// </summary>
+private void InitializeRecItems()
+{
+    RecItems.Clear();
+    RecItems.Add(new RecommendItem("Problem 1", "Easy | Data structure"));
+    RecItems.Add(new RecommendItem("Problem 2", "Medium | Sorting"));
+    RecItems.Add(new RecommendItem("Problem 3", "Hard | Graph"));
+    RecItems.Add(new RecommendItem("Problem 4", "Easy | Data structure"));
+    RecItems.Add(new RecommendItem("Assignment 1", "Due in 2 days"));
+    RecItems.Add(new RecommendItem("Assignment 2", "Due in 3 days"));
+    RecItems.Add(new RecommendItem("Assignment 3", "Due in 4 days"));
+    RecItems.Add(new RecommendItem("Assignment 4", "Due in 5 days"));
+}
+\end{minted}
+
+I need to handle the click event as well. And because neither the AssignmentPage nor the CodingPage is ready, it will throw an NotImplementedException too.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+/// <summary>
+/// Handle the RecGridView click event.
+/// Navigate to the corresponding Problem or Assignment
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
+private void RecGridView_ItemClick(object sender, ItemClickEventArgs e)
+{
+    // TODO: Handle the navigation.
+    throw new NotImplementedException("[Blocking]: The CodingPage or the AssignmentPage has not been implemented yet.");
+}
+\end{minted}
+
+Now, the HomePage is implemented. I run the application and test it.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{HomePage-Finished}
+
+All components show up correctly. The image is loaded and the greeting message is correct. The Quick Access Toolbar navigates correctly. When I click the recommended item, the correct exception is thrown.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{HomePage-Finished-Scroll}
+
+The scroller is working as well, so I can scroll down on a small window to see the recommendation items.
 
 \subsection{Create the ProblemsPage}
 

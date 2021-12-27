@@ -68,11 +68,12 @@
                         </DataTemplate>
                     </GridView.ItemTemplate>
                 </controls:AdaptiveGridView>
-                <!--<TextBlock 
+                <TextBlock 
                     Text="Recommended"
                     Grid.Row="2"
                     Style="{ThemeResource SubtitleTextBlockStyle}"/>
                 <controls:AdaptiveGridView
+                    x:Name="RecGridView"
                     Grid.Row="3"
                     Margin="4"
                     ItemsSource="{x:Bind RecItems}"
@@ -81,7 +82,8 @@
                     ItemHeight="80"
                     DesiredWidth="320"
                     SelectionMode="None"
-                    IsItemClickEnabled="True">
+                    IsItemClickEnabled="True"
+                    ItemClick="RecGridView_ItemClick">
                     <GridView.ItemTemplate>
                         <DataTemplate x:DataType="models:RecommendItem">
                             <Grid HorizontalAlignment="Stretch">
@@ -97,7 +99,7 @@
                             </Grid>
                         </DataTemplate>
                     </GridView.ItemTemplate>
-                </controls:AdaptiveGridView>-->
+                </controls:AdaptiveGridView>
             </Grid>
         </Grid>
     </ScrollViewer>

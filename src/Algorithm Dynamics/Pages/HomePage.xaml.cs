@@ -60,6 +60,18 @@ namespace Algorithm_Dynamics.Pages
             }
         }
 
+        /// <summary>
+        /// Handle the RecGridView click event.
+        /// Navigate to the corresponding Problem or Assignment
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void RecGridView_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            // TODO: Handle the navigation.
+            throw new NotImplementedException("[Blocking]: The CodingPage or the AssignmentPage has not been implemented yet.");
+        }
+
         private void InitializeQAItems()
         {
             QAItems.Clear();
@@ -87,6 +99,9 @@ namespace Algorithm_Dynamics.Pages
             }));
         }
 
+        /// <summary>
+        /// TODO: Generate Recommendation from database.
+        /// </summary>
         private void InitializeRecItems()
         {
             RecItems.Clear();
