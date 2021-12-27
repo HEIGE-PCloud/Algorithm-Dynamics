@@ -9,6 +9,90 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-        <TextBlock Text="ProblemsPage"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid
+            Grid.Row="0"
+            HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <AutoSuggestBox 
+                Grid.Column="0"
+                Margin="4"
+                PlaceholderText="Search..."
+                x:Name="ProblemsSearchBox"
+                HorizontalAlignment="Stretch"/>
+            <ComboBox
+                x:Name="DifficultyComboBox"
+                PlaceholderText="Difficulty"
+                Grid.Column="1"
+                Margin="4"
+                ItemsSource="{x:Bind Difficulties}"
+                HorizontalAlignment="Stretch"
+                RightTapped="ClearComboBox"/>
+            <ComboBox
+                x:Name="StatusComboBox"
+                PlaceholderText="Status"
+                Grid.Column="2"
+                Margin="4"
+                ItemsSource="{x:Bind Statuses}"
+                HorizontalAlignment="Stretch"
+                RightTapped="ClearComboBox"/>
+            <ComboBox
+                x:Name="TagComboBox"
+                PlaceholderText="Tag"
+                Grid.Column="3"
+                Margin="4"
+                ItemsSource="{x:Bind Tags}"
+                HorizontalAlignment="Stretch"
+                RightTapped="ClearComboBox"/>
+            <ComboBox 
+                PlaceholderText="List"
+                x:Name="ListComboBox"
+                Grid.Column="4"
+                Margin="4"
+                ItemsSource="{x:Bind Lists}"
+                HorizontalAlignment="Stretch"
+                RightTapped="ListComboBox_RightTapped">
+                <ComboBox.Resources>
+                    <MenuFlyout x:Name="ListMenuFlyout">
+                        <MenuFlyout.Items>
+                            <MenuFlyoutItem 
+                                Text="Edit"
+                                Icon="Edit"/>
+                            <MenuFlyoutItem
+                                Text="Delete"
+                                Icon="Delete"/>
+                            <MenuFlyoutSeparator/>
+                            <MenuFlyoutItem
+                                Text="Clear"
+                                Icon="Clear"
+                                Click="ClearComboBox"/>
+                        </MenuFlyout.Items>
+                    </MenuFlyout>
+                </ComboBox.Resources>
+            </ComboBox>
+            <DropDownButton 
+                Content="Add"
+                Grid.Column="6"
+                Margin="4"
+                HorizontalAlignment="Stretch">
+                <DropDownButton.Flyout>
+                    <MenuFlyout Placement="Bottom">
+                        <MenuFlyoutItem Text="New Problem"/>
+                        <MenuFlyoutItem Text="New Problem List"/>
+                        <MenuFlyoutItem Text="Import"/>
+                    </MenuFlyout>
+                </DropDownButton.Flyout>
+            </DropDownButton>
+        </Grid>
     </Grid>
 </Page>

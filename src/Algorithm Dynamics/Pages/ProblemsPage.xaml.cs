@@ -1,31 +1,45 @@
-﻿using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
+﻿using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
+using Microsoft.UI.Xaml;
+using System.Collections.ObjectModel;
 
 namespace Algorithm_Dynamics.Pages
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class ProblemsPage : Page
     {
         public ProblemsPage()
         {
-            this.InitializeComponent();
+            InitializeComponent();
+        }
+        private readonly ObservableCollection<string> Difficulties = new() { "Easy", "Medium", "Hard" };
+        private readonly ObservableCollection<string> Statuses = new() { "Todo", "Attempted", "Done" };
+        public ObservableCollection<string> Lists = new() { "List 1", "List 2", "List 3" };
+        public ObservableCollection<string> Tags = new() { "Tag 1", "Tag 2", "Tag 3"};
+
+        private void ListComboBox_RightTapped(object sender, RightTappedRoutedEventArgs e)
+        {
+            ComboBox comboBox = (ComboBox)sender;
+            ListMenuFlyout.ShowAt(comboBox, e.GetPosition(comboBox));
+        }
+
+        /// <summary>
+        /// Clear the ComboBox
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ClearComboBox(object sender, RightTappedRoutedEventArgs e)
+        {
+            ComboBox comboBox = (ComboBox)sender;
+            comboBox.SelectedIndex = -1;
+        }
+        /// <summary>
+        /// Clear the ListComboBox
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ClearComboBox(object sender, RoutedEventArgs e)
+        {
+            ListComboBox.SelectedIndex = -1;
         }
     }
 }
