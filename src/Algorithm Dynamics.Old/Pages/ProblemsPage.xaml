@@ -94,20 +94,14 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock x:Name="ProblemNameTextBlock"
                                    Text="{x:Bind Name}"
-                                   Grid.Column="0"
-                                   HorizontalAlignment="Left"
-                                   VerticalAlignment="Center"/>
+                                   Grid.Column="0"/>
                         <TextBlock x:Name="ProblemDifficultyTextBlock"
                                    Text="Easy"
                                    Grid.Column="1"
-                                   HorizontalAlignment="Left"
-                                   VerticalAlignment="Center"
                                    Margin="10 0 0 0"/>
                         <TextBlock x:Name="ProblemStatusTextBlock"
                                    Text="ToDo"
                                    Grid.Column="2"
-                                   HorizontalAlignment="Left"
-                                   VerticalAlignment="Center"
                                    Margin="14 0 0 0"/>
                         <TextBlock x:Name="ProblemTagTextBlock"
                                    Text="Tag1"
