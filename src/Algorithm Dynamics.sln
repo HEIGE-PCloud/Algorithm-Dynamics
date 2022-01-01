@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Algorithm Dynamics.Core", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Algorithm Dynamics.Test", "Algorithm Dynamics.Test\Algorithm Dynamics.Test.csproj", "{39B1DB2D-818B-48EC-9917-762AE98E1047}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Algorithm Dynamics", "Algorithm Dynamics\Algorithm Dynamics.csproj", "{21875642-3184-4016-AA61-35DA671C0F75}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Algorithm Dynamics", "Algorithm Dynamics\Algorithm Dynamics.csproj", "{21875642-3184-4016-AA61-35DA671C0F75}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

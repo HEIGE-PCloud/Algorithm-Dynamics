@@ -86,7 +86,7 @@ namespace Algorithm_Dynamics.Pages
             QAItems.Add(new QuickAccessItem("Assignments", Symbol.Library, (m_window) =>
                 m_window.MainNavView.SelectedItem = m_window.MainNavView.MenuItems[2]));
             QAItems.Add(new QuickAccessItem("Problems", Symbol.List, (m_window) =>
-                m_window.MainNavView.SelectedItem = m_window.MainNavView.MenuItems[3]));
+                m_window.MainNavView.SelectedItem = m_window.MainNavView.MenuItems[1]));
             QAItems.Add(new QuickAccessItem("Settings", Symbol.Setting, (m_window) =>
                 m_window.MainNavView.SelectedItem = m_window.MainNavView.SettingsItem));
             QAItems.Add(new QuickAccessItem("Account", Symbol.Contact, (m_window) =>

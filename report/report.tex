@@ -3064,7 +3064,7 @@ private void InitializeQAItems()
         throw new NotImplementedException("[Blocking]: The CodingPage has not been implemented yet.");
     }));
     QAItems.Add(new QuickAccessItem("Playground", Symbol.Edit, (m_window) =>
-        m_window.MainNavView.SelectedItem = m_window.MainNavView.MenuItems[3]));
+        m_window.MainNavView.SelectedItem = m_window.MainNavView.MenuItems[1]));
     QAItems.Add(new QuickAccessItem("Assignments", Symbol.Library, (m_window) =>
         m_window.MainNavView.SelectedItem = m_window.MainNavView.MenuItems[2]));
     QAItems.Add(new QuickAccessItem("Problems", Symbol.List, (m_window) =>
@@ -3262,7 +3262,7 @@ I move on to design the ProblemsPage. It contains two parts, the toolbar at the 
 </Page>
 \end{minted}
 
-For the toolbar, I use a grid with 6 columns to hold the search box and the combo boxes.
+For the toolbar, I use a grid with 6 columns to hold the search box and the ComboBoxes.
 
 \begin{minted}[linenos,tabsize=4,breaklines]{xml}
 <Grid.ColumnDefinitions>
@@ -3343,7 +3343,110 @@ namespace Algorithm_Dynamics.Pages
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{ProblemsPage-Toolbar}
 
-The toolbar shows up with all data loaded correctly.
+The toolbar shows up with all data loaded correctly. I can select an item correctly, but I cannot clear the selection. I need to empty the ComboBox when the user right clicks it. For the list ComboBox, I also need to allow the user to edit and delete an existing list, so when the user right click the list ComboBox, a menu flyout needs to show up with all options. I create a \mintinline{text}{ClearComboBox} procedure to handle the right click event.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+/// <summary>
+/// Clear the <see cref="ComboBox"/>
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
+private void ClearComboBox(object sender, RightTappedRoutedEventArgs e)
+{
+    ComboBox comboBox = (ComboBox)sender;
+    comboBox.SelectedIndex = -1;
+}
+\end{minted}
+
+And then bind the right clicked event to the procedure.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+<ComboBox
+    x:Name="DifficultyComboBox"
+    RightTapped="ClearComboBox"/>
+<ComboBox
+    x:Name="StatusComboBox"
+    RightTapped="ClearComboBox"/>
+<ComboBox
+    x:Name="TagComboBox"
+    RightTapped="ClearComboBox"/>
+\end{minted}
+
+For the list ComboBox, I need to create the layout for the menu flyout first.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+<ComboBox.Resources>
+    <MenuFlyout x:Name="ListMenuFlyout">
+        <MenuFlyout.Items>
+            <MenuFlyoutItem 
+                Text="Edit"
+                Icon="Edit"/>
+            <MenuFlyoutItem
+                Text="Delete"
+                Icon="Delete"/>
+            <MenuFlyoutSeparator/>
+            <MenuFlyoutItem
+                Text="Clear"
+                Icon="Clear"
+                Click="ClearComboBox"/>
+        </MenuFlyout.Items>
+    </MenuFlyout>
+</ComboBox.Resources>
+\end{minted}
+
+There are three items in the menu, edit, delete, and clear. The edit and delete function has not been implemented yet, so they will not be handled for now. Because the clear event is sent by the menu button instead of the ComboBox, I overload the \mintinline{text}{ClearComboBox} procedure to handle the clear event.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+/// <summary>
+/// Clear the <see cref="ListComboBox"/>
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
+private void ClearComboBox(object sender, RoutedEventArgs e)
+{
+    ListComboBox.SelectedIndex = -1;
+}
+\end{minted}
+
+The menu flyout needs to be displayed when the list ComboBox is right clicked.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+<ComboBox 
+    x:Name="ListComboBox"
+    RightTapped="ListComboBox_RightTapped">
+\end{minted}
+
+\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+/// <summary>
+/// Display the <see cref="ListMenuFlyout"/> when the <see cref="ListComboBox"/> is right tapped
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
+private void ListComboBox_RightTapped(object sender, RightTappedRoutedEventArgs e)
+{
+    ComboBox comboBox = (ComboBox)sender;
+    ListMenuFlyout.ShowAt(comboBox, e.GetPosition(comboBox));
+}
+\end{minted}
+
+Now, I build and run the code again. When I right click the difficulty, status and tag ComboBox, their content are cleared correctly. When I click the list ComboBox, the menu flyout shows up. When I click the clear option, the selected list is cleared correctly. When I right click other ComboBoxes, the content is cleared correctly as well.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{ProblemsPage-ListComboBox-FlyoutMenu}
+
+But there is a potential issue with the current implementation. When I right click the list ComboBox, the menu flyout will show up even when no list is selected. Clear the box does not result in any problem because it is empty anyway, but in the future, when the edit and delete function is implemented, attempting to edit or delete an empty list will cause problem. So I need to change the logic of the menu flyout so that it only shows up when there is something selected. I only need to modify the original function, and only show the flyout when the selected index is -1.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+private void ListComboBox_RightTapped(object sender, RightTappedRoutedEventArgs e)
+{
+    ComboBox comboBox = (ComboBox)sender;
+    if (comboBox.SelectedIndex != -1)
+    {
+        ListMenuFlyout.ShowAt(comboBox, e.GetPosition(comboBox));
+    }
+}
+\end{minted}
+
+Now, the menu flyout does not show up when no list is selected, which fixes a potential issue in the future.
 
 
 \subsection{Create the AssignmentsPage}
