@@ -3429,11 +3429,11 @@ private void ListComboBox_RightTapped(object sender, RightTappedRoutedEventArgs 
 }
 \end{minted}
 
-Now, I build and run the code again. When I right click the difficulty, status and tag ComboBox, their content are cleared correctly. When I click the list ComboBox, the menu flyout shows up. When I click the clear option, the selected list is cleared correctly. When I right click other ComboBoxes, the content is cleared correctly as well.
+Now, I build and run the code again. When I right-click the difficulty, status and tag ComboBox, their content is cleared correctly. When I click the list ComboBox, the menu flyout shows up. When I click the clear option, the selected list is cleared correctly. When I right-click other ComboBoxes, the content is cleared correctly as well.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{ProblemsPage-ListComboBox-FlyoutMenu}
 
-But there is a potential issue with the current implementation. When I right click the list ComboBox, the menu flyout will show up even when no list is selected. Clear the box does not result in any problem because it is empty anyway, but in the future, when the edit and delete function is implemented, attempting to edit or delete an empty list will cause problem. So I need to change the logic of the menu flyout so that it only shows up when there is something selected. I only need to modify the original function, and only show the flyout when the selected index is -1.
+But there is a potential issue with the current implementation. When I right-click the list ComboBox, the menu flyout will show up even when no list is selected. Clear the box does not result in any problem because it is empty anyway, but in the future, when the edit and delete function is implemented, attempting to edit or delete an empty list will cause a problem. So I need to change the logic of the menu flyout so that it only shows up when there is something selected. I only need to modify the original function, and only show the flyout when the selected index is -1.
 
 \begin{minted}[linenos,tabsize=4,breaklines]{csharp}
 private void ListComboBox_RightTapped(object sender, RightTappedRoutedEventArgs e)
@@ -3448,6 +3448,309 @@ private void ListComboBox_RightTapped(object sender, RightTappedRoutedEventArgs 
 
 Now, the menu flyout does not show up when no list is selected, which fixes a potential issue in the future.
 
+Next, I need to handle the delete and edit event for the list ComboBox. Because the actual database and data structures have not been implemented yet, I will only create the UI for these events and implement their functions later. For the edit event, the content frame should navigate to the edit page. For the delete event, a content dialog will show up to confirm the deletion. I create two procedures to handle these events.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+/// <summary>
+/// Navigate to the edit ProblemList page
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
+/// <exception cref="NotImplementedException"></exception>
+private void EditProblemList(object sender, RoutedEventArgs e)
+{
+    // TODO: Navigate to edit page
+    throw new NotImplementedException();
+}
+
+/// <summary>
+/// Show a content dialog to confirm the deletion of a ProblemList
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
+/// <exception cref="NotImplementedException"></exception>
+private async void DeleteProblemList(object sender, RoutedEventArgs e)
+{
+    ContentDialog dialog = new ContentDialog();
+    dialog.Title = "Delete Problem List";
+    dialog.PrimaryButtonText = "Delete";
+    dialog.CloseButtonText = "Cancel";
+    dialog.Content = $"Are you sure that you want to permanently delete {ListComboBox.SelectedItem}?";
+    dialog.DefaultButton = ContentDialogButton.Close;
+    dialog.XamlRoot = this.Content.XamlRoot;
+    var result = await dialog.ShowAsync();
+    if (result == ContentDialogResult.Primary)
+    {
+        // TODO: Delete the selected problem list
+        throw new NotImplementedException();
+    }
+}
+\end{minted}
+
+Now, when I click the delete button, a popup shows up correctly to confirm deletion.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{ProblemsPage-ContentDialog}
+
+I then implement the problem list below the toolbar. I use a \mintinline{text}{ListView} to display the problem list. Similarly, I bind the data source to a variable Problems which contains a list of Problem. For each problem, its name, difficulty, status and tags are displayed.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+<ListView x:Name="ProblemsListView"
+    Grid.Row="1"
+    SelectionMode="Extended"
+    Width="auto"
+    ItemsSource="{x:Bind Problems, Mode=OneWay}">
+    <ListView.ItemContainerStyle>
+        <Style TargetType="ListViewItem">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        </Style>
+    </ListView.ItemContainerStyle>
+    <ListView.ItemTemplate>
+        <DataTemplate x:DataType="local:Problem">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    Text="{x:Bind Name}"
+                    Grid.Column="0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Margin="4 0 0 0"/>
+                <TextBlock
+                    Text="{x:Bind Difficulty}"
+                    Grid.Column="1"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Margin="10 0 0 0"/>
+                <TextBlock
+                    Text="{x:Bind Status}"
+                    Grid.Column="2"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Margin="14 0 0 0"/>
+                <TextBlock
+                    Text="{x:Bind Tags}"
+                    Grid.Column="3"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    TextTrimming="CharacterEllipsis"
+                    Margin="17 0 0 0"/>
+                <Button
+                    Content="Start"
+                    Grid.Column="4"
+                    HorizontalAlignment="Stretch"
+                    Margin="12 0 0 0"/>
+            </Grid>
+        </DataTemplate>
+    </ListView.ItemTemplate>
+</ListView>
+\end{minted}
+
+Because the data structure for Problem has not been implemented yet, I create a sample class for the Problem. It only contains the four attributes that matters and a constructor to initialize the values.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+public class Problem
+{
+    public Problem(string name, string difficulty, string status, string tags)
+    {
+        Name = name;
+        Difficulty = difficulty;
+        Status = status;
+        Tags = tags;
+    }
+
+    public string Name { get; set; }
+    public string Difficulty { get; set; }
+    public string Status { get; set; }
+    public string Tags { get; set; }
+}
+\end{minted}
+
+I create a ObserableCollection for the list of Problem and add some sample data to it.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+public ObservableCollection<Problem> Problems = new();
+public ProblemsPage()
+{
+    InitializeComponent();
+    Problems.Add(new Problem("Problem 1", "Easy", "Todo", "Tag"));
+    Problems.Add(new Problem("Problem 2", "Easy", "Attempted", "Tag"));
+    Problems.Add(new Problem("Problem 3", "Easy", "Done", "Tag"));
+    Problems.Add(new Problem("Problem 4", "Medium", "Todo", "Tag"));
+    Problems.Add(new Problem("Problem 5", "Medium", "Attempted", "Tag"));
+    Problems.Add(new Problem("Problem 6", "Medium", "Done", "Tag"));
+    Problems.Add(new Problem("Problem 7", "Hard", "Todo", "Tag"));
+    Problems.Add(new Problem("Problem 8", "Hard", "Attempted", "Tag"));
+    Problems.Add(new Problem("Problem 9", "Hard", "Done", "Tag"));
+    Problems.Add(new Problem("Problem 10", "Hard", "Todo", "Tag"));
+}
+\end{minted}
+
+The problem list shows up with the correct data.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{ProblemsPage-ProblemList}
+
+I need to add a flyout menu for the problem list to allow the user to edit and delete problems when right clicking the list. When only one problem is selected, the user can edit it or delete it. When multiple problems are selected, the user can delete all of them or create a problem list from them.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+<ListView.Resources>
+    <MenuFlyout x:Name="SingleSelectedMenuFlyout">
+        <MenuFlyout.Items>
+            <MenuFlyoutItem 
+                Text="Edit"
+                Icon="Edit"/>
+            <MenuFlyoutItem 
+                Text="Delete"
+                Icon="Delete"/>
+        </MenuFlyout.Items>
+    </MenuFlyout>
+    <MenuFlyout x:Name="MultipleSelectedMenuFlyout">
+        <MenuFlyout.Items>
+            <MenuFlyoutItem 
+                Text="Create Problem List..."
+                Icon="Add"/>
+            <MenuFlyoutItem 
+                Text="Delete"
+                Icon="Delete"/>
+        </MenuFlyout.Items>
+    </MenuFlyout>
+</ListView.Resources>
+\end{minted}
+
+
+\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+/// <summary>
+/// Show flyout when the user right tapped the ProblemListView
+/// When one problem is selected, show the SingleSelectedMenuFlyout
+/// When mutiple problems are selected, show the MultipleSelectedMenuFlyout
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
+private void ProblemsListView_RightTapped(object sender, RightTappedRoutedEventArgs e)
+{
+    ListView listView = (ListView)sender;
+    if (listView.SelectedItems.Count == 1)
+    {
+        SingleSelectedMenuFlyout.ShowAt(listView, e.GetPosition(listView));
+    }
+    else if (listView.SelectedItems.Count > 1)
+    {
+        MultipleSelectedMenuFlyout.ShowAt(listView, e.GetPosition(listView));
+    }
+}
+\end{minted}
+
+The corresponding menu flyout can show up correctly based on the selection.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{ProblemsPage-SingleSelected-Flyout}
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{ProblemsPage-MultipleSelected-Flyout}
+
+Similarly, I can add the delete content dialog for these flyouts and leave the edit and create new problem list feature in the future.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+/// <summary>
+/// Edit the selected Problem
+/// Navigate to the EditProblemPage
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
+private void EditProblem(object sender, RoutedEventArgs e)
+{
+    // TODO: Navigate to the EditProblemPage
+    throw new NotImplementedException();
+}
+
+/// <summary>
+/// Show a content dialog to confirm the deletion of a Problem
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
+/// <exception cref="NotImplementedException"></exception>
+private async void DeleteProblem(object sender, RoutedEventArgs e)
+{
+    ContentDialog dialog = new ContentDialog();
+    dialog.Title = "Delete Problem";
+    dialog.PrimaryButtonText = "Delete";
+    dialog.CloseButtonText = "Cancel";
+    dialog.Content = $"Are you sure that you want to permanently delete {(ProblemsListView.SelectedItem as Problem).Name}?";
+    dialog.DefaultButton = ContentDialogButton.Close;
+    dialog.XamlRoot = this.Content.XamlRoot;
+    var result = await dialog.ShowAsync();
+    if (result == ContentDialogResult.Primary)
+    {
+        // TODO: Delete the selected problem
+        throw new NotImplementedException();
+    }
+}
+
+/// <summary>
+/// Create a new ProblemList from multiple selected items
+/// Navigate to the CreateProblemListPage
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
+/// <exception cref="NotImplementedException"></exception>
+private void CreateProblemList(object sender, RoutedEventArgs e)
+{
+    // TODO: Navigate to the CreateProblemList
+    throw new NotImplementedException();
+}
+
+/// <summary>
+/// Show a content dialog to confirm the deletion of Problems
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
+/// <exception cref="NotImplementedException"></exception>
+private async void DeleteProblems(object sender, RoutedEventArgs e)
+{
+    ContentDialog dialog = new ContentDialog();
+    dialog.Title = "Delete Problem";
+    dialog.PrimaryButtonText = "Delete";
+    dialog.CloseButtonText = "Cancel";
+    dialog.Content = $"Are you sure that you want to permanently delete these {ProblemsListView.SelectedItems.Count} Problems?";
+    dialog.DefaultButton = ContentDialogButton.Close;
+    dialog.XamlRoot = this.Content.XamlRoot;
+    var result = await dialog.ShowAsync();
+    if (result == ContentDialogResult.Primary)
+    {
+        // TODO: Delete the selected problems
+        throw new NotImplementedException();
+    }
+}
+\end{minted}
+
+Finally, for the ProblemsPage, I need to handle the searh query. The ProblemListView needs to be updated when different search queries are entered in the toolbar. I create a \mintinline{text}{Search} procedure to handle the searc event. When the user select an option in the ComboBoxes, or enter the search box, the \mintinline{text}{Search} procedure will be called. All data will be passed to a \mintinline{text}{Query} function that returns searching result. For now, because the database is not implemented, I will just return the query. The \mintinline{text}{Query} function will be implemented in the future.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+/// <summary>
+/// Search the problem lists that under conditions
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="args"></param>
+private void Search(object sender, object args)
+{
+    var keywords = ProblemsSearchBox.Text;
+    var difficulty = DifficultyComboBox.SelectedValue?.ToString();
+    var status = StatusComboBox.SelectedValue?.ToString();
+    var tag = TagComboBox.SelectedValue?.ToString();
+    var list = ListComboBox.SelectedValue?.ToString();
+    // TODO: Query(keywords, difficulty, status, tag, list);
+    Problems.Clear();
+    Problems.Add(new Problem(keywords, difficulty, status, tag));
+}
+\end{minted}
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{ProblemsPage-Search}
+
+The correct search result is returned and the search result is updated correctly when different search conditions are selected.
+
+The ProblemsPage is partially implemented with many todos left for the future. But in this iteration, it is good to go. I will move on to the PlaygroundPage and CodingPage next.
 
 \subsection{Create the AssignmentsPage}
 

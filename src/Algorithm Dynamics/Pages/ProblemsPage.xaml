@@ -7,7 +7,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -29,7 +28,8 @@
                 Margin="4"
                 PlaceholderText="Search..."
                 x:Name="ProblemsSearchBox"
-                HorizontalAlignment="Stretch"/>
+                HorizontalAlignment="Stretch"
+                QuerySubmitted="Search"/>
             <ComboBox
                 x:Name="DifficultyComboBox"
                 PlaceholderText="Difficulty"
@@ -37,6 +37,7 @@
                 Margin="4"
                 ItemsSource="{x:Bind Difficulties}"
                 HorizontalAlignment="Stretch"
+                SelectionChanged="Search"
                 RightTapped="ClearComboBox"/>
             <ComboBox
                 x:Name="StatusComboBox"
@@ -45,6 +46,7 @@
                 Margin="4"
                 ItemsSource="{x:Bind Statuses}"
                 HorizontalAlignment="Stretch"
+                SelectionChanged="Search"
                 RightTapped="ClearComboBox"/>
             <ComboBox
                 x:Name="TagComboBox"
@@ -53,6 +55,7 @@
                 Margin="4"
                 ItemsSource="{x:Bind Tags}"
                 HorizontalAlignment="Stretch"
+                SelectionChanged="Search"
                 RightTapped="ClearComboBox"/>
             <ComboBox 
                 PlaceholderText="List"
@@ -61,16 +64,19 @@
                 Margin="4"
                 ItemsSource="{x:Bind Lists}"
                 HorizontalAlignment="Stretch"
+                SelectionChanged="Search"
                 RightTapped="ListComboBox_RightTapped">
                 <ComboBox.Resources>
                     <MenuFlyout x:Name="ListMenuFlyout">
                         <MenuFlyout.Items>
                             <MenuFlyoutItem 
                                 Text="Edit"
-                                Icon="Edit"/>
+                                Icon="Edit"
+                                Click="EditProblemList"/>
                             <MenuFlyoutItem
                                 Text="Delete"
-                                Icon="Delete"/>
+                                Icon="Delete"
+                                Click="DeleteProblemList"/>
                             <MenuFlyoutSeparator/>
                             <MenuFlyoutItem
                                 Text="Clear"
@@ -94,5 +100,86 @@
                 </DropDownButton.Flyout>
             </DropDownButton>
         </Grid>
+        <ListView x:Name="ProblemsListView"
+                  Grid.Row="1"
+                  SelectionMode="Extended"
+                  Width="auto"
+                  RightTapped="ProblemsListView_RightTapped"
+                  ItemsSource="{x:Bind Problems, Mode=OneWay}">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="local:Problem">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            Text="{x:Bind Name}"
+                            Grid.Column="0"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Margin="4 0 0 0"/>
+                        <TextBlock
+                            Text="{x:Bind Difficulty}"
+                            Grid.Column="1"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Margin="10 0 0 0"/>
+                        <TextBlock
+                            Text="{x:Bind Status}"
+                            Grid.Column="2"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Margin="14 0 0 0"/>
+                        <TextBlock
+                            Text="{x:Bind Tags}"
+                            Grid.Column="3"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            TextTrimming="CharacterEllipsis"
+                            Margin="17 0 0 0"/>
+                        <Button
+                            Content="Start"
+                            Grid.Column="4"
+                            HorizontalAlignment="Stretch"
+                            Margin="12 0 0 0"/>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            <ListView.Resources>
+                <MenuFlyout x:Name="SingleSelectedMenuFlyout">
+                    <MenuFlyout.Items>
+                        <MenuFlyoutItem 
+                            Text="Edit"
+                            Icon="Edit"
+                            Click="EditProblem"/>
+                        <MenuFlyoutItem 
+                            Text="Delete"
+                            Icon="Delete"
+                            Click="DeleteProblem"/>
+                    </MenuFlyout.Items>
+                </MenuFlyout>
+                <MenuFlyout x:Name="MultipleSelectedMenuFlyout">
+                    <MenuFlyout.Items>
+                        <MenuFlyoutItem 
+                            Text="Create Problem List"
+                            Icon="Add"
+                            Click="CreateProblemList"/>
+                        <MenuFlyoutItem 
+                            Text="Delete"
+                            Icon="Delete"
+                            Click="DeleteProblems"/>
+                    </MenuFlyout.Items>
+                </MenuFlyout>
+            </ListView.Resources>
+        </ListView>
     </Grid>
 </Page>
