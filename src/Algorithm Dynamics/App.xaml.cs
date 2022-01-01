@@ -24,6 +24,11 @@ namespace Algorithm_Dynamics
         protected override void OnLaunched(LaunchActivatedEventArgs args)
         {
             m_window = new MainWindow();
+            // Force a light theme for screenshots
+            if (m_window.Content is FrameworkElement rootElement)
+            {
+                rootElement.RequestedTheme = ElementTheme.Light;
+            }
             m_window.Activate();
         }
 
