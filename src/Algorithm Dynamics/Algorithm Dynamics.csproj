@@ -13,6 +13,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Assets\HomePageBackgroundImage.jpg" />
+    <None Remove="Controls\CodeEditor.xaml" />
     <None Remove="Pages\AccountPage.xaml" />
     <None Remove="Pages\AssignmentsPage.xaml" />
     <None Remove="Pages\HomePage.xaml" />
@@ -71,6 +72,11 @@
   </ItemGroup>
   <ItemGroup>
     <Page Update="Pages\SettingsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Controls\CodeEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

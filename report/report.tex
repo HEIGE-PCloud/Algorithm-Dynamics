@@ -3752,9 +3752,171 @@ The correct search result is returned and the search result is updated correctly
 
 The ProblemsPage is partially implemented with many todos left for the future. But in this iteration, it is good to go. I will move on to the PlaygroundPage and CodingPage next.
 
-\subsection{Create the AssignmentsPage}
-
 \subsection{Create the PlaygroundPage}
+
+The main component in the PlaygroundPage is the Code Editor. Because the CodingPage will need to use the Code Editor as well, so I will set the Code Editor as a custom control so it can be reused later.
+
+The Code Editor needs to support line number, syntax highlighting, and other editing features. It is too complex for this project. So I will use a third-party library to achieve that. I am using the \href{https://microsoft.github.io/monaco-editor/}{Monaco Editor} for this purpose.
+
+First, I create a basic user control.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+<UserControl
+    x:Class="Algorithm_Dynamics.Controls.CodeEditor"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Algorithm_Dynamics.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <TextBlock Text="CodeEditor"/>
+</UserControl>
+\end{minted}
+
+\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+using Microsoft.UI.Xaml.Controls;
+
+namespace Algorithm_Dynamics.Controls
+{
+    public sealed partial class CodeEditor : UserControl
+    {
+        public CodeEditor()
+        {
+            InitializeComponent();
+        }
+    }
+}
+\end{minted}
+
+And use the control in the PlaygroundPage to verify its working.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+<Page
+    x:Class="Algorithm_Dynamics.Pages.PlaygroundPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Algorithm_Dynamics.Pages"
+    xmlns:controls="using:Algorithm_Dynamics.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <controls:CodeEditor/>
+    </Grid>
+</Page>
+\end{minted}
+
+Now, when I run the application and navigate to the PlaygroundPage I can see the Code Editor is displayed correctly.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CodeEditorControl}
+
+The Monaco Editor is a web application, which means it needs to run in a browser. To use it, I need to use WebView2 component to load a HTML file, and initialize the Monaco Editor inside that webpage. The WebView2 control launches a Chromium instance and allows me to integrate webpages inside my app. I use the WebView2 control to load the HTML file. Before I create the webpage for the Monaco Editor, I place the WebView2 control and test it out.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+<WebView2 
+    x:Name="WebView"
+    HorizontalAlignment="Stretch"
+    VerticalAlignment="Stretch"
+    Source="https://ocr.org.uk"/>
+\end{minted}
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{PlaygroundPage-WebView2-Webpage}
+
+I set the source of the WebView2 control to the offcial website of OCR, and it loads up correctly. Now I can start working on the webpage for the editor. To load a local HTML file, I need to set a mapping relationship between a URL space and a local folder.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+/// <summary>
+/// Initialize the WebView control and load Editor.html
+/// </summary>
+async void InitializeWebViewAsync()
+{
+    // Ensure the CoreWebView2 is loaded
+    await WebView.EnsureCoreWebView2Async();
+
+    // Set the mapping
+    StorageFolder AssetsDirectory = await Package.Current.InstalledLocation.GetFolderAsync(@"Assets");
+    WebView.CoreWebView2.SetVirtualHostNameToFolderMapping(
+        "localeditor.algorithmdynamics.com",
+        AssetsDirectory.Path,
+        CoreWebView2HostResourceAccessKind.Allow
+    );
+
+    // Load Editor.html
+    WebView.Source = new Uri("http://localeditor.algorithmdynamics.com/Editor.html");
+}
+\end{minted}
+
+Now I can load Editor.html under the Assets folder. I use a sample HTML file to test it out.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{html}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Hello Editor!</h1>
+</body>
+</html>
+\end{minted}
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{PlaygroundPage-WebView2-HelloEditor}
+
+The h1 title ``Hello Editor!'' is displayed correctly, which means the local file is loaded as expected. Now I can import the Monaco Editor to the WebView2 control.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{html}
+<body>
+    <div id="container" style="width:800px;height:600px;border:1px solid grey"></div>
+
+    <script src="monaco-editor/min/vs/loader.js"></script>
+    <script>
+        require.config({ paths: { vs: 'monaco-editor/min/vs' } });
+        require(['vs/editor/editor.main'], () => {
+            window.editor = monaco.editor.create(document.getElementById('container'), {
+                value: ['function x() {', '\tconsole.log("Hello Editor!");', '}'].join('\n'),
+                language: 'javascript'
+            });
+        });
+    </script>
+</body>
+\end{minted}
+
+I add a container in the body to host the instance of the editor. Then I write some JavaScript code to import the editor and initialize it with a sample code.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{PlaygroundPage-WebView2-EditorLoaded}
+
+The editor is now loaded correctly with the sample code. I can type in the editor and utlize all powerful functions of the Monaco Editor.
+
+But I find that the editor has a fixed height and width. On a small screen like the screen shot, you can see the scroll bars. And on a larger display, the editor will not occupy the entire screen. I need to adjust its style to make it responsive.
+
+I add some CSS code to set the height and width of the editor to 100\%.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{PlaygroundPage-WebView2-ResizeFailed}
+
+Now, the scroll bars are gone. But when I resize the window, the editor still does not follow the window size. After reading the documentation of the Monaco Editor, I find out that I need to manually call the \mintinline{text}{editor.layout()} function to recalculate the editor size.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{html}
+<script>
+window.addEventListener("resize", () => {
+    editor.layout();
+});
+</script>
+\end{minted}
+
+By adding the event handler for the window resize event and call the layout function, the editor can not resize correctly according to the window size.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{PlaygroundPage-WebView2-ResizeSuccess}
+
+
+\subsection{Create the CodingPage}
+
+\subsection{Create the AssignmentsPage}
 
 \subsection{Create the SettingsPage}
 
