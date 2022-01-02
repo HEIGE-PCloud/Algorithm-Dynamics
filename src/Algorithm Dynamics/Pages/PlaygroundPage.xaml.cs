@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Text;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
@@ -25,7 +26,13 @@ namespace Algorithm_Dynamics.Pages
     {
         public PlaygroundPage()
         {
-            this.InitializeComponent();
+            InitializeComponent();
+            Code = "Code";
+        }
+        public string Code { get; set; }
+
+        private void RunCodeButton_Click(object sender, RoutedEventArgs e)
+        {
         }
     }
 }

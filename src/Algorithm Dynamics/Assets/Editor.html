@@ -27,9 +27,12 @@
                 value: ['function x() {', '\tconsole.log("Hello Editor!");', '}'].join('\n'),
                 language: 'javascript'
             });
-        });
-        window.addEventListener("resize", () => {
-            editor.layout();
+            window.addEventListener("resize", () => editor.layout());
+    
+            window.editor.getModel().onDidChangeContent((e) => {
+                window.chrome.webview.postMessage(window.editor.getValue())
+                console.log("post")
+            });
         });
     </script>
 </body>

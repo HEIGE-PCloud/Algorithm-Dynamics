@@ -3903,9 +3903,7 @@ Now, the scroll bars are gone. But when I resize the window, the editor still do
 
 \begin{minted}[linenos,tabsize=4,breaklines]{html}
 <script>
-window.addEventListener("resize", () => {
-    editor.layout();
-});
+    window.addEventListener("resize", () => editor.layout());
 </script>
 \end{minted}
 
