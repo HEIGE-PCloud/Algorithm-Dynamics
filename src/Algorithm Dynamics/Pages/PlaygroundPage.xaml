@@ -2,14 +2,124 @@
     x:Class="Algorithm_Dynamics.Pages.PlaygroundPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Algorithm_Dynamics.Pages"
-    xmlns:controls="using:Algorithm_Dynamics.Controls"
+    xmlns:local="using:Algorithm_Dynamics.Controls"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-        <controls:CodeEditor/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        
+        <local:CodeEditor
+            x:Name="CodeEditor"
+            Grid.Row="0"
+            Grid.Column="0"
+            Grid.RowSpan="2"
+            Margin="0 0 8 0"
+            Code="{x:Bind Code, Mode=TwoWay}"/>
+
+        <TextBox
+            x:Name="OutputBox"
+            Grid.Row="0"
+            Grid.Column="1"
+            Margin="0 0 0 8"
+            PlaceholderText="Output"
+            IsSpellCheckEnabled="False"
+            AcceptsReturn="True"
+            Text="{x:Bind CodeEditor.Code, Mode=OneWay}"/>
+
+        <TextBox
+            x:Name="InputBox"
+            Grid.Row="1"
+            Grid.Column="1"
+            Margin="0 8 0 0"
+            PlaceholderText="Input"
+            IsSpellCheckEnabled="False"
+            AcceptsReturn="True"/>
+
+        <Grid
+            Grid.Row="2"
+            Grid.Column="0">
+            <ComboBox
+                x:Name="LanguageComboBox"
+                SelectedIndex="0"
+                VerticalAlignment="Stretch">
+                <x:String>Python</x:String>
+                <x:String>C</x:String>
+                <x:String>C++</x:String>
+            </ComboBox>
+        </Grid>
+
+        <Grid
+            Grid.Row="2"
+            Grid.Column="1"
+            Margin="8 0 0 0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <ProgressBar
+                Grid.Row="0"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                IsIndeterminate="True"
+                ShowPaused="False"
+                ShowError="False" />
+            <TextBlock
+                x:Name="StatusTextBlock"
+                Grid.Row="1"
+                Grid.Column="0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Text="Pending"/>
+            <Button
+                x:Name="RunCodeButton"
+                Grid.Row="1"
+                Grid.Column="1"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Stretch"
+                Content="Run Code"
+                Click="RunCodeButton_Click"/>
+        </Grid>
+
+        <controls:GridSplitter
+            HorizontalAlignment="Left"
+            Grid.Column="1"
+            Grid.RowSpan="2"
+            Width="16">
+            <controls:GridSplitter.RenderTransform>
+                <TranslateTransform X="-8" />
+            </controls:GridSplitter.RenderTransform>
+        </controls:GridSplitter>
+
+        <controls:GridSplitter
+            VerticalAlignment="Top"
+            Grid.Row="1"
+            Grid.Column="1"
+            Grid.ColumnSpan="1"
+            Margin="8 0 0 0"
+            Height="16">
+            <controls:GridSplitter.RenderTransform>
+                <TranslateTransform Y="-8"/>
+            </controls:GridSplitter.RenderTransform>
+        </controls:GridSplitter>
     </Grid>
 </Page>
