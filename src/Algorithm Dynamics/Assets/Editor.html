@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+        #container {
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+    <div id="container"></div>
+
+    <script src="monaco-editor/min/vs/loader.js"></script>
+    <script>
+        require.config({ paths: { vs: 'monaco-editor/min/vs' } });
+        require(['vs/editor/editor.main'], () => {
+            window.editor = monaco.editor.create(document.getElementById('container'), {
+                value: ['function x() {', '\tconsole.log("Hello Editor!");', '}'].join('\n'),
+                language: 'javascript'
+            });
+        });
+        window.addEventListener("resize", () => {
+            editor.layout();
+        });
+    </script>
+</body>
+</html>
