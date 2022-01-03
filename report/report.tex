@@ -4325,7 +4325,7 @@ I have finished the PlaygroundPage in this iteration. I will move on to the Codi
 
 Just before I plan to start the CodingPage, I find another bug with the Editor control. When the user navigate from the PlaygroundPage to another page, and then navigate back, the editor config cannot be loaded correctly. After some more research, it turns out that the WebView2 component is not destroyed after the page is unloaded, so when the next time it is loaded, it initialize much faster and load before \mintinline{text}{window.config} is set. I decide to design a three-way handshake protocol to solve this problem once and for all.
 
-\includepdf[pages=-]{graphs/webviewHandshake.pdf}
+\includegraphics[width=\linewidth]{webviewHandshake}
 
 At first, the WebView starts loading, and sends a message to request the initial configuration for the Monaco Editor when it is ready. The CodeEditor will keep listening until it receives the request. Then it will send the request and starts listening again. When the Monaco Editor is fully loaded, another message is sent to tell the CodeEditor it is ready. Then the initialization procedure is completed.
 
