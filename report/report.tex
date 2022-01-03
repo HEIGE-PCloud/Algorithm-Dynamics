@@ -4068,7 +4068,7 @@ public class EditorConfig
 }
 \end{minted}
 
-I then create a helper function to send the config data to the editor. It takes in an instance of the EditorConfig and serializes it into a JSON string, then send it through a web message.
+I then create a helper function to send the config data to the editor. It takes in an instance of the EditorConfig and serializes it into a JSON string, then send it through a web message. And for the testing purpose, I send the message when initializing the editor.
 
 \begin{minted}[linenos,tabsize=4,breaklines]{csharp}
 /// <summary>
@@ -4077,7 +4077,14 @@ I then create a helper function to send the config data to the editor. It takes 
 /// <param name="editorConfig"></param>
 private void UpdateEditorConfig(EditorConfig editorConfig)
 {
-    WebView.CoreWebView2?.PostWebMessageAsJson(JsonSerializer.Serialize(editorConfig));
+    WebView.CoreWebView2.PostWebMessageAsJson(JsonSerializer.Serialize(editorConfig));
+}
+
+
+async void InitializeWebViewAsync()
+{
+    // ...
+    UpdateEditorConfig(new EditorConfig("vs-dark", "python", "print(1)"));
 }
 \end{minted}
 
@@ -4086,6 +4093,7 @@ On the web end, I need to listen to the web message and process the data receive
 \begin{minted}[linenos,tabsize=4,breaklines]{javascript}
 // Receive and set theme/language/code
 window.chrome.webview.addEventListener('message', (e) => {
+    console.log(e)
     let data = e.data
     if (data.Theme) monaco.editor.setTheme(data.Theme)
     if (data.Language) monaco.editor.setModelLanguage(window.editor.getModel(), data.Language)
@@ -4093,7 +4101,227 @@ window.chrome.webview.addEventListener('message', (e) => {
 })
 \end{minted}
 
+Now, when I open the PlaygroundPage, a code editor with dark theme and syntax highlighting for Python should be loaded.
 
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{PlaygroundPage-EditorConfig-NotLoading}
+
+However, it is clearly not loading. Neither the theme, the syntax highlighting nor the code is set. It is clear that the config has not been passed correctly. When I open the devtool, nothing is in the output, which means that \mintinline{text}{console.log(e)} has not been called.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{PlaygroundPage-EditorConfig-NotLoading-Devtool}
+
+I suspect this is caused by the fact that at the time the web message is sent, the Monaco Editor is not fully loaded, therefore it has not started listening for the message. To test my hypothesis, instead of sending a message, I will inject a JavaScript script to pass the value through the global window object.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+async void InitializeWebViewAsync()
+{
+    // ...
+    var editorConfig = new EditorConfig("vs-dark", "python", "print(1)");
+    await WebView.ExecuteScriptAsync($"window.config={JsonSerializer.Serialize(editorConfig)}");
+}
+\end{minted}
+
+And on the web end, I initialize the editor with the config data.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{javascript}
+window.editor = monaco.editor.create(document.getElementById('container'), {
+    value: window.config?.Code,
+    language: window.config?.Language,
+    theme: window.config?.Theme
+})
+\end{minted}
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{PlaygroundPage-EditorConfig-Loading}
+
+Now the theme, code, and language config is passed correctly, which also proves my hypothesis is correct. This problem should only occur at the initializing stage. Once the editor is loaded, passing config through web message should work fine.
+
+In order to allow other pages to set the config, I need to expose these three fields by registering them as properties.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+/// <summary>
+/// Return the editor theme based on current requested theme
+/// </summary>
+/// <param name="theme"></param>
+/// <returns></returns>
+private static string GetTheme(ElementTheme theme)
+{
+    if (theme == ElementTheme.Dark) return "vs-dark";
+    else if (theme == ElementTheme.Light) return "vs";
+    return "vs";
+}
+public string Code
+{
+    get { return (string)GetValue(CodeProperty); }
+    set { SetValue(CodeProperty, value); }
+}
+
+public static readonly DependencyProperty CodeProperty =
+    DependencyProperty.Register(
+        "Code",
+        typeof(string),
+        typeof(CodeEditor),
+        new PropertyMetadata("")
+    );
+
+public string Lang
+{
+    get { return (string)GetValue(LangProperty); }
+    set 
+    {
+        UpdateEditorConfig(new EditorConfig(null, value, null));
+        SetValue(LangProperty, value);
+    }
+}
+
+public static readonly DependencyProperty LangProperty =
+    DependencyProperty.Register(
+        "Lang",
+        typeof(string),
+        typeof(CodeEditor),
+        new PropertyMetadata("")
+    );
+
+public new ElementTheme RequestedTheme
+{
+    get { return base.RequestedTheme; }
+    set
+    {
+        UpdateEditorConfig(new EditorConfig(GetTheme(value), null, null));
+        base.RequestedTheme = value;
+    }
+}
+\end{minted}
+
+Note that \mintinline{text}{UpdateEditorConfig} is called when the language or the requested theme is changed to update the settings. To convert the theme code used in my app into the format of the Monaco Editor, I create a custom helper \mintinline{text}{GetTheme} to do the conversion. And I update the initializing process to use the value from these variables.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+async void InitializeWebViewAsync()
+{
+    // ...
+    var editorConfig = new EditorConfig(GetTheme(RequestedTheme), Lang, Code);
+    await WebView.ExecuteScriptAsync($"window.config={JsonSerializer.Serialize(editorConfig)}");
+}
+\end{minted}
+
+Now, in the PlaygroundPage, I can use the CodeEditor in this way.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+<local:CodeEditor
+    x:Name="CodeEditor"
+    Grid.Row="0"
+    Grid.Column="0"
+    Grid.RowSpan="2"
+    Margin="0 0 8 0"
+    Code="hello world!"
+    Lang="cpp"
+    RequestedTheme="Dark"/>
+\end{minted}
+
+Now when I run the app, it should work just like before, but this time with its config exposed and set by the PlaygroundPage. However, I encounter the following exception.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{text}
+System.NullReferenceException
+  HResult=0x80004003
+  Message=Object reference not set to an instance of an object.
+  Source=Algorithm Dynamics
+  StackTrace:
+   at Algorithm_Dynamics.Controls.CodeEditor.UpdateEditorConfig(EditorConfig editorConfig) in C:\Algorithm-Dynamics\src\Algorithm Dynamics\Controls\CodeEditor.xaml.cs:line 74
+\end{minted}
+
+The exception is caused by the \mintinline{text}{UpdateEditorConfig}. And after searching the documentation of the WebView2, the \mintinline{text}{WebView.CoreWebView2} object will be null before it is fully initialized. I can not use the \mintinline{text}{EnsureCoreWebView2Async} method before to ensure it is loaded because it is an async function while \mintinline{text}{UpdateEditorConfig} needs to be called in the setter. So I decide to ignore the null object because it only exists in the initializing stage, and I have passed the config through the global window object anyway.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+private void UpdateEditorConfig(EditorConfig editorConfig)
+{
+    WebView.CoreWebView2?.PostWebMessageAsJson(JsonSerializer.Serialize(editorConfig));
+}
+\end{minted}
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{PlaygroundPage-EditorConfig-Exposed}
+
+Now when I run the app, it works correctly again.
+
+I can pass config to the Monaco Editor now, but I also need to be able to retrieve the code input from the editor. To do this, I add an event listener to the editor, and post a web message when the code is changed.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{javascript}
+// Send code when the code is changed
+window.editor.getModel().onDidChangeContent((e) => window.chrome.webview.postMessage(window.editor.getValue()))
+\end{minted}
+
+And on the app end, when I receive a new web message, I update the internal Code variable.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+/// <summary>
+/// Update the Code when receive the value send by the Monaco Editor
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="args"></param>
+private void CoreWebView2_WebMessageReceived(CoreWebView2 sender, CoreWebView2WebMessageReceivedEventArgs args)
+{
+    string data = args.TryGetWebMessageAsString();
+    Code = data;
+}
+
+async void InitializeWebViewAsync()
+{
+    // ...
+    WebView.CoreWebView2.WebMessageReceived += CoreWebView2_WebMessageReceived;
+    // ...
+}
+\end{minted}
+
+To test it is working, I bind the output box on the PlaygroundPage to CodeEditor.Code variable. When I type in the code editor, I should see the code in the output box updated with my typing.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+<TextBox
+    x:Name="OutputBox"
+    Grid.Row="0"
+    Grid.Column="1"
+    Margin="8 0 0 8"
+    PlaceholderText="Output"
+    IsSpellCheckEnabled="False"
+    AcceptsReturn="True"
+    Text="{x:Bind CodeEditor.Code, Mode=OneWay}"/>
+\end{minted}
+
+When I run the app and start typing in the code editor, the output panel updates as expected, which means I have retrieved the code from the Monaco Editor successfully.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{PlaygroundPage-Editor-CodeSync}
+
+I am not able to implement the full function of the PlaygroundPage right now since the Judger has not been implemented yet. But there is one last thing, I need to make the language ComboBox working. When the user selects a different programming, the syntax highlighting should adjust accordingly. This should be very easy to do since I have already implemented the config updaing function.
+
+I add a new event handler to process the selection change event.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+<ComboBox
+    x:Name="LanguageComboBox"
+    SelectedIndex="0"
+    VerticalAlignment="Stretch"
+    SelectionChanged="LanguageComboBox_SelectionChanged">
+    <x:String>python</x:String>
+    <x:String>c</x:String>
+    <x:String>cpp</x:String>
+    <x:String>javascript</x:String>
+</ComboBox>
+\end{minted}
+
+And when I update the Lang variable, everything should just work.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+private void LanguageComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+{
+    CodeEditor.Lang = LanguageComboBox.SelectedItem.ToString();
+}
+\end{minted}
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{PlaygroundPage-Editor-SyntaxHighlighting-Python}
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{PlaygroundPage-Editor-SyntaxHighlighting-Cpp}
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{PlaygroundPage-Editor-SyntaxHighlighting-JavaScript}
+
+And it turns out to work perfectly as I expected. I can change the syntax highlighting in runtime smoothly.
+
+I have finished the PlaygroundPage in this iteration. I will move on to the CodingPage next, which should be relatively simple because I have encapsulated the code editor into a user control and it can be easily reused.
 
 \subsection{Create the CodingPage}
 

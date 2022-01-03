@@ -24,9 +24,9 @@
         require.config({ paths: { vs: 'monaco-editor/min/vs' } })
         require(['vs/editor/editor.main'], () => {
             window.editor = monaco.editor.create(document.getElementById('container'), {
-                value: window.config.Code,
-                language: window.config.Language,
-                theme: window.config.Theme
+                value: window.config?.Code,
+                language: window.config?.Language,
+                theme: window.config?.Theme
             })
             // Process resize event
             window.addEventListener("resize", () => window.editor.layout())
