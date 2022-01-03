@@ -57,10 +57,12 @@
             <ComboBox
                 x:Name="LanguageComboBox"
                 SelectedIndex="0"
-                VerticalAlignment="Stretch">
-                <x:String>Python</x:String>
-                <x:String>C</x:String>
-                <x:String>C++</x:String>
+                VerticalAlignment="Stretch"
+                SelectionChanged="LanguageComboBox_SelectionChanged">
+                <x:String>python</x:String>
+                <x:String>c</x:String>
+                <x:String>cpp</x:String>
+                <x:String>javascript</x:String>
             </ComboBox>
         </Grid>
 

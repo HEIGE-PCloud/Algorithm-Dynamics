@@ -19,7 +19,12 @@ namespace Algorithm_Dynamics.Pages
 
         private void RunCodeButton_Click(object sender, RoutedEventArgs e)
         {
+            CodeEditor.RequestedTheme = ElementTheme.Light;
+        }
 
+        private void LanguageComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            CodeEditor.Lang = LanguageComboBox.SelectedItem.ToString();
         }
     }
 }

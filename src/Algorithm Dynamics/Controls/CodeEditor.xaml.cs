@@ -5,7 +5,7 @@ using System;
 using Windows.ApplicationModel;
 using Windows.Storage;
 using System.Text.Json;
-using System.Text.Json.Serialization;
+
 
 namespace Algorithm_Dynamics.Controls
 {
@@ -37,21 +37,41 @@ namespace Algorithm_Dynamics.Controls
             // Load Editor.html
             WebView.Source = new Uri("http://localeditor.algorithmdynamics.com/Editor.html");
 
-
             // Set default settings
-            var editorConfig = new EditorConfig(GetTheme(), Lang, Code);
+            var editorConfig = new EditorConfig(GetTheme(RequestedTheme), Lang, Code);
             await WebView.ExecuteScriptAsync($"window.config={JsonSerializer.Serialize(editorConfig)}");
+        }
+
+        /// <summary>
+        /// Update the Code when receive the value send by the Monaco Editor
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void CoreWebView2_WebMessageReceived(CoreWebView2 sender, CoreWebView2WebMessageReceivedEventArgs args)
+        {
+            string data = args.TryGetWebMessageAsString();
+            Code = data;
         }
 
         /// <summary>
         /// Return the editor theme based on current requested theme
         /// </summary>
+        /// <param name="theme"></param>
         /// <returns></returns>
-        private string GetTheme()
+        private static string GetTheme(ElementTheme theme)
         {
-            if (RequestedTheme == ElementTheme.Dark) return "vs-dark";
-            else if (RequestedTheme == ElementTheme.Light) return "vs";
+            if (theme == ElementTheme.Dark) return "vs-dark";
+            else if (theme == ElementTheme.Light) return "vs";
             return "vs";
+        }
+
+        /// <summary>
+        /// Update the editor config of the Monaco Editor
+        /// </summary>
+        /// <param name="editorConfig"></param>
+        private void UpdateEditorConfig(EditorConfig editorConfig)
+        {
+            WebView.CoreWebView2?.PostWebMessageAsJson(JsonSerializer.Serialize(editorConfig));
         }
 
         public string Code
@@ -71,7 +91,11 @@ namespace Algorithm_Dynamics.Controls
         public string Lang
         {
             get { return (string)GetValue(LangProperty); }
-            set { SetValue(LangProperty, value); }
+            set 
+            {
+                UpdateEditorConfig(new EditorConfig(null, value, null));
+                SetValue(LangProperty, value);
+            }
         }
 
         public static readonly DependencyProperty LangProperty =
@@ -82,10 +106,14 @@ namespace Algorithm_Dynamics.Controls
                 new PropertyMetadata("")
             );
 
-        private void CoreWebView2_WebMessageReceived(CoreWebView2 sender, CoreWebView2WebMessageReceivedEventArgs args)
+        public new ElementTheme RequestedTheme
         {
-            string data = args.TryGetWebMessageAsString();
-            Code = data;
+            get { return base.RequestedTheme; }
+            set
+            {
+                UpdateEditorConfig(new EditorConfig(GetTheme(value), null, null));
+                base.RequestedTheme = value;
+            }
         }
 
         public class EditorConfig

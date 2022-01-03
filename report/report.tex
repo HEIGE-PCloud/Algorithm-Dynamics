@@ -4051,7 +4051,47 @@ Finally, to allow different controls to be resizeable, I add two grid splitters 
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{PlaygroundPage-Layout}
 
-All controls work correctly and they can be resized by the grid splitter. Now I need to interact with the code editer. I need to be able to get the code inside, set its programming language and color theme.
+All controls work correctly and they can be resized by the grid splitter. Now I need to interact with the code editer. I need to be able to get the code inside, set its programming language and color theme. To pass the config data to the editor, I will need to serialize the data into a JSON string and send it through web message. To avoid hand crafting the JSON string, I create a new class \mintinline{text}{EditorConfig} and use the \mintinline{text}{System.Text.Json} library to serialize the data.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+public class EditorConfig
+{
+    public EditorConfig(string theme, string language, string code)
+    {
+        Theme = theme;
+        Language = language;
+        Code = code;
+    }
+    public string? Theme { get; set; } = null;
+    public string? Language { get; set; } = null;
+    public string? Code { get; set; } = null;
+}
+\end{minted}
+
+I then create a helper function to send the config data to the editor. It takes in an instance of the EditorConfig and serializes it into a JSON string, then send it through a web message.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+/// <summary>
+/// Update the editor config of the Monaco Editor
+/// </summary>
+/// <param name="editorConfig"></param>
+private void UpdateEditorConfig(EditorConfig editorConfig)
+{
+    WebView.CoreWebView2?.PostWebMessageAsJson(JsonSerializer.Serialize(editorConfig));
+}
+\end{minted}
+
+On the web end, I need to listen to the web message and process the data received.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{javascript}
+// Receive and set theme/language/code
+window.chrome.webview.addEventListener('message', (e) => {
+    let data = e.data
+    if (data.Theme) monaco.editor.setTheme(data.Theme)
+    if (data.Language) monaco.editor.setModelLanguage(window.editor.getModel(), data.Language)
+    if (data.Code) window.editor.getModel().setValue(data.Code)
+})
+\end{minted}
 
 
 
