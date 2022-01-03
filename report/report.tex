@@ -4323,6 +4323,94 @@ And it turns out to work perfectly as I expected. I can change the syntax highli
 
 I have finished the PlaygroundPage in this iteration. I will move on to the CodingPage next, which should be relatively simple because I have encapsulated the code editor into a user control and it can be easily reused.
 
+Just before I plan to start the CodingPage, I find another bug with the Editor control. When the user navigate from the PlaygroundPage to another page, and then navigate back, the editor config cannot be loaded correctly. After some more research, it turns out that the WebView2 component is not destroyed after the page is unloaded, so when the next time it is loaded, it initialize much faster and load before \mintinline{text}{window.config} is set. I decide to design a three-way handshake protocol to solve this problem once and for all.
+
+\includepdf[pages=-]{graphs/webviewHandshake.pdf}
+
+At first, the WebView starts loading, and sends a message to request the initial configuration for the Monaco Editor when it is ready. The CodeEditor will keep listening until it receives the request. Then it will send the request and starts listening again. When the Monaco Editor is fully loaded, another message is sent to tell the CodeEditor it is ready. Then the initialization procedure is completed.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{javascript}
+require.config({ paths: { vs: 'monaco-editor/min/vs' } })
+require(['vs/editor/editor.main'], () => {
+    window.chrome.webview.postMessage('[Status] Request Configuration')
+    window.chrome.webview.addEventListener('message', init)
+})
+function init() {
+    // Remove the event listener
+    window.chrome.webview.removeEventListener('message', init)
+    // Initialize the code editor
+    window.editor = monaco.editor.create(document.getElementById('container'), {
+        value: window.config.Code,
+        language: window.config.Language,
+        theme: window.config.Theme
+    })
+    // Process resize event
+    window.addEventListener("resize", () => window.editor.layout())
+    // Send code when the code is changed
+    window.editor.getModel().onDidChangeContent((e) => 
+        window.chrome.webview.postMessage('[Data] ' + window.editor.getValue()))
+    // Receive and set theme/language/code
+    window.chrome.webview.addEventListener('message', (e) => {
+        let data = e.data
+        if (data.Theme) monaco.editor.setTheme(data.Theme)
+        if (data.Language) monaco.editor.setModelLanguage(window.editor.getModel(), data.Language)
+        if (data.Code) window.editor.getModel().setValue(data.Code)
+    })
+    // Ready
+    window.chrome.webview.postMessage('[Status] Ready')
+}
+\end{minted}
+
+For the CodeEditor control, I add a progress ring to display when it is going through the initilazation process.
+
+\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+<Grid>
+    <WebView2 
+        x:Name="WebView"
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch"
+        Visibility="Collapsed"/>
+    <ProgressRing
+        x:Name="ProgressRing"
+        IsActive="True"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center"
+        Visibility="Visible"/>
+</Grid>
+\end{minted}
+
+\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+/// <summary>
+/// Process the initialization process
+/// Update the Code when receive the value send by the Monaco Editor
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="args"></param>
+private async void CoreWebView2_WebMessageReceived(CoreWebView2 sender, CoreWebView2WebMessageReceivedEventArgs args)
+{
+    string data = args.TryGetWebMessageAsString();
+    if (data == "[Status] Request Configuration")
+    {
+        EditorConfig editorConfig = new (GetTheme(RequestedTheme), Lang, Code);
+        await WebView.ExecuteScriptAsync($"window.config={JsonSerializer.Serialize(editorConfig)}");
+        WebView.CoreWebView2.PostWebMessageAsString("Configuration Sent");
+    }
+    else if (data == "[Status] Ready")
+    {
+        ProgressRing.Visibility = Visibility.Collapsed;
+        WebView.Visibility = Visibility.Visible;
+    } 
+    else
+    {
+        // [Data] actual code
+        Code = data.Substring("[Data] ".Length, data.Length - "[Data] ".Length);
+        return;
+    }
+}
+\end{minted}
+
+Now, it is ok to navigate around different pages, and the editor will always be initialized correctly.
+
 \subsection{Create the CodingPage}
 
 \subsection{Create the AssignmentsPage}
