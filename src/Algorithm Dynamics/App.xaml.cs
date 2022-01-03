@@ -27,7 +27,7 @@ namespace Algorithm_Dynamics
             // Force a light theme for screenshots
             if (m_window.Content is FrameworkElement rootElement)
             {
-                rootElement.RequestedTheme = ElementTheme.Light;
+                rootElement.RequestedTheme = ElementTheme.Dark;
             }
             m_window.Activate();
         }
