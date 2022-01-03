@@ -7,9 +7,17 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <WebView2 
-        x:Name="WebView"
-        HorizontalAlignment="Stretch"
-        VerticalAlignment="Stretch"
-        Source="https://ocr.org.uk"/>
+    <Grid>
+        <WebView2 
+            x:Name="WebView"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Visibility="Collapsed"/>
+        <ProgressRing
+            x:Name="ProgressRing"
+            IsActive="True"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Visibility="Visible"/>
+    </Grid>
 </UserControl>

@@ -5,17 +5,27 @@ using System;
 using Windows.ApplicationModel;
 using Windows.Storage;
 using System.Text.Json;
-
+using CommunityToolkit.WinUI.UI.Helpers;
 
 namespace Algorithm_Dynamics.Controls
 {
     public sealed partial class CodeEditor : UserControl
     {
+        private readonly ThemeListener themeListener = new();
         public CodeEditor()
         {
             InitializeComponent();
             InitializeWebViewAsync();
-            RequestedTheme = ElementTheme.Default;
+            themeListener.ThemeChanged += ThemeListener_ThemeChanged;
+        }
+
+        /// <summary>
+        /// Not working yet
+        /// </summary>
+        /// <param name="sender"></param>
+        private void ThemeListener_ThemeChanged(ThemeListener sender)
+        {
+            UpdateEditorConfig(new EditorConfig(GetTheme(RequestedTheme), null, null));
         }
 
         /// <summary>
@@ -36,21 +46,34 @@ namespace Algorithm_Dynamics.Controls
 
             // Load Editor.html
             WebView.Source = new Uri("http://localeditor.algorithmdynamics.com/Editor.html");
-
-            // Set default settings
-            var editorConfig = new EditorConfig(GetTheme(RequestedTheme), Lang, Code);
-            await WebView.ExecuteScriptAsync($"window.config={JsonSerializer.Serialize(editorConfig)}");
         }
 
         /// <summary>
+        /// Process the initialization process
         /// Update the Code when receive the value send by the Monaco Editor
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
-        private void CoreWebView2_WebMessageReceived(CoreWebView2 sender, CoreWebView2WebMessageReceivedEventArgs args)
+        private async void CoreWebView2_WebMessageReceived(CoreWebView2 sender, CoreWebView2WebMessageReceivedEventArgs args)
         {
             string data = args.TryGetWebMessageAsString();
-            Code = data;
+            if (data == "[Status] Request Configuration")
+            {
+                EditorConfig editorConfig = new (GetTheme(RequestedTheme), Lang, Code);
+                await WebView.ExecuteScriptAsync($"window.config={JsonSerializer.Serialize(editorConfig)}");
+                WebView.CoreWebView2.PostWebMessageAsString("Configuration Sent");
+            }
+            else if (data == "[Status] Ready")
+            {
+                ProgressRing.Visibility = Visibility.Collapsed;
+                WebView.Visibility = Visibility.Visible;
+            } 
+            else
+            {
+                // [Data] actual code
+                Code = data.Substring("[Data] ".Length, data.Length - "[Data] ".Length);
+                return;
+            }
         }
 
         /// <summary>
@@ -58,10 +81,26 @@ namespace Algorithm_Dynamics.Controls
         /// </summary>
         /// <param name="theme"></param>
         /// <returns></returns>
-        private static string GetTheme(ElementTheme theme)
+        private string GetTheme(ElementTheme theme)
         {
             if (theme == ElementTheme.Dark) return "vs-dark";
             else if (theme == ElementTheme.Light) return "vs";
+            else if (theme == ElementTheme.Default)
+            {
+                MainWindow m_window = (MainWindow)((App)Application.Current).m_window;
+                if (m_window.Content is FrameworkElement rootElement)
+                {
+                    if (rootElement.RequestedTheme != ElementTheme.Default)
+                        return GetTheme(rootElement.RequestedTheme);
+                    else
+                    {
+                        if (App.Current.RequestedTheme == ApplicationTheme.Dark)
+                            return "vs-dark";
+                        else
+                            return "vs";
+                    }
+                }
+            }
             return "vs";
         }
 
