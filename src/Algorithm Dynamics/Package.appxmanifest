@@ -8,12 +8,12 @@
 
   <Identity
     Name="1d137549-6809-480a-81fb-46d710c6ca1e"
-    Publisher="CN=HEIGE"
+    Publisher="CN=PCloud"
     Version="1.0.0.0" />
 
   <Properties>
     <DisplayName>Algorithm Dynamics</DisplayName>
-    <PublisherDisplayName>HEIGE</PublisherDisplayName>
+    <PublisherDisplayName>PCloud</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 

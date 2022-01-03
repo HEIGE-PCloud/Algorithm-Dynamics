@@ -28,13 +28,15 @@
             Grid.Column="0"
             Grid.RowSpan="2"
             Margin="0 0 8 0"
-            Code="{x:Bind Code, Mode=TwoWay}"/>
+            Code="{x:Bind Code, Mode=TwoWay}"
+            Lang="cpp"
+            RequestedTheme="Dark"/>
 
         <TextBox
             x:Name="OutputBox"
             Grid.Row="0"
             Grid.Column="1"
-            Margin="0 0 0 8"
+            Margin="8 0 0 8"
             PlaceholderText="Output"
             IsSpellCheckEnabled="False"
             AcceptsReturn="True"
@@ -44,7 +46,7 @@
             x:Name="InputBox"
             Grid.Row="1"
             Grid.Column="1"
-            Margin="0 8 0 0"
+            Margin="8 8 0 0"
             PlaceholderText="Input"
             IsSpellCheckEnabled="False"
             AcceptsReturn="True"/>

@@ -21,19 +21,27 @@
 
     <script src="monaco-editor/min/vs/loader.js"></script>
     <script>
-        require.config({ paths: { vs: 'monaco-editor/min/vs' } });
+        require.config({ paths: { vs: 'monaco-editor/min/vs' } })
         require(['vs/editor/editor.main'], () => {
             window.editor = monaco.editor.create(document.getElementById('container'), {
-                value: ['function x() {', '\tconsole.log("Hello Editor!");', '}'].join('\n'),
-                language: 'javascript'
-            });
-            window.addEventListener("resize", () => editor.layout());
-    
-            window.editor.getModel().onDidChangeContent((e) => {
-                window.chrome.webview.postMessage(window.editor.getValue())
-                console.log("post")
-            });
-        });
+                value: window.config.Code,
+                language: window.config.Language,
+                theme: window.config.Theme
+            })
+            console.log(window.config)
+            // Process resize event
+            window.addEventListener("resize", () => window.editor.layout())
+            // Send code when the code is changed
+            window.editor.getModel().onDidChangeContent((e) => window.chrome.webview.postMessage(window.editor.getValue()))
+            // Receive and set theme/language/code
+            window.chrome.webview.addEventListener('message', (e) => {
+                console.log(e)
+                let data = e.data
+                if (data.Theme) monaco.editor.setTheme(data.Theme)
+                if (data.Language) monaco.editor.setModelLanguage(window.editor.getModel(), data.Language)
+                if (data.Code) window.editor.getModel().setValue(data.Code)
+            })
+        })
     </script>
 </body>
 </html>
