@@ -30,7 +30,7 @@
             Margin="0 0 8 0"
             Code="{x:Bind Code, Mode=TwoWay}"
             Lang="cpp"
-            RequestedTheme="Dark"/>
+            RequestedTheme="Light"/>
 
         <TextBox
             x:Name="OutputBox"
