@@ -174,11 +174,11 @@ jobs:
           name: Report
           path: website/static
 
-      - name: Prepare app
-        uses: actions/download-artifact@v2
-        with:
-          name: MSIX Package Release
-          path: website/static/install
+      # - name: Prepare app
+      #   uses: actions/download-artifact@v2
+      #   with:
+      #     name: MSIX Package Release
+      #     path: website/static/install
 
       - name: Build website
         run: | 
