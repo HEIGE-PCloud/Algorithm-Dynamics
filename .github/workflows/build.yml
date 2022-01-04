@@ -73,6 +73,11 @@ jobs:
       with:
         vs-version: '[17.0,17.1]'
 
+    # Install the .NET Core workload
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
 
     # Decode the base 64 encoded pfx and save the Signing_Certificate
     - name: Decode the pfx
