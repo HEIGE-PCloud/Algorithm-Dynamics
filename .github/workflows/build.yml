@@ -187,10 +187,10 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: website/public
           
-      # - name: Delete Artifact
-      #   uses: GeekyEggo/delete-artifact@v1.0.0
-      #   with:
-      #     name: |
-      #       Report
-      #       MSIX Package Release
-      #     failOnError: false
+      - name: Delete Artifact
+        uses: GeekyEggo/delete-artifact@v1.0.0
+        with:
+          name: |
+            Report
+            MSIX Package Release
+          failOnError: false
