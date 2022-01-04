@@ -1,69 +1,118 @@
 ﻿using Algorithm_Dynamics.Models;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Runtime.Versioning;
-
-
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
 
 namespace Algorithm_Dynamics.Pages
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
-    [SupportedOSPlatform("windows10.0.10240.0")]
-    public sealed partial class HomePage : Page, INotifyPropertyChanged
+    public sealed partial class HomePage : Page
     {
-        public ObservableCollection<HomePageGridItem> Source { get; } = new ObservableCollection<HomePageGridItem>();
-
+        /// <summary>
+        /// The WelcomeMessage is displayed to the user on the HomePage
+        /// </summary>
+        public string WelcomeMessage { get; set; }
+        public ObservableCollection<QuickAccessItem> QAItems { get; } = new ObservableCollection<QuickAccessItem>();
+        public ObservableCollection<RecommendItem> RecItems { get; } = new ObservableCollection<RecommendItem>();
         public HomePage()
         {
-            this.InitializeComponent();
-        }
-        private void OnItemClick(object sender, ItemClickEventArgs e)
-        {
-            //MainWindow m_window = (MainWindow)((App)Application.Current).m_window;
-            //if (e.ClickedItem is HomePageGridItem item)
-            //{
-            //    item?.Invoke();
-            //}
+            SetWelcomeMessage();
+            InitializeQAItems();
+            InitializeRecItems();
+            InitializeComponent();
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        /// <summary>
+        /// Set the WelcomeMessage based on the current time.
+        /// Morning: 00:00-12:00
+        /// Afternoon: 12:00-17:00
+        /// Evening 17:00-0:00
+        /// TODO: Add the username after it is implemented
+        /// </summary>
+        private void SetWelcomeMessage()
         {
-            base.OnNavigatedTo(e);
-            Source.Clear();
-            Source.Add(new HomePageGridItem("Random Problem", Symbol.Home));
-            Source.Add(new HomePageGridItem("Playground", Symbol.Edit));
-            Source.Add(new HomePageGridItem("Assignments", Symbol.Library));
-            Source.Add(new HomePageGridItem("Problems", Symbol.List));
-            Source.Add(new HomePageGridItem("Settings", Symbol.Setting));
-            Source.Add(new HomePageGridItem("Account", Symbol.Contact));
-            Source.Add(new HomePageGridItem("Import", Symbol.Import));
-            Source.Add(new HomePageGridItem("BBC Bitesize", Symbol.Link, async () => await Windows.System.Launcher.LaunchUriAsync(new Uri(@"https://www.bbc.co.uk/bitesize/subjects/z34k7ty"))));
-            Source.Add(new HomePageGridItem("AQA A Level CS", Symbol.Link, async () => await Windows.System.Launcher.LaunchUriAsync(new Uri(@"https://www.aqa.org.uk/subjects/computer-science-and-it/as-and-a-level/computer-science-7516-7517"))));
-            Source.Add(new HomePageGridItem("OCR A Level CS", Symbol.Link, async () => await Windows.System.Launcher.LaunchUriAsync(new Uri(@"https://www.ocr.org.uk/qualifications/as-and-a-level/computer-science-h046-h446-from-2015/"))));
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void Set<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
-        {
-            if (Equals(storage, value))
+            TimeSpan now = DateTime.Now.TimeOfDay;
+            if (now >= new TimeSpan(00, 00, 00) && now < new TimeSpan(12, 00, 00))
             {
-                return;
+                WelcomeMessage = "Good morning, user!";
             }
-
-            storage = value;
-            OnPropertyChanged(propertyName);
+            else if (now >= new TimeSpan(12, 00, 00) && now < new TimeSpan(17, 00, 00))
+            {
+                WelcomeMessage = "Good afternoon, user!";
+            }
+            else if (now >= new TimeSpan(17, 00, 00) && now <= new TimeSpan(23, 59, 59))
+            {
+                WelcomeMessage = "Good evening, user!";
+            }
         }
 
-        private void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        /// <summary>
+        /// Handle the QAGridView click event. The Action will be invoked.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void QAGridView_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            MainWindow m_window = (MainWindow)((App)Application.Current).m_window;
+            if (e.ClickedItem is QuickAccessItem item)
+            {
+                item.Action(m_window);
+            }
+        }
 
+        /// <summary>
+        /// Handle the RecGridView click event.
+        /// Navigate to the corresponding Problem or Assignment
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void RecGridView_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            // TODO: Handle the navigation.
+            throw new NotImplementedException("[Blocking]: The CodingPage or the AssignmentPage has not been implemented yet.");
+        }
+
+        private void InitializeQAItems()
+        {
+            QAItems.Clear();
+            QAItems.Add(new QuickAccessItem("Random Problem", Symbol.Shuffle, (m_window) =>
+            {
+                m_window.MainNavView.SelectedItem = null;
+                // TODO: Navigate the ContentFrame to the Coding page manually
+                throw new NotImplementedException("[Blocking]: The CodingPage has not been implemented yet.");
+            }));
+            QAItems.Add(new QuickAccessItem("Playground", Symbol.Edit, (m_window) =>
+                m_window.MainNavView.SelectedItem = m_window.MainNavView.MenuItems[3]));
+            QAItems.Add(new QuickAccessItem("Assignments", Symbol.Library, (m_window) =>
+                m_window.MainNavView.SelectedItem = m_window.MainNavView.MenuItems[2]));
+            QAItems.Add(new QuickAccessItem("Problems", Symbol.List, (m_window) =>
+                m_window.MainNavView.SelectedItem = m_window.MainNavView.MenuItems[1]));
+            QAItems.Add(new QuickAccessItem("Settings", Symbol.Setting, (m_window) =>
+                m_window.MainNavView.SelectedItem = m_window.MainNavView.SettingsItem));
+            QAItems.Add(new QuickAccessItem("Account", Symbol.Contact, (m_window) =>
+                m_window.MainNavView.SelectedItem = m_window.MainNavView.FooterMenuItems[0]));
+            QAItems.Add(new QuickAccessItem("Import", Symbol.Import, (m_window) =>
+            {
+                m_window.MainNavView.SelectedItem = null;
+                // TODO: Handle the import logic
+                throw new NotImplementedException("[Blocking]: The import logic has not been implemented yet.");
+            }));
+        }
+
+        /// <summary>
+        /// TODO: Generate Recommendation from database.
+        /// </summary>
+        private void InitializeRecItems()
+        {
+            RecItems.Clear();
+            RecItems.Add(new RecommendItem("Problem 1", "Easy | Data structure"));
+            RecItems.Add(new RecommendItem("Problem 2", "Medium | Sorting"));
+            RecItems.Add(new RecommendItem("Problem 3", "Hard | Graph"));
+            RecItems.Add(new RecommendItem("Problem 4", "Easy | Data structure"));
+            RecItems.Add(new RecommendItem("Assignment 1", "Due in 2 days"));
+            RecItems.Add(new RecommendItem("Assignment 2", "Due in 3 days"));
+            RecItems.Add(new RecommendItem("Assignment 3", "Due in 4 days"));
+            RecItems.Add(new RecommendItem("Assignment 4", "Due in 5 days"));
+        }
     }
 }

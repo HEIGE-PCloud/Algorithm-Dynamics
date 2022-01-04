@@ -1,13 +1,17 @@
-﻿<!DOCTYPE html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
 </head>
 <body>
     <style>
         html, body {
             height: 100%;
             margin: 0;
+            overflow: hidden;
         }
         #container {
             height: 100%;
@@ -17,33 +21,36 @@
     <div id="container"></div>
 
     <script src="monaco-editor/min/vs/loader.js"></script>
-
     <script>
-        require.config({ paths: { vs: 'monaco-editor/min/vs' } });
-        document.body.style.overflow = 'hidden';
-        require(['vs/editor/editor.main'], function () {
-            window.chrome.webview.postMessage("init");
-            window.chrome.webview.addEventListener('message', init);
-        });
-
-        function init(event) {
-            window.chrome.webview.removeEventListener('message', init);
-            window.editor = monaco.editor.create(document.getElementById('container'), window.config);
-            window.editor.getModel().onDidChangeContent((e) => {
-                window.chrome.webview.postMessage(window.editor.getValue());
-                console.log('changed');
-            });
-            window.chrome.webview.postMessage(window.editor.getValue());
-            window.addEventListener("resize", () => {
-                editor.layout();
-            });
-            window.chrome.webview.addEventListener('message', (event) => {
-                let data = event.data;
-                monaco.editor.setTheme(data["theme"]);
-                monaco.editor.setModelLanguage(window.editor.getModel(), data["language"])
+        require.config({ paths: { vs: 'monaco-editor/min/vs' } })
+        require(['vs/editor/editor.main'], () => {
+            window.chrome.webview.postMessage('[Status] Request Configuration')
+            window.chrome.webview.addEventListener('message', init)
+        })
+        function init() {
+            // Remove the event listener
+            window.chrome.webview.removeEventListener('message', init)
+            // Initialize the code editor
+            window.editor = monaco.editor.create(document.getElementById('container'), {
+                value: window.config.Code,
+                language: window.config.Language,
+                theme: window.config.Theme
             })
-            window.chrome.webview.postMessage("loaded");
-        }
+            // Process resize event
+            window.addEventListener("resize", () => window.editor.layout())
+            // Send code when the code is changed
+            window.editor.getModel().onDidChangeContent((e) => 
+                window.chrome.webview.postMessage('[Data] ' + window.editor.getValue()))
+            // Receive and set theme/language/code
+            window.chrome.webview.addEventListener('message', (e) => {
+                let data = e.data
+                if (data.Theme) monaco.editor.setTheme(data.Theme)
+                if (data.Language) monaco.editor.setModelLanguage(window.editor.getModel(), data.Language)
+                if (data.Code) window.editor.getModel().setValue(data.Code)
+            })
+            // Ready
+            window.chrome.webview.postMessage('[Status] Ready')
+        }       
     </script>
 </body>
 </html>

@@ -1,49 +1,52 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
-using System.Linq;
-using System.Runtime.Versioning;
-
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
 
 namespace Algorithm_Dynamics
 {
     /// <summary>
-    /// An empty window that can be used on its own or navigated to within a Frame.
+    /// The main window object that is used to display all other elements
     /// </summary>
-    [SupportedOSPlatform("windows10.0.10240.0")]
     public sealed partial class MainWindow : Window
     {
         public MainWindow()
         {
-            this.InitializeComponent();
+            InitializeComponent();
             Title = "Algorithm Dynamics";
-            ExtendsContentIntoTitleBar = false;
-            MainNavigationView.SelectedItem = MainNavigationView.MenuItems.OfType<NavigationViewItem>().First();
+            // Select HomePage when first loaded
+            MainNavView.SelectedItem = MainNavView.MenuItems[0];
         }
-        private void MainNavigationView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
+
+        /// <summary>
+        /// Handle the SelectionChanged event of the MainNavView
+        /// Navigate to the corresponding page when the selection is changed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void MainNavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
             if (args.IsSettingsSelected)
             {
-                contentFrame.Navigate(typeof(Pages.SettingsPage));
+                // If the settings is selected, navigate to the settings page
+                ContentFrame.Navigate(typeof(Pages.SettingsPage));
             }
             else
             {
+                // Otherwise, get the selected item. If it is not null, get its Tag
+                // Navigate to Algorithm_Dynamics.Pages.<Tag>
                 NavigationViewItem selectedItem = args.SelectedItem as NavigationViewItem;
                 if (selectedItem != null)
                 {
-                    string selectedItemTag = selectedItem.Tag as string;
-                    //sender.Header = "Sample Page " + selectedItemTag.Substring(selectedItemTag.Length - 1);
-                    string pageName = "Algorithm_Dynamics.Pages." + selectedItemTag;
+                    string tag = selectedItem.Tag as string;
+                    string pageName = "Algorithm_Dynamics.Pages." + tag;
                     Type pageType = Type.GetType(pageName);
-                    contentFrame.Navigate(pageType);
+                    ContentFrame.Navigate(pageType);
                 }
             }
         }
-        public void SelectItem(NavigationViewItem item) => MainNavigationView.SelectedItem = item;
-        public void SelectMenuItemIndex(int index) => SelectItem((NavigationViewItem)MainNavigationView.MenuItems[index]);
-        public void SelectFooterItemIndex(int index) => SelectItem((NavigationViewItem)MainNavigationView.FooterMenuItems[index]);
-        public void SelectSettingItem() => MainNavigationView.SelectedItem = MainNavigationView.SettingsItem;
+        public void NavigateTo()
+        {
+
+        }
     }
 }

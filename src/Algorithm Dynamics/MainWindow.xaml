@@ -5,26 +5,47 @@
     xmlns:local="using:Algorithm_Dynamics"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d">
-    <Grid>
-        <muxc:NavigationView x:Name="MainNavigationView"
-                        SelectionChanged="MainNavigationView_SelectionChanged"
-                        IsBackButtonVisible="Collapsed"
-                             Background="{ThemeResource SolidBrush}">
-            <muxc:NavigationView.MenuItems>
-                <NavigationViewItem x:Name="HomePageNavigationViewItem" Icon="Home"  Content="Home" Tag="HomePage" />
-                <NavigationViewItem x:Name="ProblemsPageNavigationViewItem" Icon="List" Content="Problems" Tag="ProblemsPage" />
-                <NavigationViewItem x:Name="AssignmentsPageNavigationViewItem" Icon="Library" Content="Assignments" Tag="AssignmentsPage"/>
-                <NavigationViewItem x:Name="PlaygroundPageNavigationViewItem" Icon="Edit" Content="Playground" Tag="PlaygroundPage"/>
-            </muxc:NavigationView.MenuItems>
-            <muxc:NavigationView.FooterMenuItems>
-                <NavigationViewItem x:Name="UserAccountNavigationViewItem" Icon="Contact" Content="Account" Tag="UserAccountPage"/>
-            </muxc:NavigationView.FooterMenuItems>
-            <Frame x:Name="contentFrame"
-                   Padding="0, 0, 0, 0"
-                   Visibility="Visible"/>
-        </muxc:NavigationView>
 
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <NavigationView 
+            x:Name="MainNavView"
+            x:FieldModifier="public"
+            IsBackButtonVisible="Collapsed"
+            SelectionChanged="MainNavView_SelectionChanged">
+            <NavigationView.MenuItems>
+                <NavigationViewItem
+                    x:Name="HomePageNavViewItem"
+                    Icon="Home"
+                    Content="Home"
+                    Tag="HomePage" />
+                <NavigationViewItem
+                    x:Name="ProblemsPageNavViewItem"
+                    Icon="List"
+                    Content="Problems"
+                    Tag="ProblemsPage" />
+                <NavigationViewItem
+                    x:Name="AssignmentsPageNavViewItem"
+                    Icon="Library"
+                    Content="Assignments"
+                    Tag="AssignmentsPage"/>
+                <NavigationViewItem
+                    x:Name="PlaygroundPageNavViewItem"
+                    Icon="Edit"
+                    Content="Playground"
+                    Tag="PlaygroundPage"/>
+            </NavigationView.MenuItems>
+            <NavigationView.FooterMenuItems>
+                <NavigationViewItem
+                    x:Name="UserAccountNavItem"
+                    Icon="Contact"
+                    Content="Account"
+                    Tag="AccountPage"/>
+            </NavigationView.FooterMenuItems>
+            <Frame
+                x:Name="ContentFrame"
+                Padding="0"
+                Visibility="Visible"/>
+        </NavigationView>
     </Grid>
 </Window>

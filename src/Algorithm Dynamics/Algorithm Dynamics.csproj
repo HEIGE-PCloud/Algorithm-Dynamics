@@ -1,145 +1,82 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0-windows10.0.19041.0</TargetFramework>
+    <TargetFramework>net6.0-windows10.0.19041.0</TargetFramework>
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
     <RootNamespace>Algorithm_Dynamics</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <Platforms>x86;x64;arm64</Platforms>
     <RuntimeIdentifiers>win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
+    <PublishProfile>win10-$(Platform).pubxml</PublishProfile>
     <UseWinUI>true</UseWinUI>
-	<EnablePreviewMsixTooling>true</EnablePreviewMsixTooling>
-	<PublishProfile>Properties\PublishProfiles\win10-$(Platform).pubxml</PublishProfile>
-	<GenerateAppInstallerFile>False</GenerateAppInstallerFile>
-	<AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
-	<PackageCertificateThumbprint>05EC1FC0D89007576CDDDB1FCBD8E6A73B233715</PackageCertificateThumbprint>
-	<AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
-	<AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
-	<AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
-	<GenerateTestArtifacts>True</GenerateTestArtifacts>
-	<AppxBundle>Always</AppxBundle>
-	<AppxBundlePlatforms>x86|x64|arm64</AppxBundlePlatforms>
-	<AppInstallerUri>https://algorithmdynamics.com/install</AppInstallerUri>
-	<HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
-	<GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
+    <EnablePreviewMsixTooling>true</EnablePreviewMsixTooling>
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="Pages\AssignmentAssignedPage.xaml" />
-    <None Remove="Pages\AssignmentCompletedPage.xaml" />
-    <None Remove="Pages\AssignmentCreatePage.xaml" />
-    <None Remove="Pages\AssignmentExportPage.xaml" />
-    <None Remove="Pages\AssignmentImportPage.xaml" />
+    <None Remove="Assets\HomePageBackgroundImage.jpg" />
+    <None Remove="Controls\CodeEditor.xaml" />
+    <None Remove="Pages\AccountPage.xaml" />
     <None Remove="Pages\AssignmentsPage.xaml" />
     <None Remove="Pages\HomePage.xaml" />
     <None Remove="Pages\PlaygroundPage.xaml" />
     <None Remove="Pages\ProblemsPage.xaml" />
     <None Remove="Pages\SettingsPage.xaml" />
-    <None Remove="Pages\UserAccountPage.xaml" />
-    <None Remove="SettingsPage.xaml" />
-    <None Remove="Styles\Page.xaml" />
-    <None Remove="Styles\Textblock.xaml" />
-    <None Remove="Styles\_Colors.xaml" />
-    <None Remove="Styles\_FontSizes.xaml" />
-    <None Remove="Styles\_Thickness.xaml" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommunityToolkit.WinUI.UI.Animations" Version="7.1.1-preview3.1" />
-    <PackageReference Include="CommunityToolkit.WinUI.UI.Controls" Version="7.1.1-preview3.1" />
+    <Content Include="Assets\SplashScreen.scale-200.png" />
+    <Content Include="Assets\LockScreenLogo.scale-200.png" />
+    <Content Include="Assets\Square150x150Logo.scale-200.png" />
+    <Content Include="Assets\Square44x44Logo.scale-200.png" />
+    <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
+    <Content Include="Assets\StoreLogo.png" />
+    <Content Include="Assets\Wide310x150Logo.scale-200.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.WinUI.UI.Controls" Version="7.1.2" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.0.0" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22000.194" />
     <Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>
-	<ItemGroup>
-		<Content Include="Images\SplashScreen.scale-200.png" />
-		<Content Include="Images\LockScreenLogo.scale-200.png" />
-		<Content Include="Images\Square150x150Logo.scale-200.png" />
-		<Content Include="Images\Square44x44Logo.scale-200.png" />
-		<Content Include="Images\Square44x44Logo.targetsize-24_altform-unplated.png" />
-		<Content Include="Images\StoreLogo.png" />
-		<Content Include="Images\Wide310x150Logo.scale-200.png" />
-	</ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Algorithm Dynamics.Core\Algorithm Dynamics.Core.csproj" />
-  </ItemGroup>
 
+  <!-- Defining the "Msix" ProjectCapability here allows the Single-project MSIX Packaging
+       Tools extension to be activated for this project even if the Windows App SDK Nuget
+       package has not yet been restored -->
+  <ItemGroup Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnablePreviewMsixTooling)'=='true'">
+    <ProjectCapability Include="Msix" />
+  </ItemGroup>
   <ItemGroup>
-    <None Update="Assets\Editor.html">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </None>
-    <None Update="Assets\package-lock.json">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </None>
-    <Page Update="Pages\UserAccountPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Pages\AssignmentExportPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Pages\AssignmentImportPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Pages\AssignmentCreatePage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Pages\AssignmentCompletedPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Pages\AssignmentAssignedPage.xaml">
+    <Page Update="Pages\AccountPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-
-  <ItemGroup>
-    <Page Update="Pages\PlaygroundPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-
   <ItemGroup>
     <Page Update="Pages\AssignmentsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-
+  <ItemGroup>
+    <Page Update="Pages\PlaygroundPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
   <ItemGroup>
     <Page Update="Pages\ProblemsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-
   <ItemGroup>
     <Page Update="Pages\HomePage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-
   <ItemGroup>
-    <Page Update="Styles\Page.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Styles\TextBlock.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Styles\_Thickness.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Styles\_FontSizes.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-    </Page>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Page Update="Styles\_Colors.xaml">
+    <Page Update="Pages\SettingsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-
   <ItemGroup>
-    <Page Update="Pages\SettingsPage.xaml">
+    <Page Update="Controls\CodeEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

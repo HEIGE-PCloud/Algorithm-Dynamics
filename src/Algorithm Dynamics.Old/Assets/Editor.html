@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+</head>
+<body>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+        #container {
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+    <div id="container"></div>
+
+    <script src="monaco-editor/min/vs/loader.js"></script>
+
+    <script>
+        require.config({ paths: { vs: 'monaco-editor/min/vs' } });
+        document.body.style.overflow = 'hidden';
+        require(['vs/editor/editor.main'], function () {
+            window.chrome.webview.postMessage("init");
+            window.chrome.webview.addEventListener('message', init);
+        });
+
+        function init(event) {
+            window.chrome.webview.removeEventListener('message', init);
+            window.editor = monaco.editor.create(document.getElementById('container'), window.config);
+            window.editor.getModel().onDidChangeContent((e) => {
+                window.chrome.webview.postMessage(window.editor.getValue());
+                console.log('changed');
+            });
+            window.chrome.webview.postMessage(window.editor.getValue());
+            window.addEventListener("resize", () => {
+                editor.layout();
+            });
+            window.chrome.webview.addEventListener('message', (event) => {
+                let data = event.data;
+                monaco.editor.setTheme(data["theme"]);
+                monaco.editor.setModelLanguage(window.editor.getModel(), data["language"])
+            })
+            window.chrome.webview.postMessage("loaded");
+        }
+    </script>
+</body>
+</html>
