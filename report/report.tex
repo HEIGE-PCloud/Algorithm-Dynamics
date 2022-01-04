@@ -670,7 +670,7 @@ I conduct an interview with each stakeholder after designing all the user interf
 
 This algorithm will be used to power all the search boxes in the software. It will be packed into a function, taking in a list of items and the searching keyword input by the user, returning a list of results. To make the software easy to use, instead of simply using a linear search and returning all matching results, the algorithm will perform some fuzzy searching, so even the word is not typed in completely, matching results will be returned.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{text}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{text}
 function search(sourceList, keyword)
     // Create an empty list to store the results
     resultList = new List<string>()
@@ -707,7 +707,7 @@ This algorithm is designed for the Judger to run a piece of code, pass input to 
 
 Before anything can run, the Judger will need to first write the user's code to a source code file. And before it can do that, it needs to know where it should write to. I will create three private variables \mintinline{text}{_SourceCodeFilePath}, \mintinline{text}{_SourceCodeFolderPath} and \mintinline{text}{_ExecutableFilePath} to store the file paths for the source code file and the executable file. I use the idea of encapsulation here so these variables can only be set by the public method \mintinline{text}{SetSourceCodeFilePath}, so they will not be modified unexpectedly.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{text}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{text}
 partial class Judger
     private _SourceCodeFilePath
     private _SourceCodeFolderPath
@@ -723,7 +723,7 @@ endclass
 
 For compiling programming languages such as C, C++ and Java, the source code needs to be compiled before running. So I need to add a \mintinline{text}{Compile} function to support these programming languages. The compile task needs to be run concurrently in a different process so the main UI can stay responsive. So instead of monitoring the compiler all the time, I will bind two event handlers to the compile process, to process its output data and error data. Those data will then be stored in two private string variables for later use.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{text}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{text}
 partial class Judger
     private _CompilationOutput
     private _CompilationError
@@ -746,7 +746,7 @@ endclass
 
 Now, it is ready to run the compiler. Before it can start compiling, the old outputs need to be cleaned. I design two magic variables in the language configurations allowing more flexible arguments, these magic variables need to be pre-processed before compiling. A process start info needs to be created to let the Judger know how to start the new process. After binding the event handlers, the compiler can start running.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{text}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{text}
 partial class Judger
     private function Compile()
         // Clear the old data
@@ -791,7 +791,7 @@ In the end, an integer exit code will be returned. If the exit code is zero, the
 
 If the user's code is compiled successfully or it does not need to be compiled, the \mintinline{text}{Execute} function is called to run the code or the executable, pass the input to the process and get its output. The \mintinline{text}{Execute} function will also need to kill the running process if it runs too long. So I will use a custom enumeration type \mintinline{text}{StatusCode} to manage the process' status.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{text}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{text}
 enum StatusCode
     PENDING,
     RUNNING,
@@ -809,7 +809,7 @@ endclass
 
 Similarly, I will use event handlers to record all the outputs from the user's code. I add a third handler to process the exit event, which will determine the \mintinline{text}{_StatusCode} mentioned above.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{text}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{text}
 partial class Judger
     private _StandardOutput
     private _StandardError
@@ -839,7 +839,7 @@ endclass
 
 The \mintinline{text}{Execute} function has a similar design with the \mintinline{text}{Compile} function. It configures all the running information and event handlers as usual. However, this time I add two extra processes running concurrently with the execution process. The first one is a timer, which countdown the time limit. When the timer counts to zero, it checks whether the execute process is still running, if it does, then the execution process will be killed and a \mintinline{text}{TLE} will be reported. The second one is a memory monitor, which checks the peak memory usage of the execution process every 10 milliseconds. If the memory usage is larger than the memory limit, then the execution process will be killed and a \mintinline{text}{MLE} will be reported.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{text}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{text}
 partial class Judger
     private _WorkingSet64;
     private function Execute(Input, Language, TimeLimit, MemoryLimit)
@@ -921,7 +921,7 @@ endclass
 
 Now I have everything I need to build the \mintinline{text}{RunCode} function. It takes in the user's code, input data, language configuration, time limit and memory limit, outputs a \mintinline{text}{RunCodeResult} containing all the running information. I also need to set up a stopwatch to measure how long the code has been executed, unlike the timer before, this stopwatch only provides data for statistics records. In the end, the \mintinline{text}{RunCode} function will handle some basic errors, it will judge whether the user's code run, but it will not judge whether the user's code provides the correct output. The \mintinline{text}{RunCode} algorithm only runs the code and further judging will be handed over to other algorithms.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{text}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{text}
 partial class Judger
     public function RunCode(UserCode, Input, Language, TimeLimit, MemoryLimit)
         // Create a new TestCaseResult
@@ -990,7 +990,7 @@ endclass
 
 This algorithm is designed to allow the Judger to judge a test case. On top of the \mintinline{text}{RunCode} function, this algorithm compare the user's output with the expected output, so it can judge whether the user's code works correctly. The \mintinline{text}{JudgeTestCase} function returns a \mintinline{text}{TestCaseResult} containing more information.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{text}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{text}
 partial class Judger
     public function JudgeTestCase(UserCode, TestCase, Language, TimeLimit)
         // Run the code with RunCode and get the result
@@ -1020,7 +1020,7 @@ endclass
 
 This algorithm is designed to judge a submission. I set up a judging queue and push all test cases into the queue. Then I take them out and judge them one by one. A queue is suitable for this use case because I want the first test case entered to be judged first. A submission result will be returned at the end.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{text}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{text}
 partial class Judger
     public function JudgeProblem(Submission)
         // Create the submission result
@@ -1049,7 +1049,7 @@ endclass
 
 This algorithm is designed to judge an assignment submission. I set up a judging queue and push all problems into the queue. Then I take them out and judge them one by one. A queue is suitable for this use case because I want the first problem entered to be judged first. An assignment submission result will be returned at the end.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{text}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{text}
 partial class Judger
     public function JudgeAssignment(AssignmentSubmission)
         // Create the assignment submission result
@@ -1346,7 +1346,7 @@ It includes the result and statistics about the \mintinline{text}{AssignmentSubm
 
 The settings will be stored in a JSON file.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{json}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{json}
 {
     "Theme": "Light",
     "RunCodeTimeLimit": 1000,
@@ -1408,7 +1408,7 @@ The \mintinline{text}{GUID} will look like this: \mintinline{text}{149f3e41-dcdb
     \hline
 \end{tabulary}
 
-\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{sql}
 CREATE TABLE User
 (
     Uid TEXT PRIMARY KEY NOT NULL,
@@ -1440,7 +1440,7 @@ All fields will be validated and only the \mintinline{text}{SourceHash} is allow
     \hline
 \end{tabulary}
 
-\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{sql}
 CREATE TABLE Problem
 (
     Uid TEXT PRIMARY KEY NOT NULL,
@@ -1468,7 +1468,7 @@ All fields will be validated and no empty field is allowed.
     \hline
 \end{tabulary}
 
-\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{sql}
 CREATE TABLE Tag
 (
     Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -1490,7 +1490,7 @@ The \mintinline{text}{Tag} has a many-to-many relation with the \mintinline{text
     \hline
 \end{tabulary}
 
-\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{sql}
 CREATE TABLE TagRecord
 (
     PRIMARY KEY (Id) INTEGER NOT NULL AUTO_INCREMENT,
@@ -1515,7 +1515,7 @@ All fields will be validated and no empty field is allowed.
     \hline
 \end{tabulary}
 
-\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{sql}
 CREATE TABLE TestCase
 (
     PRIMARY KEY (Id) INTEGER NOT NULL AUTO_INCREMENT,
@@ -1550,7 +1550,7 @@ All fields will be validated and no empty field is allowed, except for the Code,
     \hline
 \end{tabulary}
 
-\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{sql}
 CREATE TABLE Submission
 (
     PRIMARY KEY (Id) INTEGER NOT NULL AUTO_INCREMENT,
@@ -1577,7 +1577,7 @@ All fields will be validated and no null field is allowed.
     \hline
 \end{tabulary}
 
-\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{sql}
 CREATE TABLE Submission
 (
     PRIMARY KEY (Id) INTEGER NOT NULL AUTO_INCREMENT,
@@ -1598,7 +1598,7 @@ The \mintinline{text}{ProblemList} and \mintinline{text}{Problem} has a many-to-
     \hline
 \end{tabulary}
 
-\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{sql}
 CREATE TABLE ProblemListRecord
 (
     PRIMARY KEY (Id) INTEGER NOT NULL AUTO_INCREMENT,
@@ -1621,7 +1621,7 @@ All fields will be validated and no null field is allowed.
     \hline
 \end{tabulary}
 
-\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{sql}
 CREATE TABLE Assignment
 (
     PRIMARY KEY (Uid) TEXT NOT NULL,
@@ -1644,7 +1644,7 @@ CREATE TABLE Assignment
     \hline
 \end{tabulary}
 
-\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{sql}
 CREATE TABLE AssignmentRecord
 (
     PRIMARY KEY (Id) INTEGER NOT NULL AUTO_INCREMENT,
@@ -1666,7 +1666,7 @@ The AssignmentSubmission table will have \mintinline{text}{Uid} as its primary k
     \hline
 \end{tabulary}
 
-\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{sql}
 CREATE TABLE AssignmentSubmission
 (
     Uid TEXT PRIMARY KEY NOT NULL,
@@ -1701,7 +1701,7 @@ All fields will be validated and no null field is allowed.
     \hline
 \end{tabulary}
 
-\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{sql}
 CREATE TABLE TestCaseResult
 (
     PRIMARY KEY (Id) INTEGER NOT NULL AUTO_INCREMENT,
@@ -1728,7 +1728,7 @@ It has a one-to-one relationship with a Submission, so a \mintinline{text}{Submi
     \hline
 \end{tabulary}
 
-\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{sql}
 CREATE TABLE SubmissionResult
 (
     PRIMARY KEY (Id) INTEGER NOT NULL AUTO_INCREMENT,
@@ -1749,7 +1749,7 @@ The AssignmentSubmission table will have \mintinline{text}{Uid} as its primary k
     \hline
 \end{tabulary}
 
-\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{sql}
 CREATE TABLE AssignmentSubmissionResult
 (
     Uid TEXT PRIMARY KEY NOT NULL,
@@ -1761,7 +1761,7 @@ CREATE TABLE AssignmentSubmissionResult
 
 All data will be exported into JSON files.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{json}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{json}
 {
     "FileType": "Algorithm Dynamics Exported Data",
     "DataType": "Problem",
@@ -1777,7 +1777,7 @@ When the user exports a problem, the problem instance will be serialized. The te
 
 This is a sample exported file.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{json}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{json}
 {
     "FileType": "Algorithm Dynamics Exported Data",
     "DataType": "Problem",
@@ -1816,14 +1816,14 @@ When the problem is imported, a new Id will be created for it.
 
 The problem and test cases are imported first.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{sql}
 INSERT OR REPLACE INTO Problem VALUES (Name, Difficulty, Description, TimeLimit, MemoryLimit, SourceHash)
 INSERT OR REPLACE INTO TestCase VALUES (Input, Output, IsExample, last_insert_rowid)
 \end{minted}
 
 After that, the tags are imported and the corresponding TagRecord table is updated.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{sql}
 INSERT OR REPLACE INTO Tag VALUES (Name)
 INSERT INTO TagRecord VALUES (Problem.last_insert_rowid, Tag.last_insert_rowid)
 \end{minted}
@@ -1834,7 +1834,7 @@ When the user exports a problem list, several problems are wrapped into a list a
 
 This is a sample exported file.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{json}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{json}
 {
     "FileType": "Algorithm Dynamics Exported Data",
     "DataType": "ProblemList",
@@ -1894,7 +1894,7 @@ This is a sample exported file.
 
 When a problem list is imported, all problems are imported as individual problems. Then the information about the problem list itself is imported and the ProblemListRecord table is updated.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{sql}
 INSERT OR REPLACE INTO ProblemList VALUES (Name, Description)
 INSERT OR REPLACE INTO ProblemListRecord VALUES (Problem.last_insert_rowid, ProblemList.last_insert_rowid)
 \end{minted}
@@ -1905,7 +1905,7 @@ When an assignment is exported, a SourceHash value is computed and attached to e
 
 This is a sample exported file.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{json}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{json}
 {
     "FileType": "Algorithm Dynamics Exported Data",
     "DataType": "Assignment",
@@ -1969,19 +1969,19 @@ This is a sample exported file.
 
 When an assignment gets imported, the assigner is first added to the User table.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{sql}
 INSERT OR REPLACE INTO User VALUES (Uid, Email, Name, Role)
 \end{minted}
 
 Next, the record of the assignment is inserted into the Assignment table.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{sql}
 INSERT OR REPLACE INTO Assignment VALUES (Uid, DueDate, Status, Type, UserUid)
 \end{minted}
 
 Finally, all the problems are imported as individual problems and the ProblemListRecord table is updated.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{sql}
 INSERT OR REPLACE INTO ProblemListRecord VALUES (Uid, Problem.last_insert_rowid, SourceHash)
 \end{minted}
 
@@ -1991,7 +1991,7 @@ When an AssignmentSubmission is exported, the Assignment field will be normalize
 
 This is a sample exported file.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{json}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{json}
 {
     "FileType": "Algorithm Dynamics Exported Data",
     "DataType": "AssignmentSubmission",
@@ -2025,19 +2025,19 @@ This is a sample exported file.
 
 When the AssignmentSubmission is imported into the database, the Submitter will be imported first.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{sql}
 INSERT OR REPLACE INTO User VALUES (Uid, Email, Name, Role)
 \end{minted}
 
 Next, the problem Id is determined using the SourceHash, and the list of submissions will be imported to the Submission table.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{sql}
 INSERT INTO Submission VALUES (ProblemId, Code, Time, Language, UserUid, AssignmentUid)
 \end{minted}
 
 In the end, the record in the AssignmentSubmission table will be updated.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{sql}
 INSERT INTO AssignmentSubmission VALUES (Uid, AssignmentUid, UserUid, Status)
 \end{minted}
 
@@ -2047,7 +2047,7 @@ When an AssignmentSubmissionResult is exported, the AssignmentSubmission field i
 
 This is a sample exported file.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{json}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{json}
 {
     "FileType": "Algorithm Dynamics Exported Data",
     "DataType": "AssignmentSubmissionResult",
@@ -2081,19 +2081,19 @@ This is a sample exported file.
 
 When the AssignmentSubmissionResult is imported into the database, the AssignmentSubmissionResult table is updated first.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{sql}
 INSERT INTO AssignmentSubmissionResult VALUES (Uid, AssignmentSubmissionResultUid)
 \end{minted}
 
 Next, each SubmissionResult is imported into the SubmissionResult table. The SubmissionId can be determined by the SourceHash.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{sql}
 INSERT INTO SubmissionResult VALUES (SubmissionId, AssignmentSubmissionResultUid)
 \end{minted}
 
 In the end, the TestCaseResult table is updated. The TestCaseId will be left null.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{sql}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{sql}
 INSERT INTO TestCaseResult VALUES (null, StandardOutput, StandardError, ExitCode, CPUTime, MemoryUsage, ResultCode, SubmissionId)
 \end{minted}
 
@@ -2141,7 +2141,7 @@ The SettingsPage will be tested after the settings module is implemented. The Cr
 
 \subsubsection{Markdown test data}
 
-\begin{minted}[linenos,tabsize=4,breaklines]{markdown}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{markdown}
 # Markdown Tests
 
 ## Headers
@@ -2274,7 +2274,7 @@ This is a footnote with "label"[^label]
 
 \subsubsection{Code test data}
 
-\begin{minted}[linenos,tabsize=4,breaklines]{cpp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{cpp}
 #include <iostream>
 using namespace std;
 int main()
@@ -2316,12 +2316,12 @@ At this milestone, the Judger is implemented. A series of tests are designed to 
 
 \subsubsection{Normal RunCode test data}
 
-\begin{minted}[linenos,tabsize=4,breaklines]{text}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{text}
 Input:
 3 4    
 \end{minted}
 
-\begin{minted}[linenos,tabsize=4,breaklines]{cpp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{cpp}
 #include <iostream>
 using namespace std;
 int main()
@@ -2334,7 +2334,7 @@ int main()
 
 \subsubsection{CE RunCode test data}
 
-\begin{minted}[linenos,tabsize=4,breaklines]{cpp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{cpp}
 int main()
 {
     a
@@ -2343,7 +2343,7 @@ int main()
 
 \subsubsection{TLE RunCode test data}
 
-\begin{minted}[linenos,tabsize=4,breaklines]{cpp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{cpp}
 int main()
 {
     while (true) {}
@@ -2352,7 +2352,7 @@ int main()
 
 \subsubsection{MLE RunCode test data}
 
-\begin{minted}[linenos,tabsize=4,breaklines]{cpp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{cpp}
 int a[100000000];
 int main()
 {
@@ -2363,7 +2363,7 @@ int main()
 
 \subsubsection{RE RunCode test data}
 
-\begin{minted}[linenos,tabsize=4,breaklines]{cpp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{cpp}
 int main()
 {
     return -1;
@@ -2372,14 +2372,14 @@ int main()
 
 \subsubsection{Normal Submission test data}
 
-\begin{minted}[linenos,tabsize=4,breaklines]{text}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{text}
 Input:
 3 4
 Expected Output:
 7 
 \end{minted}
 
-\begin{minted}[linenos,tabsize=4,breaklines]{cpp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{cpp}
 #include <iostream>
 int main()
 {
@@ -2389,14 +2389,14 @@ int main()
 
 \subsubsection{WA Submission test data}
 
-\begin{minted}[linenos,tabsize=4,breaklines]{text}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{text}
 Input:
 3 4
 Expected Output:
 7 
 \end{minted}
 
-\begin{minted}[linenos,tabsize=4,breaklines]{cpp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{cpp}
 #include <iostream>
 int main()
 {
@@ -2476,7 +2476,7 @@ At this milestone, the settings in the SettingsPage are implemented. A series of
 
 \subsubsection{Normal settings file}
 
-\begin{minted}[linenos,tabsize=4,breaklines]{json}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{json}
 {
     "Theme": "Light",
     "RunCodeTimeLimit": 1000,
@@ -2506,14 +2506,14 @@ At this milestone, the settings in the SettingsPage are implemented. A series of
 \end{minted}
 
 \subsubsection{A settings file with incorrect format}
-\begin{minted}[linenos,tabsize=4,breaklines]{json}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{json}
 {
     "Theme": "Light,
 \end{minted}
 
 \subsubsection{A settings file with incorrect and missing fields}
 
-\begin{minted}[linenos,tabsize=4,breaklines]{json}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{json}
 {
     "Theme": "RandomTheme",
     "RunCodeTimeLimit": 1000,
@@ -2585,7 +2585,7 @@ I will create a prototype with a minimal user interface to test run the developm
 
 I create the \mintinline{text}{App.xaml} file, which will include all application resources. Right now, the only resources imported is the \mintinline{text}{XamlControlsResource}, which provides the resources for the all controls. Later on, I will create and import new resources in this file.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{xml}
 <Application
     x:Class="Algorithm_Dynamics.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -2605,7 +2605,7 @@ I create the \mintinline{text}{App.xaml} file, which will include all applicatio
 
 I then create the \mintinline{text}{App.xaml.cs} file, which will include the main entry point of the application. It inheriates from the \mintinline{text}{Application} class, and create a \mintinline{text}{Window} object to show the main window. The \mintinline{text}{App} class will activate the main window when it is launched.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{csharp}
 using Microsoft.UI.Xaml;
 
 namespace Algorithm_Dynamics
@@ -2642,7 +2642,7 @@ namespace Algorithm_Dynamics
 
 Next, I create the \mintinline{text}{MainWindow.xaml} file, which includes the layout of the main window. Right now, it only has a stack panel and a button inside to test everything is working.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{xml}
 <Window
     x:Class="Algorithm_Dynamics.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -2666,7 +2666,7 @@ Next, I create the \mintinline{text}{MainWindow.xaml} file, which includes the l
 
 Finally, I create the \mintinline{text}{MainWindow.xaml.cs} file. It contains all the UI logic. In this prototype, when the button in the UI is clicked, its text will be changed to ``Clicked''.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{csharp}
 using Microsoft.UI.Xaml;
 
 namespace Algorithm_Dynamics
@@ -2702,7 +2702,7 @@ set up correct. And I can start developing a more complex user interface.
 
 First, I will write the NavigationView. In the \mintinline{text}{MainWindow.xaml} file, I add the NavigationView control.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{xml}
 <NavigationView 
     x:Name="MainNavView"
     x:FieldModifier="public"
@@ -2715,7 +2715,7 @@ I assign a name \mintinline{text}{MainNavView} to the control so I can call it l
 
 I then need to add different options to the navigation menu.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{xml}
 <NavigationView.MenuItems>
     <NavigationViewItem 
         x:Name="HomePageNavViewItem"
@@ -2744,7 +2744,7 @@ There are four options in the menu as designed. Each of which is assigned a name
 
 I add the account option to the footer.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{xml}
 <NavigationView.FooterMenuItems>
     <NavigationViewItem
         x:Name="AccountNavItem"
@@ -2756,7 +2756,7 @@ I add the account option to the footer.
 
 I add the content frame used to contain different pages.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{xml}
 <Frame
     x:Name="ContentFrame"
     Padding="0"
@@ -2767,7 +2767,7 @@ Now the layout of the NavigationView is finished. I need to add the code to init
 
 When the main window is first initialized, the HomePage should be selected, and the title of the window should be set correctly. So I update the constructor of the main window to set the values.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{csharp}
 public MainWindow()
 {
     InitializeComponent();
@@ -2779,7 +2779,7 @@ public MainWindow()
 
 Next, I need to handle the \mintinline{text}{SelectionChanged} event, this event gets triggered when the user clicks on a navigation item, and it will update the content frame to display the corresponding page.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{csharp}
 /// <summary>
 /// Handle the SelectionChanged event of the MainNavView
 /// Navigate to the corresponding page when the selection is changed
@@ -2812,7 +2812,7 @@ private void MainNavView_SelectionChanged(NavigationView sender, NavigationViewS
 
 Now, if I build and run the application, I should see the \mintinline{text}{NavigationView} works correctly. However, I get a runtime exception.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{text}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{text}
 System.NullReferenceException
   HResult=0x80004003
   Message=Object reference not set to an instance of an object.
@@ -2830,7 +2830,7 @@ It says object reference not set to an instance of an object when executing \min
 
 I should create all pages under the \mintinline{text}{Algorithm_Dynamics.Pages} namespace. For now, all of them will only contain a text block showing their name. Here is an example of the HomePage.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{xml}
 <Page
     x:Class="Algorithm_Dynamics.Pages.HomePage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -2848,7 +2848,7 @@ I should create all pages under the \mintinline{text}{Algorithm_Dynamics.Pages} 
 \end{minted}
 
 
-\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{csharp}
 using Microsoft.UI.Xaml.Controls;
 
 namespace Algorithm_Dynamics.Pages
@@ -2878,7 +2878,7 @@ Now the NavigationView is built and tested. I will continue to build other compo
 
 The HomePage is made of three components, the background image, the quick access tools and the recommendations. They are wrapped by a scroller so they can be accessed on any size screen. I place a grid with two rows inside the \mintinline{text}{ScrollViewer}, the first row contains the background image, the second row contains the remaining tools. 
 
-\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{xml}
 <Page
     x:Class="Algorithm_Dynamics.Pages.HomePage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -2911,7 +2911,7 @@ The HomePage is made of three components, the background image, the quick access
 
 Inside the background image grid, I place a \mintinline{text}{Image} control with the source of the background image. It is stretched to fill the entire grid so \mintinline{text}{Strecth} is set to \mintinline{text}{UniformToFill}.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{xml}
 <Image 
     Source="/Assets/HomePageBackgroundImage.jpg" 
     Height="256"
@@ -2927,7 +2927,7 @@ Inside the background image grid, I place a \mintinline{text}{Image} control wit
 
 The \mintinline{text}{TextBlock} is used to display a greeting message. It is placed on the bottom right. Because its content needs to be adjusted by the current time and the current user, it is binded to the a variable \mintinline{text}{WelcomeMessage} so I can change its value programmatically.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{csharp}
 namespace Algorithm_Dynamics.Pages
 {
     public sealed partial class HomePage : Page
@@ -2946,7 +2946,7 @@ namespace Algorithm_Dynamics.Pages
 
 The welcome message is adjusted by different time in the day. It should also display the user name, but since the setting is not implemented yet, this part is left to be implemented later.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{csharp}
 /// <summary>
 /// Set the WelcomeMessage based on the current time.
 /// Morning: 00:00-12:00
@@ -2974,7 +2974,7 @@ private void SetWelcomeMessage()
 
 Now I just need to set the welcome message in the constructor. Notice that it needs to be called before all components are initialized, so the text block can bind to the updated value.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{csharp}
 public HomePage()
 {
     SetWelcomeMessage();
@@ -2988,7 +2988,7 @@ The image and the greeting message show up correctly, and because I am writing t
 
 For the quick access toolbar, I choose to use the \mintinline{text}{AdaptiveGridView} control for its \mintinline{text}{OneRowMode} function, which allows the toolbar to scroll horizontally on small screens. The controls in the quick access toolbar should be loaded dynamically, so they can be changed easily in the future. So I create a \mintinline{text}{QuickAccessItem} helper class. Each object will contain a name, an icon and an action. The name and the icon will be displayed to the user, and the action will be invoked when the user clicks on the control.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{csharp}
 using Microsoft.UI.Xaml.Controls;
 using System;
 
@@ -3011,11 +3011,11 @@ namespace Algorithm_Dynamics.Models
 
 Then I create a \mintinline{text}{ObserableCollection} of \mintinline{text}{QAItems} that binds to the grid.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{csharp}
 public ObservableCollection<QuickAccessItem> QAItems { get; } = new ObservableCollection<QuickAccessItem>();
 \end{minted}
 
-\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{xml}
 <TextBlock 
     Text="Quick Access"
     Grid.Row="0"
@@ -3048,7 +3048,7 @@ public ObservableCollection<QuickAccessItem> QAItems { get; } = new ObservableCo
 
 I need to add the items to the collection when the HomePage is loaded. I create a procedure \mintinline{text}{InitializeQAItems}. Because I have passed the MainWindow object to the function, the MainNavView can be called inside. Because the CodingPage and the Import logic is not completed yet, the Random Problem and Import function will be implemented later.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{csharp}
 public HomePage()
 {
     SetWelcomeMessage();
@@ -3085,7 +3085,7 @@ private void InitializeQAItems()
 
 I need to handle the click event of the quick access toolbar. I create a procedure \mintinline{text}{QAGridView_ItemClick}, which will invoke the action of the item.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{csharp}
 /// <summary>
 /// Handle the QAGridView click event. The Action will be invoked.
 /// </summary>
@@ -3105,7 +3105,7 @@ private void QAGridView_ItemClick(object sender, ItemClickEventArgs e)
 
 Now, when I build and run the application, the quick access toolbar shows up correctly and scroll horizontally as expected. When I click the different buttons, it navigates to the corresponding page correctly. When I click the Random Problem button, the software panic and a NotImplementedException is thrown with the correct error message.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{text}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{text}
 System.NotImplementedException
   HResult=0x80004001
   Message=[Blocking]: The CodingPage has not been implemented yet.
@@ -3120,7 +3120,7 @@ System.NotImplementedException
 
 The recommendation control is similar. I create the \mintinline{text}{RecommendItem} class and add the items to the collection.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{csharp}
 namespace Algorithm_Dynamics.Models
 {
     public class RecommendItem
@@ -3136,13 +3136,13 @@ namespace Algorithm_Dynamics.Models
 }
 \end{minted}
 
-\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{csharp}
 public ObservableCollection<RecommendItem> RecItems { get; } = new ObservableCollection<RecommendItem>();
 \end{minted}
 
 Then bind the AdaptiveGridView to the collection.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{csharp}
 <TextBlock 
     Text="Recommended"
     Grid.Row="2"
@@ -3179,7 +3179,7 @@ Then bind the AdaptiveGridView to the collection.
 
 For now, because the database and the data structure are not ready, I just add some dummy data to the collection. The recommendation logic will be added later.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{csharp}
 public HomePage()
 {
     SetWelcomeMessage();
@@ -3206,7 +3206,7 @@ private void InitializeRecItems()
 
 I need to handle the click event as well. And because neither the AssignmentPage nor the CodingPage is ready, it will throw an NotImplementedException too.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{csharp}
 /// <summary>
 /// Handle the RecGridView click event.
 /// Navigate to the corresponding Problem or Assignment
@@ -3234,7 +3234,7 @@ The scroller is working as well, so I can scroll down on a small window to see t
 
 I move on to design the ProblemsPage. It contains two parts, the toolbar at the top and the problem list below. I will use a grid containing two rows to hold these two components.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{xml}
 <Page
     x:Class="Algorithm_Dynamics.Pages.ProblemsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -3265,7 +3265,7 @@ I move on to design the ProblemsPage. It contains two parts, the toolbar at the 
 
 For the toolbar, I use a grid with 6 columns to hold the search box and the ComboBoxes.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{xml}
 <Grid.ColumnDefinitions>
     <ColumnDefinition Width="2*"/>
     <ColumnDefinition Width="*"/>
@@ -3322,7 +3322,7 @@ For the toolbar, I use a grid with 6 columns to hold the search box and the Comb
 
 The ItemsSource of the ComboBox is binded to the corresponding variable, which allows me to set their value programmatically. Because the database is not implemented yet, I will use some dummy data to test the UI.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{csharp}
 using Microsoft.UI.Xaml.Controls;
 using System.Collections.ObjectModel;
 
@@ -3346,7 +3346,7 @@ namespace Algorithm_Dynamics.Pages
 
 The toolbar shows up with all data loaded correctly. I can select an item correctly, but I cannot clear the selection. I need to empty the ComboBox when the user right clicks it. For the list ComboBox, I also need to allow the user to edit and delete an existing list, so when the user right click the list ComboBox, a menu flyout needs to show up with all options. I create a \mintinline{text}{ClearComboBox} procedure to handle the right click event.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{csharp}
 /// <summary>
 /// Clear the <see cref="ComboBox"/>
 /// </summary>
@@ -3361,7 +3361,7 @@ private void ClearComboBox(object sender, RightTappedRoutedEventArgs e)
 
 And then bind the right clicked event to the procedure.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{xml}
 <ComboBox
     x:Name="DifficultyComboBox"
     RightTapped="ClearComboBox"/>
@@ -3375,7 +3375,7 @@ And then bind the right clicked event to the procedure.
 
 For the list ComboBox, I need to create the layout for the menu flyout first.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{xml}
 <ComboBox.Resources>
     <MenuFlyout x:Name="ListMenuFlyout">
         <MenuFlyout.Items>
@@ -3397,7 +3397,7 @@ For the list ComboBox, I need to create the layout for the menu flyout first.
 
 There are three items in the menu, edit, delete, and clear. The edit and delete function has not been implemented yet, so they will not be handled for now. Because the clear event is sent by the menu button instead of the ComboBox, I overload the \mintinline{text}{ClearComboBox} procedure to handle the clear event.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{csharp}
 /// <summary>
 /// Clear the <see cref="ListComboBox"/>
 /// </summary>
@@ -3411,13 +3411,13 @@ private void ClearComboBox(object sender, RoutedEventArgs e)
 
 The menu flyout needs to be displayed when the list ComboBox is right clicked.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{xml}
 <ComboBox 
     x:Name="ListComboBox"
     RightTapped="ListComboBox_RightTapped">
 \end{minted}
 
-\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{csharp}
 /// <summary>
 /// Display the <see cref="ListMenuFlyout"/> when the <see cref="ListComboBox"/> is right tapped
 /// </summary>
@@ -3436,7 +3436,7 @@ Now, I build and run the code again. When I right-click the difficulty, status a
 
 But there is a potential issue with the current implementation. When I right-click the list ComboBox, the menu flyout will show up even when no list is selected. Clear the box does not result in any problem because it is empty anyway, but in the future, when the edit and delete function is implemented, attempting to edit or delete an empty list will cause a problem. So I need to change the logic of the menu flyout so that it only shows up when there is something selected. I only need to modify the original function, and only show the flyout when the selected index is -1.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{csharp}
 private void ListComboBox_RightTapped(object sender, RightTappedRoutedEventArgs e)
 {
     ComboBox comboBox = (ComboBox)sender;
@@ -3451,7 +3451,7 @@ Now, the menu flyout does not show up when no list is selected, which fixes a po
 
 Next, I need to handle the delete and edit event for the list ComboBox. Because the actual database and data structures have not been implemented yet, I will only create the UI for these events and implement their functions later. For the edit event, the content frame should navigate to the edit page. For the delete event, a content dialog will show up to confirm the deletion. I create two procedures to handle these events.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{csharp}
 /// <summary>
 /// Navigate to the edit ProblemList page
 /// </summary>
@@ -3494,7 +3494,7 @@ Now, when I click the delete button, a popup shows up correctly to confirm delet
 
 I then implement the problem list below the toolbar. I use a \mintinline{text}{ListView} to display the problem list. Similarly, I bind the data source to a variable Problems which contains a list of Problem. For each problem, its name, difficulty, status and tags are displayed.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{xml}
 <ListView x:Name="ProblemsListView"
     Grid.Row="1"
     SelectionMode="Extended"
@@ -3553,7 +3553,7 @@ I then implement the problem list below the toolbar. I use a \mintinline{text}{L
 
 Because the data structure for Problem has not been implemented yet, I create a sample class for the Problem. It only contains the four attributes that matters and a constructor to initialize the values.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{csharp}
 public class Problem
 {
     public Problem(string name, string difficulty, string status, string tags)
@@ -3573,7 +3573,7 @@ public class Problem
 
 I create a ObserableCollection for the list of Problem and add some sample data to it.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{csharp}
 public ObservableCollection<Problem> Problems = new();
 public ProblemsPage()
 {
@@ -3597,7 +3597,7 @@ The problem list shows up with the correct data.
 
 I need to add a flyout menu for the problem list to allow the user to edit and delete problems when right clicking the list. When only one problem is selected, the user can edit it or delete it. When multiple problems are selected, the user can delete all of them or create a problem list from them.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{xml}
 <ListView.Resources>
     <MenuFlyout x:Name="SingleSelectedMenuFlyout">
         <MenuFlyout.Items>
@@ -3623,7 +3623,7 @@ I need to add a flyout menu for the problem list to allow the user to edit and d
 \end{minted}
 
 
-\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{csharp}
 /// <summary>
 /// Show flyout when the user right tapped the ProblemListView
 /// When one problem is selected, show the SingleSelectedMenuFlyout
@@ -3653,7 +3653,7 @@ The corresponding menu flyout can show up correctly based on the selection.
 
 Similarly, I can add the delete content dialog for these flyouts and leave the edit and create new problem list feature in the future.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{csharp}
 /// <summary>
 /// Edit the selected Problem
 /// Navigate to the EditProblemPage
@@ -3728,7 +3728,7 @@ private async void DeleteProblems(object sender, RoutedEventArgs e)
 
 Finally, for the ProblemsPage, I need to handle the searh query. The ProblemListView needs to be updated when different search queries are entered in the toolbar. I create a \mintinline{text}{Search} procedure to handle the searc event. When the user select an option in the ComboBoxes, or enter the search box, the \mintinline{text}{Search} procedure will be called. All data will be passed to a \mintinline{text}{Query} function that returns searching result. For now, because the database is not implemented, I will just return the query. The \mintinline{text}{Query} function will be implemented in the future.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{csharp}
 /// <summary>
 /// Search the problem lists that under conditions
 /// </summary>
@@ -3761,7 +3761,7 @@ The Code Editor needs to support line number, syntax highlighting, and other edi
 
 First, I create a basic user control.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{xml}
 <UserControl
     x:Class="Algorithm_Dynamics.Controls.CodeEditor"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -3775,7 +3775,7 @@ First, I create a basic user control.
 </UserControl>
 \end{minted}
 
-\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{csharp}
 using Microsoft.UI.Xaml.Controls;
 
 namespace Algorithm_Dynamics.Controls
@@ -3792,7 +3792,7 @@ namespace Algorithm_Dynamics.Controls
 
 And use the control in the PlaygroundPage to verify its working.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{xml}
 <Page
     x:Class="Algorithm_Dynamics.Pages.PlaygroundPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -3816,7 +3816,7 @@ Now, when I run the application and navigate to the PlaygroundPage I can see the
 
 The Monaco Editor is a web application, which means it needs to run in a browser. To use it, I need to use WebView2 component to load a HTML file, and initialize the Monaco Editor inside that webpage. The WebView2 control launches a Chromium instance and allows me to integrate webpages inside my app. I use the WebView2 control to load the HTML file. Before I create the webpage for the Monaco Editor, I place the WebView2 control and test it out.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{xml}
 <WebView2 
     x:Name="WebView"
     HorizontalAlignment="Stretch"
@@ -3828,7 +3828,7 @@ The Monaco Editor is a web application, which means it needs to run in a browser
 
 I set the source of the WebView2 control to the offcial website of OCR, and it loads up correctly. Now I can start working on the webpage for the editor. To load a local HTML file, I need to set a mapping relationship between a URL space and a local folder.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{csharp}
 /// <summary>
 /// Initialize the WebView control and load Editor.html
 /// </summary>
@@ -3852,7 +3852,7 @@ async void InitializeWebViewAsync()
 
 Now I can load Editor.html under the Assets folder. I use a sample HTML file to test it out.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{html}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{html}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -3871,7 +3871,7 @@ Now I can load Editor.html under the Assets folder. I use a sample HTML file to 
 
 The h1 title ``Hello Editor!'' is displayed correctly, which means the local file is loaded as expected. Now I can import the Monaco Editor to the WebView2 control.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{html}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{html}
 <body>
     <div id="container" style="width:800px;height:600px;border:1px solid grey"></div>
 
@@ -3902,7 +3902,7 @@ I add some CSS code to set the height and width of the editor to 100\%.
 
 Now, the scroll bars are gone. But when I resize the window, the editor still does not follow the window size. After reading the documentation of the Monaco Editor, I find out that I need to manually call the \mintinline{text}{editor.layout()} function to recalculate the editor size.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{html}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{html}
 <script>
     window.addEventListener("resize", () => editor.layout());
 </script>
@@ -3914,7 +3914,7 @@ By adding the event handler for the window resize event and call the layout func
 
 Before I go any further, I need to first implement the PlaygroundPage, so I have a working environment to test the editor out.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{xml}
 <Page
     x:Class="Algorithm_Dynamics.Pages.PlaygroundPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -3946,7 +3946,7 @@ Before I go any further, I need to first implement the PlaygroundPage, so I have
 
 I will use a grid with 3 rows and 2 columns to hold all controls.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{xml}
 <local:CodeEditor
     x:Name="CodeEditor"
     Grid.Row="0"
@@ -4026,7 +4026,7 @@ I will use a grid with 3 rows and 2 columns to hold all controls.
 
 Finally, to allow different controls to be resizeable, I add two grid splitters to the grid.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{xml}
 <controls:GridSplitter
     HorizontalAlignment="Left"
     Grid.Column="1"
@@ -4054,7 +4054,7 @@ Finally, to allow different controls to be resizeable, I add two grid splitters 
 
 All controls work correctly and they can be resized by the grid splitter. Now I need to interact with the code editer. I need to be able to get the code inside, set its programming language and color theme. To pass the config data to the editor, I will need to serialize the data into a JSON string and send it through web message. To avoid hand crafting the JSON string, I create a new class \mintinline{text}{EditorConfig} and use the \mintinline{text}{System.Text.Json} library to serialize the data.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{csharp}
 public class EditorConfig
 {
     public EditorConfig(string theme, string language, string code)
@@ -4071,7 +4071,7 @@ public class EditorConfig
 
 I then create a helper function to send the config data to the editor. It takes in an instance of the EditorConfig and serializes it into a JSON string, then send it through a web message. And for the testing purpose, I send the message when initializing the editor.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{csharp}
 /// <summary>
 /// Update the editor config of the Monaco Editor
 /// </summary>
@@ -4091,7 +4091,7 @@ async void InitializeWebViewAsync()
 
 On the web end, I need to listen to the web message and process the data received.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{javascript}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{javascript}
 // Receive and set theme/language/code
 window.chrome.webview.addEventListener('message', (e) => {
     console.log(e)
@@ -4112,7 +4112,7 @@ However, it is clearly not loading. Neither the theme, the syntax highlighting n
 
 I suspect this is caused by the fact that at the time the web message is sent, the Monaco Editor is not fully loaded, therefore it has not started listening for the message. To test my hypothesis, instead of sending a message, I will inject a JavaScript script to pass the value through the global window object.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{csharp}
 async void InitializeWebViewAsync()
 {
     // ...
@@ -4123,7 +4123,7 @@ async void InitializeWebViewAsync()
 
 And on the web end, I initialize the editor with the config data.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{javascript}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{javascript}
 window.editor = monaco.editor.create(document.getElementById('container'), {
     value: window.config?.Code,
     language: window.config?.Language,
@@ -4137,7 +4137,7 @@ Now the theme, code, and language config is passed correctly, which also proves 
 
 In order to allow other pages to set the config, I need to expose these three fields by registering them as properties.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{csharp}
 /// <summary>
 /// Return the editor theme based on current requested theme
 /// </summary>
@@ -4194,7 +4194,7 @@ public new ElementTheme RequestedTheme
 
 Note that \mintinline{text}{UpdateEditorConfig} is called when the language or the requested theme is changed to update the settings. To convert the theme code used in my app into the format of the Monaco Editor, I create a custom helper \mintinline{text}{GetTheme} to do the conversion. And I update the initializing process to use the value from these variables.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{csharp}
 async void InitializeWebViewAsync()
 {
     // ...
@@ -4205,7 +4205,7 @@ async void InitializeWebViewAsync()
 
 Now, in the PlaygroundPage, I can use the CodeEditor in this way.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{xml}
 <local:CodeEditor
     x:Name="CodeEditor"
     Grid.Row="0"
@@ -4219,7 +4219,7 @@ Now, in the PlaygroundPage, I can use the CodeEditor in this way.
 
 Now when I run the app, it should work just like before, but this time with its config exposed and set by the PlaygroundPage. However, I encounter the following exception.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{text}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{text}
 System.NullReferenceException
   HResult=0x80004003
   Message=Object reference not set to an instance of an object.
@@ -4230,7 +4230,7 @@ System.NullReferenceException
 
 The exception is caused by the \mintinline{text}{UpdateEditorConfig}. And after searching the documentation of the WebView2, the \mintinline{text}{WebView.CoreWebView2} object will be null before it is fully initialized. I can not use the \mintinline{text}{EnsureCoreWebView2Async} method before to ensure it is loaded because it is an async function while \mintinline{text}{UpdateEditorConfig} needs to be called in the setter. So I decide to ignore the null object because it only exists in the initializing stage, and I have passed the config through the global window object anyway.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{csharp}
 private void UpdateEditorConfig(EditorConfig editorConfig)
 {
     WebView.CoreWebView2?.PostWebMessageAsJson(JsonSerializer.Serialize(editorConfig));
@@ -4243,14 +4243,14 @@ Now when I run the app, it works correctly again.
 
 I can pass config to the Monaco Editor now, but I also need to be able to retrieve the code input from the editor. To do this, I add an event listener to the editor, and post a web message when the code is changed.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{javascript}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{javascript}
 // Send code when the code is changed
 window.editor.getModel().onDidChangeContent((e) => window.chrome.webview.postMessage(window.editor.getValue()))
 \end{minted}
 
 And on the app end, when I receive a new web message, I update the internal Code variable.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{csharp}
 /// <summary>
 /// Update the Code when receive the value send by the Monaco Editor
 /// </summary>
@@ -4272,7 +4272,7 @@ async void InitializeWebViewAsync()
 
 To test it is working, I bind the output box on the PlaygroundPage to CodeEditor.Code variable. When I type in the code editor, I should see the code in the output box updated with my typing.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{xml}
 <TextBox
     x:Name="OutputBox"
     Grid.Row="0"
@@ -4292,7 +4292,7 @@ I am not able to implement the full function of the PlaygroundPage right now sin
 
 I add a new event handler to process the selection change event.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{xml}
 <ComboBox
     x:Name="LanguageComboBox"
     SelectedIndex="0"
@@ -4307,7 +4307,7 @@ I add a new event handler to process the selection change event.
 
 And when I update the Lang variable, everything should just work.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{csharp}
 private void LanguageComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
 {
     CodeEditor.Lang = LanguageComboBox.SelectedItem.ToString();
@@ -4330,7 +4330,7 @@ Just before I plan to start the CodingPage, I find another bug with the Editor c
 
 At first, the WebView starts loading, and sends a message to request the initial configuration for the Monaco Editor when it is ready. The CodeEditor will keep listening until it receives the request. Then it will send the request and starts listening again. When the Monaco Editor is fully loaded, another message is sent to tell the CodeEditor it is ready. Then the initialization procedure is completed.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{javascript}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{javascript}
 require.config({ paths: { vs: 'monaco-editor/min/vs' } })
 require(['vs/editor/editor.main'], () => {
     window.chrome.webview.postMessage('[Status] Request Configuration')
@@ -4364,7 +4364,7 @@ function init() {
 
 For the CodeEditor control, I add a progress ring to display when it is going through the initilazation process.
 
-\begin{minted}[linenos,tabsize=4,breaklines]{xml}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{xml}
 <Grid>
     <WebView2 
         x:Name="WebView"
@@ -4380,7 +4380,7 @@ For the CodeEditor control, I add a progress ring to display when it is going th
 </Grid>
 \end{minted}
 
-\begin{minted}[linenos,tabsize=4,breaklines]{csharp}
+\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{csharp}
 /// <summary>
 /// Process the initialization process
 /// Update the Code when receive the value send by the Monaco Editor

@@ -19,7 +19,7 @@
 		"scope": "latex",
 		"prefix": "cs",
 		"body": [
-			"\\begin{minted}[linenos,tabsize=4,breaklines]{csharp}",
+			"\\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{csharp}",
 			"$1",
 			"\\end{minted}",
 			"$2"
@@ -30,7 +30,7 @@
 		"scope": "latex",
 		"prefix": "xaml",
 		"body": [
-			"\\begin{minted}[linenos,tabsize=4,breaklines]{xml}",
+			"\\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{xml}",
 			"$1",
 			"\\end{minted}",
 			"$2"
@@ -41,7 +41,7 @@
 		"scope": "latex",
 		"prefix": "tt",
 		"body": [
-			"\\begin{minted}[linenos,tabsize=4,breaklines]{text}",
+			"\\begin{minted}[linenos,tabsize=4,breaklines,breakanywhere]{text}",
 			"$1",
 			"\\end{minted}",
 			"$2"
