@@ -135,7 +135,7 @@ jobs:
         msix-folder: src\Bundle
         msixbundle-filepath: src\Bundle\Algorithm Dynamics_x86_x64_arm64.msixbundle
         msixbundle-version: "0.1.0.0"
-        enable-bundle-signing: true
+        enable-bundle-signing: false
         certificate-path: ${{ steps.decodepfx.outputs.cert_path }}
         certificate-private-key: ${{ secrets.PFX_KEY }}
 
@@ -146,11 +146,11 @@ jobs:
         Remove-Item -path $certificatePath
 
     # Upload the MSIX package: https://github.com/marketplace/actions/upload-a-build-artifact
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: MSIX Package Release
-        path: src\Bundle\*.msixbundle
+    # - name: Upload build artifacts
+    #   uses: actions/upload-artifact@v2
+    #   with:
+    #     name: MSIX Package Release
+    #     path: src\Bundle\*.msixbundle
 
   deploy:
     name: Deploy
