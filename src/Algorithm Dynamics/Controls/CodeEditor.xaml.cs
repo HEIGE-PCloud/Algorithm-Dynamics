@@ -17,6 +17,14 @@ namespace Algorithm_Dynamics.Controls
             InitializeComponent();
             InitializeWebViewAsync();
             themeListener.ThemeChanged += ThemeListener_ThemeChanged;
+            Unloaded += CodeEditor_Unloaded;
+        }
+
+        private void CodeEditor_Unloaded(object sender, RoutedEventArgs e)
+        {
+            //WebView.Close();
+            themeListener.ThemeChanged -= ThemeListener_ThemeChanged;
+            WebView.CoreWebView2.WebMessageReceived -= CoreWebView2_WebMessageReceived;
         }
 
         /// <summary>
