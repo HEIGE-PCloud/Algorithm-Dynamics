@@ -183,4 +183,5 @@
             }
         }
     ],
+    "latex-workshop.latex.bibDirs": ["report"]
 }
