@@ -132,11 +132,12 @@ jobs:
     - name: Create MSIX Bundle
       uses: LanceMcCarthy/Action-MsixBundler@v1.0.0
       with:
-        msix-folder: "src\\Bundle"
-        msixbundle-filepath: "src\\Bundle\\Algorithm Dynamics_x86_x64_arm64.msixbundle"
+        msix-folder: "src\Bundle"
+        msixbundle-filepath: "src\Bundle\Algorithm Dynamics_x86_x64_arm64.msixbundle"
         msixbundle-version: "0.1.0.0"
         enable-bundle-signing: true
         certificate-path: ${{ steps.decodepfx.outputs.cert_path }}
+        certificate-private-key: ${{ secrets.PFX_KEY }}
 
     # Remove the pfx
     - name: Remove the pfx
@@ -149,7 +150,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: MSIX Package Release
-        path: src\Bundle
+        path: src\Bundle\*.msixbundle
 
   deploy:
     name: Deploy
@@ -174,7 +175,6 @@ jobs:
           path: website/static
 
       - name: Prepare app
-        if: ${{ false }}
         uses: actions/download-artifact@v2
         with:
           name: MSIX Package Release
