@@ -57,13 +57,10 @@ jobs:
 
   build-app:
     name: Build App
-    if: ${{ false }}
     runs-on: windows-latest
     env:
-      Solution_Name: Algorithm Dynamics.sln                                                         # Replace with your solution name, i.e. MyWpfApp.sln.
-      Test_Project_Path: src\Algorithm Dynamics.Test\Algorithm Dynamics.Test.csproj                 # Replace with the path to your test project, i.e. MyWpfApp.Tests\MyWpfApp.Tests.csproj.
-      Wap_Project_Directory: src\Algorithm Dynamics\Algorithm Dynamics (Package)                    # Replace with the Wap project directory relative to the solution, i.e. MyWpfApp.Package.
-      Wap_Project_Path: src\Algorithm Dynamics\Algorithm Dynamics (Package)\Algorithm Dynamics (Package).wapproj                   # Replace with the path to your Wap project, i.e. MyWpf.App.Package\MyWpfApp.Package.wapproj.
+      Solution_Name: Algorithm Dynamics.sln
+      Project_Directory: src\Algorithm Dynamics
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -72,43 +69,93 @@ jobs:
 
     # Add MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
     - name: Setup MSBuild.exe
-      uses: microsoft/setup-msbuild@v1.0.2
+      uses: microsoft/setup-msbuild@v1.1
+
+    # Install the .NET Core workload
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
 
     # Decode the base 64 encoded pfx and save the Signing_Certificate
     - name: Decode the pfx
+      id: decodepfx
       run: |
-        $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.TEMPORARYKEY_ENCODED }}")
-        $certificatePath = Join-Path -Path $env:Wap_Project_Directory -ChildPath "Algorithm Dynamics (Package)_TemporaryKey.pfx"
+        $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.AlgorithmDynamics_TemporaryKey }}")
+        $certificatePath = Join-Path -Path $env:Project_Directory -ChildPath AlgorithmDynamics_TemporaryKey.pfx
         [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
+        echo "::set-output name=cert_path::$certificatePath"
 
-    # Build the Windows Application Packaging project
-    - name: Build the Windows Application Packaging Project (wapproj)
+    - name: Create the x86 app package
       working-directory: src
-      run: msbuild $env:Solution_Name /restore /p:Platform=$env:TargetPlatform /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:BuildMode /p:AppxBundle=$env:AppxBundle /p:PackageCertificateKeyFile=$env:PfxPath /p:PackageCertificatePassword="${{ secrets.Pfx_Key }}" -m
       env:
-        AppxBundle: Always
-        BuildMode: SideLoadOnly
+        Solution_Name: Algorithm Dynamics.sln
+        Appx_Bundle_Platforms: x86|x64|arm64
+        Platform: x86
         Configuration: Release
-        TargetPlatform: x64
-        PfxPath: Algorithm Dynamics (Package)_TemporaryKey.pfx
+        Appx_Package_Build_Mode: StoreUpload
+        Appx_Bundle: Never
+        Appx_Package_Dir: AppPackages\
+      run: |
+        msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=AlgorithmDynamics_TemporaryKey.pfx /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
+        mkdir Bundle
+        Copy-item -Force -Recurse '.\Algorithm Dynamics\AppPackages\**\*.msix' Bundle\.
+
+    - name: Create the x64 app package
+      working-directory: src
+      env:
+        Solution_Name: Algorithm Dynamics.sln
+        Appx_Bundle_Platforms: x86|x64|arm64
+        Platform: x64
+        Configuration: Release
+        Appx_Package_Build_Mode: StoreUpload
+        Appx_Bundle: Never
+        Appx_Package_Dir: AppPackages\
+      run: |
+        msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=AlgorithmDynamics_TemporaryKey.pfx /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
+        Copy-item -Force -Recurse '.\Algorithm Dynamics\AppPackages\**\*.msix' Bundle\.
+
+    - name: Create the arm64 app package
+      working-directory: src
+      env:
+        Solution_Name: Algorithm Dynamics.sln
+        Appx_Bundle_Platforms: x86|x64|arm64
+        Platform: arm64
+        Configuration: Release
+        Appx_Package_Build_Mode: StoreUpload
+        Appx_Bundle: Never
+        Appx_Package_Dir: AppPackages\
+      run: |
+        msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=AlgorithmDynamics_TemporaryKey.pfx /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
+        Copy-item -Force -Recurse '.\Algorithm Dynamics\AppPackages\**\*.msix' Bundle\.
+
+    # - name: Create MSIX Bundle
+    #   uses: HEIGE-PCloud/Action-MsixBundler@v1.0.1
+    #   with:
+    #     msix-folder: src\Bundle
+    #     msixbundle-filepath: src\Bundle\Algorithm Dynamics_x86_x64_arm64.msixbundle
+    #     msixbundle-version: "0.1.0.0"
+    #     enable-bundle-signing: true
+    #     certificate-path: ${{ steps.decodepfx.outputs.cert_path }}
+    #     certificate-private-key: ""
 
     # Remove the pfx
     - name: Remove the pfx
       run: |
-        $certificatePath = Join-Path -Path $env:Wap_Project_Directory -ChildPath "Algorithm Dynamics (Package)_TemporaryKey.pfx"
+        $certificatePath = Join-Path -Path $env:Project_Directory -ChildPath AlgorithmDynamics_TemporaryKey.pfx
         Remove-Item -path $certificatePath
 
     # Upload the MSIX package: https://github.com/marketplace/actions/upload-a-build-artifact
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: MSIX Package Release
-        path: ${{ env.Wap_Project_Directory }}\AppPackages
+    # - name: Upload build artifacts
+    #   uses: actions/upload-artifact@v2
+    #   with:
+    #     name: MSIX Package Release
+    #     path: src\Bundle\*.msixbundle
 
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-    needs: [build-report, test-app]
+    needs: [build-report, test-app, build-app]
     steps:
       - uses: actions/checkout@v2
         with:
@@ -127,12 +174,11 @@ jobs:
           name: Report
           path: website/static
 
-      - name: Prepare app
-        if: ${{ false }}
-        uses: actions/download-artifact@v2
-        with:
-          name: MSIX Package Release
-          path: website/static/install
+      # - name: Prepare app
+      #   uses: actions/download-artifact@v2
+      #   with:
+      #     name: MSIX Package Release
+      #     path: website/static/install
 
       - name: Build website
         run: | 
