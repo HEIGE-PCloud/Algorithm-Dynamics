@@ -130,7 +130,7 @@ jobs:
         Copy-item -Force -Recurse '.\Algorithm Dynamics\AppPackages\**\*.msix' Bundle\.
 
     - name: Create MSIX Bundle
-      uses: HEIGE-PCloud/Action-MsixBundler@v1.0.1
+      uses: LanceMcCarthy/Action-MsixBundler@v1
       with:
         msix-folder: src\Bundle
         msixbundle-filepath: src\Bundle\Algorithm Dynamics_x86_x64_arm64.msixbundle
