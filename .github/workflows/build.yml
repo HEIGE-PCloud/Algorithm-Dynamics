@@ -125,19 +125,18 @@ jobs:
         Appx_Package_Build_Mode: StoreUpload
         Appx_Bundle: Never
         Appx_Package_Dir: AppPackages\
-        Package_Path: Algorithm Dynamics\AppPackages\Algorithm Dynamics_0.${{ github.run_number }}.${{ github.run_attempt }}.0_arm64_Test\Algorithm Dynamics_0.${{ github.run_number }}.${{ github.run_attempt }}.0_arm64.msix
       run: |
         msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=AlgorithmDynamics_TemporaryKey.pfx /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
         Copy-item -Force -Recurse '.\Algorithm Dynamics\AppPackages\**\*.msix' Bundle\.
 
-    # - name: Create MSIX Bundle
-    #   uses: LanceMcCarthy/Action-MsixBundler@v1.0.0
-    #   with:
-    #     msix-folder: "src\\Bundle"
-    #     msixbundle-filepath: "src\\Bundle\\MyApp_0.${{ github.run_number }}.${{ github.run_attempt }}.0_x86_x64.msixbundle"
-    #     msixbundle-version: "0.${{ github.run_number }}.${{ github.run_attempt }}.0"
-    #     enable-bundle-signing: true
-    #     certificate-path: ${{ steps.decodepfx.outputs.cert_path }}
+    - name: Create MSIX Bundle
+      uses: LanceMcCarthy/Action-MsixBundler@v1.0.0
+      with:
+        msix-folder: "src\\Bundle"
+        msixbundle-filepath: "src\\Bundle\\Algorithm Dynamics_x86_x64_arm64.msixbundle"
+        msixbundle-version: "0.1.0.0"
+        enable-bundle-signing: true
+        certificate-path: ${{ steps.decodepfx.outputs.cert_path }}
 
     # Remove the pfx
     - name: Remove the pfx
@@ -155,7 +154,7 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-    needs: [build-report, test-app]
+    needs: [build-report, test-app, build-app]
     steps:
       - uses: actions/checkout@v2
         with:
