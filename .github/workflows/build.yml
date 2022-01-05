@@ -97,7 +97,7 @@ jobs:
         Appx_Bundle: Never
         Appx_Package_Dir: AppPackages\
       run: |
-        msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=AlgorithmDynamics_TemporaryKey.pfx /p:PackageCertificatePassword=${{ secrets.Pfx_Key }} /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
+        msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:AppxPackageSigningEnabled=false /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
         mkdir Bundle
         Copy-item -Force -Recurse '.\Algorithm Dynamics\AppPackages\**\*.msix' Bundle\.
 
@@ -108,11 +108,11 @@ jobs:
         Appx_Bundle_Platforms: x86|x64|arm64
         Platform: x64
         Configuration: Release
-        Appx_Package_Build_Mode: StoreUpload
-        Appx_Bundle: Never
+        Appx_Package_Build_Mode: SideLoadOnly
+        Appx_Bundle: Always
         Appx_Package_Dir: AppPackages\
       run: |
-        msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=AlgorithmDynamics_TemporaryKey.pfx /p:PackageCertificatePassword="${{ secrets.Pfx_Key }}" /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
+        msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:AppxPackageSigningEnabled=false /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
         Copy-item -Force -Recurse '.\Algorithm Dynamics\AppPackages\**\*.msix' Bundle\.
 
     - name: Create the arm64 app package
@@ -126,7 +126,7 @@ jobs:
         Appx_Bundle: Never
         Appx_Package_Dir: AppPackages\
       run: |
-        msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=AlgorithmDynamics_TemporaryKey.pfx /p:PackageCertificatePassword=${{ secrets.Pfx_Key }} /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
+        msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:AppxPackageSigningEnabled=false /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
         Copy-item -Force -Recurse '.\Algorithm Dynamics\AppPackages\**\*.msix' Bundle\.
 
     - name: Create MSIX Bundle
