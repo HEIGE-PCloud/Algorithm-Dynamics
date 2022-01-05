@@ -97,7 +97,7 @@ jobs:
         Appx_Bundle: Never
         Appx_Package_Dir: AppPackages\
       run: |
-        msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=AlgorithmDynamics_TemporaryKey.pfx /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
+        msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:AppxPackageSigningEnabled=false /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
         mkdir Bundle
         Copy-item -Force -Recurse '.\Algorithm Dynamics\AppPackages\**\*.msix' Bundle\.
 
@@ -108,11 +108,11 @@ jobs:
         Appx_Bundle_Platforms: x86|x64|arm64
         Platform: x64
         Configuration: Release
-        Appx_Package_Build_Mode: StoreUpload
-        Appx_Bundle: Never
+        Appx_Package_Build_Mode: SideLoadOnly
+        Appx_Bundle: Always
         Appx_Package_Dir: AppPackages\
       run: |
-        msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=AlgorithmDynamics_TemporaryKey.pfx /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
+        msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:AppxPackageSigningEnabled=false /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
         Copy-item -Force -Recurse '.\Algorithm Dynamics\AppPackages\**\*.msix' Bundle\.
 
     - name: Create the arm64 app package
@@ -126,18 +126,18 @@ jobs:
         Appx_Bundle: Never
         Appx_Package_Dir: AppPackages\
       run: |
-        msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=AlgorithmDynamics_TemporaryKey.pfx /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
+        msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:AppxPackageSigningEnabled=false /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
         Copy-item -Force -Recurse '.\Algorithm Dynamics\AppPackages\**\*.msix' Bundle\.
 
-    # - name: Create MSIX Bundle
-    #   uses: HEIGE-PCloud/Action-MsixBundler@v1.0.1
-    #   with:
-    #     msix-folder: src\Bundle
-    #     msixbundle-filepath: src\Bundle\Algorithm Dynamics_x86_x64_arm64.msixbundle
-    #     msixbundle-version: "0.1.0.0"
-    #     enable-bundle-signing: true
-    #     certificate-path: ${{ steps.decodepfx.outputs.cert_path }}
-    #     certificate-private-key: ""
+    - name: Create MSIX Bundle
+      uses: LanceMcCarthy/Action-MsixBundler@v1.0.1
+      with:
+        msix-folder: src\Bundle
+        msixbundle-filepath: src\Bundle\Algorithm Dynamics_x86_x64_arm64.msixbundle
+        msixbundle-version: "0.1.0.0"
+        enable-bundle-signing: true
+        certificate-path: ${{ steps.decodepfx.outputs.cert_path }}
+        certificate-private-key: ${{ secrets.Pfx_Key }}
 
     # Remove the pfx
     - name: Remove the pfx
@@ -146,11 +146,11 @@ jobs:
         Remove-Item -path $certificatePath
 
     # Upload the MSIX package: https://github.com/marketplace/actions/upload-a-build-artifact
-    # - name: Upload build artifacts
-    #   uses: actions/upload-artifact@v2
-    #   with:
-    #     name: MSIX Package Release
-    #     path: src\Bundle\*.msixbundle
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: MSIX Package Release
+        path: src\Bundle\*.msixbundle
 
   deploy:
     name: Deploy
@@ -158,35 +158,40 @@ jobs:
     needs: [build-report, test-app, build-app]
     steps:
       - uses: actions/checkout@v2
+        if: github.ref == 'refs/heads/main'
         with:
           submodules: true
           fetch-depth: 0
 
       - name: Setup Hugo
+        if: github.ref == 'refs/heads/main'
         uses: peaceiris/actions-hugo@v2
         with:
           hugo-version: 'latest'
           extended: true
 
       - name: Prepare report
+        if: github.ref == 'refs/heads/main'
         uses: actions/download-artifact@v2
         with:
           name: Report
           path: website/static
 
-      # - name: Prepare app
-      #   uses: actions/download-artifact@v2
-      #   with:
-      #     name: MSIX Package Release
-      #     path: website/static/install
+      - name: Prepare app
+        uses: actions/download-artifact@v2
+        with:
+          name: MSIX Package Release
+          path: website/static/install
 
       - name: Build website
+        if: github.ref == 'refs/heads/main'
         run: | 
           sudo npm i -g postcss postcss-cli autoprefixer
           cd website
           hugo --minify
 
       - name: Deploy to GitHub Pages
+        if: github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
