@@ -97,7 +97,7 @@ jobs:
         Appx_Bundle: Never
         Appx_Package_Dir: AppPackages\
       run: |
-        msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=AlgorithmDynamics_TemporaryKey.pfx /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
+        msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=AlgorithmDynamics_TemporaryKey.pfx /p:PackageCertificatePassword=${{ secrets.Pfx_Key }} /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
         mkdir Bundle
         Copy-item -Force -Recurse '.\Algorithm Dynamics\AppPackages\**\*.msix' Bundle\.
 
@@ -112,7 +112,7 @@ jobs:
         Appx_Bundle: Never
         Appx_Package_Dir: AppPackages\
       run: |
-        msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=AlgorithmDynamics_TemporaryKey.pfx /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
+        msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=AlgorithmDynamics_TemporaryKey.pfx /p:PackageCertificatePassword=${{ secrets.Pfx_Key }} /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
         Copy-item -Force -Recurse '.\Algorithm Dynamics\AppPackages\**\*.msix' Bundle\.
 
     - name: Create the arm64 app package
@@ -126,18 +126,18 @@ jobs:
         Appx_Bundle: Never
         Appx_Package_Dir: AppPackages\
       run: |
-        msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=AlgorithmDynamics_TemporaryKey.pfx /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
+        msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=AlgorithmDynamics_TemporaryKey.pfx /p:PackageCertificatePassword=${{ secrets.Pfx_Key }} /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
         Copy-item -Force -Recurse '.\Algorithm Dynamics\AppPackages\**\*.msix' Bundle\.
 
     - name: Create MSIX Bundle
-      uses: HEIGE-PCloud/Action-MsixBundler@6b8038048a095f46f0c9ba09f589729f98390530
+      uses: LanceMcCarthy/Action-MsixBundler@v1.0.1
       with:
         msix-folder: src\Bundle
         msixbundle-filepath: src\Bundle\Algorithm Dynamics_x86_x64_arm64.msixbundle
         msixbundle-version: "0.1.0.0"
         enable-bundle-signing: true
         certificate-path: ${{ steps.decodepfx.outputs.cert_path }}
-        certificate-private-key: ""
+        certificate-private-key: ${{ secrets.Pfx_Key }}
 
     # Remove the pfx
     - name: Remove the pfx
@@ -158,17 +158,20 @@ jobs:
     needs: [build-report, test-app, build-app]
     steps:
       - uses: actions/checkout@v2
+        if: github.ref == 'refs/heads/main'
         with:
           submodules: true
           fetch-depth: 0
 
       - name: Setup Hugo
+        if: github.ref == 'refs/heads/main'
         uses: peaceiris/actions-hugo@v2
         with:
           hugo-version: 'latest'
           extended: true
 
       - name: Prepare report
+        if: github.ref == 'refs/heads/main'
         uses: actions/download-artifact@v2
         with:
           name: Report
@@ -181,12 +184,14 @@ jobs:
       #     path: website/static/install
 
       - name: Build website
+        if: github.ref == 'refs/heads/main'
         run: | 
           sudo npm i -g postcss postcss-cli autoprefixer
           cd website
           hugo --minify
 
       - name: Deploy to GitHub Pages
+        if: github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
