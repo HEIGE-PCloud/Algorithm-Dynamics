@@ -519,3 +519,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Hugo
+_gen/
+.hugo_build.lock
