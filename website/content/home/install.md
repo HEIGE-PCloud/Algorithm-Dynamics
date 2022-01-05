@@ -3,4 +3,4 @@ title: "Install"
 weight: 1
 ---
 
-https://algorithmdynamics.com/install/Algorithm Dynamics_x86_x64_arm64.msixbundle
+<p><a href="/install/Algorithm Dynamics_x86_x64_arm64.msixbundle">MSIX Bundle</a></p>
