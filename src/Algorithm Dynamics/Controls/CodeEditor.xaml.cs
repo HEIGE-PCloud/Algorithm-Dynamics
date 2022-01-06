@@ -22,9 +22,9 @@ namespace Algorithm_Dynamics.Controls
 
         private void CodeEditor_Unloaded(object sender, RoutedEventArgs e)
         {
-            //WebView.Close();
-            themeListener.ThemeChanged -= ThemeListener_ThemeChanged;
-            WebView.CoreWebView2.WebMessageReceived -= CoreWebView2_WebMessageReceived;
+            // Close the WebView when unloaded
+            // https://github.com/microsoft/microsoft-ui-xaml/issues/4752
+            WebView.Close();
         }
 
         /// <summary>
