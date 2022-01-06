@@ -4419,7 +4419,24 @@ private async void CoreWebView2_WebMessageReceived(CoreWebView2 sender, CoreWebV
 
 Now, it is ok to navigate around different pages, and the editor will always be initialized correctly.
 
-WebView2 lifecycle \cite{github:microsoft-ui-xaml:4752}
+After testing the PlaygroundPage for a longer time, I find another issue. The memory usage of the app keep increasing each time when I navigate to and away from the PlaygroundPage. The memory garbage collection does not seem to work as expected. I suspect that is caused by the WebView2 control not being destroyed correctly. To verify my hypothesis, I use the Porcess Explorer \cite{microsoft:docs:process-explorer} to examine the process tree of the app.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{Process-Explorer-WebView2}
+
+As I expected, the WebView2 process is created not destroyed when I navigate away from the PlaygroundPage. And each time a new instance is create, which is causing the memory leak. After some researching on the lifecycle of the WebView2 component \cite{github:microsoft-ui-xaml:4752}, I found that I can call \mintinline{text}{WebView2.Close()} to manually dispose it. So I add a new procedure to handle the control unload event.
+
+\begin{minted}{csharp}
+private void CodeEditor_Unloaded(object sender, RoutedEventArgs e)
+{
+    // Close the WebView when unloaded
+    // https://github.com/microsoft/microsoft-ui-xaml/issues/4752
+    WebView.Close();
+}
+\end{minted}
+
+Now, when I navigate away from the PlaygroundPage, I can see from the Process Explorer that all WebView2 processes are killed. And the memory usage fall back to the initial state correctly.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{Process-Explorer-WebView2-Destroyed}
 
 \subsection{Create the CodingPage}
 
