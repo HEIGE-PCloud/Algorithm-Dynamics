@@ -1,4 +1,6 @@
-﻿using Microsoft.UI.Xaml;
+﻿using Algorithm_Dynamics.Helpers;
+using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
 
@@ -9,9 +11,11 @@ namespace Algorithm_Dynamics
     /// </summary>
     public sealed partial class MainWindow : Window
     {
+        public static AppWindow AppWindow;
         public MainWindow()
         {
             InitializeComponent();
+            AppWindow = AppWindowExtensions.GetAppWindow(this);
             Title = "Algorithm Dynamics";
             // Select HomePage when first loaded
             MainNavView.SelectedItem = MainNavView.MenuItems[0];

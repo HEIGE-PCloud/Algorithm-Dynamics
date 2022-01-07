@@ -44,6 +44,7 @@
             </NavigationView.FooterMenuItems>
             <Frame
                 x:Name="ContentFrame"
+                x:FieldModifier="public"
                 Padding="0"
                 Visibility="Visible"/>
         </NavigationView>
