@@ -1,4 +1,5 @@
 ﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Algorithm_Dynamics
 {
@@ -32,6 +33,8 @@ namespace Algorithm_Dynamics
             m_window.Activate();
         }
 
-        public Window m_window;
+        public MainWindow m_window;
+        public NavigationView MainNavView { get => m_window.MainNavView; }
+        public Frame ContentFrame { get => m_window.ContentFrame; }
     }
 }

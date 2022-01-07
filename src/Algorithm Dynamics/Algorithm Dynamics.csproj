@@ -26,10 +26,18 @@
     <None Remove="Controls\CodeEditor.xaml" />
     <None Remove="Pages\AccountPage.xaml" />
     <None Remove="Pages\AssignmentsPage.xaml" />
+    <None Remove="Pages\CodingPage.xaml" />
+    <None Remove="Pages\CodingPage\CodingPage.xaml" />
+    <None Remove="Pages\CodingPage\ErrorPanelPage.xaml" />
+    <None Remove="Pages\CodingPage\InputPanelPage.xaml" />
+    <None Remove="Pages\CodingPage\OutputPanelPage.xaml" />
+    <None Remove="Pages\CodingPage\ProblemMarkdownPage.xaml" />
+    <None Remove="Pages\CodingPage\SubmissionsPage.xaml" />
     <None Remove="Pages\HomePage.xaml" />
     <None Remove="Pages\PlaygroundPage.xaml" />
     <None Remove="Pages\ProblemsPage.xaml" />
     <None Remove="Pages\SettingsPage.xaml" />
+    <None Remove="Themes\Generic.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -54,6 +62,36 @@
        package has not yet been restored -->
   <ItemGroup Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnablePreviewMsixTooling)'=='true'">
     <ProjectCapability Include="Msix" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Pages\CodingPage\ErrorPanelPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Pages\CodingPage\OutputPanelPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Pages\CodingPage\InputPanelPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Pages\CodingPage\SubmissionsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Pages\CodingPage\CodingPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Pages\CodingPage\ProblemMarkdownPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Pages\AccountPage.xaml">
@@ -87,6 +125,11 @@
   </ItemGroup>
   <ItemGroup>
     <Page Update="Controls\CodeEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Theme\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

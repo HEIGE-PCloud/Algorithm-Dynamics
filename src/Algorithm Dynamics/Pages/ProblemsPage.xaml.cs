@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml;
 using System.Collections.ObjectModel;
 using System;
+using Algorithm_Dynamics.Pages.CodingPage;
 
 namespace Algorithm_Dynamics.Pages
 {
@@ -203,6 +204,13 @@ namespace Algorithm_Dynamics.Pages
             // TODO: Query(keywords, difficulty, status, tag, list);
             Problems.Clear();
             Problems.Add(new Problem(keywords, difficulty, status, tag));
+        }
+
+        private void StartProblem(object sender, RoutedEventArgs e)
+        {
+            App app = (App)Application.Current;
+            app.ContentFrame.Navigate(typeof(CodingPage.CodingPage));
+            app.MainNavView.SelectedItem = null;
         }
     }
     public class Problem
