@@ -9,6 +9,87 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-        <TextBlock Text="SettingsPage"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel 
+            Spacing="10" 
+            Margin="10" >
+            <TextBlock Text="Color Theme"/>
+            <StackPanel x:Name="themePanel">
+                <RadioButton Content="Light">
+                    <RadioButton.Tag>
+                        <ElementTheme>Light</ElementTheme>
+                    </RadioButton.Tag>
+                </RadioButton>
+                <RadioButton Content="Dark">
+                    <RadioButton.Tag>
+                        <ElementTheme>Dark</ElementTheme>
+                    </RadioButton.Tag>
+                </RadioButton>
+                <RadioButton Content="System Default">
+                    <RadioButton.Tag>
+                        <ElementTheme>Default</ElementTheme>
+                    </RadioButton.Tag>
+                </RadioButton>
+            </StackPanel>
+        </StackPanel>
+        <StackPanel
+            Grid.Row="1"
+            Grid.Column="0"
+            Spacing="10"
+            Margin="10">
+            <TextBlock Text="Run Code Time Limit"/>
+            <NumberBox HorizontalAlignment="Left"/>
+        </StackPanel>
+        <StackPanel
+            Grid.Row="2"
+            Grid.Column="0"
+            Spacing="10"
+            Margin="10">
+            <TextBlock Text="Run Code Memory Limit"/>
+            <NumberBox 
+                HorizontalAlignment="Left"
+                Value="64"
+                SpinButtonPlacementMode="Inline"
+                SmallChange="1"
+                LargeChange="10"/>
+        </StackPanel>
+        <StackPanel
+            Grid.Row="3"
+            Grid.Column="0"
+            Spacing="10"
+            Margin="10">
+            <TextBlock Text="Preferred Programming Language"/>
+            <ComboBox>
+                
+            </ComboBox>
+        </StackPanel>
+        <StackPanel
+            Grid.Row="0"
+            Grid.Column="1"
+            Margin="10"
+            Spacing="10">
+            <TextBlock Text="App"/>
+            <HyperlinkButton Content="Documentation"/>
+            <HyperlinkButton Content="Documentation"/>
+            <HyperlinkButton Content="Documentation"/>
+        </StackPanel>
+        <InfoBar
+            Grid.Row="4"
+            Grid.Column="1"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            IsOpen="True"
+            Severity="Success"
+            Title="Saved"
+            Message="Changes to settings are saved" />
     </Grid>
 </Page>
