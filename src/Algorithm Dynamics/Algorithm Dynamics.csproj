@@ -28,11 +28,6 @@
     <None Remove="Pages\AssignmentsPage.xaml" />
     <None Remove="Pages\CodingPage.xaml" />
     <None Remove="Pages\CodingPage\CodingPage.xaml" />
-    <None Remove="Pages\CodingPage\ErrorPanelPage.xaml" />
-    <None Remove="Pages\CodingPage\InputPanelPage.xaml" />
-    <None Remove="Pages\CodingPage\OutputPanelPage.xaml" />
-    <None Remove="Pages\CodingPage\ProblemMarkdownPage.xaml" />
-    <None Remove="Pages\CodingPage\SubmissionsPage.xaml" />
     <None Remove="Pages\HomePage.xaml" />
     <None Remove="Pages\PlaygroundPage.xaml" />
     <None Remove="Pages\ProblemsPage.xaml" />
@@ -64,32 +59,7 @@
     <ProjectCapability Include="Msix" />
   </ItemGroup>
   <ItemGroup>
-    <Page Update="Pages\CodingPage\ErrorPanelPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Update="Pages\CodingPage\OutputPanelPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Update="Pages\CodingPage\InputPanelPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Update="Pages\CodingPage\SubmissionsPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Update="Pages\CodingPage\CodingPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Update="Pages\CodingPage\ProblemMarkdownPage.xaml">
+    <Page Update="Pages\CodingPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
@@ -132,5 +102,9 @@
     <Page Update="Theme\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Pages\AssignmentsPage\" />
+    <Folder Include="Pages\CodingPage\" />
   </ItemGroup>
 </Project>
