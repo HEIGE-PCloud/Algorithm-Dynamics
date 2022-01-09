@@ -107,4 +107,7 @@
     <Folder Include="Pages\AssignmentsPage\" />
     <Folder Include="Pages\CodingPage\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Algorithm Dynamics.Core\Algorithm Dynamics.Core.csproj" />
+  </ItemGroup>
 </Project>

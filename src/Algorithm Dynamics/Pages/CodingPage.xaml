@@ -26,9 +26,7 @@
             Grid.RowSpan="3"
             Grid.Column="0"
             Margin="0 0 8 0">
-            <PivotItem 
-                Header="Problem"
-                Style="{ThemeResource TitleTextBlockStyle}">
+            <PivotItem Header="Problem">
                 <ScrollViewer
                     HorizontalScrollBarVisibility="Disabled"
                     VerticalScrollBarVisibility="Auto">
@@ -159,14 +157,16 @@
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
             <Button
-                Grid.Column="0">
+                Grid.Column="0"
+                VerticalAlignment="Stretch">
                 <Button.Content>
                     <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE76B;"/>
                 </Button.Content>
             </Button>
             <DropDownButton
                 Grid.Column="1"
-                Content="Problem 0">
+                Content="Problem 0"
+                VerticalAlignment="Stretch">
                 <DropDownButton.Flyout>
                     <MenuFlyout Placement="Top">
                         <MenuFlyoutItem Text="Problem 1"/>
@@ -177,7 +177,8 @@
 
             </DropDownButton>
             <Button
-                Grid.Column="2">
+                Grid.Column="2"
+                VerticalAlignment="Stretch">
                 <Button.Content>
                     <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE76C;"/>
                 </Button.Content>

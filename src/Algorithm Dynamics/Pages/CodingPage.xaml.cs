@@ -29,22 +29,22 @@ namespace Algorithm_Dynamics.Pages
 
         private void LanguageComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            CodeEditor.Lang = LanguageComboBox.SelectedItem as string;
+            //CodeEditor.Lang = LanguageComboBox.SelectedItem as string;
         }
 
         private void FullScreenButton_Click(object sender, RoutedEventArgs e)
         {
-            AppWindow window = MainWindow.AppWindow;
-            if (window.Presenter.Kind == AppWindowPresenterKind.Overlapped)
-            {
-                window.SetPresenter(AppWindowPresenterKind.FullScreen);
-                FullScreenIcon.Glyph = "\xE73F";
-            }
-            else
-            {
-                window.SetPresenter(AppWindowPresenterKind.Overlapped);
-                FullScreenIcon.Glyph = "\xE740";
-            }
+            //AppWindow window = MainWindow.AppWindow;
+            //if (window.Presenter.Kind == AppWindowPresenterKind.Overlapped)
+            //{
+            //    window.SetPresenter(AppWindowPresenterKind.FullScreen);
+            //    FullScreenIcon.Glyph = "\xE73F";
+            //}
+            //else
+            //{
+            //    window.SetPresenter(AppWindowPresenterKind.Overlapped);
+            //    FullScreenIcon.Glyph = "\xE740";
+            //}
         }
     }
 }

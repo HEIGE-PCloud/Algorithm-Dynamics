@@ -116,7 +116,11 @@ namespace Algorithm_Dynamics.Core.Models
                 while (ExecuteProcess.HasExited == false)
                 {
                     ExecuteProcess.Refresh();
-                    _WorkingSet64 = ExecuteProcess.PeakWorkingSet64;
+                    try
+                    {
+                        _WorkingSet64 = ExecuteProcess.PeakWorkingSet64;
+                    }
+                    catch (InvalidOperationException) { break; }
                     if (_WorkingSet64 > MemoryLimit)
                     {
                         ExecuteProcess.Kill();
@@ -136,8 +140,9 @@ namespace Algorithm_Dynamics.Core.Models
             _SourceCodeFilePath = Path.Combine(FolderPath, FileName) + ".txt";
             _ExecutableFilePath = Path.Combine(FolderPath, FileName) + ".exe";
         }
-        public async static Task<RunCodeResult> RunCode(string UserCode, string Input, Language language, int TimeLimit, long MemoryLimit)
+        public async static Task<RunCodeResult> RunCode(string UserCode, string Input, Language language, int TimeLimit, long MemoryLimit, IProgress<int> Progress)
         {
+            Progress.Report(0);
             RunCodeResult result = new();
             Directory.CreateDirectory(_SourceCodeFolderPath);
             await File.WriteAllTextAsync(_SourceCodeFilePath, UserCode);
@@ -145,12 +150,14 @@ namespace Algorithm_Dynamics.Core.Models
             {
                 if (await Compile(language) != 0)
                 {
+                    Progress.Report(100);
                     result.StandardOutput = _CompilationOutput;
                     result.StandardError = _CompilationError;
                     result.ResultCode = ResultCode.COMPILE_ERROR;
                     return result;
                 }
             }
+            Progress.Report(50);
             var watch = new Stopwatch();
             watch.Start();
             result.ExitCode = await Execute(Input, language, TimeLimit, MemoryLimit);
@@ -159,6 +166,7 @@ namespace Algorithm_Dynamics.Core.Models
             result.StandardError = _StandardError;
             result.CPUTime = watch.ElapsedMilliseconds;
             result.MemoryUsage = _WorkingSet64;
+            Progress.Report(100);
             if (_StatusCode == StatusCode.TIME_LIMIT_EXCEEDED)
             {
                 result.ResultCode = ResultCode.TIME_LIMIT_EXCEEDED;
@@ -175,15 +183,12 @@ namespace Algorithm_Dynamics.Core.Models
                 result.ResultCode = ResultCode.RUNTIME_ERROR;
                 return result;
             }
-            if (result.ExitCode == 0)
-            {
-                result.ResultCode = ResultCode.SUCCESS;
-            }
+            result.ResultCode = ResultCode.SUCCESS;
             return result;
         }
         public async static Task<TestCaseResult> JudgeTestCase(string UserCode, TestCase TestCase, Language Language, int TimeLimit, long MemoryLimit)
         {
-            TestCaseResult result = new(TestCase, await RunCode(UserCode, TestCase.Input, Language, TimeLimit, MemoryLimit));
+            TestCaseResult result = new(TestCase, await RunCode(UserCode, TestCase.Input, Language, TimeLimit, MemoryLimit, new Progress<int>()));
             if (result.ResultCode == ResultCode.SUCCESS)
             {
                 if (result.StandardOutput.Trim() != TestCase.Output.Trim())
