@@ -102,14 +102,14 @@
                 <TextBox
                     x:Name="OutputTextBox"
                     x:FieldModifier="public"
-                    PlaceholderText="Input Panel"
+                    PlaceholderText="Output Panel"
                     AcceptsReturn="True"/>
             </PivotItem>
             <PivotItem Header="Error">
                 <TextBox
                     x:Name="ErrorTextBox"
                     x:FieldModifier="public"
-                    PlaceholderText="Input Panel"
+                    PlaceholderText="Error Panel"
                     AcceptsReturn="True"/>
             </PivotItem>
         </Pivot>
