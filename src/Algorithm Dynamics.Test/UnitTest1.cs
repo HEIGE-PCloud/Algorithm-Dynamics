@@ -1,6 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Algorithm_Dynamics.Core.Models;
 using System.Threading.Tasks;
+using System;
 
 namespace Algorithm_Dynamics.Test
 {
@@ -13,7 +14,7 @@ namespace Algorithm_Dynamics.Test
         public async Task TestRunCode(string code, string input, int timeLimit, int memoryLimit, string expected)
         {
             Judger.SetSourceCodeFilePath("temp", "sol");
-            RunCodeResult result = await Judger.RunCode(code, input, LanguageConfig.Python, timeLimit, memoryLimit);
+            RunCodeResult result = await Judger.RunCode(code, input, LanguageConfig.Python, timeLimit, memoryLimit, new Progress<int>());
             Assert.AreEqual(result.StandardOutput, expected);
         }
     }
