@@ -38,7 +38,11 @@
                 </ScrollViewer>
             </PivotItem>
             <PivotItem Header="Submissions">
-
+                <controls:DataGrid
+                    x:Name="SubmissionsDataGrid"
+                    AutoGenerateColumns="True"
+                    ItemsSource="{x:Bind Submissions, Mode=OneWay}">
+                </controls:DataGrid>
             </PivotItem>
         </Pivot>
 

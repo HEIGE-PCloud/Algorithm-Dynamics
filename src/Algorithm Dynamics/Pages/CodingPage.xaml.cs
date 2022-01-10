@@ -1,18 +1,8 @@
 ﻿using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using System.Collections.ObjectModel;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -26,25 +16,44 @@ namespace Algorithm_Dynamics.Pages
         {
             InitializeComponent();
         }
-
+        public ObservableCollection<Submission> Submissions = new() {
+            new Submission(DateTime.Now, "Accepted", "8 ms", "9 MB", "cpp")
+        };
         private void LanguageComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            //CodeEditor.Lang = LanguageComboBox.SelectedItem as string;
+            CodeEditor.Lang = LanguageComboBox.SelectedItem as string;
         }
 
         private void FullScreenButton_Click(object sender, RoutedEventArgs e)
         {
-            //AppWindow window = MainWindow.AppWindow;
-            //if (window.Presenter.Kind == AppWindowPresenterKind.Overlapped)
-            //{
-            //    window.SetPresenter(AppWindowPresenterKind.FullScreen);
-            //    FullScreenIcon.Glyph = "\xE73F";
-            //}
-            //else
-            //{
-            //    window.SetPresenter(AppWindowPresenterKind.Overlapped);
-            //    FullScreenIcon.Glyph = "\xE740";
-            //}
+            AppWindow window = MainWindow.AppWindow;
+            if (window.Presenter.Kind == AppWindowPresenterKind.Overlapped)
+            {
+                window.SetPresenter(AppWindowPresenterKind.FullScreen);
+                FullScreenIcon.Glyph = "\xE73F";
+            }
+            else
+            {
+                window.SetPresenter(AppWindowPresenterKind.Overlapped);
+                FullScreenIcon.Glyph = "\xE740";
+            }
         }
+    }
+    public class Submission
+    {
+        public Submission(DateTime timeSubmitted, string status, string runtime, string memory, string language)
+        {
+            TimeSubmitted = timeSubmitted;
+            Status = status;
+            Runtime = runtime;
+            Memory = memory;
+            Language = language;
+        }
+
+        public DateTime TimeSubmitted { get; set; }
+        public string Status { get; set; }
+        public string Runtime { get; set; }
+        public string Memory { get; set; }
+        public string Language { get; set; }
     }
 }
