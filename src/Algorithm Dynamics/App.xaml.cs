@@ -27,7 +27,7 @@ namespace Algorithm_Dynamics
         protected override void OnLaunched(LaunchActivatedEventArgs args)
         {
             StorageFolder TemporaryFolder = ApplicationData.Current.TemporaryFolder;
-            Judger.SetSourceCodeFilePath(TemporaryFolder.Path, "sol");
+            Judger.SetSourceCodeFilePath(TemporaryFolder.Path, "main");
             m_window = new MainWindow();
             // Force a light theme for screenshots
             if (m_window.Content is FrameworkElement rootElement)
