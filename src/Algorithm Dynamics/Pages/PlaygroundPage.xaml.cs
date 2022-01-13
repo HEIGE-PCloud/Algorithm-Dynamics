@@ -15,7 +15,7 @@ namespace Algorithm_Dynamics.Pages
         public string Code { get; set; }
         public string Input { get; set; }
 
-        private ObservableCollection<Language> languages = new() { LanguageConfig.C, LanguageConfig.Cpp, LanguageConfig.Python, LanguageConfig.JavaScript, LanguageConfig.Rust};
+        private ObservableCollection<Language> languages = new() { LanguageConfig.C, LanguageConfig.Cpp, LanguageConfig.Python, LanguageConfig.JavaScript, LanguageConfig.Rust, LanguageConfig.Go, LanguageConfig.Java};
         private async void RunCodeButton_Click(object sender, RoutedEventArgs e)
         {
             var progress = new Progress<int>(percent => { RunCodeProgressBar.Value = percent; });

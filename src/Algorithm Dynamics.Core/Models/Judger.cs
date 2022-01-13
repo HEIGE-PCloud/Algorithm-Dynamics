@@ -23,6 +23,9 @@ namespace Algorithm_Dynamics.Core.Models
             _CompilationOutput = "";
             _CompilationError = "";
 
+            // Set file extension
+            _SourceCodeFilePath = _SourceCodeFilePath.Replace("{SourceCodeFileExtension}", language.FileExtension);
+
             // Create compile process
             Process CompileProcess = new()
             {
@@ -64,6 +67,9 @@ namespace Algorithm_Dynamics.Core.Models
             _StandardError = "";
             _StatusCode = StatusCode.PENDING;
             _WorkingSet64 = 0;
+
+            // Set file extension
+            _SourceCodeFilePath = _SourceCodeFilePath.Replace("{SourceCodeFileExtension}", language.FileExtension);
 
             // Create the execute process
             Process ExecuteProcess = new()
@@ -137,12 +143,14 @@ namespace Algorithm_Dynamics.Core.Models
         public static void SetSourceCodeFilePath(string FolderPath, string FileName)
         {
             _SourceCodeFolderPath = FolderPath;
-            _SourceCodeFilePath = Path.Combine(FolderPath, FileName) + ".txt";
+            _SourceCodeFilePath = Path.Combine(FolderPath, FileName) + "{SourceCodeFileExtension}";
             _ExecutableFilePath = Path.Combine(FolderPath, FileName) + ".exe";
         }
         public async static Task<RunCodeResult> RunCode(string UserCode, string Input, Language language, int TimeLimit, long MemoryLimit, IProgress<int> Progress)
         {
             Progress.Report(0);
+            // Set file extension
+            _SourceCodeFilePath = _SourceCodeFilePath.Replace("{SourceCodeFileExtension}", language.FileExtension);
             RunCodeResult result = new();
             Directory.CreateDirectory(_SourceCodeFolderPath);
             await File.WriteAllTextAsync(_SourceCodeFilePath, UserCode);
