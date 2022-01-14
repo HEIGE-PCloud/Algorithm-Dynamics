@@ -18,6 +18,10 @@
     breaklines=true,
     breakanywhere=true
 }
+\setmintedinline{
+    breaklines=true,
+    breakanywhere=true
+}
 \graphicspath{ {./images/} {./graphs/} }
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{1em}
@@ -412,6 +416,7 @@ As shown in the decomposition diagram on the next page, the entire problem will 
 \includepdf[pages=-]{graphs/decomposition-design.pdf}
 
 \subsection{NavigationView}
+\label{sec:NavigationViewDesign}
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{NavigationView-design}
 
@@ -426,6 +431,7 @@ The entire NavigationView is a usability feature. Users can always look it up by
 There are only buttons in the NavigationView for the user to click, so only valid actions can be taken, no further data validation is required.
 
 \subsection{HomePage}
+\label{sec:HomePageDesign}
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{HomePage-design}
 
@@ -459,6 +465,8 @@ The greeting message and recommendations is a great idea. I will add an addition
 This is the redesigned HomePage. It adds greeting messages and recommendations. It has a responsive grid and a scroller is displayed when the item does not fit in one page. The useless links are removed.
 
 \subsection{ProblemsPage}
+\label{sec:ProblemsPageDesign}
+
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{ProblemsPage-design}
 
@@ -473,6 +481,7 @@ The user can apply the selection condition by either selecting different fields 
 Most components on this page are still buttons, users can only click them and no invalid data can be input. The search box is where the user can input some text only. A flyout will be displayed to promote the user to click the button instead of inputting data themselves. Also, a length check will be applied. The user can only enter a maximum of 32 characters so they cannot crash the search box or the searching algorithm. Instead of passing the search keywords directly to the database, a custom searching algorithm will be used to search and sanitise the search keyword, which prevents SQL injection and provide a better searching experience.
 
 \subsection{CodingPage}
+\label{sec:CodingPageDesign}
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CodingPage-design}
 
@@ -489,6 +498,7 @@ The code editor will support line numbers, basic syntax highlighting and keyboar
 Again, most of the components on the page are either read-only (such as the question section) or buttons. The code editor is the only place for the user to input text, and the text inside will be validated by the compiler or the interpreter of the selected programming language. However, the IO panel requires further validation. To prevent the user from printing out a huge amount of data which might result in poor performance, the IO panel will perform a length check and only display the first 2048 characters of the output.
 
 \subsection{AssignmentsPage}
+\label{sec:AssignmentsPageDesign}
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{AssignmentsPage-design}
 
@@ -529,12 +539,14 @@ After marking, the teacher can click the export results button to export all stu
 There are only buttons for the user to click, so only valid actions can be taken, no further data validation is required.
 
 \subsection{PlaygroundPage}
+\label{sec:PlaygroundPageDesign}
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{PlaygroundPage-design}
 
 The PlaygroundPage is a free space for the user to run any code quickly. It is essentially the same page as the CodingPage but without a coding problem. The interface is slightly changed with a larger code editor and a separate IO panel for a better user experience.
 
 \subsection{AccountPage}
+\label{sec:AccountPageDesign}
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{AccountPage-design}
 
@@ -563,6 +575,7 @@ It may be too difficult to implement such statistics but this is an interesting 
 ``Topic needs more revision'' will be put as a recommendation, on the HomePage instead, which will make it more useful.
 
 \subsection{SettingsPage}
+\label{sec:SettingsPageDesign}
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{SettingsPage-design}
 
@@ -586,6 +599,7 @@ Timofei likes the idea of being able to switch between a light theme and a dark 
 Extra themes take too much time to design, but it is an interesting idea. The font size is managed by the system and it is not very easy to change. Both ideas are great, they are put into the backlog and will not be implemented right away.
 
 \subsection{CreateNewProblemPage}
+\label{sec:CreateNewProblemPageDesign}
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CreateNewProblemPage-design}
 
@@ -602,6 +616,7 @@ The Tags field will be a tokenizing text box with an auto suggestion dropdown me
 There are many input boxes on this page, they will all be validated. For the Problem Name field, the user can enter 32 characters at maximum. In the Tags field, the user can enter 5 tags at maximum. In the Time Limit and Memory Limit fields, the user can only enter numbers.
 
 \subsection{CreateNewProblemListPage}
+\label{sec:CreateNewProblemListPageDesign}
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CreateNewProblemListPage-design}
 
@@ -618,6 +633,7 @@ There will be an autosuggest box for the user to search for problems and add the
 A similar validation is performed just like the CreateNewProblempage. For the List Name field, the user can enter 32 characters at maximum.
 
 \subsection{CreateNewAssignmentPage}
+\label{sec:CreateNewAssignmentPageDesign}
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CreateNewAssignmentPage-design}
 
@@ -2588,6 +2604,8 @@ During this milestone, a basic prototype with user interface will be created. Th
 
 \subsection{Create a minimal running prototype}
 
+\subsubsection{Implementation}
+
 I will create a prototype with a minimal user interface to test run the development environment and building tools.\cite{microsoft:docs:create-your-first-winui3-app}
 
 I create the \mintinline{text}{App.xaml} file, which will include all application resources. Right now, the only resources imported is the \mintinline{text}{XamlControlsResource}, which provides the resources for the all controls. Later on, I will create and import new resources in this file.
@@ -2702,12 +2720,29 @@ As expected, a window with a button shows up correctly. After clicking the butto
 
 \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{Prototype-Button-Clicked.png}
 
-This means the development environment and the building tools are 
-set up correct. And I can start developing a more complex user interface.
+\subsubsection{Testing and validation}
+
+\begin{tabulary}{\linewidth}{|L|L|L|}
+    \hline
+    Test & Result & Remark \\
+    \hline
+    Does it compile & Pass & \\
+    \hline
+    Does it deploy & Pass & \\
+    \hline
+    Does it run & Pass & \\
+    \hline
+    Does the button work & Pass & \\
+    \hline
+\end{tabulary}
+
+This is the simplest prototype, and its successful running means the development environment and the building tools are set up correctm, and I can start developing a more complex user interface.
 
 \subsection{Create the NavigationView}
 
-First, I will write the NavigationView. In the \mintinline{text}{MainWindow.xaml} file, I add the NavigationView control.
+\subsubsection{Implementation}
+
+First, I will implement the NavigationView as \hyperref[sec:NavigationViewDesign]{designed}. In the MainWindow.xaml file, I add the NavigationView control.
 
 \begin{minted}{xml}
 <NavigationView 
@@ -2835,7 +2870,7 @@ System.NullReferenceException
 
 It says object reference not set to an instance of an object when executing \mintinline{text}{ContentFrame.Navigate(pageType);}. This means the \mintinline{text}{pageType} does not exist. This is because I forget to create an actual HomePage, so it attempts to load a null object, failed, and throws the exception.  
 
-I should create all pages under the \mintinline{text}{Algorithm_Dynamics.Pages} namespace. For now, all of them will only contain a text block showing their name. Here is an example of the HomePage.
+I create all pages under the \mintinline{text}{Algorithm_Dynamics.Pages} namespace. For now, all of them will only contain a text block showing their name. Here is an example of the HomePage.
 
 \begin{minted}{xml}
 <Page
@@ -2874,14 +2909,29 @@ Now, the software build and run successfully. The HomePage is correctly selected
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{HomePage-Draft-TextBlock}
 
-
 When I click on other tabs on the NavigationView, the corresponding page is loaded correctly as well.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{PlaygroundPage-Draft-TextBlock}
 
+\subsubsection{Testing and validation}
+
+\begin{tabulary}{\linewidth}{|L|L|L|}
+    \hline
+    Test & Result & Remark \\
+    \hline
+    Does it load & Pass & \\
+    \hline
+    Does the button work & Pass & \\
+    \hline
+    Does it response to different screen size & Pass & \\
+    \hline
+\end{tabulary}
+
 Now the NavigationView is built and tested. I will continue to build other components in the next section.
 
 \subsection{Create the HomePage}
+
+\subsubsection{Implementation}
 
 The HomePage is made of three components, the background image, the quick access tools and the recommendations. They are wrapped by a scroller so they can be accessed on any size screen. I place a grid with two rows inside the \mintinline{text}{ScrollViewer}, the first row contains the background image, the second row contains the remaining tools. 
 
@@ -2951,7 +3001,7 @@ namespace Algorithm_Dynamics.Pages
 }
 \end{minted}
 
-The welcome message is adjusted by different time in the day. It should also display the user name, but since the setting is not implemented yet, this part is left to be implemented later.
+The welcome message is adjusted by different time in the day. It should also display the user name, but since the settings module is not implemented yet, I use a placeholder for the user name.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -3053,7 +3103,7 @@ public ObservableCollection<QuickAccessItem> QAItems { get; } = new ObservableCo
 </controls:AdaptiveGridView>
 \end{minted}
 
-I need to add the items to the collection when the HomePage is loaded. I create a procedure \mintinline{text}{InitializeQAItems}. Because I have passed the MainWindow object to the function, the MainNavView can be called inside. Because the CodingPage and the Import logic is not completed yet, the Random Problem and Import function will be implemented later.
+I need to add the items to the collection when the HomePage is loaded. I create a procedure \mintinline{text}{InitializeQAItems}. Because I have passed the MainWindow object to the function, the MainNavView can be called inside. Because the CodingPage and the import/export logic is not completed yet, the Random Problem and Import function will be implemented later.
 
 \begin{minted}{csharp}
 public HomePage()
@@ -3237,7 +3287,33 @@ All components show up correctly. The image is loaded and the greeting message i
 
 The scroller is working as well, so I can scroll down on a small window to see the recommendation items.
 
+\subsubsection{Testing and validation}
+
+\begin{tabulary}{\linewidth}{|L|L|L|}
+    \hline
+    Test & Result & Remark \\
+    \hline
+    Does it load & Pass & \\
+    \hline
+    Does the background image show up correctly & Pass & \\
+    \hline
+    Does the greeting message show up correctly & Pass & \\
+    \hline
+    Does the Quick Access Toolbar show up correctly & Pass & \\
+    \hline
+    Does the Quick Access Toolbar work correctly & Failed & The Random Problems and data import function is not implemented and will be implemented in the future. This test case will be reviewed then. \\
+    \hline
+    Does the Recommendation show up correctly & Pass &  \\
+    \hline
+    Does the Recommendation work correctly & Failed & The database and the data structure will be implemented in the future. This test case will be reviewed then. \\
+    \hline
+    Is the page responsive & Pass & \\
+    \hline
+\end{tabulary}
+
 \subsection{Create the ProblemsPage}
+
+\subsubsection{Implementation}
 
 I move on to design the ProblemsPage. It contains two parts, the toolbar at the top and the problem list below. I will use a grid containing two rows to hold these two components.
 
