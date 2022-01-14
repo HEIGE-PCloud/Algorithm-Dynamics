@@ -20,7 +20,7 @@
 }
 \setmintedinline{
     breaklines=true,
-    breakanywhere=true
+    breakbytokenanywhere=true
 }
 \graphicspath{ {./images/} {./graphs/} }
 \setlength{\parindent}{0pt}
@@ -1762,7 +1762,7 @@ CREATE TABLE SubmissionResult
 
 \subsubsection{AssignmentSubmissionResult table}
 
-The AssignmentSubmission table will have \mintinline{text}{Uid} as its primary key. It has a one-to-one relationship with a AssignmentSubmission, so a \mintinline{text}{AssignmentSubmissionId} field is used to record this relationship.
+The AssignmentSubmission table will have \mintinline{text}{Uid} as its primary key. It has a one-to-one relationship with a AssignmentSubmission, so a \mintinline{text}{Id} field is used to record this relationship.
 
 \begin{tabulary}{\textwidth}{|L|L|}
     \hline
@@ -2722,7 +2722,7 @@ As expected, a window with a button shows up correctly. After clicking the butto
 
 \subsubsection{Testing and validation}
 
-\begin{tabulary}{\linewidth}{|L|L|L|}
+\begin{tabulary}{\linewidth}{|L|l|L|}
     \hline
     Test & Result & Remark \\
     \hline
@@ -2915,7 +2915,7 @@ When I click on other tabs on the NavigationView, the corresponding page is load
 
 \subsubsection{Testing and validation}
 
-\begin{tabulary}{\linewidth}{|L|L|L|}
+\begin{tabulary}{\linewidth}{|L|l|L|}
     \hline
     Test & Result & Remark \\
     \hline
@@ -3289,7 +3289,7 @@ The scroller is working as well, so I can scroll down on a small window to see t
 
 \subsubsection{Testing and validation}
 
-\begin{tabulary}{\linewidth}{|L|L|L|}
+\begin{tabulary}{\linewidth}{|L|l|L|}
     \hline
     Test & Result & Remark \\
     \hline
