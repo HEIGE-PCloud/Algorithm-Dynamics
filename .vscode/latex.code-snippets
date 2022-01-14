@@ -64,5 +64,17 @@
 			"$2"
 		],
 		"description": "Insert an image"
+	},
+	"Table": {
+		"scope": "latex",
+		"prefix": "table",
+		"body": [
+			"\\begin{tabulary}{\\linewidth}{|L$1|}",
+			"    \\hline",
+			"    $2",
+			"    \\hline",
+			"\\end{tabulary}"
+		],
+		"description": "Insert a table"
 	}
 }
