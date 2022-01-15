@@ -25,7 +25,7 @@ namespace Algorithm_Dynamics.Pages
             RunCodeResult result = await Judger.RunCode(Code, Input, languages[LanguageComboBox.SelectedIndex], 1000, 1000000000, progress);
             RunCodeButton.IsEnabled = true;
             RunCodeProgressBar.IsIndeterminate = false;
-            StatusTextBlock.Text = result.ResultCode.ToString();
+            StatusTextBlock.Text = $"{result.ResultCode} Time: {result.CPUTime} ms Memory: {result.MemoryUsage / 1024 / 1024} MB";
             OutputBox.Text = result.StandardOutput + result.StandardError;
             if (result.ResultCode != ResultCode.SUCCESS)
                 RunCodeProgressBar.ShowError = true;
