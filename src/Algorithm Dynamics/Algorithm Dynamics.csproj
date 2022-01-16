@@ -27,7 +27,6 @@
     <None Remove="Pages\AccountPage.xaml" />
     <None Remove="Pages\AssignmentsPage.xaml" />
     <None Remove="Pages\CodingPage.xaml" />
-    <None Remove="Pages\CodingPage\CodingPage.xaml" />
     <None Remove="Pages\HomePage.xaml" />
     <None Remove="Pages\PlaygroundPage.xaml" />
     <None Remove="Pages\ProblemsPage.xaml" />
@@ -48,7 +47,7 @@
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.WinUI.UI.Controls" Version="7.1.2" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.0.0" />
-    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22000.194" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22000.196" />
     <Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>
 
@@ -102,10 +101,6 @@
     <Page Update="Theme\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Pages\AssignmentsPage\" />
-    <Folder Include="Pages\CodingPage\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Algorithm Dynamics.Core\Algorithm Dynamics.Core.csproj" />
