@@ -149,7 +149,7 @@ namespace Algorithm_Dynamics.Core.Models
         public async static Task<RunCodeResult> RunCode(string UserCode, string Input, Language language, int TimeLimit, long MemoryLimit, IProgress<int> Progress)
         {
             Progress.Report(0);
-            if (Input != "" && Input[^1] != '\n') Input += '\n';
+            if (string.IsNullOrEmpty(Input) == false && Input[^1] != '\n') Input += '\n';
             // Set file extension
             _SourceCodeFilePath = _SourceCodeFilePath.Replace("{SourceCodeFileExtension}", language.FileExtension);
             RunCodeResult result = new();
