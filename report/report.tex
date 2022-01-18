@@ -3834,15 +3834,41 @@ private void Search(object sender, object args)
 
 The correct search result is returned and the search result is updated correctly when different search conditions are selected.
 
-The ProblemsPage is partially implemented with many todos left for the future. But in this iteration, it is good to go. I will move on to the PlaygroundPage and CodingPage next.
+\subsubsection{Testing and validation}
+
+\begin{tabulary}{\linewidth}{|L|l|L|}
+    \hline
+    Test & Result & Remark \\
+    \hline
+    Does it load & Pass & \\
+    \hline
+    Does the toolbar display correctly & Pass & \\
+    \hline
+    Does the toolbar interact correctly & Pass & \\
+    \hline
+    Does the toolbar return the correct search result & Failed & The search algorithm will be implemented after the database and data structure is ready in the future milestones. \\
+    \hline
+    Does the add button work & Failed & The data import and create new problem function will be implemented after the CreateNewProblemPage and the data import function is implemented. \\
+    \hline
+    Does the problem list show up correct & Pass & \\
+    \hline
+    Does the start button work & Failed & The start button will be implemented after the coding page is implemented. \\
+    \hline
+    Does the selection and menu flyout work & Failed & The delete and edit button will be implemented after the database is ready. \\
+    \hline
+\end{tabulary}
+
+The ProblemsPage is partially implemented with many todos left for the future. But in this iteration, it is good to go as all UI elements are ready. I will move on to the PlaygroundPage and CodingPage next.
 
 \subsection{Create the PlaygroundPage}
 
+\subsubsection{Implementation}
+
 The main component in the PlaygroundPage is the Code Editor. Because the CodingPage will need to use the Code Editor as well, so I will set the Code Editor as a custom control so it can be reused later.
 
-The Code Editor needs to support line number, syntax highlighting, and other editing features. It is too complex for this project. So I will use a third-party library to achieve that. I am using the \href{https://microsoft.github.io/monaco-editor/}{Monaco Editor} for this purpose.
+The Code Editor needs to support line number, syntax highlighting, and other editing features. It is too complex for this project to implement all of these by hand. So I will use a third-party library to achieve that. I am using the \href{https://microsoft.github.io/monaco-editor/}{Monaco Editor} for this purpose.
 
-First, I create a basic user control.
+I create a custom control for the editor so I can reuse it later in different pages easily.
 
 \begin{minted}{xml}
 <UserControl
@@ -3873,7 +3899,7 @@ namespace Algorithm_Dynamics.Controls
 }
 \end{minted}
 
-And use the control in the PlaygroundPage to verify its working.
+I import the control in the PlaygroundPage to verify its working.
 
 \begin{minted}{xml}
 <Page
@@ -3991,7 +4017,7 @@ Now, the scroll bars are gone. But when I resize the window, the editor still do
 </script>
 \end{minted}
 
-By adding the event handler for the window resize event and call the layout function, the editor can not resize correctly according to the window size.
+By adding the event handler for the window resize event and call the layout function, the editor can now resize correctly according to the window size.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{PlaygroundPage-WebView2-ResizeSuccess}
 
@@ -4107,7 +4133,7 @@ I will use a grid with 3 rows and 2 columns to hold all controls.
 </Grid>
 \end{minted}
 
-Finally, to allow different controls to be resizeable, I add two grid splitters to the grid.
+To allow different sections to be resizeable, I add two grid splitters to the grid.
 
 \begin{minted}{xml}
 <controls:GridSplitter
@@ -4514,7 +4540,33 @@ Now, when I navigate away from the PlaygroundPage, I can see from the Process Ex
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{Process-Explorer-WebView2-Destroyed}
 
+\subsubsection{Testing and validation}
+
+\begin{tabulary}{\linewidth}{|L|l|L|}
+    \hline
+    Test & Result & Remark \\
+    \hline
+    Does it load & Pass & \\
+    \hline
+    Can each section be resized correctly & Pass & \\
+    \hline
+    Does the CodeEditor work correctly & Pass & \\
+    \hline
+    Does the language ComboBox work correctly & Pass & \\
+    \hline
+    Does the input output box work correctly & Pass & \\
+    \hline
+    Does the Run Code button work & Failed & The Run Code function will be implemented after the Judger is ready. \\
+    \hline
+    Is the CodeEditor unloaded correctly on close & Pass & \\
+    \hline
+\end{tabulary}
+
 \subsection{Create the CodingPage}
+
+Since the CodeEditor is implemented as a user control, I can reuse it easily in the CodignPage.
+
+TODO: write the report for the CodingPage
 
 \subsection{Create the AssignmentsPage}
 
