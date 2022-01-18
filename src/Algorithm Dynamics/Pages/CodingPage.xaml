@@ -79,7 +79,7 @@
                 ToolTipService.ToolTip="Fullscreen (F11)">
                 <FontIcon
                     x:Name="FullScreenIcon"
-                    FontFamily="Segoe MDL2 Assets"
+                    FontFamily="Segoe Fluent Icons"
                     Glyph="&#xE740;"/>
                 <Button.KeyboardAccelerators>
                     <KeyboardAccelerator Key="F11"/>
@@ -164,7 +164,7 @@
                 Grid.Column="0"
                 VerticalAlignment="Stretch">
                 <Button.Content>
-                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE76B;"/>
+                    <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE76B;"/>
                 </Button.Content>
             </Button>
             <DropDownButton
@@ -184,7 +184,7 @@
                 Grid.Column="2"
                 VerticalAlignment="Stretch">
                 <Button.Content>
-                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE76C;"/>
+                    <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE76C;"/>
                 </Button.Content>
             </Button>
         </Grid>
