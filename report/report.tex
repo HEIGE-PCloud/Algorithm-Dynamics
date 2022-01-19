@@ -4564,9 +4564,275 @@ Now, when I navigate away from the PlaygroundPage, I can see from the Process Ex
 
 \subsection{Create the CodingPage}
 
-Since the CodeEditor is implemented as a user control, I can reuse it easily in the CodignPage.
+\subsubsection{Implementation}
 
-TODO: write the report for the CodingPage
+I use a grid with 4 rows and 2 columns to organize all elements in the CodingPage.
+
+\begin{minted}{xml}
+<Page
+    x:Class="Algorithm_Dynamics.Pages.CodingPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Algorithm_Dynamics.Controls"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- ...  -->
+</Page>
+\end{minted}
+
+I put a pivot on the top left, which holds two components, the MarkdownTextBlock for the description of the problem and the submission grid. The user can switch between them by clicking the pivot header.
+
+\begin{minted}{xml}
+<Pivot
+    Grid.Row="0"
+    Grid.RowSpan="3"
+    Grid.Column="0"
+    Margin="0 0 8 0">
+    <PivotItem Header="Problem">
+        <ScrollViewer
+            HorizontalScrollBarVisibility="Disabled"
+            VerticalScrollBarVisibility="Auto">
+            <controls:MarkdownTextBlock
+                x:Name="ProblemMarkdownTextBlock"
+                Margin="8"
+                Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+                Text="{x:Bind CodeEditor.Code, Mode=OneWay}"/>
+        </ScrollViewer>
+    </PivotItem>
+    <PivotItem Header="Submissions">
+        <controls:DataGrid
+            x:Name="SubmissionsDataGrid"
+            AutoGenerateColumns="True"
+            ItemsSource="{x:Bind Submissions, Mode=OneWay}">
+        </controls:DataGrid>
+    </PivotItem>
+</Pivot>
+\end{minted}
+
+I place the language selection box and the fullscreen button on the top right.
+
+\begin{minted}{xml}
+<Grid
+    Grid.Row="0"
+    Grid.Column="1"
+    Margin="8">
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="*"/>
+    </Grid.ColumnDefinitions>
+    <ComboBox
+        Grid.Column="0"
+        x:Name="LanguageComboBox"
+        SelectedIndex="0"
+        VerticalAlignment="Stretch"
+        SelectionChanged="LanguageComboBox_SelectionChanged">
+        <x:String>python</x:String>
+        <x:String>c</x:String>
+        <x:String>cpp</x:String>
+        <x:String>javascript</x:String>
+    </ComboBox>
+    <Button
+        x:Name="FullScreenButton"
+        Grid.Column="1"
+        HorizontalAlignment="Right"
+        Click="FullScreenButton_Click"
+        ToolTipService.ToolTip="Fullscreen (F11)">
+        <FontIcon
+            x:Name="FullScreenIcon"
+            FontFamily="Segoe Fluent Icons"
+            Glyph="&#xE740;"/>
+        <Button.KeyboardAccelerators>
+            <KeyboardAccelerator Key="F11"/>
+        </Button.KeyboardAccelerators>
+    </Button>
+</Grid>
+\end{minted}
+
+On the button right, I place the code editor and  Input/Output/Error panel inside another pivot so the user can navigate between them. Because the code editor has been encapsulated as a user control before, I can easily import it here.
+
+\begin{minted}{xml}
+<local:CodeEditor
+    x:Name="CodeEditor"
+    Grid.Column="1"
+    Grid.Row="1"
+    Margin="8 0 0 8"/>
+<Pivot
+    Grid.Row="2"
+    Grid.Column="1"
+    Margin="8 8 0 0">
+    <PivotItem Header="Input">
+        <TextBox
+            x:Name="InputTextBox"
+            x:FieldModifier="public"
+            PlaceholderText="Input Panel"
+            AcceptsReturn="True"/>
+    </PivotItem>
+    <PivotItem Header="Output">
+        <TextBox
+            x:Name="OutputTextBox"
+            x:FieldModifier="public"
+            PlaceholderText="Output Panel"
+            AcceptsReturn="True"/>
+    </PivotItem>
+    <PivotItem Header="Error">
+        <TextBox
+            x:Name="ErrorTextBox"
+            x:FieldModifier="public"
+            PlaceholderText="Error Panel"
+            AcceptsReturn="True"/>
+    </PivotItem>
+</Pivot>
+\end{minted}
+
+At the bottom, I place the problem navigation buttons, the status text block, a progress bar and the run code and submission button.
+
+\begin{minted}{xml}
+<Grid
+    Grid.Row="3"
+    Grid.Column="1">
+    <Grid.RowDefinitions>
+        <RowDefinition Height="auto"/>
+        <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+    
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="auto"/>
+        <ColumnDefinition Width="auto"/>
+    </Grid.ColumnDefinitions>
+
+    <ProgressBar
+        Grid.Row="0"
+        Grid.Column="0"
+        Grid.ColumnSpan="3"
+        IsIndeterminate="True"
+        ShowPaused="False"
+        ShowError="False"/>
+    <TextBlock
+        Grid.Row="1"
+        Grid.Column="0"
+        Text="Status"
+        VerticalAlignment="Center"/>
+    <Button
+        Grid.Row="1"
+        Grid.Column="2"
+        x:Name="SubmitCodeButton"
+        Content="Submit"
+        Style="{StaticResource AccentButtonStyle}"/>
+    <Button
+        Grid.Row="1"
+        Grid.Column="1"
+        Content="Run Code"/>
+</Grid>
+
+<Grid
+    Grid.Row="3"
+    Grid.Column="0">
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="auto"/>
+        <ColumnDefinition Width="auto"/>
+        <ColumnDefinition Width="auto"/>
+    </Grid.ColumnDefinitions>
+    <Button
+        Grid.Column="0"
+        VerticalAlignment="Stretch">
+        <Button.Content>
+            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE76B;"/>
+        </Button.Content>
+    </Button>
+    <DropDownButton
+        Grid.Column="1"
+        Content="Problem 0"
+        VerticalAlignment="Stretch">
+        <DropDownButton.Flyout>
+            <MenuFlyout Placement="Top">
+                <MenuFlyoutItem Text="Problem 1"/>
+                <MenuFlyoutItem Text="Problem 2"/>
+                <MenuFlyoutItem Text="Problem 3"/>
+            </MenuFlyout>
+        </DropDownButton.Flyout>
+
+    </DropDownButton>
+    <Button
+        Grid.Column="2"
+        VerticalAlignment="Stretch">
+        <Button.Content>
+            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE76C;"/>
+        </Button.Content>
+    </Button>
+</Grid>
+\end{minted}
+
+At the end, I add two grid splitters between the problem panel and the editor, the editor and the panel so users can resize each window to fit their needs.
+
+When I build and run the app, I encounter a problem - I cannot navigate to the CodingPage. Unlike the previous pages, the CodingPage is not a top-level page, it is opened when the user select a problem or an assignment. So I need to link the start problem button to the CodingPage. So for the Start button on the ProblemsPage, I add a StartProblem function to handle the click event.
+
+\begin{minted}{xml}
+<Button
+    Content="Start"
+    Grid.Column="4"
+    HorizontalAlignment="Stretch"
+    Margin="12 0 0 0"
+    Click="StartProblem"/>
+\end{minted}
+
+\begin{minted}{csharp}
+/// <summary>
+/// Navigate to the CodingPage, pass the current Problem and ProblemList
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
+private void StartProblem(object sender, RoutedEventArgs e)
+{
+    App app = (App)Application.Current;
+    // TODO: pass the selected problem to the CodingPage
+    app.ContentFrame.Navigate(typeof(CodingPage));
+    app.MainNavView.SelectedItem = null;
+}
+\end{minted}
+
+The function should also pass the selected problem and the problem list through the Navigate function. But since the data structure is not implemented, for now, it just navigates to the page without passing any data.
+
+Now when I run the app, I can navigate to the CodingPage through the ProblemsPage and see all the layout I defined before.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CodingPage-Layout}
+
+When I provide the screenshot to my stakeholder PCloud, he says that the controls are quite ugly, especially the pivot and the grid splitter, the font and color theme does not seem to match the overall design. I agree with him, so I decide to add some style to the pivot and the grid splitter.
+
+I create a new file Generic.xaml to store all the styles. In App.xaml, I import the Generic.xaml file.
+
+\begin{minted}{xml}
+<Application.Resources>
+    <ResourceDictionary>
+        <ResourceDictionary.MergedDictionaries>
+            <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
+            <ResourceDictionary Source="/Themes/Generic.xaml"/>
+            <!-- Other merged dictionaries here -->
+        </ResourceDictionary.MergedDictionaries>
+        <!-- Other app resources here -->
+    </ResourceDictionary>
+</Application.Resources>
+\end{minted}
+
+TODO: add the style to the pivot and the grid splitter
+
+\subsubsection{Testing and validation}
 
 \subsection{Create the AssignmentsPage}
 

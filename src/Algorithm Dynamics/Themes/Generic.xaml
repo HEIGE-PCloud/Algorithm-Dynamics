@@ -36,10 +36,11 @@
     </Style>
 
     <ControlTemplate x:Key="DockPanelTemplate" TargetType="Pivot">
-        <Grid x:Name="RootElement"
-                          HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
-                          VerticalAlignment="{TemplateBinding VerticalAlignment}"
-                          Background="{TemplateBinding Background}">
+        <Grid 
+            x:Name="RootElement"
+            HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+            VerticalAlignment="{TemplateBinding VerticalAlignment}"
+            Background="{TemplateBinding Background}">
             <Grid.Resources>
                 <Style x:Key="BaseContentControlStyle" TargetType="ContentControl">
                     <Setter Property="FontFamily" Value="XamlAutoFontFamily"/>
@@ -48,20 +49,22 @@
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="ContentControl">
-                                <ContentPresenter Margin="{TemplateBinding Padding}"
-                                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                                              Content="{TemplateBinding Content}"
-                                                              ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                              ContentTransitions="{TemplateBinding ContentTransitions}"
-                                                              OpticalMarginAlignment="TrimSideBearings"/>
+                                <ContentPresenter 
+                                    Margin="{TemplateBinding Padding}"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                    Content="{TemplateBinding Content}"
+                                    ContentTemplate="{TemplateBinding ContentTemplate}"
+                                    ContentTransitions="{TemplateBinding ContentTransitions}"
+                                    OpticalMarginAlignment="TrimSideBearings"/>
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
                 </Style>
-                <Style x:Key="TitleContentControlStyle"
-                                   BasedOn="{StaticResource BaseContentControlStyle}"
-                                   TargetType="ContentControl">
+                <Style 
+                    x:Key="TitleContentControlStyle"
+                    BasedOn="{StaticResource BaseContentControlStyle}"
+                    TargetType="ContentControl">
                     <Setter Property="FontFamily" Value="{ThemeResource PivotTitleFontFamily}"/>
                     <Setter Property="FontWeight" Value="{ThemeResource PivotTitleThemeFontWeight}"/>
                     <Setter Property="FontSize" Value="{ThemeResource PivotTitleFontSize}"/>
@@ -145,21 +148,23 @@
 
             </VisualStateManager.VisualStateGroups>
 
-            <ContentControl x:Name="TitleContentControl"
-                                        Margin="{StaticResource PivotPortraitThemePadding}"
-                                        Style="{StaticResource TitleContentControlStyle}"
-                                        Content="{TemplateBinding Title}"
-                                        ContentTemplate="{TemplateBinding TitleTemplate}"
-                                        IsTabStop="False"
-                                        Visibility="Collapsed"/>
+            <ContentControl 
+                x:Name="TitleContentControl"
+                Margin="{StaticResource PivotPortraitThemePadding}"
+                Style="{StaticResource TitleContentControlStyle}"
+                Content="{TemplateBinding Title}"
+                ContentTemplate="{TemplateBinding TitleTemplate}"
+                IsTabStop="False"
+                Visibility="Collapsed"/>
 
             <Grid Grid.Row="1">
                 <Grid.Resources>
                     <ControlTemplate x:Key="NextTemplate" TargetType="Button">
-                        <Border x:Name="Root"
-                                            Background="{ThemeResource PivotNextButtonBackground}"
-                                            BorderBrush="{ThemeResource PivotNextButtonBorderBrush}"
-                                            BorderThickness="{ThemeResource PivotNavButtonBorderThemeThickness}">
+                        <Border 
+                            x:Name="Root"
+                            Background="{ThemeResource PivotNextButtonBackground}"
+                            BorderBrush="{ThemeResource PivotNextButtonBorderBrush}"
+                            BorderThickness="{ThemeResource PivotNavButtonBorderThemeThickness}">
                             <VisualStateManager.VisualStateGroups>
                                 <VisualStateGroup x:Name="CommonStates">
                                     <VisualState x:Name="Normal"/>
@@ -191,23 +196,25 @@
                                     </VisualState>
                                 </VisualStateGroup>
                             </VisualStateManager.VisualStateGroups>
-                            <FontIcon x:Name="Arrow"
-                                                  HorizontalAlignment="Center"
-                                                  VerticalAlignment="Center"
-                                                  Foreground="{ThemeResource PivotNextButtonForeground}"
-                                                  FontFamily="{ThemeResource CalculatorFontFamily}"
-                                                  FontSize="12"
-                                                  Glyph="&#xE970;"
-                                                  MirroredWhenRightToLeft="True"
-                                                  UseLayoutRounding="False"/>
+                            <FontIcon 
+                                x:Name="Arrow"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Foreground="{ThemeResource PivotNextButtonForeground}"
+                                FontFamily="{ThemeResource CalculatorFontFamily}"
+                                FontSize="12"
+                                Glyph="&#xE970;"
+                                MirroredWhenRightToLeft="True"
+                                UseLayoutRounding="False"/>
                         </Border>
                     </ControlTemplate>
 
                     <ControlTemplate x:Key="PreviousTemplate" TargetType="Button">
-                        <Border x:Name="Root"
-                                            Background="{ThemeResource PivotPreviousButtonBackground}"
-                                            BorderBrush="{ThemeResource PivotPreviousButtonBorderBrush}"
-                                            BorderThickness="{ThemeResource PivotNavButtonBorderThemeThickness}">
+                        <Border 
+                            x:Name="Root"
+                            Background="{ThemeResource PivotPreviousButtonBackground}"
+                            BorderBrush="{ThemeResource PivotPreviousButtonBorderBrush}"
+                            BorderThickness="{ThemeResource PivotNavButtonBorderThemeThickness}">
                             <VisualStateManager.VisualStateGroups>
                                 <VisualStateGroup x:Name="CommonStates">
                                     <VisualState x:Name="Normal"/>
@@ -239,34 +246,37 @@
                                     </VisualState>
                                 </VisualStateGroup>
                             </VisualStateManager.VisualStateGroups>
-                            <FontIcon x:Name="Arrow"
-                                                  HorizontalAlignment="Center"
-                                                  VerticalAlignment="Center"
-                                                  Foreground="{ThemeResource PivotPreviousButtonForeground}"
-                                                  FontFamily="{ThemeResource CalculatorFontFamily}"
-                                                  FontSize="12"
-                                                  Glyph="&#xE96F;"
-                                                  MirroredWhenRightToLeft="True"
-                                                  UseLayoutRounding="False"/>
+                            <FontIcon 
+                                x:Name="Arrow"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Foreground="{ThemeResource PivotPreviousButtonForeground}"
+                                FontFamily="{ThemeResource CalculatorFontFamily}"
+                                FontSize="12"
+                                Glyph="&#xE96F;"
+                                MirroredWhenRightToLeft="True"
+                                UseLayoutRounding="False"/>
                         </Border>
                     </ControlTemplate>
                 </Grid.Resources>
 
-                <ScrollViewer x:Name="ScrollViewer"
-                                          Margin="{TemplateBinding Padding}"
-                                          VerticalContentAlignment="Stretch"
-                                          BringIntoViewOnFocusChange="False"
-                                          HorizontalScrollBarVisibility="Hidden"
-                                          HorizontalSnapPointsAlignment="Center"
-                                          HorizontalSnapPointsType="MandatorySingle"
-                                          Template="{StaticResource ScrollViewerScrollBarlessTemplate}"
-                                          VerticalScrollBarVisibility="Disabled"
-                                          VerticalScrollMode="Disabled"
-                                          VerticalSnapPointsType="None"
-                                          ZoomMode="Disabled">
-                    <PivotPanel x:Name="Panel"
-                                            VerticalAlignment="Stretch"
-                                            ManipulationMode="None">
+                <ScrollViewer 
+                    x:Name="ScrollViewer"
+                    Margin="{TemplateBinding Padding}"
+                    VerticalContentAlignment="Stretch"
+                    BringIntoViewOnFocusChange="False"
+                    HorizontalScrollBarVisibility="Hidden"
+                    HorizontalSnapPointsAlignment="Center"
+                    HorizontalSnapPointsType="MandatorySingle"
+                    Template="{StaticResource ScrollViewerScrollBarlessTemplate}"
+                    VerticalScrollBarVisibility="Disabled"
+                    VerticalScrollMode="Disabled"
+                    VerticalSnapPointsType="None"
+                    ZoomMode="Disabled">
+                    <PivotPanel 
+                        x:Name="Panel"
+                        VerticalAlignment="Stretch"
+                        ManipulationMode="None">
                         <Grid x:Name="PivotLayoutElement">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -280,16 +290,18 @@
                             <Grid.RenderTransform>
                                 <CompositeTransform x:Name="PivotLayoutElementTranslateTransform"/>
                             </Grid.RenderTransform>
-                            <ContentPresenter x:Name="LeftHeaderPresenter"
-                                                          HorizontalAlignment="Stretch"
-                                                          VerticalAlignment="Stretch"
-                                                          Content="{TemplateBinding LeftHeader}"
-                                                          ContentTemplate="{TemplateBinding LeftHeaderTemplate}"/>
-                            <ContentControl x:Name="HeaderClipper"
-                                                        Grid.Column="1"
-                                                        HorizontalContentAlignment="Stretch"
-                                                        CornerRadius="{ThemeResource ControlCornerRadius}"
-                                                        UseSystemFocusVisuals="{StaticResource UseSystemFocusVisuals}">
+                            <ContentPresenter 
+                                x:Name="LeftHeaderPresenter"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Content="{TemplateBinding LeftHeader}"
+                                ContentTemplate="{TemplateBinding LeftHeaderTemplate}"/>
+                            <ContentControl 
+                                x:Name="HeaderClipper"
+                                Grid.Column="1"
+                                HorizontalContentAlignment="Stretch"
+                                CornerRadius="{ThemeResource ControlCornerRadius}"
+                                UseSystemFocusVisuals="{StaticResource UseSystemFocusVisuals}">
                                 <ContentControl.Clip>
                                     <RectangleGeometry x:Name="HeaderClipperGeometry"/>
                                 </ContentControl.Clip>
@@ -315,41 +327,45 @@
                                                            IsHitTestVisible="False"/>
                                 </Grid>
                             </ContentControl>
-                            <Button x:Name="PreviousButton"
-                                                Grid.Column="1"
-                                                Width="20"
-                                                Height="36"
-                                                Margin="{ThemeResource PivotNavButtonMargin}"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top"
-                                                Background="Transparent"
-                                                Opacity="0"
-                                                IsTabStop="False"
-                                                Template="{StaticResource PreviousTemplate}"
-                                                UseSystemFocusVisuals="False"
-                                                IsEnabled="False"/>
-                            <Button x:Name="NextButton"
-                                                Grid.Column="1"
-                                                Width="20"
-                                                Height="36"
-                                                Margin="{ThemeResource PivotNavButtonMargin}"
-                                                HorizontalAlignment="Right"
-                                                VerticalAlignment="Top"
-                                                Background="Transparent"
-                                                Opacity="0"
-                                                IsTabStop="False"
-                                                Template="{StaticResource NextTemplate}"
-                                                UseSystemFocusVisuals="False"
-                                                IsEnabled="False"/>
-                            <ContentPresenter x:Name="RightHeaderPresenter"
-                                                          Grid.Column="2"
-                                                          HorizontalAlignment="Stretch"
-                                                          VerticalAlignment="Stretch"
-                                                          Content="{TemplateBinding RightHeader}"
-                                                          ContentTemplate="{TemplateBinding RightHeaderTemplate}"/>
-                            <ItemsPresenter x:Name="PivotItemPresenter"
-                                                        Grid.Row="1"
-                                                        Grid.ColumnSpan="3">
+                            <Button 
+                                x:Name="PreviousButton"
+                                Grid.Column="1"
+                                Width="20"
+                                Height="36"
+                                Margin="{ThemeResource PivotNavButtonMargin}"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Background="Transparent"
+                                Opacity="0"
+                                IsTabStop="False"
+                                Template="{StaticResource PreviousTemplate}"
+                                UseSystemFocusVisuals="False"
+                                IsEnabled="False"/>
+                            <Button
+                                x:Name="NextButton"
+                                Grid.Column="1"
+                                Width="20"
+                                Height="36"
+                                Margin="{ThemeResource PivotNavButtonMargin}"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Background="Transparent"
+                                Opacity="0"
+                                IsTabStop="False"
+                                Template="{StaticResource NextTemplate}"
+                                UseSystemFocusVisuals="False"
+                                IsEnabled="False"/>
+                            <ContentPresenter
+                                x:Name="RightHeaderPresenter"
+                                Grid.Column="2"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Content="{TemplateBinding RightHeader}"
+                                ContentTemplate="{TemplateBinding RightHeaderTemplate}"/>
+                            <ItemsPresenter
+                                x:Name="PivotItemPresenter"
+                                Grid.Row="1"
+                                Grid.ColumnSpan="3">
                                 <ItemsPresenter.RenderTransform>
                                     <TransformGroup>
                                         <TranslateTransform x:Name="ItemsPresenterTranslateTransform"/>
@@ -378,10 +394,11 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="PivotHeaderItem">
-                    <Grid x:Name="Grid"
-                                          Padding="{TemplateBinding Padding}"
-                                          Background="{TemplateBinding Background}"
-                                          CornerRadius="{ThemeResource ControlCornerRadius}">
+                    <Grid
+                        x:Name="Grid"
+                        Padding="{TemplateBinding Padding}"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="{ThemeResource ControlCornerRadius}">
 
                         <Grid.RenderTransform>
                             <TranslateTransform x:Name="ContentPresenterTranslateTransform"/>
@@ -391,12 +408,14 @@
                             <VisualStateGroup x:Name="SelectionStates">
 
                                 <VisualStateGroup.Transitions>
-                                    <VisualTransition From="Unselected"
-                                                                      GeneratedDuration="0:0:0.33"
-                                                                      To="UnselectedLocked"/>
-                                    <VisualTransition From="UnselectedLocked"
-                                                                      GeneratedDuration="0:0:0.33"
-                                                                      To="Unselected"/>
+                                    <VisualTransition
+                                        From="Unselected"
+                                        GeneratedDuration="0:0:0.33"
+                                        To="UnselectedLocked"/>
+                                    <VisualTransition
+                                        From="UnselectedLocked"
+                                        GeneratedDuration="0:0:0.33"
+                                        To="Unselected"/>
                                 </VisualStateGroup.Transitions>
 
                                 <VisualState x:Name="Disabled">
@@ -424,14 +443,16 @@
                                     </VisualState.Setters>
 
                                     <Storyboard>
-                                        <DoubleAnimation Duration="0"
-                                                                         Storyboard.TargetName="ContentPresenterTranslateTransform"
-                                                                         Storyboard.TargetProperty="X"
-                                                                         To="{ThemeResource PivotHeaderItemLockedTranslation}"/>
-                                        <DoubleAnimation Duration="0"
-                                                                         Storyboard.TargetName="ContentPresenter"
-                                                                         Storyboard.TargetProperty="(UIElement.Opacity)"
-                                                                         To="0"/>
+                                        <DoubleAnimation
+                                            Duration="0"
+                                            Storyboard.TargetName="ContentPresenterTranslateTransform"
+                                            Storyboard.TargetProperty="X"
+                                            To="{ThemeResource PivotHeaderItemLockedTranslation}"/>
+                                        <DoubleAnimation
+                                            Duration="0"
+                                            Storyboard.TargetName="ContentPresenter"
+                                            Storyboard.TargetProperty="(UIElement.Opacity)"
+                                            To="0"/>
                                     </Storyboard>
                                 </VisualState>
 
@@ -506,24 +527,26 @@
 
                         </VisualStateManager.VisualStateGroups>
 
-                        <ContentPresenter x:Name="ContentPresenter"
-                                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                                          FontFamily="{TemplateBinding FontFamily}"
-                                                          FontSize="{TemplateBinding FontSize}"
-                                                          FontWeight="{TemplateBinding FontWeight}"
-                                                          Content="{TemplateBinding Content}"
-                                                          ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                          OpticalMarginAlignment="TrimSideBearings"/>
-                        <Rectangle x:Name="SelectedPipe"
-                                                   Width="16"
-                                                   Height="3"
-                                                   Margin="0,0,0,2"
-                                                   HorizontalAlignment="Center"
-                                                   VerticalAlignment="Bottom"
-                                                   Fill="{ThemeResource AccentFillColorDefaultBrush}"
-                                                   RadiusX="1.5"
-                                                   RadiusY="1.5"/>
+                        <ContentPresenter
+                            x:Name="ContentPresenter"
+                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                            FontFamily="{TemplateBinding FontFamily}"
+                            FontSize="{TemplateBinding FontSize}"
+                            FontWeight="{TemplateBinding FontWeight}"
+                            Content="{TemplateBinding Content}"
+                            ContentTemplate="{TemplateBinding ContentTemplate}"
+                            OpticalMarginAlignment="TrimSideBearings"/>
+                        <Rectangle
+                            x:Name="SelectedPipe"
+                            Width="16"
+                            Height="3"
+                            Margin="0,0,0,2"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Bottom"
+                            Fill="{ThemeResource AccentFillColorDefaultBrush}"
+                            RadiusX="1.5"
+                            RadiusY="1.5"/>
 
                     </Grid>
                 </ControlTemplate>
