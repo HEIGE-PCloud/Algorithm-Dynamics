@@ -57,7 +57,7 @@ jobs:
 
   build-app:
     name: Build App
-    runs-on: windows-latest
+    runs-on: windows-2022
     env:
       Solution_Name: Algorithm Dynamics.sln
       Project_Directory: src\Algorithm Dynamics
