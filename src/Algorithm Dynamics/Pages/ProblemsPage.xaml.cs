@@ -205,6 +205,11 @@ namespace Algorithm_Dynamics.Pages
             Problems.Add(new Problem(keywords, difficulty, status, tag));
         }
 
+        /// <summary>
+        /// Navigate to the CodingPage, pass the current Problem and ProblemList
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void StartProblem(object sender, RoutedEventArgs e)
         {
             App app = (App)Application.Current;
