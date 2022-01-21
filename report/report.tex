@@ -651,11 +651,11 @@ The DateTime picker will prevent invalid dates from being input, the name field 
 
 \subsection{Judger module}
 
-The Judger module will handle all the judging and marking tasks. It takes in a \mintinline{text}{Submission}, compile and execute the user's code, judges whether it gives the correct output.
+The Judger module will handle all the judging and marking tasks. It takes in a \verb|Submission|, compile and execute the user's code, judges whether it gives the correct output.
 
-The Judger will take a few seconds to judge each \mintinline{text}{Submission}, while it is judging, the other parts of the software need to keep working on their tasks. So I use concurrent processing to let the Judger run parallel with the main program.
+The Judger will take a few seconds to judge each \verb|Submission|, while it is judging, the other parts of the software need to keep working on their tasks. So I use concurrent processing to let the Judger run parallel with the main program.
 
-When judging a single \mintinline{text}{TestCase}, the Judger will first start the compiler in a new process to compile the user's code. The Judger redirects the output of the compiler to an internal string variable to store all outputs. When the compiler finishes compiling, an interrupt is triggered and the Judger will be notified that the compilation has been done. It will check the compiler's exit code and its output, if there are any compilation errors, they will be reported back. Otherwise, the Judger will run the compiled executable, and feed the input to its \mintinline{text}{stdin} and redirects all \mintinline{text}{stdout} and \mintinline{text}{stderr} to internal string variables. On top of that, the Judger will start a countdown timer in a different process to track the time. When the countdown reaches zero, an interrupt will be sent to the Judger and it will terminate the user's code and report a time limit exceed error, or if the user's code finishes first, then its output will be compared with the expected output, the result and all statistics will then be reported.
+When judging a single \verb|TestCase|, the Judger will first start the compiler in a new process to compile the user's code. The Judger redirects the output of the compiler to an internal string variable to store all outputs. When the compiler finishes compiling, an interrupt is triggered and the Judger will be notified that the compilation has been done. It will check the compiler's exit code and its output, if there are any compilation errors, they will be reported back. Otherwise, the Judger will run the compiled executable, and feed the input to its \verb|stdin| and redirects all \verb|stdout| and \verb|stderr| to internal string variables. On top of that, the Judger will start a countdown timer in a different process to track the time. When the countdown reaches zero, an interrupt will be sent to the Judger and it will terminate the user's code and report a time limit exceed error, or if the user's code finishes first, then its output will be compared with the expected output, the result and all statistics will then be reported.
 
 A problem may contain multiple test cases, so all test cases will be first pushed into a judging queue, and the judger will judge them one by one.
 
@@ -670,7 +670,7 @@ Because this software will store many complex relational data, a relational data
 
 I choose to use SQLite to power this software. It is a small, self-contained, high-reliability, full-featured SQL Database engine, which will be enough to handle all the data storing and querying requests.
 
-The SQLite database has some limitations. It only supports five data types. \mintinline{text}{TEXT}, \mintinline{text}{INTEGER}, \mintinline{text}{NULL}, \mintinline{text}{REAL} and \mintinline{text}{BLOB}. So other data types such as \mintinline{text}{DateTime} and \mintinline{text}{Guid} will need to be converted before storing.
+The SQLite database has some limitations. It only supports five data types. \verb|TEXT|, \verb|INTEGER|, \verb|NULL|, \verb|REAL| and \verb|BLOB|. So other data types such as \verb|DateTime| and \verb|Guid| will need to be converted before storing.
 
 I choose to use Microsoft.Data.SQLite for the database interface, which allows me to send SQL requests to the database, handle errors and provide safety features to prevent SQL injection. Details about the design of the database and queries will be described in the \hyperref[subsec:database design]{Database design section}.
 
@@ -718,9 +718,9 @@ function search(sourceList, keyword)
 endfunction
 \end{minted}
 
-In this algorithm, I first create an empty list to store the result. Then I split the keyword into a list by space. So the keyword \mintinline{text}{"A Long Problem Name"} will be splitted into \mintinline{text}{["A", "Long", "Problem", "Name"]}.
+In this algorithm, I first create an empty list to store the result. Then I split the keyword into a list by space. So the keyword ``A Long Problem Name'' will be splitted into \verb|["A", "Long", "Problem", "Name"]|.
 
-Next, I use two nested loops to perform a linear search on each keyword. I choose to use the linear search here because the list is not sorted, so only it will work. The overall time complexity here is $O(nm)$ where $n$ is the length of the \mintinline{text}{sourceList} and $m$ is the length of \mintinline{text}{splitKeyword}. This is not very fast, but in real-world use cases, both $n$ and $m$ will be very small (less than 1000), so this algorithm will be fast enough to handle most of the cases. The increase in complexity brings a better searching experience. In this way, the algorithm will be able to match keywords like \mintinline{text}{prob} to result in \mintinline{text}{A Long Problem List}, while normal linear search will not be able to do this.
+Next, I use two nested loops to perform a linear search on each keyword. I choose to use the linear search here because the list is not sorted, so only it will work. The overall time complexity here is $O(nm)$ where $n$ is the length of the \verb|sourceList| and $m$ is the length of \verb|splitKeyword|. This is not very fast, but in real-world use cases, both $n$ and $m$ will be very small (less than 1000), so this algorithm will be fast enough to handle most of the cases. The increase in complexity brings a better searching experience. In this way, the algorithm will be able to match keywords like ``prob'' to result in ``A Long Problem List'', while normal linear search will not be able to do this.
 
 In the end, if no item is found, a not found notice is added to the list, which will be displayed to the user.
 
@@ -728,7 +728,7 @@ In the end, if no item is found, a not found notice is added to the list, which 
 
 This algorithm is designed for the Judger to run a piece of code, pass input to the code and receive all the output and error. This is the basic function of the Judger and further judging will all base on this algorithm.
 
-Before anything can run, the Judger will need to first write the user's code to a source code file. And before it can do that, it needs to know where it should write to. I will create three private variables \mintinline{text}{_SourceCodeFilePath}, \mintinline{text}{_SourceCodeFolderPath} and \mintinline{text}{_ExecutableFilePath} to store the file paths for the source code file and the executable file. I use the idea of encapsulation here so these variables can only be set by the public method \mintinline{text}{SetSourceCodeFilePath}, so they will not be modified unexpectedly.
+Before anything can run, the Judger will need to first write the user's code to a source code file. And before it can do that, it needs to know where it should write to. I will create three private variables \verb|_SourceCodeFilePath|, \verb|_SourceCodeFolderPath| and \verb|_ExecutableFilePath| to store the file paths for the source code file and the executable file. I use the idea of encapsulation here so these variables can only be set by the public method \verb|SetSourceCodeFilePath|, so they will not be modified unexpectedly.
 
 \begin{minted}{text}
 partial class Judger
@@ -744,7 +744,7 @@ partial class Judger
 endclass
 \end{minted}
 
-For compiling programming languages such as C, C++ and Java, the source code needs to be compiled before running. So I need to add a \mintinline{text}{Compile} function to support these programming languages. The compile task needs to be run concurrently in a different process so the main UI can stay responsive. So instead of monitoring the compiler all the time, I will bind two event handlers to the compile process, to process its output data and error data. Those data will then be stored in two private string variables for later use.
+For compiling programming languages such as C, C++ and Java, the source code needs to be compiled before running. So I need to add a \verb|Compile| function to support these programming languages. The compile task needs to be run concurrently in a different process so the main UI can stay responsive. So instead of monitoring the compiler all the time, I will bind two event handlers to the compile process, to process its output data and error data. Those data will then be stored in two private string variables for later use.
 
 \begin{minted}{text}
 partial class Judger
@@ -810,9 +810,9 @@ partial class Judger
 endclass
 \end{minted}
 
-In the end, an integer exit code will be returned. If the exit code is zero, the Judger will know that the compilation is successful. If it is something else, then the Judger will need to report a compile error with detailed data from \mintinline{text}{_CompilationError}. 
+In the end, an integer exit code will be returned. If the exit code is zero, the Judger will know that the compilation is successful. If it is something else, then the Judger will need to report a compile error with detailed data from \verb|_CompilationError|. 
 
-If the user's code is compiled successfully or it does not need to be compiled, the \mintinline{text}{Execute} function is called to run the code or the executable, pass the input to the process and get its output. The \mintinline{text}{Execute} function will also need to kill the running process if it runs too long. So I will use a custom enumeration type \mintinline{text}{StatusCode} to manage the process' status.
+If the user's code is compiled successfully or it does not need to be compiled, the \verb|Execute| function is called to run the code or the executable, pass the input to the process and get its output. The \verb|Execute| function will also need to kill the running process if it runs too long. So I will use a custom enumeration type \verb|StatusCode| to manage the process' status.
 
 \begin{minted}{text}
 enum StatusCode
@@ -828,9 +828,9 @@ partial class Judger
 endclass
 \end{minted}
 
-\mintinline{text}{StatusCode} has five possible values, \mintinline{text}{PENDING} is set when the code is waiting to be run. When it starts executing, the status code will be set to \mintinline{text}{RUNNING}. If it finishes in time, its status will be set to \mintinline{text}{FINISHED}. If it exceeds the time limit, the process will be killed by the Judger and a \mintinline{text}{TLE} will be recorded. If it exceeds the memory limit, the process will be killed by the Judger and a \mintinline{text}{MLE} will be recorded.
+\verb|StatusCode| has five possible values, \verb|PENDING| is set when the code is waiting to be run. When it starts executing, the status code will be set to \verb|RUNNING|. If it finishes in time, its status will be set to \verb|FINISHED|. If it exceeds the time limit, the process will be killed by the Judger and a \verb|TLE| will be recorded. If it exceeds the memory limit, the process will be killed by the Judger and a \verb|MLE| will be recorded.
 
-Similarly, I will use event handlers to record all the outputs from the user's code. I add a third handler to process the exit event, which will determine the \mintinline{text}{_StatusCode} mentioned above.
+Similarly, I will use event handlers to record all the outputs from the user's code. I add a third handler to process the exit event, which will determine the \verb|_StatusCode| mentioned above.
 
 \begin{minted}{text}
 partial class Judger
@@ -860,7 +860,7 @@ partial class Judger
 endclass
 \end{minted}
 
-The \mintinline{text}{Execute} function has a similar design with the \mintinline{text}{Compile} function. It configures all the running information and event handlers as usual. However, this time I add two extra processes running concurrently with the execution process. The first one is a timer, which countdown the time limit. When the timer counts to zero, it checks whether the execute process is still running, if it does, then the execution process will be killed and a \mintinline{text}{TLE} will be reported. The second one is a memory monitor, which checks the peak memory usage of the execution process every 10 milliseconds. If the memory usage is larger than the memory limit, then the execution process will be killed and a \mintinline{text}{MLE} will be reported.
+The \verb|Execute| function has a similar design with the \verb|Compile| function. It configures all the running information and event handlers as usual. However, this time I add two extra processes running concurrently with the execution process. The first one is a timer, which countdown the time limit. When the timer counts to zero, it checks whether the execute process is still running, if it does, then the execution process will be killed and a \verb|TLE| will be reported. The second one is a memory monitor, which checks the peak memory usage of the execution process every 10 milliseconds. If the memory usage is larger than the memory limit, then the execution process will be killed and a \verb|MLE| will be reported.
 
 \begin{minted}{text}
 partial class Judger
@@ -942,7 +942,7 @@ partial class Judger
 endclass
 \end{minted}
 
-Now I have everything I need to build the \mintinline{text}{RunCode} function. It takes in the user's code, input data, language configuration, time limit and memory limit, outputs a \mintinline{text}{RunCodeResult} containing all the running information. I also need to set up a stopwatch to measure how long the code has been executed, unlike the timer before, this stopwatch only provides data for statistics records. In the end, the \mintinline{text}{RunCode} function will handle some basic errors, it will judge whether the user's code run, but it will not judge whether the user's code provides the correct output. The \mintinline{text}{RunCode} algorithm only runs the code and further judging will be handed over to other algorithms.
+Now I have everything I need to build the \verb|RunCode| function. It takes in the user's code, input data, language configuration, time limit and memory limit, outputs a \verb|RunCodeResult| containing all the running information. I also need to set up a stopwatch to measure how long the code has been executed, unlike the timer before, this stopwatch only provides data for statistics records. In the end, the \verb|RunCode| function will handle some basic errors, it will judge whether the user's code run, but it will not judge whether the user's code provides the correct output. The \verb|RunCode| algorithm only runs the code and further judging will be handed over to other algorithms.
 
 \begin{minted}{text}
 partial class Judger
@@ -1011,7 +1011,7 @@ endclass
 
 \subsection{Judger Judge TestCase algorithm}
 
-This algorithm is designed to allow the Judger to judge a test case. On top of the \mintinline{text}{RunCode} function, this algorithm compare the user's output with the expected output, so it can judge whether the user's code works correctly. The \mintinline{text}{JudgeTestCase} function returns a \mintinline{text}{TestCaseResult} containing more information.
+This algorithm is designed to allow the Judger to judge a test case. On top of the \verb|RunCode| function, this algorithm compare the user's output with the expected output, so it can judge whether the user's code works correctly. The \verb|JudgeTestCase| function returns a \verb|TestCaseResult| containing more information.
 
 \begin{minted}{text}
 partial class Judger
@@ -1101,69 +1101,69 @@ I am taking an object-oriented approach to the design of the software. This is t
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{classDiagram}
 
-\subsubsection{\mintinline{text}{User}}
+\subsubsection{User}
 
-\mintinline{text}{User} is an object used to represent the current user. Its data will be attached to each \mintinline{text}{Submission}, \mintinline{text}{Assignment} and \mintinline{text}{AssignmentSubmission}, so the user can track identities and manage the data easily. Users will be asked to enter this information when they first open the software, an instance of \mintinline{text}{User} will be created and stored in the database.
+\verb|User| is an object used to represent the current user. Its data will be attached to each \verb|Submission|, \verb|Assignment| and \verb|AssignmentSubmission|, so the user can track identities and manage the data easily. Users will be asked to enter this information when they first open the software, an instance of \verb|User| will be created and stored in the database.
 
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
     Variable & Data type & Justification \\
     \hline
-    \mintinline{text}{Uid} & \mintinline{text}{Guid} & The \mintinline{text}{User} uses a \mintinline{text}{Guid} value for its \mintinline{text}{Uid} instead of a normal \mintinline{text}{int} value to ensure the \mintinline{text}{Uid} is unique globally. Every user will have a unique \mintinline{text}{Uid}. \\
+    \verb|Uid| & \verb|Guid| & The \verb|User| uses a \verb|Guid| value for its \verb|Uid| instead of a normal \verb|int| value to ensure the \verb|Uid| is unique globally. Every user will have a unique \verb|Uid|. \\
     \hline
-    \mintinline{text}{Name} & \mintinline{text}{string} & \mintinline{text}{Name} stores the user's name. \\
+    \verb|Name| & \verb|string| & \verb|Name| stores the user's name. \\
     \hline
-    \mintinline{text}{Email} & \mintinline{text}{string} & \mintinline{text}{Email} stores the user's Email address. \\
+    \verb|Email| & \verb|string| & \verb|Email| stores the user's Email address. \\
     \hline
-    \mintinline{text}{Role} & \mintinline{text}{enum Role} & \mintinline{text}{Role} is a custom enumeration type which has two possible values, \mintinline{text}{Student} or \mintinline{text}{Teacher}. It is used to determine the role of the current user, and the user interface will be adjusted accordingly. I choose to use a custom enumeration type instead of some magic numbers to make the code more readable and easier to maintain. \\
+    \verb|Role| & \verb|enum Role| & \verb|Role| is a custom enumeration type which has two possible values, \verb|Student| or \verb|Teacher|. It is used to determine the role of the current user, and the user interface will be adjusted accordingly. I choose to use a custom enumeration type instead of some magic numbers to make the code more readable and easier to maintain. \\
     \hline
 \end{tabulary}
 
-\subsubsection{\mintinline{text}{Tag}}
+\subsubsection{Tag}
 
-A \mintinline{text}{Tag} is a label used to categorize a \mintinline{text}{Problem}.
+A \verb|Tag| is a label used to categorize a \verb|Problem|.
 
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
     Variable & Data type & Justification \\
     \hline
-    \mintinline{text}{Id} & \mintinline{text}{int} & The \mintinline{text}{Id} is the local unique identifier for a \mintinline{text}{Tag}. It is used to uniquely determine a \mintinline{text}{Tag} in the local database. \\
+    \verb|Id| & \verb|int| & The \verb|Id| is the local unique identifier for a \verb|Tag|. It is used to uniquely determine a \verb|Tag| in the local database. \\
     \hline
-    \mintinline{text}{Name} & \mintinline{text}{string} & \mintinline{text}{Name} stores the name of the \mintinline{text}{Tag}. A \mintinline{text}{Name} must be unique, so data needs to be validated and two \mintinline{text}{Tags} with the same \mintinline{text}{Name} is not allowed. \\
+    \verb|Name| & \verb|string| & \verb|Name| stores the name of the \verb|Tag|. A \verb|Name| must be unique, so data needs to be validated and two \verb|Tags| with the same \verb|Name| is not allowed. \\
     \hline
 \end{tabulary}
 
-\subsubsection{\mintinline{text}{TestCase}}
+\subsubsection{TestCase}
 
-A \mintinline{text}{TestCase} is one set of test input and output, which will be used by the \mintinline{text}{Judger} to judge the user's submission.
+A \verb|TestCase| is one set of test input and output, which will be used by the \verb|Judger| to judge the user's submission.
 
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
     Variable & Data type & Justification \\
     \hline
-    \mintinline{text}{Id} & \mintinline{text}{int} & The \mintinline{text}{Id} is the local unique identifier for a \mintinline{text}{TestCase}. It is used to uniquely determine a \mintinline{text}{TestCase} in the database. \\
+    \verb|Id| & \verb|int| & The \verb|Id| is the local unique identifier for a \verb|TestCase|. It is used to uniquely determine a \verb|TestCase| in the database. \\
     \hline
-    \mintinline{text}{Input} & \mintinline{text}{string} & The \mintinline{text}{Input} will be feed to the user's submission code by the \mintinline{text}{Judger}. \\
+    \verb|Input| & \verb|string| & The \verb|Input| will be feed to the user's submission code by the \verb|Judger|. \\
     \hline
-    \mintinline{text}{Output} & \mintinline{text}{string} & \mintinline{text}{Output} stores the expected \mintinline{text}{Output} of the corresponding \mintinline{text}{Input}. The \mintinline{text}{Judger} will compare user's output with the \mintinline{text}{Output} to judge whether the user's code is correct. \\
+    \verb|Output| & \verb|string| & \verb|Output| stores the expected \verb|Output| of the corresponding \verb|Input|. The \verb|Judger| will compare user's output with the \verb|Output| to judge whether the user's code is correct. \\
     \hline
-    \mintinline{text}{IsExample} & \mintinline{text}{bool} & Define whether this \mintinline{text}{TestCase} is an example. An example \mintinline{text}{TestCase} will be displayed to the user for debugging, and distribute with an \mintinline{text}{Assignment}. A non-example \mintinline{text}{TestCase} will be used to judge the solution and will not be displayed to the user or distribute with an \mintinline{text}{Assignment}. A boolean value is suitable to store the two-state data. \\
+    \verb|IsExample| & \verb|bool| & Define whether this \verb|TestCase| is an example. An example \verb|TestCase| will be displayed to the user for debugging, and distribute with an \verb|Assignment|. A non-example \verb|TestCase| will be used to judge the solution and will not be displayed to the user or distribute with an \verb|Assignment|. A boolean value is suitable to store the two-state data. \\
     \hline
 \end{tabulary}
 
-\subsubsection{\mintinline{text}{Problem}}
+\subsubsection{Problem}
 
-The \mintinline{text}{Problem} is used to store and organize the data for each programming question.
+The \verb|Problem| is used to store and organize the data for each programming question.
 
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
     Variable & Data type & Justification \\
     \hline
-    \mintinline{text}{Id} & \mintinline{text}{int} & The \mintinline{text}{Id} is the local unique identifier for a \mintinline{text}{Problem}. It is used to uniquely determine a \mintinline{text}{Problem} in the database. When a \mintinline{text}{Problem} is imported in to the database, a new \mintinline{text}{Id} is given. \\
+    \verb|Id| & \verb|int| & The \verb|Id| is the local unique identifier for a \verb|Problem|. It is used to uniquely determine a \verb|Problem| in the database. When a \verb|Problem| is imported in to the database, a new \verb|Id| is given. \\
     \hline
-    \mintinline{text}{Name} & \mintinline{text}{string} & The \mintinline{text}{Name} is a string contains the name of a \mintinline{text}{Problem}. \\
+    \verb|Name| & \verb|string| & The \verb|Name| is a string contains the name of a \verb|Problem|. \\
     \hline
-    \mintinline{text}{SourceHash} & \mintinline{text}{string} & This field is \mintinline{text}{null} for all normal \mintinline{text}{Problem}. It is only set for \mintinline{text}{Problem} which comes with an \mintinline{text}{Assignment}, and it is set to the hash value of the original \mintinline{text}{Problem}. This value will be recorded for \mintinline{text}{Submission}. \\
+    \verb|SourceHash| & \verb|string| & This field is \verb|null| for all normal \verb|Problem|. It is only set for \verb|Problem| which comes with an \verb|Assignment|, and it is set to the hash value of the original \verb|Problem|. This value will be recorded for \verb|Submission|. \\
     \hline
 \end{tabulary}
 
@@ -1171,197 +1171,197 @@ The \mintinline{text}{Problem} is used to store and organize the data for each p
     \hline
     Variable & Data type & Justification \\
     \hline
-    \mintinline{text}{Description} & \mintinline{text}{string} & The \mintinline{text}{Description} is a string storing the detailed description of a \mintinline{text}{Problem}. Markdown syntax is supported for a better user experience. \\
+    \verb|Description| & \verb|string| & The \verb|Description| is a string storing the detailed description of a \verb|Problem|. Markdown syntax is supported for a better user experience. \\
     \hline
-    \mintinline{text}{Status} & \mintinline{text}{enum Status} & \mintinline{text}{Status} is an enumeration type containing 3 possible status: \mintinline{text}{Todo}, \mintinline{text}{Solved} and \mintinline{text}{Attempted}. This is used to collect user statistics data. I choose to use a custom enumeration type instead of some magic numbers to make the code more readable and easier to maintain. \\
+    \verb|Status| & \verb|enum Status| & \verb|Status| is an enumeration type containing 3 possible status: \verb|Todo|, \verb|Solved| and \verb|Attempted|. This is used to collect user statistics data. I choose to use a custom enumeration type instead of some magic numbers to make the code more readable and easier to maintain. \\
     \hline
-    \mintinline{text}{Difficulty} & \mintinline{text}{enum Difficulty} & \mintinline{text}{Difficulty} is an enumeration type containing 3 possible difficulties: \mintinline{text}{Easy}, \mintinline{text}{Medium} and \mintinline{text}{Hard}. This provdes a way for the user to search and select problems by their difficulties. \\
+    \verb|Difficulty| & \verb|enum Difficulty| & \verb|Difficulty| is an enumeration type containing 3 possible difficulties: \verb|Easy|, \verb|Medium| and \verb|Hard|. This provdes a way for the user to search and select problems by their difficulties. \\
     \hline
-    \mintinline{text}{TimeLimit} & \mintinline{text}{int} & \mintinline{text}{TimeLimit} sets the max time allowed for the user code to run in millisecond. When the running time exceed the \mintinline{text}{TimeLimit}, the running code will be killed and a Time Limit Exceed error will be recorded. This prevents infinite loop from using up all computing resources and rejects inefficient algorithms. \\
+    \verb|TimeLimit| & \verb|int| & \verb|TimeLimit| sets the max time allowed for the user code to run in millisecond. When the running time exceed the \verb|TimeLimit|, the running code will be killed and a Time Limit Exceed error will be recorded. This prevents infinite loop from using up all computing resources and rejects inefficient algorithms. \\
     \hline
-    \mintinline{text}{MemoryLimit} & \mintinline{text}{int} & \mintinline{text}{MemoryLimit} sets the max memory allowed for the user's code to consume in bytes. When the memory usage exceed the memory limit, the running code will be killed and a Memory Limit Exceed Error will be recorded. This prevents incorrect code from using up all memory space and rejects inefficient algorithms. \\
+    \verb|MemoryLimit| & \verb|int| & \verb|MemoryLimit| sets the max memory allowed for the user's code to consume in bytes. When the memory usage exceed the memory limit, the running code will be killed and a Memory Limit Exceed Error will be recorded. This prevents incorrect code from using up all memory space and rejects inefficient algorithms. \\
     \hline
-    \mintinline{text}{TestCases} & \mintinline{text}{List<TestCase>} & \mintinline{text}{TestCases} is a list containing all \mintinline{text}{TestCase} for the problem. A list is more appropriate than an array because it allows new \mintinline{text}{TestCase} to be added or remove existing ones during runtime. \\
+    \verb|TestCases| & \verb|List<TestCase>| & \verb|TestCases| is a list containing all \verb|TestCase| for the problem. A list is more appropriate than an array because it allows new \verb|TestCase| to be added or remove existing ones during runtime. \\
     \hline
-    \mintinline{text}{Tags} & \mintinline{text}{List<Tags>} & \mintinline{text}{Tags} is a list containing all \mintinline{text}{Tags} for a \mintinline{text}{Problem}. Similarly, I use a list for \mintinline{text}{Tags} so it can be added or removed during runtime. \\
+    \verb|Tags| & \verb|List<Tags>| & \verb|Tags| is a list containing all \verb|Tags| for a \verb|Problem|. Similarly, I use a list for \verb|Tags| so it can be added or removed during runtime. \\
     \hline
 \end{tabulary}
 
-\subsubsection{\mintinline{text}{Language}}
+\subsubsection{Language}
 
-\mintinline{text}{Language} defines the compiling and running configurations for different programming languages. Language configurations are not stored in the database, instead, they are stored in the settings file, so users can add their custom configurations easily.
+\verb|Language| defines the compiling and running configurations for different programming languages. Language configurations are not stored in the database, instead, they are stored in the settings file, so users can add their custom configurations easily.
 
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
     Variable & Data type & Justification \\
     \hline
-    \mintinline{text}{Name} & \mintinline{text}{string} & \mintinline{text}{Name} stores the name of each programming language. The \mintinline{text}{Name} will be displayed in the drop down menu for the user to select their preferred programming language. \\
+    \verb|Name| & \verb|string| & \verb|Name| stores the name of each programming language. The \verb|Name| will be displayed in the drop down menu for the user to select their preferred programming language. \\
     \hline
-    \mintinline{text}{NeedCompile} & \mintinline{text}{bool} & Some programming languages need to be compiled before running, such as C, C++ and Java. This attribute is used to tell the \mintinline{text}{Judger} to compile the code before executing. \\
+    \verb|NeedCompile| & \verb|bool| & Some programming languages need to be compiled before running, such as C, C++ and Java. This attribute is used to tell the \verb|Judger| to compile the code before executing. \\
     \hline
-    \mintinline{text}{CompileCommand} & \mintinline{text}{string} & If a programming language requires compilation, this command is executed to call the compiler. \\
+    \verb|CompileCommand| & \verb|string| & If a programming language requires compilation, this command is executed to call the compiler. \\
     \hline
-    \mintinline{text}{CompileArguments} & \mintinline{text}{string} & If a programming language requires compilation, this arguments is passed to the compiler to specify file path and related compile arguments. \\
+    \verb|CompileArguments| & \verb|string| & If a programming language requires compilation, this arguments is passed to the compiler to specify file path and related compile arguments. \\
     \hline
-    \mintinline{text}{RunCommand} & \mintinline{text}{string} & The \mintinline{text}{Judger} uses this command to run the executable or call the intrepreter. \\
+    \verb|RunCommand| & \verb|string| & The \verb|Judger| uses this command to run the executable or call the intrepreter. \\
     \hline
-    \mintinline{text}{RunArguments} & \mintinline{text}{string} & This \mintinline{text}{Judger} pass this arguments to the executable or the intrepreter. \\
+    \verb|RunArguments| & \verb|string| & This \verb|Judger| pass this arguments to the executable or the intrepreter. \\
     \hline
 \end{tabulary}
 
-\subsubsection{\mintinline{text}{Submission}}
+\subsubsection{Submission}
 
-A \mintinline{text}{Submission} is created when the user submits a code solution to the \mintinline{text}{Judger}. The \mintinline{text}{Submission} will contain all the information including the time, the source code, the programming language selected and the corresponding \mintinline{text}{Problem} for the \mintinline{text}{Judger} to judge.
+A \verb|Submission| is created when the user submits a code solution to the \verb|Judger|. The \verb|Submission| will contain all the information including the time, the source code, the programming language selected and the corresponding \verb|Problem| for the \verb|Judger| to judge.
 
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
     Variable & Data type & Justification \\
     \hline
-    \mintinline{text}{Id} & \mintinline{text}{int} & The \mintinline{text}{Id} is the local unique identifier for a \mintinline{text}{Submission}. It is used to uniquely determine a \mintinline{text}{Submission} in the database. \\
+    \verb|Id| & \verb|int| & The \verb|Id| is the local unique identifier for a \verb|Submission|. It is used to uniquely determine a \verb|Submission| in the database. \\
     \hline
-    \mintinline{text}{Problem} & \mintinline{text}{Problem} & The \mintinline{text}{Problem} contains the corresponding \mintinline{text}{Problem} of this \mintinline{text}{Submission}, which also contains the \mintinline{text}{TestCases} for the \mintinline{text}{Judger} to judge the \mintinline{text}{Submission}. Before storing a \mintinline{text}{Submission} into the database, this value needs to be normalized to the \mintinline{text}{Id} of that \mintinline{text}{Problem}. \\
+    \verb|Problem| & \verb|Problem| & The \verb|Problem| contains the corresponding \verb|Problem| of this \verb|Submission|, which also contains the \verb|TestCases| for the \verb|Judger| to judge the \verb|Submission|. Before storing a \verb|Submission| into the database, this value needs to be normalized to the \verb|Id| of that \verb|Problem|. \\
     \hline
-    \mintinline{text}{Code} & \mintinline{text}{string} & \mintinline{text}{Code} stores the submitted code, which will be executed and judged by the \mintinline{text}{Judger}. \\
+    \verb|Code| & \verb|string| & \verb|Code| stores the submitted code, which will be executed and judged by the \verb|Judger|. \\
     \hline
-    \mintinline{text}{SubmittedTime} & \mintinline{text}{DateTime} & \mintinline{text}{SubmittedTime} stores the time the \mintinline{text}{Submission} is created. Instead of using a \mintinline{text}{string} or an \mintinline{text}{int} value, I decide to use the native data type \mintinline{text}{DateTime} provided by C\#, which makes it easier to process date time, and prevent any formating issues. \\
+    \verb|SubmittedTime| & \verb|DateTime| & \verb|SubmittedTime| stores the time the \verb|Submission| is created. Instead of using a \verb|string| or an \verb|int| value, I decide to use the native data type \verb|DateTime| provided by C\#, which makes it easier to process date time, and prevent any formating issues. \\
     \hline
-    \mintinline{text}{Language} & \mintinline{text}{Language} & \mintinline{text}{Language} stores the programming language selected by the user, so the \mintinline{text}{Judger} knows how to run the code.\\
+    \verb|Language| & \verb|Language| & \verb|Language| stores the programming language selected by the user, so the \verb|Judger| knows how to run the code.\\
     \hline
-    \mintinline{text}{Submitter} & \mintinline{text}{User} & \mintinline{text}{Submitter} stores the \mintinline{text}{User} who submits this \mintinline{text}{Submission}. This field will be normalized to the \mintinline{text}{User.Uid} before storing into the database. \\
+    \verb|Submitter| & \verb|User| & \verb|Submitter| stores the \verb|User| who submits this \verb|Submission|. This field will be normalized to the \verb|User.Uid| before storing into the database. \\
     \hline
 \end{tabulary}
 
-\subsubsection{\mintinline{text}{ProblemList}}
+\subsubsection{ProblemList}
 
-A \mintinline{text}{ProblemList} is a list of \mintinline{text}{Problem}, which allows the user to share multiple \mintinline{text}{Problem} easily. It is also the parent of \mintinline{text}{Assignment} and provides basic functions for it. The \mintinline{text}{ProblemList} contains a \mintinline{text}{List<Problem>} variable, which provides all basic functions for a list, such as add, remove, sort and find, so I don't need to reinvent the wheel. I choose a list instead of an array because the number of \mintinline{text}{Problem} inside the list will be changed during runtime, so a list is more appropriate for my use case.
+A \verb|ProblemList| is a list of \verb|Problem|, which allows the user to share multiple \verb|Problem| easily. It is also the parent of \verb|Assignment| and provides basic functions for it. The \verb|ProblemList| contains a \verb|List<Problem>| variable, which provides all basic functions for a list, such as add, remove, sort and find, so I don't need to reinvent the wheel. I choose a list instead of an array because the number of \verb|Problem| inside the list will be changed during runtime, so a list is more appropriate for my use case.
 
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
     Variable & Data type & Justification \\
     \hline
-    \mintinline{text}{Id} & \mintinline{text}{int} & The \mintinline{text}{Id} is the local unique identifier for a \mintinline{text}{ProblemList}. It is used to uniquely determine a \mintinline{text}{ProblemList} in the database. \\
+    \verb|Id| & \verb|int| & The \verb|Id| is the local unique identifier for a \verb|ProblemList|. It is used to uniquely determine a \verb|ProblemList| in the database. \\
     \hline
-    \mintinline{text}{Name} & \mintinline{text}{string} & \mintinline{text}{Name} stores the name of the \mintinline{text}{Problem List}. \\
+    \verb|Name| & \verb|string| & \verb|Name| stores the name of the \verb|Problem List|. \\
     \hline
-    \mintinline{text}{Description} & \mintinline{text}{string} & \mintinline{text}{Description} stores the description of the \mintinline{text}{ProblemList}. \\
+    \verb|Description| & \verb|string| & \verb|Description| stores the description of the \verb|ProblemList|. \\
     \hline
-    \mintinline{text}{Problems} & \mintinline{text}{List<Problem>} & \mintinline{text}{Problems} is a list of \mintinline{text}{Problem}, which supports basic functions to manipulate a list of data. \\
+    \verb|Problems| & \verb|List<Problem>| & \verb|Problems| is a list of \verb|Problem|, which supports basic functions to manipulate a list of data. \\
     \hline
 \end{tabulary}
 
-\subsubsection{\mintinline{text}{Assignment}}
+\subsubsection{Assignment}
 
-An \mintinline{text}{Assignment} is a \mintinline{text}{ProblemList} which gets distributed to students. When an \mintinline{text}{Assignment} is distributed, a copy of that \mintinline{text}{Assignment} is created. All \mintinline{text}{TestCases} with \mintinline{text}{IsExample} set to \mintinline{text}{false} will be removed to prevent students from cheating. The \mintinline{text}{Type} of the \mintinline{text}{Assignment} will be set to \mintinline{text}{Copy} to indicate it is a distributed copy. The \mintinline{text}{Judger} will reject to judge a distributed \mintinline{text}{Assignment} and the \mintinline{text}{AssignmentsPage} will show the \mintinline{text}{Assignment} under the Assigned tab instead of the Created tab.
+An \verb|Assignment| is a \verb|ProblemList| which gets distributed to students. When an \verb|Assignment| is distributed, a copy of that \verb|Assignment| is created. All \verb|TestCases| with \verb|IsExample| set to \verb|false| will be removed to prevent students from cheating. The \verb|Type| of the \verb|Assignment| will be set to \verb|Copy| to indicate it is a distributed copy. The \verb|Judger| will reject to judge a distributed \verb|Assignment| and the \verb|AssignmentsPage| will show the \verb|Assignment| under the Assigned tab instead of the Created tab.
 
-\mintinline{text}{Assignment} is inheriate from the \mintinline{text}{ProblemList}, so it can reuse the \mintinline{text}{Name} and \mintinline{text}{Description} attributes and all methods to manage a list of \mintinline{text}{Problem}. Upon that, new attributes and methods are added to make it functional.
+\verb|Assignment| is inheriate from the \verb|ProblemList|, so it can reuse the \verb|Name| and \verb|Description| attributes and all methods to manage a list of \verb|Problem|. Upon that, new attributes and methods are added to make it functional.
 
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
     Variable & Data type & Justification \\
     \hline
-    \mintinline{text}{Uid} & \mintinline{text}{Guid} & The \mintinline{text}{Assignment} uses a \mintinline{text}{Guid} value for its \mintinline{text}{Uid} instead of a normal \mintinline{text}{int} value to ensure the \mintinline{text}{Uid} is unique globally. So when the user import an \mintinline{text}{Assignment} into their database, the \mintinline{text}{Uid} will not conflict with any existing values, and it will not be changed (Unlike a \mintinline{text}{ProblemList}, for which will be assigned a new \mintinline{text}{Id} when importing). The \mintinline{text}{Uid} will be referenced by the \mintinline{text}{AssignmentSubmission} so the \mintinline{text}{Judger} will be able to know which \mintinline{text}{Assignment} it is judging. \\
+    \verb|Uid| & \verb|Guid| & The \verb|Assignment| uses a \verb|Guid| value for its \verb|Uid| instead of a normal \verb|int| value to ensure the \verb|Uid| is unique globally. So when the user import an \verb|Assignment| into their database, the \verb|Uid| will not conflict with any existing values, and it will not be changed (Unlike a \verb|ProblemList|, for which will be assigned a new \verb|Id| when importing). The \verb|Uid| will be referenced by the \verb|AssignmentSubmission| so the \verb|Judger| will be able to know which \verb|Assignment| it is judging. \\
     \hline
-    \mintinline{text}{DueDate} & \mintinline{text}{DateTime} & The \mintinline{text}{DueDate} stores the time for the due date of the \mintinline{text}{Assignment}. Instead of using a \mintinline{text}{string} or an \mintinline{text}{int} value, I decide to use the native data type \mintinline{text}{DateTime} provided by C\#, which makes it easier to process date time, and prevent all formating issues. \\
+    \verb|DueDate| & \verb|DateTime| & The \verb|DueDate| stores the time for the due date of the \verb|Assignment|. Instead of using a \verb|string| or an \verb|int| value, I decide to use the native data type \verb|DateTime| provided by C\#, which makes it easier to process date time, and prevent all formating issues. \\
     \hline
-    \mintinline{text}{Status} & \mintinline{text}{enum Status} & \mintinline{text}{Status} is an enumeration type containing 4 possible status for a source \mintinline{text}{Assignment}: \mintinline{text}{Draft}, \mintinline{text}{Scheduled}, \mintinline{text}{Published} and \mintinline{text}{Assigned} for the teacher to manage the lifecycle of an \mintinline{text}{Assignment}. For a distributed \mintinline{text}{Assignment}, there are 4 possible \mintinline{text}{Status}, \mintinline{text}{NotStarted}, \mintinline{text}{InProgress}, \mintinline{text}{Completed} and \mintinline{text}{OverDue}, which helps the student to manage the lifecycle of an \mintinline{text}{Assignment}. I choose to use a custom enumeration type instead of some magic numbers to make the code more readable and easier to maintain.\\
+    \verb|Status| & \verb|enum Status| & \verb|Status| is an enumeration type containing 4 possible status for a source \verb|Assignment|: \verb|Draft|, \verb|Scheduled|, \verb|Published| and \verb|Assigned| for the teacher to manage the lifecycle of an \verb|Assignment|. For a distributed \verb|Assignment|, there are 4 possible \verb|Status|, \verb|NotStarted|, \verb|InProgress|, \verb|Completed| and \verb|OverDue|, which helps the student to manage the lifecycle of an \verb|Assignment|. I choose to use a custom enumeration type instead of some magic numbers to make the code more readable and easier to maintain.\\
     \hline
-    \mintinline{text}{Type} & \mintinline{text}{enum Type} & \mintinline{text}{Type} is an enumeration type containing 2 possible types, \mintinline{text}{Source} or \mintinline{text}{Copy}. It is used to manage the distribution of an \mintinline{text}{Assignment} as described above. \\
+    \verb|Type| & \verb|enum Type| & \verb|Type| is an enumeration type containing 2 possible types, \verb|Source| or \verb|Copy|. It is used to manage the distribution of an \verb|Assignment| as described above. \\
     \hline
-    \mintinline{text}{Assigner} & \mintinline{text}{User} & \mintinline{text}{Assigner} stores the \mintinline{text}{User} who assigns the \mintinline{text}{Assignment}. This field will be normalized into the \mintinline{text}{User.Uid} before storing into the database. \\
+    \verb|Assigner| & \verb|User| & \verb|Assigner| stores the \verb|User| who assigns the \verb|Assignment|. This field will be normalized into the \verb|User.Uid| before storing into the database. \\
     \hline
 \end{tabulary}
 
-\subsubsection{\mintinline{text}{AssignmentSubmission}}
+\subsubsection{AssignmentSubmission}
 
-When a student finishes an \mintinline{text}{Assignment}, an \mintinline{text}{AssignmentSubmission} is created for the \mintinline{text}{Judger} to judge. The \mintinline{text}{AssignmentSubmission} can either be exported to file and sent to the teacher, or it can be uploaded using API. The teacher imports the \mintinline{text}{AssignmentSubmission} or uses API to load it, and the \mintinline{text}{Judger} will be able to mark it and return the result.
+When a student finishes an \verb|Assignment|, an \verb|AssignmentSubmission| is created for the \verb|Judger| to judge. The \verb|AssignmentSubmission| can either be exported to file and sent to the teacher, or it can be uploaded using API. The teacher imports the \verb|AssignmentSubmission| or uses API to load it, and the \verb|Judger| will be able to mark it and return the result.
 
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
     Variable & Data type & Justification \\
     \hline
-    \mintinline{text}{Uid} & \mintinline{text}{Guid} & The \mintinline{text}{AssignmentSubmission} uses a \mintinline{text}{Guid} value for its \mintinline{text}{Uid} instead of a normal \mintinline{text}{int} value to ensure the \mintinline{text}{Uid} is unique globally. So when teachers import an \mintinline{text}{AssignmentSubmission} into their database, the \mintinline{text}{Uid} will not conflict with any existing values, and it will not be changed. \\
+    \verb|Uid| & \verb|Guid| & The \verb|AssignmentSubmission| uses a \verb|Guid| value for its \verb|Uid| instead of a normal \verb|int| value to ensure the \verb|Uid| is unique globally. So when teachers import an \verb|AssignmentSubmission| into their database, the \verb|Uid| will not conflict with any existing values, and it will not be changed. \\
     \hline
-    \mintinline{text}{Submitter} & \mintinline{text}{User} & The user information is collected when exporting an \mintinline{text}{AssignmentSubmission}, so the teacher will be able to know who is the \mintinline{text}{Submitter}. This field needs to be normalized into \mintinline{text}{User.Uid} before storing into the database. \\
+    \verb|Submitter| & \verb|User| & The user information is collected when exporting an \verb|AssignmentSubmission|, so the teacher will be able to know who is the \verb|Submitter|. This field needs to be normalized into \verb|User.Uid| before storing into the database. \\
     \hline
-    \mintinline{text}{Assignment} & \mintinline{text}{Assignment} & The \mintinline{text}{Assignment} corresponding to this \mintinline{text}{AssignmentSubmission} is recorded, so the \mintinline{text}{Judger} knows how to judge it. This field needs to be normalized into \mintinline{text}{Assignment.Uid} before storing into the database. \\
+    \verb|Assignment| & \verb|Assignment| & The \verb|Assignment| corresponding to this \verb|AssignmentSubmission| is recorded, so the \verb|Judger| knows how to judge it. This field needs to be normalized into \verb|Assignment.Uid| before storing into the database. \\
     \hline
-    \mintinline{text}{Submissions} & \mintinline{text}{List<Submission>} & \mintinline{text}{Submissions} stores a list of \mintinline{text}{Submission}, which contains the user's \mintinline{text}{Submission} for each \mintinline{text}{Problem} assigned. \\
+    \verb|Submissions| & \verb|List<Submission>| & \verb|Submissions| stores a list of \verb|Submission|, which contains the user's \verb|Submission| for each \verb|Problem| assigned. \\
     \hline
-    \mintinline{text}{Status} & \mintinline{text}{enum Status} & \mintinline{text}{Status} is an enumeration type containing 3 possible types, \mintinline{text}{NotJudged}, \mintinline{text}{Judged} and \mintinline{text}{Returned} for the teacher to keep track of each submission. \\
+    \verb|Status| & \verb|enum Status| & \verb|Status| is an enumeration type containing 3 possible types, \verb|NotJudged|, \verb|Judged| and \verb|Returned| for the teacher to keep track of each submission. \\
     \hline
 \end{tabulary}
 
-\subsubsection{\mintinline{text}{Judger}}
+\subsubsection{Judger}
 
-The \mintinline{text}{Judger} is a static class, only eposes 5 functions to run and judge user's code. The \mintinline{text}{Judger} takes a \mintinline{text}{Submission} as an input, and outputs a \mintinline{text}{SubmissionResult}. No variable is exposed. The private attributes and methods are discussed in the \hyperref[sec:algorithm design]{algorithm design section}.
+The \verb|Judger| is a static class, only eposes 5 functions to run and judge user's code. The \verb|Judger| takes a \verb|Submission| as an input, and outputs a \verb|SubmissionResult|. No variable is exposed. The private attributes and methods are discussed in the \hyperref[sec:algorithm design]{algorithm design section}.
 
-\subsubsection{\mintinline{text}{RunCodeResult}}
+\subsubsection{RunCodeResult}
 
-\mintinline{text}{RunCodeResult} stores the judging result for a piece of code. It does not store the information about whether the output is correct, it only stores the runtime statistics and whether the code has been compiled and executed correctly. This result will not be stored in the database, so there is no \mintinline{text}{Id} attribute.
+\verb|RunCodeResult| stores the judging result for a piece of code. It does not store the information about whether the output is correct, it only stores the runtime statistics and whether the code has been compiled and executed correctly. This result will not be stored in the database, so there is no \verb|Id| attribute.
 
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
     Variable & Data type & Justification \\
     \hline
-    \mintinline{text}{StandardOutput} & \mintinline{text}{string} & \mintinline{text}{StandardOutput} stores the content output by the user's code. \\
+    \verb|StandardOutput| & \verb|string| & \verb|StandardOutput| stores the content output by the user's code. \\
     \hline
-    \mintinline{text}{StandardError} & \mintinline{text}{string} & \mintinline{text}{StandardError} stores the error messages received (if any) when executing the user's code. \\
+    \verb|StandardError| & \verb|string| & \verb|StandardError| stores the error messages received (if any) when executing the user's code. \\
     \hline
-    \mintinline{text}{ExitCode} & \mintinline{text}{int} & \mintinline{text}{ExitCode} stores the exit code of the user's code. \\
+    \verb|ExitCode| & \verb|int| & \verb|ExitCode| stores the exit code of the user's code. \\
     \hline
-    \mintinline{text}{CPUTime} & \mintinline{text}{int} & \mintinline{text}{CPUTime} stores the time it takes for the user's code to execute. \\
+    \verb|CPUTime| & \verb|int| & \verb|CPUTime| stores the time it takes for the user's code to execute. \\
     \hline
-    \mintinline{text}{MemoryUsage} & \mintinline{text}{int} & \mintinline{text}{MemoryUsage} stores the memory usage record for the user's code. \\
+    \verb|MemoryUsage| & \verb|int| & \verb|MemoryUsage| stores the memory usage record for the user's code. \\
     \hline
-    \mintinline{text}{ResultCode} & \mintinline{text}{enum ResultCode} & \mintinline{text}{ResultCode} is a custom enumeration type storing the judging result. It has 7 possible values, \mintinline{text}{WRONG_ANSWER}, \mintinline{text}{SUCCESS}, \mintinline{text}{COMPILE_ERROR}, \mintinline{text}{TIME_LIMIT_EXCEEDED}, \mintinline{text}{MEMORY_LIMIT_EXCEEDED}, \mintinline{text}{RUNTIME_ERROR} or \mintinline{text}{SYSTEM_ERROR}. \\
+    \verb|ResultCode| & \verb|enum ResultCode| & \verb|ResultCode| is a custom enumeration type storing the judging result. It has 7 possible values, \verb|WRONG_ANSWER|, \verb|SUCCESS|, \verb|COMPILE_ERROR|, \verb|TIME_LIMIT_EXCEEDED|, \verb|MEMORY_LIMIT_EXCEEDED|, \verb|RUNTIME_ERROR| or \verb|SYSTEM_ERROR|. \\
     \hline
 \end{tabulary}
 
-\subsubsection{\mintinline{text}{TestCaseResult}}
+\subsubsection{TestCaseResult}
 
-\mintinline{text}{TestCaseResult} stores the judging result for each individual \mintinline{text}{TestCase}. It is inheriated from the \mintinline{text}{RunCodeResult} to inheriate all the statistics.
+\verb|TestCaseResult| stores the judging result for each individual \verb|TestCase|. It is inheriated from the \verb|RunCodeResult| to inheriate all the statistics.
 
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
     Variable & Data type & Justification \\
     \hline
-    \mintinline{text}{Id} & \mintinline{text}{int} & The \mintinline{text}{Id} is the local unique identifier for a \mintinline{text}{TestCaseResult}. It is used to uniquely determine a \mintinline{text}{TestCaseResult} in the database. \\
+    \verb|Id| & \verb|int| & The \verb|Id| is the local unique identifier for a \verb|TestCaseResult|. It is used to uniquely determine a \verb|TestCaseResult| in the database. \\
     \hline
-    \mintinline{text}{TestCase} & \mintinline{text}{TestCase} & \mintinline{text}{TestCase} stores the corresponding \mintinline{text}{TestCase} that produces this result. This field will be normalized into \mintinline{text}{TestCase.Id} before storing into the database. \\
+    \verb|TestCase| & \verb|TestCase| & \verb|TestCase| stores the corresponding \verb|TestCase| that produces this result. This field will be normalized into \verb|TestCase.Id| before storing into the database. \\
     \hline
 \end{tabulary}
 
-\subsubsection{\mintinline{text}{SubmissionResult}}
+\subsubsection{SubmissionResult}
 
-When the \mintinline{text}{Judger} finishes judging a \mintinline{text}{Submission}, a \mintinline{text}{SubmissionResult} is created and stored. It includes the result and statistics about the \mintinline{text}{Submission}.
+When the \verb|Judger| finishes judging a \verb|Submission|, a \verb|SubmissionResult| is created and stored. It includes the result and statistics about the \verb|Submission|.
 
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
     Variable & Data type & Justification \\
     \hline
-    \mintinline{text}{Id} & \mintinline{text}{int} & The \mintinline{text}{Id} is the local unique identifier for a \mintinline{text}{SubmissionResult}. It is used to uniquely determine a \mintinline{text}{Submission} in the database.\\
+    \verb|Id| & \verb|int| & The \verb|Id| is the local unique identifier for a \verb|SubmissionResult|. It is used to uniquely determine a \verb|Submission| in the database.\\
     \hline
-    \mintinline{text}{Submission} & \mintinline{text}{Submission} & \mintinline{text}{Submission} stores the corresponding \mintinline{text}{Submission} of this result. It needs to be normalized into the \mintinline{text}{Submission.Id} before storing into the database. \\
+    \verb|Submission| & \verb|Submission| & \verb|Submission| stores the corresponding \verb|Submission| of this result. It needs to be normalized into the \verb|Submission.Id| before storing into the database. \\
     \hline
-    \mintinline{text}{TestCaseResults} & \mintinline{text}{List<TestCaseResult>} & \mintinline{text}{TestCaseResults} is a list of \mintinline{text}{TestCaseResult}, storing result of each individual \mintinline{text}{TestCase}. \\
+    \verb|TestCaseResults| & \verb|List<TestCaseResult>| & \verb|TestCaseResults| is a list of \verb|TestCaseResult|, storing result of each individual \verb|TestCase|. \\
     \hline
  \end{tabulary}
 
-\subsubsection{\mintinline{text}{AssignmentSubmissionResult}}
+\subsubsection{AssignmentSubmissionResult}
 
-When the \mintinline{text}{Judger} finishes judging, a \mintinline{text}{AssignmentSubmissionResult} is created and stored.
+When the \verb|Judger| finishes judging, a \verb|AssignmentSubmissionResult| is created and stored.
 
-It includes the result and statistics about the \mintinline{text}{AssignmentSubmission}.
+It includes the result and statistics about the \verb|AssignmentSubmission|.
 
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
     Variable & Data type & Justification \\
     \hline
-    \mintinline{text}{Uid} & \mintinline{text}{Guid} & It uses a \mintinline{text}{Guid} value for its \mintinline{text}{Uid} instead of a normal \mintinline{text}{int} value to ensure the \mintinline{text}{Uid} is unique globally. \\
+    \verb|Uid| & \verb|Guid| & It uses a \verb|Guid| value for its \verb|Uid| instead of a normal \verb|int| value to ensure the \verb|Uid| is unique globally. \\
     \hline
-    \mintinline{text}{AssignmentSubmission} & \mintinline{text}{AssignmentSubmission} & It stores the corresponding submission of this result. It needs to be normalized into the \mintinline{text}{Id} before storing into the database. \\
+    \verb|AssignmentSubmission| & \verb|AssignmentSubmission| & It stores the corresponding submission of this result. It needs to be normalized into the \verb|Id| before storing into the database. \\
     \hline
-    \mintinline{text}{SubmisionResults} & \mintinline{text}{List<SubmissionResult>} & It is a list of \mintinline{text}{SubmissionResult}, storing result of each individual \mintinline{text}{Submission}. \\
+    \verb|SubmisionResults| & \verb|List<SubmissionResult>| & It is a list of \verb|SubmissionResult|, storing result of each individual \verb|Submission|. \\
     \hline
 \end{tabulary}
 
@@ -1398,17 +1398,17 @@ The settings will be stored in a JSON file.
 }
 \end{minted}
 
-The \mintinline{text}{Theme} field stores the current color theme. There are three possible values, \mintinline{text}{Light}, \mintinline{text}{Dark} or \mintinline{text}{Default}. The data will be validated before applying, if it is empty or invalid, the \mintinline{text}{Default} theme will be applyed and write back to this field.
+The \verb|Theme| field stores the current color theme. There are three possible values, \verb|Light|, \verb|Dark| or \verb|Default|. The data will be validated before applying, if it is empty or invalid, the \verb|Default| theme will be applyed and write back to this field.
 
-The \mintinline{text}{RunCodeTimeLimit} field stores the max time allowed for the run code function. The data will be validated before applying, if it is not a positive integer, then a default 1000 will be applied and written back to this field. 
+The \verb|RunCodeTimeLimit| field stores the max time allowed for the run code function. The data will be validated before applying, if it is not a positive integer, then a default 1000 will be applied and written back to this field. 
 
-The \mintinline{text}{RunCodeMemoryLimit} field stores the max memory allowed for the run code function. The data will be validated before applying, if it is not a positive integer, then a default 67108864, which is 64MB will be applied and written back to this field.
+The \verb|RunCodeMemoryLimit| field stores the max memory allowed for the run code function. The data will be validated before applying, if it is not a positive integer, then a default 67108864, which is 64MB will be applied and written back to this field.
 
-The \mintinline{text}{SelectedLanguage} field stores the default programming language selected by the user. The value will be validated before applying, if it is empty or invalid, the internal default Python programming language configuration will be applied and written back to this field.
+The \verb|SelectedLanguage| field stores the default programming language selected by the user. The value will be validated before applying, if it is empty or invalid, the internal default Python programming language configuration will be applied and written back to this field.
 
-The \mintinline{text}{LanguageConfiguration} is a list of dictionaries allowing the user to configure custom programming languages. The data will be validated before applying, if a configuration is invalid, it will be ignored.
+The \verb|LanguageConfiguration| is a list of dictionaries allowing the user to configure custom programming languages. The data will be validated before applying, if a configuration is invalid, it will be ignored.
 
-The \mintinline{text}{CurrentUser} field stores the \mintinline{text}{Uid} of the \mintinline{text}{User}. The data will be validated. If the \mintinline{text}{Uid} is not found in the database or the field is empty, the user will be asked to log in and a new value will be generated and written back to this field.
+The \verb|CurrentUser| field stores the \verb|Uid| of the \verb|User|. The data will be validated. If the \verb|Uid| is not found in the database or the field is empty, the user will be asked to log in and a new value will be generated and written back to this field.
 
 The entire JSON file will be validated before any data is fetched. If the file does not exist, a default template will be created. If the format or the encoding is wrong, a default template will override the incorrect file.
 
@@ -1417,17 +1417,17 @@ The entire JSON file will be validated before any data is fetched. If the file d
 
 \subsubsection{User table}
 
-The User table will have \mintinline{text}{Uid} as its primary key. Since SQLite does not support \mintinline{text}{Guid} data type natively, it will be converted into a string for storage. The same reason why the Role is stored in integer, and because the enumeration type is implemented in integer under the hood, there is no data conversion issue.
+The User table will have \verb|Uid| as its primary key. Since SQLite does not support \verb|Guid| data type natively, it will be converted into a string for storage. The same reason why the Role is stored in integer, and because the enumeration type is implemented in integer under the hood, there is no data conversion issue.
 
 All fields will be validated and no empty field is allowed.
 
-The \mintinline{text}{GUID} will look like this: \mintinline{text}{149f3e41-dcdb-43d5-8964-75249489f6cf}. It is a long random unique string of characters. Because it is too long, in this section, a placeholder \mintinline{text}{<GUID>} will be used to represent a string of \mintinline{text}{GUID}.
+The \verb|GUID| will look like this: \verb|149f3e41-dcdb-43d5-8964-75249489f6cf|. It is a long random unique string of characters. Because it is too long, in this section, a placeholder \verb|<GUID>| will be used to represent a string of \verb|GUID|.
 
 \begin{tabulary}{\textwidth}{|L|L|L|L|L|}
     \hline
     Uid & Name & Email & Role \\
     \hline
-    \mintinline{text}{<GUID>} & ``UserName'' & ``UserName@test.com'' & 0 \\
+    \verb|<GUID>| & ``UserName'' & ``UserName@test.com'' & 0 \\
     \hline
 \end{tabulary}
 
@@ -1443,15 +1443,15 @@ CREATE TABLE User
 
 \subsubsection{Problem table}
 
-The Problem table will have \mintinline{text}{Id} as its primary key. Both \mintinline{text}{Status} and \mintinline{text}{Difficulty} will be stored in integer for the same reason before.
+The Problem table will have \verb|Id| as its primary key. Both \verb|Status| and \verb|Difficulty| will be stored in integer for the same reason before.
 
-All fields will be validated and only the \mintinline{text}{SourceHash} is allowed to be null as explained in the data structure design section.
+All fields will be validated and only the \verb|SourceHash| is allowed to be null as explained in the data structure design section.
 
 \begin{tabulary}{\textwidth}{|L|L|L|L|}
     \hline
     Uid & Name & Description & Status  \\
     \hline
-    \mintinline{text}{<GUID>} & ``name'' & ``Problem description'' & 0 \\
+    \verb|<GUID>| & ``name'' & ``Problem description'' & 0 \\
     \hline
 \end{tabulary}
 
@@ -1479,7 +1479,7 @@ CREATE TABLE Problem
 
 \subsubsection{Tag table}
 
-The Tag table will have an auto-increment integer \mintinline{text}{Id} as its primary key.
+The Tag table will have an auto-increment integer \verb|Id| as its primary key.
 
 All fields will be validated and no empty field is allowed.
 
@@ -1501,7 +1501,7 @@ CREATE TABLE Tag
 
 \subsubsection{TagRecord table}
 
-The \mintinline{text}{Tag} has a many-to-many relation with the \mintinline{text}{Problem}. A \mintinline{text}{Problem} can have multiple \mintinline{text}{Tags} and a \mintinline{text}{Tag} can be assigned to multiple \mintinline{text}{Problems}. So a link table is required to normalize the data.
+The \verb|Tag| has a many-to-many relation with the \verb|Problem|. A \verb|Problem| can have multiple \verb|Tags| and a \verb|Tag| can be assigned to multiple \verb|Problems|. So a link table is required to normalize the data.
 
 \begin{tabulary}{\textwidth}{|L|L|L|}
     \hline
@@ -1524,9 +1524,9 @@ CREATE TABLE TagRecord
 
 \subsubsection{TestCase table}
 
-The TestCase table will have an auto-increment integer \mintinline{text}{Id} as its primary key. Since SQLite does not support boolean data type, an integer will be used to store the data of \mintinline{text}{IsExample}, 0 will represent false and 1 will represent true.
+The TestCase table will have an auto-increment integer \verb|Id| as its primary key. Since SQLite does not support boolean data type, an integer will be used to store the data of \verb|IsExample|, 0 will represent false and 1 will represent true.
 
-The \mintinline{text}{TestCase} has a many-to-one relation to the \mintinline{text}{Problem}, one \mintinline{text}{Problem} can have multiple \mintinline{text}{TestCase} while one \mintinline{text}{TestCase} can only belong to one \mintinline{text}{Problem}. So, a foreign key \mintinline{text}{ProblemId} is enabled for the \mintinline{text}{TestCase} to store its corresponding \mintinline{text}{Problem}.
+The \verb|TestCase| has a many-to-one relation to the \verb|Problem|, one \verb|Problem| can have multiple \verb|TestCase| while one \verb|TestCase| can only belong to one \verb|Problem|. So, a foreign key \verb|ProblemId| is enabled for the \verb|TestCase| to store its corresponding \verb|Problem|.
 
 All fields will be validated and no empty field is allowed.
 
@@ -1551,11 +1551,11 @@ CREATE TABLE TestCase
 
 \subsubsection{Submission table}
 
-The Submission table will have an auto-increment integer \mintinline{text}{Id} as its primary key. Since SQLite does not support the \mintinline{text}{DateTime} data type, the time will be converted to a string before storing. Similarly, the conversion will be done for Language and UserUid.
+The Submission table will have an auto-increment integer \verb|Id| as its primary key. Since SQLite does not support the \verb|DateTime| data type, the time will be converted to a string before storing. Similarly, the conversion will be done for Language and UserUid.
 
-A \mintinline{text}{Submission} has a one-to-many relationship with a \mintinline{text}{Problem}, a \mintinline{text}{Problem} can have multiple \mintinline{text}{Submission} while a \mintinline{text}{Submission} can only be submitted to one \mintinline{text}{Problem}. It also has a many-to-one relationship with a \mintinline{text}{User}. A \mintinline{text}{User} can create multiple \mintinline{text}{Submission} while a \mintinline{text}{Submission} can only be created by one \mintinline{text}{User}. It also has a many-to-one relationship with a \mintinline{text}{AssignmentSubmission}. So it will have three foreign keys to establish such relationships.
+A \verb|Submission| has a one-to-many relationship with a \verb|Problem|, a \verb|Problem| can have multiple \verb|Submission| while a \verb|Submission| can only be submitted to one \verb|Problem|. It also has a many-to-one relationship with a \verb|User|. A \verb|User| can create multiple \verb|Submission| while a \verb|Submission| can only be created by one \verb|User|. It also has a many-to-one relationship with a \verb|AssignmentSubmission|. So it will have three foreign keys to establish such relationships.
 
-All fields will be validated and no empty field is allowed, except for the Code, empty \mintinline{text}{Submission} is allowed and for the AssignmentSubmissionResultUid, if the \mintinline{text}{Submission} does not belong to an \mintinline{text}{Assignment}, a null value is allowed.
+All fields will be validated and no empty field is allowed, except for the Code, empty \verb|Submission| is allowed and for the AssignmentSubmissionResultUid, if the \verb|Submission| does not belong to an \verb|Assignment|, a null value is allowed.
 
 \begin{tabulary}{\textwidth}{|L|L|L|L|}
     \hline
@@ -1569,7 +1569,7 @@ All fields will be validated and no empty field is allowed, except for the Code,
     \hline
     Language & UserUid & AssignmentSubmissionUid \\
     \hline
-    ``Python'' & \mintinline{text}{<GUID>} & \mintinline{text}{<GUID>} \\
+    ``Python'' & \verb|<GUID>| & \verb|<GUID>| \\
     \hline
 \end{tabulary}
 
@@ -1588,7 +1588,7 @@ CREATE TABLE Submission
 
 \subsubsection{ProblemList table}
 
-The ProblemList table will have an auto-increment \mintinline{text}{Id} as its primary key.
+The ProblemList table will have an auto-increment \verb|Id| as its primary key.
 
 All fields will be validated and no null field is allowed.
 
@@ -1611,7 +1611,7 @@ CREATE TABLE Submission
 
 \subsubsection{ProblemListRecord table}
 
-The \mintinline{text}{ProblemList} and \mintinline{text}{Problem} has a many-to-many relationship, so a ProblemListRecord table is used to normalize the data.
+The \verb|ProblemList| and \verb|Problem| has a many-to-many relationship, so a ProblemListRecord table is used to normalize the data.
 
 \begin{tabulary}{\textwidth}{|L|L|L|}
     \hline
@@ -1632,7 +1632,7 @@ CREATE TABLE ProblemListRecord
 
 \subsubsection{Assignment table}
 
-The Assignment table will have \mintinline{text}{Uid} as its primary key. It has a one-to-many relationship with a User, so a \mintinline{text}{UserUid} field is used to record this relationship.
+The Assignment table will have \verb|Uid| as its primary key. It has a one-to-many relationship with a User, so a \verb|UserUid| field is used to record this relationship.
 
 All fields will be validated and no null field is allowed.
 
@@ -1640,7 +1640,7 @@ All fields will be validated and no null field is allowed.
     \hline
     Uid & DueDate & Status & Type & UserUid \\
     \hline
-    \mintinline{text}{<GUID>} & ``11/11/2021 14:20:04`` & 1 & 0 & \mintinline{text}{<GUID>} \\
+    \verb|<GUID>| & ``11/11/2021 14:20:04`` & 1 & 0 & \verb|<GUID>| \\
     \hline
 \end{tabulary}
 
@@ -1657,13 +1657,13 @@ CREATE TABLE Assignment
 
 \subsubsection{AssignmentRecord table}
 
-\mintinline{text}{Assignment} has a many-to-many relationship with the \mintinline{text}{Problem} so an AssignmentRecord table is used to normalize the data.
+\verb|Assignment| has a many-to-many relationship with the \verb|Problem| so an AssignmentRecord table is used to normalize the data.
 
 \begin{tabulary}{\textwidth}{|L|L|L|L|}
     \hline
     Id & AssignmentUid & ProblemId & SourceHash \\
     \hline
-    1 & \mintinline{text}{<GUID>} & 1 & \mintinline{text}{<Hash>} \\
+    1 & \verb|<GUID>| & 1 & \verb|<Hash>| \\
     \hline
 \end{tabulary}
 
@@ -1679,13 +1679,13 @@ CREATE TABLE AssignmentRecord
 
 \subsubsection{AssignmentSubmission table}
 
-The AssignmentSubmission table will have \mintinline{text}{Uid} as its primary key. It has a many-to-one relationship with an Assignment, so a \mintinline{text}{AssignmentUid} field is used to record this relationship. It has a many-to-one relationship with a User, so a \mintinline{text}{UserUid} field is used to record this relationship.
+The AssignmentSubmission table will have \verb|Uid| as its primary key. It has a many-to-one relationship with an Assignment, so a \verb|AssignmentUid| field is used to record this relationship. It has a many-to-one relationship with a User, so a \verb|UserUid| field is used to record this relationship.
 
 \begin{tabulary}{\textwidth}{|L|L|L|L|}
     \hline
     Uid & AssignmentUid & UserUid & Status \\
     \hline
-    \mintinline{text}{<GUID>} & \mintinline{text}{<GUID>} & \mintinline{text}{<GUID>} & 0 \\
+    \verb|<GUID>| & \verb|<GUID>| & \verb|<GUID>| & 0 \\
     \hline
 \end{tabulary}
 
@@ -1701,9 +1701,9 @@ CREATE TABLE AssignmentSubmission
 
 \subsubsection{TestCaseResult table}
 
-The TestCaseResult table will have an auto-increment \mintinline{text}{Id} as its primary key.
+The TestCaseResult table will have an auto-increment \verb|Id| as its primary key.
 
-It has a many-to-one relationship with a TestCase, so a \mintinline{text}{TestCaseId} field is used to record this relationship. It has a many-to-one relationship with a SubmissionResult, so a \mintinline{text}{SubmissionResultId} field is used to record this relationship.
+It has a many-to-one relationship with a TestCase, so a \verb|TestCaseId| field is used to record this relationship. It has a many-to-one relationship with a SubmissionResult, so a \verb|SubmissionResultId| field is used to record this relationship.
 
 All fields will be validated and no null field is allowed.
 
@@ -1741,9 +1741,9 @@ CREATE TABLE TestCaseResult
 
 \subsubsection{SubmissionResult table}
 
-The SubmissionResult table will have an auto-increment \mintinline{text}{Id} as its primary key.
+The SubmissionResult table will have an auto-increment \verb|Id| as its primary key.
 
-It has a one-to-one relationship with a Submission, so a \mintinline{text}{SubmissionId} field is used to record this relationship. It may have a many-to-one relationship with an AssignmentSubmissionResult, so an AssignmentSubmissionResultUid field is used to record this relationship. 
+It has a one-to-one relationship with a Submission, so a \verb|SubmissionId| field is used to record this relationship. It may have a many-to-one relationship with an AssignmentSubmissionResult, so an AssignmentSubmissionResultUid field is used to record this relationship. 
 
 \begin{tabulary}{\textwidth}{|L|L|L|}
     \hline
@@ -1762,13 +1762,13 @@ CREATE TABLE SubmissionResult
 
 \subsubsection{AssignmentSubmissionResult table}
 
-The AssignmentSubmission table will have \mintinline{text}{Uid} as its primary key. It has a one-to-one relationship with a AssignmentSubmission, so a \mintinline{text}{Id} field is used to record this relationship.
+The AssignmentSubmission table will have \verb|Uid| as its primary key. It has a one-to-one relationship with a AssignmentSubmission, so a \verb|Id| field is used to record this relationship.
 
 \begin{tabulary}{\textwidth}{|L|L|}
     \hline
     Uid & AssignmentSubmissionUid \\
     \hline
-    \mintinline{text}{<GUID>} & \mintinline{text}{<GUID>} \\
+    \verb|<GUID>| & \verb|<GUID>| \\
     \hline
 \end{tabulary}
 
@@ -1792,7 +1792,7 @@ All data will be exported into JSON files.
 }
 \end{minted}
 
-Apart from the raw data, two extra fields are added to help validate the JSON file. The \mintinline{text}{FileType} will always be \mintinline{text}{"Algorithm Dynamics Exported Data"}. This field will be validated first to make sure the correct file is imported. The \mintinline{text}{DataType} determines the type of the \mintinline{text}{Data} and helps the module to deserialize the data.
+Apart from the raw data, two extra fields are added to help validate the JSON file. The \verb|FileType| will always be ``Algorithm Dynamics Exported Data''. This field will be validated first to make sure the correct file is imported. The \verb|DataType| determines the type of the \verb|Data| and helps the module to deserialize the data.
 
 \subsubsection{Import/Export a Problem}
 
@@ -2608,7 +2608,7 @@ During this milestone, a basic prototype with user interface will be created. Th
 
 I will create a prototype with a minimal user interface to test run the development environment and building tools.\cite{microsoft:docs:create-your-first-winui3-app}
 
-I create the \mintinline{text}{App.xaml} file, which will include all application resources. Right now, the only resources imported is the \mintinline{text}{XamlControlsResource}, which provides the resources for the all controls. Later on, I will create and import new resources in this file.
+I create the \verb|App.xaml| file, which will include all application resources. Right now, the only resources imported is the \verb|XamlControlsResource|, which provides the resources for the all controls. Later on, I will create and import new resources in this file.
 
 \begin{minted}{xml}
 <Application
@@ -2628,7 +2628,7 @@ I create the \mintinline{text}{App.xaml} file, which will include all applicatio
 </Application>
 \end{minted}
 
-I then create the \mintinline{text}{App.xaml.cs} file, which will include the main entry point of the application. It inheriates from the \mintinline{text}{Application} class, and create a \mintinline{text}{Window} object to show the main window. The \mintinline{text}{App} class will activate the main window when it is launched.
+I then create the \verb|App.xaml.cs| file, which will include the main entry point of the application. It inheriates from the \verb|Application| class, and create a \verb|Window| object to show the main window. The \verb|App| class will activate the main window when it is launched.
 
 \begin{minted}{csharp}
 using Microsoft.UI.Xaml;
@@ -2665,7 +2665,7 @@ namespace Algorithm_Dynamics
 }
 \end{minted}
 
-Next, I create the \mintinline{text}{MainWindow.xaml} file, which includes the layout of the main window. Right now, it only has a stack panel and a button inside to test everything is working.
+Next, I create the \verb|MainWindow.xaml| file, which includes the layout of the main window. Right now, it only has a stack panel and a button inside to test everything is working.
 
 \begin{minted}{xml}
 <Window
@@ -2689,7 +2689,7 @@ Next, I create the \mintinline{text}{MainWindow.xaml} file, which includes the l
 </Window>
 \end{minted}
 
-Finally, I create the \mintinline{text}{MainWindow.xaml.cs} file. It contains all the UI logic. In this prototype, when the button in the UI is clicked, its text will be changed to ``Clicked''.
+Finally, I create the \verb|MainWindow.xaml.cs| file. It contains all the UI logic. In this prototype, when the button in the UI is clicked, its text will be changed to ``Clicked''.
 
 \begin{minted}{csharp}
 using Microsoft.UI.Xaml;
@@ -2753,7 +2753,7 @@ First, I will implement the NavigationView as \hyperref[sec:NavigationViewDesign
 </NavigationView>
 \end{minted}
 
-I assign a name \mintinline{text}{MainNavView} to the control so I can call it later in the code behind. I decide to hide the back button, which prevent the user to navigate the page in an unintended way. I also assign a \mintinline{text}{SelectionChanged} event handler to the control, which will be used to handle the navigation.
+I assign a name \verb|MainNavView| to the control so I can call it later in the code behind. I decide to hide the back button, which prevent the user to navigate the page in an unintended way. I also assign a \verb|SelectionChanged| event handler to the control, which will be used to handle the navigation.
 
 I then need to add different options to the navigation menu.
 
@@ -2819,7 +2819,7 @@ public MainWindow()
 }
 \end{minted}
 
-Next, I need to handle the \mintinline{text}{SelectionChanged} event, this event gets triggered when the user clicks on a navigation item, and it will update the content frame to display the corresponding page.
+Next, I need to handle the \verb|SelectionChanged| event, this event gets triggered when the user clicks on a navigation item, and it will update the content frame to display the corresponding page.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -2852,7 +2852,7 @@ private void MainNavView_SelectionChanged(NavigationView sender, NavigationViewS
 \end{minted}
 
 
-Now, if I build and run the application, I should see the \mintinline{text}{NavigationView} works correctly. However, I get a runtime exception.
+Now, if I build and run the application, I should see the \verb|NavigationView| works correctly. However, I get a runtime exception.
 
 \begin{minted}{text}
 System.NullReferenceException
@@ -2868,9 +2868,9 @@ System.NullReferenceException
 \end{minted}
 
 
-It says object reference not set to an instance of an object when executing \mintinline{text}{ContentFrame.Navigate(pageType);}. This means the \mintinline{text}{pageType} does not exist. This is because I forget to create an actual HomePage, so it attempts to load a null object, failed, and throws the exception.  
+It says object reference not set to an instance of an object when executing \verb|ContentFrame.Navigate(pageType);|. This means the \verb|pageType| does not exist. This is because I forget to create an actual HomePage, so it attempts to load a null object, failed, and throws the exception.  
 
-I create all pages under the \mintinline{text}{Algorithm_Dynamics.Pages} namespace. For now, all of them will only contain a text block showing their name. Here is an example of the HomePage.
+I create all pages under the \verb|Algorithm_Dynamics.Pages| namespace. For now, all of them will only contain a text block showing their name. Here is an example of the HomePage.
 
 \begin{minted}{xml}
 <Page
@@ -2933,7 +2933,7 @@ Now the NavigationView is built and tested. I will continue to build other compo
 
 \subsubsection{Implementation}
 
-The HomePage is made of three components, the background image, the quick access tools and the recommendations. They are wrapped by a scroller so they can be accessed on any size screen. I place a grid with two rows inside the \mintinline{text}{ScrollViewer}, the first row contains the background image, the second row contains the remaining tools. 
+The HomePage is made of three components, the background image, the quick access tools and the recommendations. They are wrapped by a scroller so they can be accessed on any size screen. I place a grid with two rows inside the \verb|ScrollViewer|, the first row contains the background image, the second row contains the remaining tools. 
 
 \begin{minted}{xml}
 <Page
@@ -2966,7 +2966,7 @@ The HomePage is made of three components, the background image, the quick access
 </Page>
 \end{minted}
 
-Inside the background image grid, I place a \mintinline{text}{Image} control with the source of the background image. It is stretched to fill the entire grid so \mintinline{text}{Strecth} is set to \mintinline{text}{UniformToFill}.
+Inside the background image grid, I place a \verb|Image| control with the source of the background image. It is stretched to fill the entire grid so \verb|Strecth| is set to \verb|UniformToFill|.
 
 \begin{minted}{xml}
 <Image 
@@ -2982,7 +2982,7 @@ Inside the background image grid, I place a \mintinline{text}{Image} control wit
     Style="{ThemeResource TitleTextBlockStyle}"/>
 \end{minted}
 
-The \mintinline{text}{TextBlock} is used to display a greeting message. It is placed on the bottom right. Because its content needs to be adjusted by the current time and the current user, it is binded to the a variable \mintinline{text}{WelcomeMessage} so I can change its value programmatically.
+The \verb|TextBlock| is used to display a greeting message. It is placed on the bottom right. Because its content needs to be adjusted by the current time and the current user, it is binded to the a variable \verb|WelcomeMessage| so I can change its value programmatically.
 
 \begin{minted}{csharp}
 namespace Algorithm_Dynamics.Pages
@@ -3043,7 +3043,7 @@ public HomePage()
 
 The image and the greeting message show up correctly, and because I am writing this in the morning, the correct greeting message is displayed.
 
-For the quick access toolbar, I choose to use the \mintinline{text}{AdaptiveGridView} control for its \mintinline{text}{OneRowMode} function, which allows the toolbar to scroll horizontally on small screens. The controls in the quick access toolbar should be loaded dynamically, so they can be changed easily in the future. So I create a \mintinline{text}{QuickAccessItem} helper class. Each object will contain a name, an icon and an action. The name and the icon will be displayed to the user, and the action will be invoked when the user clicks on the control.
+For the quick access toolbar, I choose to use the \verb|AdaptiveGridView| control for its \verb|OneRowMode| function, which allows the toolbar to scroll horizontally on small screens. The controls in the quick access toolbar should be loaded dynamically, so they can be changed easily in the future. So I create a \verb|QuickAccessItem| helper class. Each object will contain a name, an icon and an action. The name and the icon will be displayed to the user, and the action will be invoked when the user clicks on the control.
 
 \begin{minted}{csharp}
 using Microsoft.UI.Xaml.Controls;
@@ -3066,7 +3066,7 @@ namespace Algorithm_Dynamics.Models
 }
 \end{minted}
 
-Then I create a \mintinline{text}{ObserableCollection} of \mintinline{text}{QAItems} that binds to the grid.
+Then I create a \verb|ObserableCollection| of \verb|QAItems| that binds to the grid.
 
 \begin{minted}{csharp}
 public ObservableCollection<QuickAccessItem> QAItems { get; } = new ObservableCollection<QuickAccessItem>();
@@ -3103,7 +3103,7 @@ public ObservableCollection<QuickAccessItem> QAItems { get; } = new ObservableCo
 </controls:AdaptiveGridView>
 \end{minted}
 
-I need to add the items to the collection when the HomePage is loaded. I create a procedure \mintinline{text}{InitializeQAItems}. Because I have passed the MainWindow object to the function, the MainNavView can be called inside. Because the CodingPage and the import/export logic is not completed yet, the Random Problem and Import function will be implemented later.
+I need to add the items to the collection when the HomePage is loaded. I create a procedure \verb|InitializeQAItems|. Because I have passed the MainWindow object to the function, the MainNavView can be called inside. Because the CodingPage and the import/export logic is not completed yet, the Random Problem and Import function will be implemented later.
 
 \begin{minted}{csharp}
 public HomePage()
@@ -3140,7 +3140,7 @@ private void InitializeQAItems()
 }
 \end{minted}
 
-I need to handle the click event of the quick access toolbar. I create a procedure \mintinline{text}{QAGridView_ItemClick}, which will invoke the action of the item.
+I need to handle the click event of the quick access toolbar. I create a procedure \verb|QAGridView_ItemClick|, which will invoke the action of the item.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -3175,7 +3175,7 @@ System.NotImplementedException
    at ABI.Microsoft.UI.Xaml.Controls.ItemClickEventHandler.Do_Abi_Invoke(IntPtr thisPtr, IntPtr sender, IntPtr e)
 \end{minted}
 
-The recommendation control is similar. I create the \mintinline{text}{RecommendItem} class and add the items to the collection.
+The recommendation control is similar. I create the \verb|RecommendItem| class and add the items to the collection.
 
 \begin{minted}{csharp}
 namespace Algorithm_Dynamics.Models
@@ -3427,7 +3427,7 @@ namespace Algorithm_Dynamics.Pages
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{ProblemsPage-Toolbar}
 
-The toolbar shows up with all data loaded correctly. I can select an item correctly, but I cannot clear the selection. I need to empty the ComboBox when the user right clicks it. For the list ComboBox, I also need to allow the user to edit and delete an existing list, so when the user right click the list ComboBox, a menu flyout needs to show up with all options. I create a \mintinline{text}{ClearComboBox} procedure to handle the right click event.
+The toolbar shows up with all data loaded correctly. I can select an item correctly, but I cannot clear the selection. I need to empty the ComboBox when the user right clicks it. For the list ComboBox, I also need to allow the user to edit and delete an existing list, so when the user right click the list ComboBox, a menu flyout needs to show up with all options. I create a \verb|ClearComboBox| procedure to handle the right click event.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -3478,7 +3478,7 @@ For the list ComboBox, I need to create the layout for the menu flyout first.
 </ComboBox.Resources>
 \end{minted}
 
-There are three items in the menu, edit, delete, and clear. The edit and delete function has not been implemented yet, so they will not be handled for now. Because the clear event is sent by the menu button instead of the ComboBox, I overload the \mintinline{text}{ClearComboBox} procedure to handle the clear event.
+There are three items in the menu, edit, delete, and clear. The edit and delete function has not been implemented yet, so they will not be handled for now. Because the clear event is sent by the menu button instead of the ComboBox, I overload the \verb|ClearComboBox| procedure to handle the clear event.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -3575,7 +3575,7 @@ Now, when I click the delete button, a popup shows up correctly to confirm delet
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{ProblemsPage-ContentDialog}
 
-I then implement the problem list below the toolbar. I use a \mintinline{text}{ListView} to display the problem list. Similarly, I bind the data source to a variable Problems which contains a list of Problem. For each problem, its name, difficulty, status and tags are displayed.
+I then implement the problem list below the toolbar. I use a \verb|ListView| to display the problem list. Similarly, I bind the data source to a variable Problems which contains a list of Problem. For each problem, its name, difficulty, status and tags are displayed.
 
 \begin{minted}{xml}
 <ListView x:Name="ProblemsListView"
@@ -3809,7 +3809,7 @@ private async void DeleteProblems(object sender, RoutedEventArgs e)
 }
 \end{minted}
 
-Finally, for the ProblemsPage, I need to handle the searh query. The ProblemListView needs to be updated when different search queries are entered in the toolbar. I create a \mintinline{text}{Search} procedure to handle the searc event. When the user select an option in the ComboBoxes, or enter the search box, the \mintinline{text}{Search} procedure will be called. All data will be passed to a \mintinline{text}{Query} function that returns searching result. For now, because the database is not implemented, I will just return the query. The \mintinline{text}{Query} function will be implemented in the future.
+Finally, for the ProblemsPage, I need to handle the searh query. The ProblemListView needs to be updated when different search queries are entered in the toolbar. I create a \verb|Search| procedure to handle the searc event. When the user select an option in the ComboBoxes, or enter the search box, the \verb|Search| procedure will be called. All data will be passed to a \verb|Query| function that returns searching result. For now, because the database is not implemented, I will just return the query. The \verb|Query| function will be implemented in the future.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -4009,7 +4009,7 @@ I add some CSS code to set the height and width of the editor to 100\%.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{PlaygroundPage-WebView2-ResizeFailed}
 
-Now, the scroll bars are gone. But when I resize the window, the editor still does not follow the window size. After reading the documentation of the Monaco Editor, I find out that I need to manually call the \mintinline{text}{editor.layout()} function to recalculate the editor size.
+Now, the scroll bars are gone. But when I resize the window, the editor still does not follow the window size. After reading the documentation of the Monaco Editor, I find out that I need to manually call the \verb|editor.layout()| function to recalculate the editor size.
 
 \begin{minted}{html}
 <script>
@@ -4161,7 +4161,7 @@ To allow different sections to be resizeable, I add two grid splitters to the gr
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{PlaygroundPage-Layout}
 
-All controls work correctly and they can be resized by the grid splitter. Now I need to interact with the code editer. I need to be able to get the code inside, set its programming language and color theme. To pass the config data to the editor, I will need to serialize the data into a JSON string and send it through web message. To avoid hand crafting the JSON string, I create a new class \mintinline{text}{EditorConfig} and use the \mintinline{text}{System.Text.Json} library to serialize the data.
+All controls work correctly and they can be resized by the grid splitter. Now I need to interact with the code editer. I need to be able to get the code inside, set its programming language and color theme. To pass the config data to the editor, I will need to serialize the data into a JSON string and send it through web message. To avoid hand crafting the JSON string, I create a new class \verb|EditorConfig| and use the \verb|System.Text.Json| library to serialize the data.
 
 \begin{minted}{csharp}
 public class EditorConfig
@@ -4215,7 +4215,7 @@ Now, when I open the PlaygroundPage, a code editor with dark theme and syntax hi
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{PlaygroundPage-EditorConfig-NotLoading}
 
-However, it is clearly not loading. Neither the theme, the syntax highlighting nor the code is set. It is clear that the config has not been passed correctly. When I open the devtool, nothing is in the output, which means that \mintinline{text}{console.log(e)} has not been called.
+However, it is clearly not loading. Neither the theme, the syntax highlighting nor the code is set. It is clear that the config has not been passed correctly. When I open the devtool, nothing is in the output, which means that \verb|console.log(e)| has not been called.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{PlaygroundPage-EditorConfig-NotLoading-Devtool}
 
@@ -4301,7 +4301,7 @@ public new ElementTheme RequestedTheme
 }
 \end{minted}
 
-Note that \mintinline{text}{UpdateEditorConfig} is called when the language or the requested theme is changed to update the settings. To convert the theme code used in my app into the format of the Monaco Editor, I create a custom helper \mintinline{text}{GetTheme} to do the conversion. And I update the initializing process to use the value from these variables.
+Note that \verb|UpdateEditorConfig| is called when the language or the requested theme is changed to update the settings. To convert the theme code used in my app into the format of the Monaco Editor, I create a custom helper \verb|GetTheme| to do the conversion. And I update the initializing process to use the value from these variables.
 
 \begin{minted}{csharp}
 async void InitializeWebViewAsync()
@@ -4337,7 +4337,7 @@ System.NullReferenceException
    at Algorithm_Dynamics.Controls.CodeEditor.UpdateEditorConfig(EditorConfig editorConfig) in C:\Algorithm-Dynamics\src\Algorithm Dynamics\Controls\CodeEditor.xaml.cs:line 74
 \end{minted}
 
-The exception is caused by the \mintinline{text}{UpdateEditorConfig}. And after searching the documentation of the WebView2, the \mintinline{text}{WebView.CoreWebView2} object will be null before it is fully initialized. I can not use the \mintinline{text}{EnsureCoreWebView2Async} method before to ensure it is loaded because it is an async function while \mintinline{text}{UpdateEditorConfig} needs to be called in the setter. So I decide to ignore the null object because it only exists in the initializing stage, and I have passed the config through the global window object anyway.
+The exception is caused by the \verb|UpdateEditorConfig|. And after searching the documentation of the WebView2, the \verb|WebView.CoreWebView2| object will be null before it is fully initialized. I can not use the \verb|EnsureCoreWebView2Async| method before to ensure it is loaded because it is an async function while \verb|UpdateEditorConfig| needs to be called in the setter. So I decide to ignore the null object because it only exists in the initializing stage, and I have passed the config through the global window object anyway.
 
 \begin{minted}{csharp}
 private void UpdateEditorConfig(EditorConfig editorConfig)
@@ -4433,7 +4433,7 @@ And it turns out to work perfectly as I expected. I can change the syntax highli
 
 I have finished the PlaygroundPage in this iteration. I will move on to the CodingPage next, which should be relatively simple because I have encapsulated the code editor into a user control and it can be easily reused.
 
-Just before I plan to start the CodingPage, I find another bug with the Editor control. When the user navigate from the PlaygroundPage to another page, and then navigate back, the editor config cannot be loaded correctly. After some more research, it turns out that the WebView2 component is not destroyed after the page is unloaded, so when the next time it is loaded, it initialize much faster and load before \mintinline{text}{window.config} is set. I decide to design a three-way handshake protocol to solve this problem once and for all.
+Just before I plan to start the CodingPage, I find another bug with the Editor control. When the user navigate from the PlaygroundPage to another page, and then navigate back, the editor config cannot be loaded correctly. After some more research, it turns out that the WebView2 component is not destroyed after the page is unloaded, so when the next time it is loaded, it initialize much faster and load before \verb|window.config| is set. I decide to design a three-way handshake protocol to solve this problem once and for all.
 
 \includegraphics[width=\linewidth]{webviewHandshake}
 
@@ -4525,7 +4525,7 @@ After testing the PlaygroundPage for a longer time, I find another issue. The me
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{Process-Explorer-WebView2}
 
-As I expected, the WebView2 process is created not destroyed when I navigate away from the PlaygroundPage. And each time a new instance is create, which is causing the memory leak. After some researching on the lifecycle of the WebView2 component \cite{github:microsoft-ui-xaml:4752}, I found that I can call \mintinline{text}{WebView2.Close()} to manually dispose it. So I add a new procedure to handle the control unload event.
+As I expected, the WebView2 process is created not destroyed when I navigate away from the PlaygroundPage. And each time a new instance is create, which is causing the memory leak. After some researching on the lifecycle of the WebView2 component \cite{github:microsoft-ui-xaml:4752}, I found that I can call \verb|WebView2.Close()| to manually dispose it. So I add a new procedure to handle the control unload event.
 
 \begin{minted}{csharp}
 private void CodeEditor_Unloaded(object sender, RoutedEventArgs e)
