@@ -4830,9 +4830,23 @@ I create a new file Generic.xaml to store all the styles. In App.xaml, I import 
 </Application.Resources>
 \end{minted}
 
-TODO: add the style to the pivot and the grid splitter
+For the GridSplitter, I reference the design in DevToys\cite{github:DevToys:Generic.xaml} by setting the background color to transparent which makes the GridSplitter less significant.
+
+For the Pivot, I reference the design from the Windows Calculator\cite{github:calculator:Calculator.xaml}, which modifies the Pivot to make it look like the modern NavigationView.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CodingPage-Theme}
+
+After applying the custom theme, the interfaace looks much more modern and consistent.
+
+TODO: Implement the code behind
+TODO: Testing
 
 \subsubsection{Testing and validation}
+
+\subsection{Create the AccountPage}
+
+\subsection{Create the CreateNewPage}
+
 
 \subsection{Create the AssignmentsPage}
 
@@ -4862,6 +4876,9 @@ TODO: add the style to the pivot and the grid splitter
 
 \inputminted{csharp}{"../src/Algorithm Dynamics/App.xaml.cs"}
 
+\subsubsection{Themes/Generic.xaml}
+
+\inputminted{xml}{"../src/Algorithm Dynamics/Themes/Generic.xaml"}
 
 \printbibliography[
     heading=bibintoc,

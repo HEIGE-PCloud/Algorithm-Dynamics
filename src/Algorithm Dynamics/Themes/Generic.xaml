@@ -319,12 +319,13 @@
                                             <CompositeTransform x:Name="HeaderTranslateTransform"/>
                                         </PivotHeaderPanel.RenderTransform>
                                     </PivotHeaderPanel>
-                                    <Rectangle x:Name="FocusFollower"
-                                                           HorizontalAlignment="Stretch"
-                                                           VerticalAlignment="Stretch"
-                                                           Fill="Transparent"
-                                                           Control.IsTemplateFocusTarget="True"
-                                                           IsHitTestVisible="False"/>
+                                    <Rectangle 
+                                        x:Name="FocusFollower"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Stretch"
+                                        Fill="Transparent"
+                                        Control.IsTemplateFocusTarget="True"
+                                        IsHitTestVisible="False"/>
                                 </Grid>
                             </ContentControl>
                             <Button 
