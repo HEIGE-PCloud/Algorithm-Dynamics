@@ -4839,8 +4839,57 @@ For the Pivot, I reference the design from the Windows Calculator\cite{github:ca
 
 After applying the custom theme, the interfaace looks much more modern and consistent.
 
-TODO: Implement the code behind
-TODO: Testing
+Next I will implement the full screen button. It will be a toggle, when clicking in the window mode, it set the window to full screen. When clicking in the full screen mode, it sets the window back to a window. I also assigned a keyboard accelerator F11 to the button, so the user can toggle it by keyboard.
+
+\begin{minted}{xml}
+<Button
+    x:Name="FullScreenButton"
+    Grid.Column="1"
+    HorizontalAlignment="Right"
+    Click="FullScreenButton_Click"
+    ToolTipService.ToolTip="Fullscreen (F11)">
+    <FontIcon
+        x:Name="FullScreenIcon"
+        FontFamily="Segoe Fluent Icons"
+        Glyph="&#xE740;"/>
+    <Button.KeyboardAccelerators>
+        <KeyboardAccelerator Key="F11"/>
+    </Button.KeyboardAccelerators>
+</Button>
+\end{minted}
+
+In the \verb|FullScreenButton_Click| function, I implement the logic of the toggle button. It sets the \verb|AppWindowPresent| property\cite{microsoft:docs:windowing-overview} to the opposite value and assign the correct icon\cite{microsoft:docs:segoe-fluent-icons-font}.
+
+\begin{minted}{csharp}
+/// <summary>
+/// Toggle the fullscreen mode for the app
+/// Toggle the <see cref="AppWindowPresenterKind"/> and <see cref="FullScreenIcon.Glyph"/>
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
+private void FullScreenButton_Click(object sender, RoutedEventArgs e)
+{
+    AppWindow window = MainWindow.AppWindow;
+    if (window.Presenter.Kind == AppWindowPresenterKind.Overlapped)
+    {
+        window.SetPresenter(AppWindowPresenterKind.FullScreen);
+        FullScreenIcon.Glyph = "\xE73F";
+    }
+    else
+    {
+        window.SetPresenter(AppWindowPresenterKind.Overlapped);
+        FullScreenIcon.Glyph = "\xE740";
+    }
+}
+\end{minted}
+
+Now when I click the button, it does go into the fullscreen mode with the correct button icon set. But I notice that the system taskbar is blank instead of filled with the app window. After doing some research, it turns out that this is caused by an internal bug of the WindowsAppSDK\cite{github:WindowsAppSDK:1853} and I cannot fix it on my side. I will just leave it like this until a new version of the SDK is released.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CodingPage-FullScreen-Bug.png}
+
+For the other parts, the submission records depend on the database, and the run code and submit function depends on the Judger, so in this iteration, I will leave the page like this.
+
+\subsubsection{Testing}
 
 \subsubsection{Testing and validation}
 
