@@ -24,6 +24,12 @@ namespace Algorithm_Dynamics.Pages
             CodeEditor.Lang = LanguageComboBox.SelectedItem as string;
         }
 
+        /// <summary>
+        /// Toggle the fullscreen mode for the app
+        /// Toggle the <see cref="AppWindowPresenterKind"/> and <see cref="FullScreenIcon.Glyph"/>
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void FullScreenButton_Click(object sender, RoutedEventArgs e)
         {
             AppWindow window = MainWindow.AppWindow;
