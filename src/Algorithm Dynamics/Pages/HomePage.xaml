@@ -92,8 +92,9 @@
                                     HorizontalAlignment="Left"
                                     Orientation="Vertical"
                                     Margin="8">
-                                    <TextBlock Text="{x:Bind Title}"
-                                               Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                                    <TextBlock 
+                                        Text="{x:Bind Title}"
+                                        Style="{ThemeResource BodyStrongTextBlockStyle}"/>
                                     <TextBlock Text="{x:Bind Description}"/>
                                 </StackPanel>
                             </Grid>
