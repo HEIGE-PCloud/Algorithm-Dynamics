@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml;
+﻿using Algorithm_Dynamics.Models;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
@@ -7,6 +8,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -25,7 +27,15 @@ namespace Algorithm_Dynamics.Pages
     {
         public AccountPage()
         {
-            this.InitializeComponent();
+            InitializeComponent();
+            StatsItems.Add(new StatisticsItem("Problem Solved", "10"));
+            StatsItems.Add(new StatisticsItem("Problem Attempted", "3"));
+            StatsItems.Add(new StatisticsItem("Problem Unsolved", "1100"));
+            StatsItems.Add(new StatisticsItem("Correct Rate", "10%"));
+            StatsItems.Add(new StatisticsItem("Favourite Topic", "Data structure"));
+            StatsItems.Add(new StatisticsItem("Favourite Language", "Python"));
         }
+        public ObservableCollection<StatisticsItem> StatsItems { get; } = new ObservableCollection<StatisticsItem>();
+
     }
 }
