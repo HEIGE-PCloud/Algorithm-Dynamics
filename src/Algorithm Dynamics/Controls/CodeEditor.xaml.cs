@@ -95,7 +95,7 @@ namespace Algorithm_Dynamics.Controls
             else if (theme == ElementTheme.Light) return "vs";
             else if (theme == ElementTheme.Default)
             {
-                MainWindow m_window = (MainWindow)((App)Application.Current).m_window;
+                MainWindow m_window = App.m_window;
                 if (m_window.Content is FrameworkElement rootElement)
                 {
                     if (rootElement.RequestedTheme != ElementTheme.Default)

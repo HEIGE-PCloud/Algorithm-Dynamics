@@ -212,9 +212,12 @@ namespace Algorithm_Dynamics.Pages
         /// <param name="e"></param>
         private void StartProblem(object sender, RoutedEventArgs e)
         {
-            App app = (App)Application.Current;
-            app.ContentFrame.Navigate(typeof(CodingPage));
-            app.MainNavView.SelectedItem = null;
+            App.NavigateTo(typeof(CodingPage));
+        }
+
+        private void CreateNewProblem(object sender, RoutedEventArgs e)
+        {
+            App.NavigateTo(typeof(CreateNewProblemPage));
         }
     }
     public class Problem

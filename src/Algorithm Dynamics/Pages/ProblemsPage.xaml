@@ -93,19 +93,22 @@
                 HorizontalAlignment="Stretch">
                 <DropDownButton.Flyout>
                     <MenuFlyout Placement="Bottom">
-                        <MenuFlyoutItem Text="New Problem"/>
+                        <MenuFlyoutItem
+                            Text="New Problem"
+                            Click="CreateNewProblem"/>
                         <MenuFlyoutItem Text="New Problem List"/>
                         <MenuFlyoutItem Text="Import"/>
                     </MenuFlyout>
                 </DropDownButton.Flyout>
             </DropDownButton>
         </Grid>
-        <ListView x:Name="ProblemsListView"
-                  Grid.Row="1"
-                  SelectionMode="Extended"
-                  Width="auto"
-                  RightTapped="ProblemsListView_RightTapped"
-                  ItemsSource="{x:Bind Problems, Mode=OneWay}">
+        <ListView
+            x:Name="ProblemsListView"
+            Grid.Row="1"
+            SelectionMode="Extended"
+            Width="auto"
+            RightTapped="ProblemsListView_RightTapped"
+            ItemsSource="{x:Bind Problems, Mode=OneWay}">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>

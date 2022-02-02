@@ -53,7 +53,7 @@ namespace Algorithm_Dynamics.Pages
         /// <param name="e"></param>
         private void QAGridView_ItemClick(object sender, ItemClickEventArgs e)
         {
-            MainWindow m_window = (MainWindow)((App)Application.Current).m_window;
+            MainWindow m_window = App.m_window;
             if (e.ClickedItem is QuickAccessItem item)
             {
                 item.Action(m_window);
