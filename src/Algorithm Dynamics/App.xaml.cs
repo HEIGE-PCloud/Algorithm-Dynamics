@@ -1,6 +1,7 @@
 ﻿using Algorithm_Dynamics.Core.Models;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using System;
 using Windows.Storage;
 
 namespace Algorithm_Dynamics
@@ -37,8 +38,13 @@ namespace Algorithm_Dynamics
             m_window.Activate();
         }
 
-        public MainWindow m_window;
-        public NavigationView MainNavView { get => m_window.MainNavView; }
-        public Frame ContentFrame { get => m_window.ContentFrame; }
+        public static MainWindow m_window;
+        public static NavigationView MainNavView { get => m_window.MainNavView; }
+        public static Frame ContentFrame { get => m_window.ContentFrame; }
+        public static void NavigateTo(Type type, object parameter = null)
+        {
+            ContentFrame.Navigate(type, parameter);
+            MainNavView.SelectedItem = null;
+        }
     }
 }
