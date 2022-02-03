@@ -79,7 +79,7 @@ namespace Algorithm_Dynamics.Controls
             else
             {
                 // [Data] actual code
-                Code = data.Substring("[Data] ".Length, data.Length - "[Data] ".Length);
+                _code = data.Substring("[Data] ".Length, data.Length - "[Data] ".Length);
                 return;
             }
         }
@@ -121,10 +121,19 @@ namespace Algorithm_Dynamics.Controls
             WebView.CoreWebView2?.PostWebMessageAsJson(JsonSerializer.Serialize(editorConfig));
         }
 
+        private string _code;
         public string Code
         {
-            get { return (string)GetValue(CodeProperty); }
-            set { SetValue(CodeProperty, value); }
+            get { return _code; }
+            set 
+            {
+                if (value != _code)
+                {
+                    _code = value;
+                    UpdateEditorConfig(new EditorConfig(null, null, value));
+                    SetValue(CodeProperty, value);
+                }
+            }
         }
         
         public static readonly DependencyProperty CodeProperty =
