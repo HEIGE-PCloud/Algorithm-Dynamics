@@ -28,16 +28,19 @@ namespace Algorithm_Dynamics.Pages
         {
             InitializeComponent();
         }
-        public ObservableCollection<TestCase> TestCases = new() { 
-            new TestCase ( 1, "Input", "Output", true),
-            new TestCase ( 1, "Input", "Output", true),
-            new TestCase ( 1, "Input", "Output", true),
-            new TestCase ( 1, "Input", "Output", true),
-            new TestCase ( 1, "Input", "Output", true),
-            new TestCase ( 1, "Input", "Output", true),
-            new TestCase ( 1, "Input", "Output", true),
-        };
+        public ObservableCollection<TestCase> TestCases = new() { };
 
+        private void DeleteSingleTestCase(object sender, RoutedEventArgs e)
+        {
+            TestCase selectedItem = ((FrameworkElement)sender).DataContext as TestCase;
+            TestCases.Remove(selectedItem);
+
+        }
+
+        private void AddTestCase(object sender, RoutedEventArgs e)
+        {
+            TestCases.Add(new TestCase(1, "", "", false));
+        }
     }
     public class TestCase
     {
