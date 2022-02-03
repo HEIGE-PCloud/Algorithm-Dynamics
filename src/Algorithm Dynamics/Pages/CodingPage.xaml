@@ -41,6 +41,9 @@
                 <controls:DataGrid
                     x:Name="SubmissionsDataGrid"
                     AutoGenerateColumns="True"
+                    IsReadOnly="True"
+                    SelectionMode="Single"
+                    SelectionChanged="SubmissionsDataGrid_SelectionChanged"
                     ItemsSource="{x:Bind Submissions, Mode=OneWay}">
                 </controls:DataGrid>
             </PivotItem>
