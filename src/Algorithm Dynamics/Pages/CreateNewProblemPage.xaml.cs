@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -25,7 +26,31 @@ namespace Algorithm_Dynamics.Pages
     {
         public CreateNewProblemPage()
         {
-            this.InitializeComponent();
+            InitializeComponent();
+        }
+        public ObservableCollection<TestCase> TestCases = new() { 
+            new TestCase ( 1, "Input", "Output", true),
+            new TestCase ( 1, "Input", "Output", true),
+            new TestCase ( 1, "Input", "Output", true),
+            new TestCase ( 1, "Input", "Output", true),
+            new TestCase ( 1, "Input", "Output", true),
+            new TestCase ( 1, "Input", "Output", true),
+            new TestCase ( 1, "Input", "Output", true),
+        };
+
+    }
+    public class TestCase
+    {
+        public int Id { get; set; }
+        public string Input { get; set; }
+        public string Output { get; set; }
+        public bool IsExample { get; set; }
+        public TestCase(int id, string input, string output, bool isExample)
+        {
+            Id = id;
+            Input = input;
+            Output = output;
+            IsExample = isExample;
         }
     }
 }
