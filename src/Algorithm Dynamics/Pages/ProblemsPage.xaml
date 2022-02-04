@@ -97,7 +97,9 @@
                             Text="New Problem"
                             Click="CreateNewProblem"/>
                         <MenuFlyoutItem Text="New Problem List"/>
-                        <MenuFlyoutItem Text="Import"/>
+                        <MenuFlyoutItem 
+                            Text="Import"
+                            Click="Import"/>
                     </MenuFlyout>
                 </DropDownButton.Flyout>
             </DropDownButton>
