@@ -54,6 +54,12 @@ namespace Algorithm_Dynamics.Pages
         private void CancelCreation(object sender, RoutedEventArgs e)
         {
             App.MainNavView.SelectedItem = App.MainNavView.MenuItems[1];
+            CancelConfirmFlyout.Hide();
+        }
+
+        private void CreateProblem(object sender, RoutedEventArgs e)
+        {
+            App.MainNavView.SelectedItem = App.MainNavView.MenuItems[1];
         }
     }
     public class TestCase
