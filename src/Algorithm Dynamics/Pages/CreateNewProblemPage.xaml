@@ -9,7 +9,7 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <ScrollViewer>
+    <ScrollViewer x:Name="scrollViewer">
         <!--<VisualStateManager.VisualStateGroups>
             <VisualStateGroup>
                 <VisualState>
@@ -29,72 +29,73 @@
         </VisualStateManager.VisualStateGroups>-->
 
         <StackPanel
-                Margin="32"
-                x:Name="FormStackPanel"
-                Grid.ColumnSpan="1">
+            Margin="32"
+            x:Name="FormStackPanel"
+            Grid.ColumnSpan="1">
             <TextBlock
-                    Text="Create Problem"
-                    Style="{ThemeResource TitleTextBlockStyle}"/>
+                Text="Create Problem"
+                Style="{ThemeResource TitleTextBlockStyle}"/>
             <TextBox
-                    Margin="0 22 0 0"
-                    Header="Problem Name"
-                    Width="400"
-                    HorizontalAlignment="Left"/>
+                Margin="0 22 0 0"
+                Header="Problem Name"
+                Width="400"
+                HorizontalAlignment="Left"/>
             <controls:TokenizingTextBox
-                    Header="Tags"
-                    Margin="0 22 0 0" 
-                    Width="400"
-                    PlaceholderText="Add Tags"
-                    HorizontalAlignment="Left"/>
+                Header="Tags"
+                Margin="0 22 0 0" 
+                Width="400"
+                PlaceholderText="Add Tags"
+                SelectionMode="Extended"
+                HorizontalAlignment="Left"/>
             <ComboBox
-                    Header="Difficulty"
-                    SelectedIndex="0"
-                    Margin="0 22 0 0"
-                    Width="400"
-                    HorizontalAlignment="Left">
+                Header="Difficulty"
+                SelectedIndex="0"
+                Margin="0 22 0 0"
+                Width="400"
+                HorizontalAlignment="Left">
                 <x:String>Easy</x:String>
                 <x:String>Medium</x:String>
                 <x:String>Hard</x:String>
             </ComboBox>
             <NumberBox
-                    Header="Time Limit (ms)"
-                    Value="1000"
-                    Width="400"
-                    Margin="0 22 0 0"
-                    HorizontalAlignment="Left"
-                    SpinButtonPlacementMode="Compact"
-                    SmallChange="100"
-                    LargeChange="500"/>
+                Header="Time Limit (ms)"
+                Value="1000"
+                Width="400"
+                Margin="0 22 0 0"
+                HorizontalAlignment="Left"
+                SpinButtonPlacementMode="Compact"
+                SmallChange="100"
+                LargeChange="500"/>
             <NumberBox
-                    Header="Memory Limit (MB)"
-                    Value="64"
-                    Width="400"
-                    Margin="0 22 0 0"
-                    HorizontalAlignment="Left"
-                    SpinButtonPlacementMode="Compact"
-                    SmallChange="64"
-                    LargeChange="512"/>
+                Header="Memory Limit (MB)"
+                Value="64"
+                Width="400"
+                Margin="0 22 0 0"
+                HorizontalAlignment="Left"
+                SpinButtonPlacementMode="Compact"
+                SmallChange="64"
+                LargeChange="512"/>
             <Pivot
-                    x:Name="DescriptionPivot">
+                x:Name="DescriptionPivot">
                 <PivotItem
-                        Header="Description">
+                    Header="Description">
                     <TextBox
-                            x:Name="DescriptionTextBox"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Stretch"
-                            TextWrapping="Wrap" 
-                            AcceptsReturn="True" 
-                            IsSpellCheckEnabled="True"
-                            MinHeight="200"
-                            MaxHeight="840"/>
+                        x:Name="DescriptionTextBox"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        TextWrapping="Wrap" 
+                        AcceptsReturn="True" 
+                        IsSpellCheckEnabled="True"
+                        MinHeight="200"
+                        MaxHeight="840"/>
                 </PivotItem>
                 <PivotItem
-                        Header="Preview">
+                    Header="Preview">
                     <controls:MarkdownTextBlock
-                            x:Name="ProblemMarkdownTextBlock"
-                            Margin="8"
-                            Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-                            Text="{x:Bind DescriptionTextBox.Text, Mode=OneWay}"/>
+                        x:Name="ProblemMarkdownTextBlock"
+                        Margin="8"
+                        Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+                        Text="{x:Bind DescriptionTextBox.Text, Mode=OneWay}"/>
                 </PivotItem>
             </Pivot>
             <ListView
@@ -160,6 +161,7 @@
                 HorizontalAlignment="Right"
                 Orientation="Horizontal">
                 <Button
+                    x:Name="AddTestCaseButton"
                     Click="AddTestCase">
                     <Button.Content>
                         <SymbolIcon Symbol="Add"/>
@@ -170,6 +172,14 @@
                     <Button.Content>
                         <SymbolIcon Symbol="Delete"/>
                     </Button.Content>
+                    <Button.Flyout>
+                        <Flyout x:Name="DeleteConfirmFlyout">
+                            <StackPanel>
+                                <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="All test cases will be deleted. Do you want to continue?" Margin="0,0,0,12" />
+                                <Button Click="DeleteAllTestCases"  Content="Yes, delete all test cases." />
+                            </StackPanel>
+                        </Flyout>
+                    </Button.Flyout>
                 </Button>
             </StackPanel>
             <StackPanel 
@@ -183,7 +193,16 @@
                     Style="{ThemeResource AccentButtonStyle}"/>
                 <Button 
                     Width="100"
-                    Content="Cancel"/>
+                    Content="Cancel">
+                    <Button.Flyout>
+                        <Flyout>
+                            <StackPanel>
+                                <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="All changes will be lost. Do you want to continue?" Margin="0,0,0,12" />
+                                <Button Click="CancelCreation"  Content="Yes" />
+                            </StackPanel>
+                        </Flyout>
+                    </Button.Flyout>
+                </Button>
             </StackPanel>
         </StackPanel>
     </ScrollViewer>

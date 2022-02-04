@@ -28,7 +28,7 @@ namespace Algorithm_Dynamics.Pages
         {
             InitializeComponent();
         }
-        public ObservableCollection<TestCase> TestCases = new() { };
+        public ObservableCollection<TestCase> TestCases = new() { new TestCase(1, "", "", true) };
 
         private void DeleteSingleTestCase(object sender, RoutedEventArgs e)
         {
@@ -40,6 +40,20 @@ namespace Algorithm_Dynamics.Pages
         private void AddTestCase(object sender, RoutedEventArgs e)
         {
             TestCases.Add(new TestCase(1, "", "", false));
+            var transform = AddTestCaseButton.TransformToVisual((UIElement)scrollViewer.Content);
+            var position = transform.TransformPoint(new Point(0, 0));
+            scrollViewer.ChangeView(null, position.Y, null, false);
+        }
+
+        private void DeleteAllTestCases(object sender, RoutedEventArgs e)
+        {
+            TestCases.Clear();
+            DeleteConfirmFlyout.Hide();
+        }
+
+        private void CancelCreation(object sender, RoutedEventArgs e)
+        {
+            App.MainNavView.SelectedItem = App.MainNavView.MenuItems[1];
         }
     }
     public class TestCase
