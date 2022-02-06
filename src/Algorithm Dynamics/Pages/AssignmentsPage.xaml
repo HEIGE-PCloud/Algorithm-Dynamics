@@ -46,6 +46,7 @@
         <ListView
             Grid.Row="1"
             SelectionMode="None"
+            IsItemClickEnabled="True"
             ItemClick="ListView_ItemClick"
             ItemsSource="{x:Bind Assignments, Mode=OneWay}">
             <ListView.ItemTemplate>

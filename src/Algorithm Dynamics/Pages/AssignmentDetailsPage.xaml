@@ -8,7 +8,71 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid>
-        <TextBlock Text="AssignmentDetailsPage"/>
-    </Grid>
+    <StackPanel
+        Margin="32">
+        <TextBlock
+                Text="Assignment 1"
+                Style="{ThemeResource TitleTextBlockStyle}"/>
+        <RelativePanel>
+            <TextBlock 
+                RelativePanel.AlignLeftWithPanel="True"
+                Text="Due 01/01/2022"/>
+            <Button
+                x:Name="StartButton"
+                RelativePanel.LeftOf="SubmitButton"
+                Content="Start"/>
+            <Button
+                x:Name="SubmitButton"
+                Content="Submit"
+                RelativePanel.AlignRightWithPanel="True"
+                Style="{ThemeResource AccentButtonStyle}"/>
+        </RelativePanel>
+        <ScrollViewer>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock 
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    TextWrapping="Wrap"
+                    Text="Description. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sit amet enim magna. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Phasellus ullamcorper blandit eros, et dictum augue molestie non. Phasellus vestibulum erat tortor, quis interdum tellus maximus sit amet. Nam lobortis vitae dui non tincidunt. Cras sit amet nulla ultrices, aliquet tellus at, porta nisl. Nam velit tellus, rutrum et eleifend vel, ornare ac metus. In sed varius ante. Vestibulum dolor odio, pellentesque in cursus non, accumsan quis dui. Mauris convallis lacus nec ligula tristique, sed commodo purus maximus. Maecenas ut lectus at purus placerat rhoncus nec vitae lorem. Duis lacinia sapien et mollis varius. Nulla at posuere ipsum. Sed velit ante, hendrerit et mattis rhoncus, interdum vitae lacus."/>
+                <ListView
+                    Grid.Row="1"
+                    Grid.Column="0">
+                    <ListViewItem Content="Problem 1"/>
+                    <ListViewItem Content="Problem 2"/>
+                    <ListViewItem Content="Problem 3"/>
+                    <ListViewItem Content="Problem 4"/>
+                    <ListViewItem Content="Problem 5"/>
+                    <ListViewItem Content="Problem 6"/>
+                    <ListViewItem Content="Problem 7"/>
+                    <ListViewItem Content="Problem 8"/>
+                    <ListViewItem Content="Problem 9"/>
+                    <ListViewItem Content="Problem 10"/>
+                </ListView>
+                <ListView
+                    Grid.Row="0"
+                    Grid.RowSpan="2"
+                    Grid.Column="1">
+                    <ListViewItem Content="Submission 1"/>
+                    <ListViewItem Content="Submission 1"/>
+                    <ListViewItem Content="Submission 1"/>
+                    <ListViewItem Content="Submission 1"/>
+                    <ListViewItem Content="Submission 1"/>
+                    <ListViewItem Content="Submission 1"/>
+                    <ListViewItem Content="Submission 1"/>
+                    <ListViewItem Content="Submission 1"/>
+                    <ListViewItem Content="Submission 1"/>
+                    <ListViewItem Content="Submission 1"/>
+                    <ListViewItem Content="Submission 1"/>
+                </ListView>
+            </Grid>
+        </ScrollViewer>
+    </StackPanel>
 </Page>

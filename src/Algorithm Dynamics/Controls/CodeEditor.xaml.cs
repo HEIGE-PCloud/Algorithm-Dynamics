@@ -124,8 +124,8 @@ namespace Algorithm_Dynamics.Controls
         private string _code;
         public string Code
         {
-            get { return _code; }
-            set 
+            get => _code; 
+            set
             {
                 if (value != _code)
                 {
