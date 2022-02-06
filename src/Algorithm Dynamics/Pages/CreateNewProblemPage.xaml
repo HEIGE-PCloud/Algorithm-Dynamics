@@ -30,8 +30,7 @@
 
         <StackPanel
             Margin="32"
-            x:Name="FormStackPanel"
-            Grid.ColumnSpan="1">
+            x:Name="FormStackPanel">
             <TextBlock
                 Text="Create Problem"
                 Style="{ThemeResource TitleTextBlockStyle}"/>

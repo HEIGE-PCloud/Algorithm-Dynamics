@@ -22,7 +22,7 @@ namespace Algorithm_Dynamics.Pages
             RunCodeProgressBar.IsIndeterminate = true;
             RunCodeProgressBar.ShowError = false;
             RunCodeButton.IsEnabled = false;
-            RunCodeResult result = await Judger.RunCode(Code, Input, languages[LanguageComboBox.SelectedIndex], 1000, 1000000000, progress);
+            RunCodeResult result = await Judger.RunCode(CodeEditor.Code, Input, languages[LanguageComboBox.SelectedIndex], 1000, 1000000000, progress);
             RunCodeButton.IsEnabled = true;
             RunCodeProgressBar.IsIndeterminate = false;
             StatusTextBlock.Text = $"{result.ResultCode} Time: {result.CPUTime} ms Memory: {result.MemoryUsage / 1024 / 1024} MB";
