@@ -111,11 +111,6 @@
             Width="auto"
             RightTapped="ProblemsListView_RightTapped"
             ItemsSource="{x:Bind Problems, Mode=OneWay}">
-            <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                </Style>
-            </ListView.ItemContainerStyle>
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="local:Problem">
                     <Grid>

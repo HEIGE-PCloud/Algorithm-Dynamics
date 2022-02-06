@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -25,7 +26,61 @@ namespace Algorithm_Dynamics.Pages
     {
         public AssignmentsPage()
         {
-            this.InitializeComponent();
+            InitializeComponent();
+            AssignmentsNavView.SelectedItem = AssignmentsNavView.MenuItems[0];
+
         }
+        public ObservableCollection<Assignment> Assignments = new();
+
+        private void AssignmentsNavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
+        {
+            if (AssignmentsNavView.SelectedItem == AssignmentsNavView.MenuItems[0])
+            {
+                Assignments.Clear();
+                Assignments.Add(new Assignment("Assignment 1", "Assigned Assignment", DateTime.Now));
+                Assignments.Add(new Assignment("Assignment 2", "Assigned Assignment", DateTime.Now));
+                Assignments.Add(new Assignment("Assignment 3", "Assigned Assignment", DateTime.Now));
+                Assignments.Add(new Assignment("Assignment 4", "Assigned Assignment", DateTime.Now));
+                Assignments.Add(new Assignment("Assignment 5", "Assigned Assignment", DateTime.Now));
+            }
+            else if (AssignmentsNavView.SelectedItem == AssignmentsNavView.MenuItems[1])
+            {
+                Assignments.Clear();
+                Assignments.Add(new Assignment("Assignment 6", "Completed Assignment", DateTime.Now));
+                Assignments.Add(new Assignment("Assignment 7", "Completed Assignment", DateTime.Now));
+                Assignments.Add(new Assignment("Assignment 8", "Completed Assignment", DateTime.Now));
+                Assignments.Add(new Assignment("Assignment 9", "Completed Assignment", DateTime.Now));
+                Assignments.Add(new Assignment("Assignment 10", "Completed Assignment", DateTime.Now));
+            }
+            else
+            {
+                Assignments.Clear();
+                Assignments.Add(new Assignment("Assignment 11", "Created Assignment", DateTime.Now));
+                Assignments.Add(new Assignment("Assignment 12", "Created Assignment", DateTime.Now));
+                Assignments.Add(new Assignment("Assignment 13", "Created Assignment", DateTime.Now));
+                Assignments.Add(new Assignment("Assignment 14", "Created Assignment", DateTime.Now));
+                Assignments.Add(new Assignment("Assignment 15", "Created Assignment", DateTime.Now));
+            }
+        }
+
+        private void ListView_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            App.NavigateTo(typeof(AssignmentDetailsPage));
+        }
+
+    }
+
+    public class Assignment
+    {
+        public Assignment(string name, string description, DateTime dueDate)
+        {
+            Name = name;
+            Description = description;
+            DueDate = dueDate;
+        }
+
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public DateTime DueDate { get; set; }
     }
 }
