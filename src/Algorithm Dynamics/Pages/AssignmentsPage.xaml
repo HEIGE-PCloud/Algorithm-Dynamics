@@ -9,6 +9,64 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-        <TextBlock Text="AssignmentsPage"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <NavigationView 
+            x:Name="AssignmentsNavView"
+            IsSettingsVisible="False"
+            IsBackButtonVisible="Collapsed"
+            IsBackEnabled="False"
+            SelectionChanged="AssignmentsNavView_SelectionChanged"
+            Header="Header"
+            AlwaysShowHeader="False"
+            PaneDisplayMode="Top"
+            ExpandedModeThresholdWidth="500"
+            SelectionFollowsFocus="Disabled"
+            IsTabStop="False">
+            <NavigationView.MenuItems>
+                <NavigationViewItem Content="Assigned" Tag="SamplePage1" x:Name="SamplePage1Item"/>
+                <NavigationViewItem Content="Completed" Tag="SamplePage2" x:Name="SamplePage2Item"/>
+                <NavigationViewItem Content="Created" Tag="SamplePage3" x:Name="SamplePage3Item"/>
+            </NavigationView.MenuItems>
+
+            <NavigationView.PaneFooter>
+                <DropDownButton Content="Add">
+                    <DropDownButton.Flyout>
+                        <MenuFlyout Placement="Bottom">
+                            <MenuFlyoutItem Text="Create"/>
+                            <MenuFlyoutItem Text="Import"/>
+                        </MenuFlyout>
+                    </DropDownButton.Flyout>
+                </DropDownButton>
+            </NavigationView.PaneFooter>
+        </NavigationView>
+        <ListView
+            Grid.Row="1"
+            SelectionMode="None"
+            ItemClick="ListView_ItemClick"
+            ItemsSource="{x:Bind Assignments, Mode=OneWay}">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="local:Assignment">
+                    <Grid
+                        Height="50">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock 
+                            Grid.Column="0"
+                            VerticalAlignment="Center"
+                            Text="{x:Bind Name}"/>
+                        <TextBlock
+                            Grid.Column="1"
+                            VerticalAlignment="Center"
+                            Text="{x:Bind DueDate}"/>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </Grid>
 </Page>
