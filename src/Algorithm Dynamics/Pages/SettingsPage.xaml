@@ -7,89 +7,136 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-        <StackPanel 
-            Spacing="10" 
-            Margin="10" >
-            <TextBlock Text="Color Theme"/>
-            <StackPanel x:Name="themePanel">
-                <RadioButton Content="Light">
-                    <RadioButton.Tag>
-                        <ElementTheme>Light</ElementTheme>
-                    </RadioButton.Tag>
-                </RadioButton>
-                <RadioButton Content="Dark">
-                    <RadioButton.Tag>
-                        <ElementTheme>Dark</ElementTheme>
-                    </RadioButton.Tag>
-                </RadioButton>
-                <RadioButton Content="System Default">
-                    <RadioButton.Tag>
-                        <ElementTheme>Default</ElementTheme>
-                    </RadioButton.Tag>
-                </RadioButton>
+        <Grid.ChildrenTransitions>
+            <TransitionCollection>
+                <EntranceThemeTransition />
+            </TransitionCollection>
+        </Grid.ChildrenTransitions>
+        <ScrollViewer>
+            <StackPanel
+                Margin="32">
+                <TextBlock
+                    Style="{ThemeResource SubtitleTextBlockStyle}"
+                    Margin="0 12 0 0"
+                    FontWeight="Normal"
+                    Text="Theme Mode" />
+                <StackPanel x:Name="ThemePanel" Margin="0 10 0 0">
+                    <RadioButton 
+                        Tag="Light" 
+                        Content="Light"
+                        Checked="ThemeRadioButton_Checked"/>
+                    <RadioButton 
+                        Tag="Dark" 
+                        Content="Dark"
+                        Checked="ThemeRadioButton_Checked"/>
+                    <RadioButton 
+                        Tag="Default" 
+                        Content="Use system settings"
+                        Checked="ThemeRadioButton_Checked"/>
+                </StackPanel>
+                <TextBlock
+                    Style="{ThemeResource SubtitleTextBlockStyle}"
+                    Margin="0 20 0 0"
+                    FontWeight="Normal"
+                    Text="Run Code Time Limit" />
+                <StackPanel 
+                    Margin="0 10 0 0"
+                    Orientation="Horizontal">
+                    <NumberBox
+                        Value="1"
+                        SpinButtonPlacementMode="Inline"
+                        SmallChange="100"
+                        LargeChange="500" />
+                    <TextBlock 
+                        Margin="8"
+                        Text="ms"
+                        VerticalAlignment="Center"/>
+                </StackPanel>
+                <TextBlock
+                    Style="{ThemeResource SubtitleTextBlockStyle}"
+                    Margin="0 20 0 0"
+                    FontWeight="Normal"
+                    Text="Run Code Memory Limit" />
+                <StackPanel 
+                    Margin="0 10 0 0"
+                    Orientation="Horizontal">
+                    <NumberBox
+                        Value="1"
+                        SpinButtonPlacementMode="Inline"
+                        SmallChange="64"
+                        LargeChange="256" />
+                    <TextBlock
+                        Margin="8"
+                        Text="MB"
+                        VerticalAlignment="Center"/>
+                </StackPanel>
+                <TextBlock
+                    Style="{ThemeResource SubtitleTextBlockStyle}"
+                    Margin="0 20 0 0"
+                    FontWeight="Normal"
+                    Text="Preferred Programming Language" />
+                <StackPanel 
+                    Margin="0 10 0 0"
+                    Orientation="Horizontal">
+                    <ComboBox
+                        VerticalAlignment="Stretch"
+                        Margin="2"
+                        SelectedIndex="0">
+                        <x:String>C</x:String>
+                        <x:String>C++</x:String>
+                        <x:String>Python</x:String>
+                    </ComboBox>
+                    <Button 
+                        x:Name="AddLangButton"
+                        ToolTipService.ToolTip="Add a new Programming Language configuration"
+                        Margin="2"
+                        Click="AddLangButton_Click">
+                        <Button.Content>
+                            <SymbolIcon Symbol="Add"/>
+                        </Button.Content>
+                        <Button.Resources>
+
+                        </Button.Resources>
+                    </Button>
+                    <Button 
+                        ToolTipService.ToolTip="Edit the selected configuration"
+                        Margin="2">
+                        <Button.Content>
+                            <SymbolIcon Symbol="Edit"/>
+                        </Button.Content>
+                    </Button>
+                    <Button 
+                        ToolTipService.ToolTip="Delete the selected configuration"
+                        Margin="2">
+                        <Button.Content>
+                            <SymbolIcon Symbol="Delete"/>
+                        </Button.Content>
+                    </Button>
+                </StackPanel>
+                <TextBlock
+                    Style="{ThemeResource SubtitleTextBlockStyle}"
+                    Margin="0 20 0 0"
+                    FontWeight="Normal"
+                    Text="About" />
+                <HyperlinkButton 
+                    Content="GitHub"
+                    NavigateUri="https://github.com/HEIGE-PCloud/Algorithm-Dynamics"/>
+                <HyperlinkButton 
+                    Content="Website"
+                    NavigateUri="https://algorithmdynamics.com/"/>
+                <HyperlinkButton 
+                    Content="Report"
+                    NavigateUri="https://algorithmdynamics.com/report.pdf"/>
+                <TextBlock
+                    Style="{ThemeResource SubtitleTextBlockStyle}"
+                    Margin="0 20 0 0"
+                    FontWeight="Normal"
+                    Text="Disclaimer" />
+                <RichTextBlock>
+                    <Paragraph>THIS CODE AND INFORMATION IS PROVIDED ‘AS IS’ WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.</Paragraph>
+                </RichTextBlock>
             </StackPanel>
-        </StackPanel>
-        <StackPanel
-            Grid.Row="1"
-            Grid.Column="0"
-            Spacing="10"
-            Margin="10">
-            <TextBlock Text="Run Code Time Limit"/>
-            <NumberBox HorizontalAlignment="Left"/>
-        </StackPanel>
-        <StackPanel
-            Grid.Row="2"
-            Grid.Column="0"
-            Spacing="10"
-            Margin="10">
-            <TextBlock Text="Run Code Memory Limit"/>
-            <NumberBox 
-                HorizontalAlignment="Left"
-                Value="64"
-                SpinButtonPlacementMode="Inline"
-                SmallChange="1"
-                LargeChange="10"/>
-        </StackPanel>
-        <StackPanel
-            Grid.Row="3"
-            Grid.Column="0"
-            Spacing="10"
-            Margin="10">
-            <TextBlock Text="Preferred Programming Language"/>
-            <ComboBox>
-                
-            </ComboBox>
-        </StackPanel>
-        <StackPanel
-            Grid.Row="0"
-            Grid.Column="1"
-            Margin="10"
-            Spacing="10">
-            <TextBlock Text="App"/>
-            <HyperlinkButton Content="Documentation"/>
-            <HyperlinkButton Content="Documentation"/>
-            <HyperlinkButton Content="Documentation"/>
-        </StackPanel>
-        <InfoBar
-            Grid.Row="4"
-            Grid.Column="1"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Bottom"
-            IsOpen="True"
-            Severity="Success"
-            Title="Saved"
-            Message="Changes to settings are saved" />
+        </ScrollViewer>
     </Grid>
 </Page>

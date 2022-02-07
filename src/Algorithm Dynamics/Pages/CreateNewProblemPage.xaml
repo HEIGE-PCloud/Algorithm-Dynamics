@@ -77,7 +77,7 @@
                 HorizontalAlignment="Left"
                 SpinButtonPlacementMode="Inline"
                 SmallChange="64"
-                LargeChange="512"/>
+                LargeChange="256"/>
             <Pivot
                 x:Name="DescriptionPivot">
                 <PivotItem
