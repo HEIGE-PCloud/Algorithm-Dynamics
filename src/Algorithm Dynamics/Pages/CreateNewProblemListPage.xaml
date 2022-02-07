@@ -1,0 +1,111 @@
+﻿<Page
+    x:Class="Algorithm_Dynamics.Pages.CreateNewProblemListPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Algorithm_Dynamics.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <ScrollViewer x:Name="scrollViewer">
+        <StackPanel
+            Margin="32"
+            x:Name="FormStackPanel">
+            <TextBlock
+                Text="Create Problem List"
+                Style="{ThemeResource TitleTextBlockStyle}"/>
+            <TextBox
+                Margin="0 22 0 0"
+                Header="List Name"
+                MaxLength="64"
+                Width="400"
+                HorizontalAlignment="Left"/>
+            <TextBox
+                Margin="0 22 0 0"
+                Header="Description"
+                HorizontalAlignment="Left"
+                TextWrapping="Wrap" 
+                AcceptsReturn="True" 
+                IsSpellCheckEnabled="True"
+                MinWidth="400"
+                MinHeight="200"
+                MaxHeight="840"/>
+            <AutoSuggestBox
+                x:Name="AddProblemBox"
+                Header="Add Problems"
+                Margin="0 22 0 0"
+                HorizontalAlignment="Left"
+                QueryIcon="Find"
+                Width="400"
+                TextChanged="AddProblemBox_TextChanged"
+                SuggestionChosen="AddProblemBox_SuggestionChosen"/>
+            <ListView
+                Margin="0 22 0 0"
+                SelectionMode="None"
+                ItemsSource="{x:Bind Problems, Mode=OneWay}">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="local:Problem">
+                        <Grid
+                            Margin="0 10 0 0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Column="0"
+                                VerticalAlignment="Center"
+                                Text="{x:Bind Name}"/>
+                            <TextBlock
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                Text="{x:Bind Difficulty}"/>
+                            <TextBlock
+                                Grid.Column="2"
+                                VerticalAlignment="Center"
+                                Text="{x:Bind Tags}"/>
+                            <Button
+                                Grid.Column="3"
+                                HorizontalAlignment="Right">
+                                <Button.Content>
+                                    <SymbolIcon Symbol="Delete"/>
+                                </Button.Content>
+                            </Button>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <StackPanel 
+                HorizontalAlignment="Right"
+                Orientation="Horizontal">
+                <Button
+                    Content="Cancel"/>
+                <Button
+                    x:Name="SaveButton"
+                    Content="Save"
+                    Click="SaveButton_Click"
+                    Style="{ThemeResource AccentButtonStyle}">
+                    <Button.Flyout>
+                        <Flyout>
+                            <StackPanel>
+                                <TextBlock 
+                                    x:Name="TestTextBlock"
+                                    Style="{ThemeResource BaseTextBlockStyle}"
+                                    Text="The Problem List is not saved." 
+                                    Margin="0 0 0 12" />
+                                <StackPanel 
+                                    Orientation="Horizontal"
+                                    HorizontalAlignment="Right">
+                                    <Button 
+                                        Content="Export"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Flyout>
+                    </Button.Flyout>
+                </Button>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

@@ -52,5 +52,10 @@ namespace Algorithm_Dynamics
         {
 
         }
+
+        private void MainNavView_BackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args)
+        {
+            if (ContentFrame.CanGoBack) ContentFrame.GoBack();
+        }
     }
 }

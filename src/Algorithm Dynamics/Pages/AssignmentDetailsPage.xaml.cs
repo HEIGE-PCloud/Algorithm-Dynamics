@@ -27,5 +27,10 @@ namespace Algorithm_Dynamics.Pages
         {
             this.InitializeComponent();
         }
+
+        private void ProblemListView_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            App.NavigateTo(typeof(CodingPage));
+        }
     }
 }

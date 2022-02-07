@@ -28,6 +28,7 @@
     <None Remove="Pages\AssignmentDetailsPage.xaml" />
     <None Remove="Pages\AssignmentsPage.xaml" />
     <None Remove="Pages\CodingPage.xaml" />
+    <None Remove="Pages\CreateNewProblemListPage.xaml" />
     <None Remove="Pages\CreateNewProblemPage.xaml" />
     <None Remove="Pages\HomePage.xaml" />
     <None Remove="Pages\PlaygroundPage.xaml" />
@@ -106,6 +107,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Algorithm Dynamics.Core\Algorithm Dynamics.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Pages\CreateNewProblemListPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Pages\AssignmentDetailsPage.xaml">

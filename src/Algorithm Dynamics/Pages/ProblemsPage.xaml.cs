@@ -238,6 +238,11 @@ namespace Algorithm_Dynamics.Pages
             var file = await filePicker.PickSingleFileAsync();
 
         }
+
+        private void CreateNewProblemList(object sender, RoutedEventArgs e)
+        {
+            App.NavigateTo(typeof(CreateNewProblemListPage));
+        }
     }
     public class Problem
     {

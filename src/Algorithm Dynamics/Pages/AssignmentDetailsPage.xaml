@@ -46,9 +46,12 @@
                     Margin="4"
                     Text="Description. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sit amet enim magna. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Phasellus ullamcorper blandit eros, et dictum augue molestie non. Phasellus vestibulum erat tortor, quis interdum tellus maximus sit amet. Nam lobortis vitae dui non tincidunt. Cras sit amet nulla ultrices, aliquet tellus at, porta nisl. Nam velit tellus, rutrum et eleifend vel, ornare ac metus. In sed varius ante. Vestibulum dolor odio, pellentesque in cursus non, accumsan quis dui. Mauris convallis lacus nec ligula tristique, sed commodo purus maximus. Maecenas ut lectus at purus placerat rhoncus nec vitae lorem. Duis lacinia sapien et mollis varius. Nulla at posuere ipsum. Sed velit ante, hendrerit et mattis rhoncus, interdum vitae lacus."/>
                 <ListView
+                    x:Name="ProblemListView"
                     Grid.Row="1"
                     Grid.Column="0"
                     Header="Problems"
+                    IsItemClickEnabled="True"
+                    ItemClick="ProblemListView_ItemClick"
                     Margin="4">
                     <ListViewItem Content="Problem 1"/>
                     <ListViewItem Content="Problem 2"/>

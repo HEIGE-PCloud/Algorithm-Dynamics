@@ -10,24 +10,6 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <ScrollViewer x:Name="scrollViewer">
-        <!--<VisualStateManager.VisualStateGroups>
-            <VisualStateGroup>
-                <VisualState>
-                    <VisualState.StateTriggers>
-                        --><!-- VisualState to be triggered when the
-                            window width is >=640 effective pixels. --><!--
-                        <AdaptiveTrigger MinWindowWidth="800" />
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="FormStackPanel.(Grid.ColumnSpan)" Value="1"/>
-                        <Setter Target="DescriptionPivot.(Grid.ColumnSpan)" Value="1"/>
-                        <Setter Target="DescriptionPivot.(Grid.Row)" Value="0"/>
-                        <Setter Target="DescriptionPivot.(Grid.Column)" Value="1"/>
-                    </VisualState.Setters>
-                </VisualState>
-            </VisualStateGroup>
-        </VisualStateManager.VisualStateGroups>-->
-
         <StackPanel
             Margin="32"
             x:Name="FormStackPanel">
@@ -110,9 +92,7 @@
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="local:TestCase">
                         <Grid
-                            Margin="0 10 0 0"
-                            BorderBrush="AliceBlue"
-                            BorderThickness="0">
+                            Margin="0 10 0 0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="2*"/>

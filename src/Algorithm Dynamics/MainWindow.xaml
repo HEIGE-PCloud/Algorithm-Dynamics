@@ -11,7 +11,9 @@
         <NavigationView 
             x:Name="MainNavView"
             x:FieldModifier="public"
-            IsBackButtonVisible="Collapsed"
+            IsBackButtonVisible="Visible"
+            IsBackEnabled="True"
+            BackRequested="MainNavView_BackRequested"
             SelectionChanged="MainNavView_SelectionChanged">
             <NavigationView.MenuItems>
                 <NavigationViewItem
