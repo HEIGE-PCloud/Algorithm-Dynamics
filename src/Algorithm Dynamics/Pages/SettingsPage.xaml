@@ -44,8 +44,9 @@
                     Margin="0 10 0 0"
                     Orientation="Horizontal">
                     <NumberBox
-                        Value="1"
                         SpinButtonPlacementMode="Inline"
+                        Value="1000"
+                        Minimum="100"
                         SmallChange="100"
                         LargeChange="500" />
                     <TextBlock 
@@ -62,7 +63,8 @@
                     Margin="0 10 0 0"
                     Orientation="Horizontal">
                     <NumberBox
-                        Value="1"
+                        Value="64"
+                        Minimum="16"
                         SpinButtonPlacementMode="Inline"
                         SmallChange="64"
                         LargeChange="256" />

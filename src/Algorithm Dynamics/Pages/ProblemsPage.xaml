@@ -96,7 +96,9 @@
                         <MenuFlyoutItem
                             Text="New Problem"
                             Click="CreateNewProblem"/>
-                        <MenuFlyoutItem Text="New Problem List"/>
+                        <MenuFlyoutItem 
+                            Text="New Problem List"
+                            Click="CreateNewProblemList"/>
                         <MenuFlyoutItem 
                             Text="Import"
                             Click="Import"/>
