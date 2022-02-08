@@ -72,7 +72,7 @@ namespace Algorithm_Dynamics.Pages
         private void EditProblemList(object sender, RoutedEventArgs e)
         {
             // TODO: Navigate to edit page
-            throw new NotImplementedException();
+            App.NavigateTo(typeof(CreateNewProblemListPage));
         }
 
         /// <summary>
