@@ -4921,12 +4921,135 @@ For the other parts, the submission records depend on the database, and the run 
     \hline
 \end{tabulary}
 
-
-
-
 \subsection{Create the AccountPage}
 
-\subsection{Create the CreateNewPage}
+For the AccountPage, I use a grid of two row to divide the two sections for the account information and the statistics data. For the account information, I decide to use the RelativePanel to construct the layout to make it responsive to different sizes of the window. For the statistics data, I use the AdaptiveGridView which is used for the HomePage as well, so the data can be dynamically added in the code behind and make it a lot easier to add custom statistics later.
+
+\begin{minted}{xml}
+<Grid>
+    <Grid.RowDefinitions>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+
+    <RelativePanel
+        Grid.Row="0"
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch">
+        <PersonPicture
+            x:Name="AvatarPicture"
+            Margin="32"
+            RelativePanel.AlignLeftWithPanel="True"
+            RelativePanel.AlignVerticalCenterWithPanel="True"
+            ProfilePicture="https://docs.microsoft.com/windows/uwp/contacts-and-calendar/images/shoulder-tap-static-payload.png" />
+        <StackPanel
+            RelativePanel.RightOf="AvatarPicture"
+            RelativePanel.AlignVerticalCenterWithPanel="True">
+            <TextBlock
+                Margin="2"
+                Text="Name"
+                Style="{ThemeResource SubtitleTextBlockStyle}"/>
+            <TextBlock
+                Margin="2"
+                Text="Email"
+                Style="{ThemeResource BodyTextBlockStyle}"/>
+            <TextBlock
+                Margin="2"
+                Text="Role"
+                Style="{ThemeResource BodyTextBlockStyle}"/>
+        </StackPanel>
+        <StackPanel
+            Margin="32"
+            RelativePanel.AlignRightWithPanel="True"
+            RelativePanel.AlignVerticalCenterWithPanel="True">
+            <Button
+                Margin="2"
+                HorizontalAlignment="Stretch"
+                Content="Edit"/>
+            <Button
+                Margin="2"
+                HorizontalAlignment="Stretch"
+                Content="Login"/>
+        </StackPanel>
+    </RelativePanel>
+
+    <controls:AdaptiveGridView
+        x:Name="StatsGridView"
+        Grid.Row="1"
+        Margin="0"
+        ItemsSource="{x:Bind StatsItems}"
+        StretchContentForSingleRow="False"
+        OneRowModeEnabled="False"
+        ItemHeight="120"
+        DesiredWidth="240"
+        SelectionMode="None"
+        IsItemClickEnabled="False"
+        Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}">
+        <GridView.ItemTemplate>
+            <DataTemplate x:DataType="models:StatisticsItem">
+                <Grid HorizontalAlignment="Stretch">
+                    <StackPanel 
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Orientation="Vertical"
+                        Margin="8">
+                        <TextBlock
+                            Text="{x:Bind Title}"
+                            Margin="2"
+                            Style="{ThemeResource BodyStrongTextBlockStyle}"
+                            HorizontalAlignment="Center"/>
+                        <TextBlock 
+                            Text="{x:Bind Data}"
+                            Margin="2"
+                            HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Grid>
+            </DataTemplate>
+        </GridView.ItemTemplate>
+    </controls:AdaptiveGridView>
+
+</Grid>
+\end{minted}
+
+Similar to the HomePage, I create a model \verb|StatisticsItem| for the statistics data and binds it to the grid. For now, I just add some sample data in for display purpose.
+
+\begin{minted}{csharp}
+public class StatisticsItem
+{
+    public StatisticsItem(string title, string data)
+    {
+        Title = title;
+        Data = data;
+    }
+
+    public string Title { get; set; }
+    public string Data { get; set; }
+}
+\end{minted}
+
+\begin{minted}{csharp}
+public AccountPage()
+{
+    InitializeComponent();
+    StatsItems.Add(new StatisticsItem("Problem Solved", "10"));
+    StatsItems.Add(new StatisticsItem("Problem Attempted", "3"));
+    StatsItems.Add(new StatisticsItem("Problem Unsolved", "1100"));
+    StatsItems.Add(new StatisticsItem("Correct Rate", "10%"));
+    StatsItems.Add(new StatisticsItem("Favourite Topic", "Data structure"));
+    StatsItems.Add(new StatisticsItem("Favourite Language", "Python"));
+}
+public ObservableCollection<StatisticsItem> StatsItems { get; } = new ObservableCollection<StatisticsItem>();
+\end{minted}
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{AccountPage-Layout}
+
+Next, I want to implement the edit function, which allows the user to change their user name, email address and role.
+
+\subsubsection{Implementation}
+
+\subsubsection{Testing and validation}
+
+\subsection{Create the CreatePage}
 
 \subsection{Create the AssignmentsPage}
 

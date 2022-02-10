@@ -9,8 +9,10 @@ using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -23,7 +25,7 @@ namespace Algorithm_Dynamics.Pages
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class AccountPage : Page
+    public sealed partial class AccountPage : Page, INotifyPropertyChanged
     {
         public AccountPage()
         {
@@ -37,5 +39,42 @@ namespace Algorithm_Dynamics.Pages
         }
         public ObservableCollection<StatisticsItem> StatsItems { get; } = new ObservableCollection<StatisticsItem>();
 
+        private bool _isEditMode = false;
+        public bool IsEditMode
+        {
+            get => _isEditMode;
+            set
+            {
+                _isEditMode = value;
+                OnPropertyChanged(nameof(IsEditMode));
+                OnPropertyChanged(nameof(IsNotEditMode));
+            }
+        }
+        public bool IsNotEditMode
+        {
+            get => !_isEditMode;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
+
+        private void EditButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (IsEditMode == false)
+            { 
+                IsEditMode = true;
+                EditButton.Content = "Done";
+            }
+            else
+            {
+                IsEditMode = false;
+                EditButton.Content = "Edit";
+            }
+        }
+        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            // Raise the PropertyChanged event, passing the name of the property whose value has changed.
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
+
 }
