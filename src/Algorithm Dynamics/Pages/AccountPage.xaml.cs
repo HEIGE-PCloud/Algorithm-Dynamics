@@ -55,12 +55,25 @@ namespace Algorithm_Dynamics.Pages
             get => !_isEditMode;
         }
 
+        /// <summary>
+        /// Invoke when the property is changed.
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
+
+        /// <summary>
+        /// Invoke a new <see cref="PropertyChanged"/> event.
+        /// </summary>
+        /// <param name="propertyName">Use <see cref="nameof"/> to get the name of the property.</param>
+        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            // Raise the PropertyChanged event, passing the name of the property whose value has changed.
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
         private void EditButton_Click(object sender, RoutedEventArgs e)
         {
             if (IsEditMode == false)
-            { 
+            {
                 IsEditMode = true;
                 EditButton.Content = "Done";
             }
@@ -69,11 +82,6 @@ namespace Algorithm_Dynamics.Pages
                 IsEditMode = false;
                 EditButton.Content = "Edit";
             }
-        }
-        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            // Raise the PropertyChanged event, passing the name of the property whose value has changed.
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 

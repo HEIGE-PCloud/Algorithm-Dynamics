@@ -4923,6 +4923,8 @@ For the other parts, the submission records depend on the database, and the run 
 
 \subsection{Create the AccountPage}
 
+\subsubsection{Implementation}
+
 For the AccountPage, I use a grid of two row to divide the two sections for the account information and the statistics data. For the account information, I decide to use the RelativePanel to construct the layout to make it responsive to different sizes of the window. For the statistics data, I use the AdaptiveGridView which is used for the HomePage as well, so the data can be dynamically added in the code behind and make it a lot easier to add custom statistics later.
 
 \begin{minted}{xml}
@@ -5043,11 +5045,117 @@ public ObservableCollection<StatisticsItem> StatsItems { get; } = new Observable
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{AccountPage-Layout}
 
-Next, I want to implement the edit function, which allows the user to change their user name, email address and role.
+Next, I want to implement the edit function, which allows the user to change their user name, email address and role. To achieve this, I decide to replace the TextBlocks with TextBoxes for the user to edit the data when the Edit button is clicked. This can be achieved by setting the visibility of the controls. Instead of directly setting the visibility, I decide to bind the visibility property to a public variable named \verb|IsEditMode| to determine whether it should display. In order to notify the binded control, I implement the \verb|PropertyChanged| event\cite{microsoft:docs:data-binding-in-depth}.
 
-\subsubsection{Implementation}
+\begin{minted}{csharp}
+/// <summary>
+/// Invoke when the property is changed.
+/// </summary>
+public event PropertyChangedEventHandler PropertyChanged = delegate { };
+
+/// <summary>
+/// Invoke a new <see cref="PropertyChanged"/> event.
+/// </summary>
+/// <param name="propertyName">Use <see cref="nameof"/> to get the name of the property.</param>
+public void OnPropertyChanged([CallerMemberName] string propertyName = null)
+{
+    // Raise the PropertyChanged event, passing the name of the property whose value has changed.
+    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+}
+\end{minted}
+
+I create a private variable \verb|_isEditMode| to record the current state. A public variable \verb|IsEditMode| to encapsulated the private variable so I can call the \verb|OnPropertyChanged| function I just implemented in the setter. I also create the \verb|IsNotEditMode| attribute to handle the boolean inversion.
+
+\begin{minted}{csharp}
+private bool _isEditMode = false;
+public bool IsEditMode
+{
+    get => _isEditMode;
+    set
+    {
+        _isEditMode = value;
+        OnPropertyChanged(nameof(IsEditMode));
+        OnPropertyChanged(nameof(IsNotEditMode));
+    }
+}
+public bool IsNotEditMode
+{
+    get => !_isEditMode;
+}
+\end{minted}
+
+Finally, I edit the XAML markup to add the TextBoxes and add the bindings.
+
+
+\begin{minted}{xml}
+<StackPanel
+    RelativePanel.RightOf="AvatarPicture"
+    RelativePanel.AlignVerticalCenterWithPanel="True">
+    <TextBlock
+        x:Name="NameTextBlock"
+        Margin="2"
+        Text="{x:Bind EditNameTextBox.Text, Mode=OneWay}"
+        Visibility="{x:Bind IsNotEditMode, Mode=OneWay"
+        Style="{ThemeResource SubtitleTextBlockStyle}"/>
+    <TextBox
+        x:Name="EditNameTextBox"
+        PlaceholderText="Name"
+        Margin="2"
+        Text="Name"
+        HorizontalAlignment="Stretch"
+        Visibility="{x:Bind IsEditMode, Mode=OneWay"/>
+    <TextBlock
+        x:Name="EmailTextBlock"
+        Margin="2"
+        Text="{x:Bind EditEmailTextBox.Text, Mode=OneWay}"
+        Visibility="{x:Bind IsNotEditMode, Mode=OneWay"
+        Style="{ThemeResource BodyTextBlockStyle}"/>
+    <TextBox
+        x:Name="EditEmailTextBox"
+        PlaceholderText="Email"
+        Text="Email"
+        Margin="2"
+        HorizontalAlignment="Stretch"
+        Visibility="{x:Bind IsEditMode, Mode=OneWay"/>
+    <TextBlock
+        x:Name="RoleTextBlock"
+        Margin="2"
+        Text="{x:Bind EditRoleComboBox.SelectedValue, Mode=OneWay}"
+        Visibility="{x:Bind IsNotEditMode, Mode=OneWay"
+        Style="{ThemeResource BodyTextBlockStyle}"/>
+    <ComboBox
+        x:Name="EditRoleComboBox"
+        Visibility="{x:Bind IsEditMode, Mode=OneWay"
+        HorizontalAlignment="Stretch"
+        Margin="2"
+        SelectedIndex="0">
+        <x:String>Student</x:String>
+        <x:String>Teacher</x:String>
+    </ComboBox>
+</StackPanel>
+\end{minted}
+
+Now when I run the program, I can edit all fields successfully after clicking the Edit button. All the changes are preserved after clicking the Done button.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{AccountPage-Edit}
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{AccountPage-Saved}
 
 \subsubsection{Testing and validation}
+
+\begin{tabulary}{\linewidth}{|L|l|L|}
+    \hline
+    Test & Result & Remark \\
+    \hline
+    Does it load & Pass & \\
+    \hline
+    Does the Edit button work & Pass & Note that the changes are not actually saved to the disk, since the settings module will not be implemented in this iteration. \\
+    \hline
+    Does the login button work & Failed & The login button depends on the API module, which will not be implemented in this iteration. \\
+    \hline
+    Does the statistics data show up correctly & Pass & Note that the actual data depends on the database module, which is not implemented yet. \\
+    \hline
+\end{tabulary}
 
 \subsection{Create the CreatePage}
 
