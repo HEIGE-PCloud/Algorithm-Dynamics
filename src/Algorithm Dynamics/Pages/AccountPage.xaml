@@ -3,13 +3,16 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Algorithm_Dynamics.Pages"
+    xmlns:helper="using:Algorithm_Dynamics.Helpers"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     xmlns:models="using:Algorithm_Dynamics.Models"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
+    <Page.Resources>
+        <helper:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    </Page.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -29,26 +32,57 @@
                 RelativePanel.RightOf="AvatarPicture"
                 RelativePanel.AlignVerticalCenterWithPanel="True">
                 <TextBlock
+                    x:Name="NameTextBlock"
+                    Margin="2"
+                    Text="{x:Bind EditNameTextBox.Text, Mode=OneWay}"
+                    Visibility="{x:Bind IsNotEditMode, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
+                    Style="{ThemeResource SubtitleTextBlockStyle}"/>
+                <TextBox
+                    x:Name="EditNameTextBox"
+                    PlaceholderText="Name"
                     Margin="2"
                     Text="Name"
-                    Style="{ThemeResource SubtitleTextBlockStyle}"/>
+                    HorizontalAlignment="Stretch"
+                    Visibility="{x:Bind IsEditMode, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
                 <TextBlock
+                    x:Name="EmailTextBlock"
                     Margin="2"
+                    Text="{x:Bind EditEmailTextBox.Text, Mode=OneWay}"
+                    Visibility="{x:Bind IsNotEditMode, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
+                    Style="{ThemeResource BodyTextBlockStyle}"/>
+                <TextBox
+                    x:Name="EditEmailTextBox"
+                    PlaceholderText="Email"
                     Text="Email"
-                    Style="{ThemeResource BodyTextBlockStyle}"/>
-                <TextBlock
                     Margin="2"
-                    Text="Role"
+                    HorizontalAlignment="Stretch"
+                    Visibility="{x:Bind IsEditMode, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                <TextBlock
+                    x:Name="RoleTextBlock"
+                    Margin="2"
+                    Text="{x:Bind EditRoleComboBox.SelectedValue, Mode=OneWay}"
+                    Visibility="{x:Bind IsNotEditMode, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
                     Style="{ThemeResource BodyTextBlockStyle}"/>
+                <ComboBox
+                    x:Name="EditRoleComboBox"
+                    Visibility="{x:Bind IsEditMode, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
+                    HorizontalAlignment="Stretch"
+                    Margin="2"
+                    SelectedIndex="0">
+                    <x:String>Student</x:String>
+                    <x:String>Teacher</x:String>
+                </ComboBox>
             </StackPanel>
             <StackPanel
                 Margin="32"
                 RelativePanel.AlignRightWithPanel="True"
                 RelativePanel.AlignVerticalCenterWithPanel="True">
                 <Button
+                    x:Name="EditButton"
                     Margin="2"
                     HorizontalAlignment="Stretch"
-                    Content="Edit"/>
+                    Content="Edit"
+                    Click="EditButton_Click"/>
                 <Button
                     Margin="2"
                     HorizontalAlignment="Stretch"
