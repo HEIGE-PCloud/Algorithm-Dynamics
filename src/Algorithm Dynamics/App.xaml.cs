@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
 using Windows.Storage;
+using Algorithm_Dynamics.Pages;
 
 namespace Algorithm_Dynamics
 {
@@ -41,10 +42,47 @@ namespace Algorithm_Dynamics
         public static MainWindow m_window;
         public static NavigationView MainNavView { get => m_window.MainNavView; }
         public static Frame ContentFrame { get => m_window.ContentFrame; }
+
+        /// <summary>
+        /// Handle the navigation of the main <see cref="ContentFrame"/>
+        /// When the page is listed in the <see cref="MainNavView"/>, 
+        /// change the <see cref="MainNavView.SelectedItem"/> directly.
+        /// Otherwise, set the <see cref="MainNavView.SelectedItem"/> to null and 
+        /// apply the navigation on the Frame directly.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="parameter"></param>
         public static void NavigateTo(Type type, object parameter = null)
         {
-            ContentFrame.Navigate(type, parameter);
-            MainNavView.SelectedItem = null;
+            if (type == typeof(HomePage))
+            {
+                MainNavView.SelectedItem = MainNavView.MenuItems[0];
+            }
+            else if (type == typeof(ProblemsPage))
+            {
+                MainNavView.SelectedItem = MainNavView.MenuItems[1];
+            }
+            else if (type == typeof(AssignmentsPage))
+            {
+                MainNavView.SelectedItem = MainNavView.MenuItems[2];
+            }
+            else if (type == typeof(PlaygroundPage))
+            {
+                MainNavView.SelectedItem = MainNavView.MenuItems[3];
+            }
+            else if (type == typeof(AccountPage))
+            {
+                MainNavView.SelectedItem = MainNavView.FooterMenuItems[0];
+            }
+            else if (type == typeof(SettingsPage))
+            {
+                MainNavView.SelectedItem = MainNavView.SettingsItem;
+            }
+            else
+            {
+                ContentFrame.Navigate(type, parameter);
+                MainNavView.SelectedItem = null;
+            }
         }
     }
 }

@@ -127,7 +127,7 @@ namespace Algorithm_Dynamics.Pages
         private void EditProblem(object sender, RoutedEventArgs e)
         {
             // TODO: Navigate to the EditProblemPage
-            App.NavigateTo(typeof(CreateNewProblemPage));
+            App.NavigateTo(typeof(CreateNewProblemPage), Tuple.Create(CreateNewProblemPage.Mode.Edit, 1));
         }
 
         /// <summary>
