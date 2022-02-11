@@ -67,8 +67,10 @@
                                 VerticalAlignment="Center"
                                 Text="{x:Bind Tags}"/>
                             <Button
+                                x:Name="DeleteButton"
                                 Grid.Column="3"
-                                HorizontalAlignment="Right">
+                                HorizontalAlignment="Right"
+                                Click="DeleteSingleTestCase">
                                 <Button.Content>
                                     <SymbolIcon Symbol="Delete"/>
                                 </Button.Content>
@@ -78,17 +80,19 @@
                 </ListView.ItemTemplate>
             </ListView>
             <StackPanel 
-                HorizontalAlignment="Right"
+                Margin="0 12 12 0"
+                HorizontalAlignment="Left"
                 Orientation="Horizontal">
                 <Button
-                    Content="Cancel"/>
-                <Button
                     x:Name="SaveButton"
-                    Content="Save"
+                    Content="Create"
+                    Width="100"
+                    Margin="0 0 4 0"
                     Click="SaveButton_Click"
                     Style="{ThemeResource AccentButtonStyle}">
                     <Button.Flyout>
-                        <Flyout>
+                        <Flyout
+                            x:Name="SaveFlyout">
                             <StackPanel>
                                 <TextBlock 
                                     x:Name="TestTextBlock"
@@ -98,9 +102,32 @@
                                 <StackPanel 
                                     Orientation="Horizontal"
                                     HorizontalAlignment="Right">
+                                    <Button
+                                        x:Name="DoneButton"
+                                        Margin="0 0 4 0"
+                                        Content="Done"
+                                        Click="GoBackToProblemsPage"/>
                                     <Button 
+                                        Style="{ThemeResource AccentButtonStyle}"
                                         Content="Export"/>
                                 </StackPanel>
+                            </StackPanel>
+                        </Flyout>
+                    </Button.Flyout>
+                </Button>
+                <Button
+                    Content="Cancel"
+                    Width="100">
+                    <Button.Flyout>
+                        <Flyout>
+                            <StackPanel>
+                                <TextBlock
+                                    Style="{ThemeResource BaseTextBlockStyle}"
+                                    Text="All changes will be lost. Do you want to continue?" Margin="0 0 0 12" />
+                                <Button 
+                                    HorizontalAlignment="Right" 
+                                    Click="GoBackToProblemsPage"
+                                    Content="Yes" />
                             </StackPanel>
                         </Flyout>
                     </Button.Flyout>

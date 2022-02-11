@@ -26,7 +26,7 @@ namespace Algorithm_Dynamics.Pages
     {
         public CreateNewProblemListPage()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
         public ObservableCollection<Problem> Problems = new() { new Problem("Problem 1", "Hard", "ToDo", "Data structure") };
 
@@ -53,6 +53,18 @@ namespace Algorithm_Dynamics.Pages
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             TestTextBlock.Text = "The Problem List is saved.";
+        }
+
+        private void DeleteSingleTestCase(object sender, RoutedEventArgs e)
+        {
+            Problem selectedItem = ((FrameworkElement)sender).DataContext as Problem;
+            Problems.Remove(selectedItem);
+        }
+
+        private void GoBackToProblemsPage(object sender, RoutedEventArgs e)
+        {
+            SaveFlyout.Hide();
+            App.NavigateTo(typeof(ProblemsPage));
         }
     }
 }

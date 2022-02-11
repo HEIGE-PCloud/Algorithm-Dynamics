@@ -78,56 +78,105 @@
                     Margin="0 20 0 0"
                     FontWeight="Normal"
                     Text="Preferred Programming Language" />
-                <StackPanel 
-                    Margin="0 10 0 0"
-                    Orientation="Horizontal">
-                    <ComboBox
-                        VerticalAlignment="Stretch"
-                        Margin="2"
-                        SelectedIndex="0">
-                        <x:String>C</x:String>
-                        <x:String>C++</x:String>
-                        <x:String>Python</x:String>
-                    </ComboBox>
-                    <Button 
-                        x:Name="AddLangButton"
-                        ToolTipService.ToolTip="Add a new Programming Language configuration"
-                        Margin="2"
-                        Click="AddLangButton_Click">
-                        <Button.Content>
-                            <SymbolIcon Symbol="Add"/>
-                        </Button.Content>
-                        <Button.Resources>
-
-                        </Button.Resources>
-                    </Button>
-                    <Button 
-                        ToolTipService.ToolTip="Edit the selected configuration"
-                        Margin="2">
-                        <Button.Content>
-                            <SymbolIcon Symbol="Edit"/>
-                        </Button.Content>
-                    </Button>
-                    <Button 
-                        ToolTipService.ToolTip="Delete the selected configuration"
-                        Margin="2">
-                        <Button.Content>
-                            <SymbolIcon Symbol="Delete"/>
-                        </Button.Content>
-                    </Button>
-                </StackPanel>
+                <Expander
+                    Margin="0 20 0 0">
+                    <Expander.Header>
+                        <StackPanel 
+                            Orientation="Horizontal">
+                            <ComboBox
+                                VerticalAlignment="Stretch"
+                                Margin="2"
+                                SelectedIndex="0">
+                                <x:String>C</x:String>
+                                <x:String>C++</x:String>
+                                <x:String>Python</x:String>
+                            </ComboBox>
+                            <Button 
+                                x:Name="AddLangButton"
+                                ToolTipService.ToolTip="Add a new Programming Language configuration"
+                                Margin="2"
+                                Click="AddLangButton_Click">
+                                <Button.Content>
+                                    <SymbolIcon Symbol="Add"/>
+                                </Button.Content>
+                            </Button>
+                            <Button 
+                                ToolTipService.ToolTip="Delete the selected configuration"
+                                Margin="2">
+                                <Button.Content>
+                                    <SymbolIcon Symbol="Delete"/>
+                                </Button.Content>
+                                <Button.Flyout>
+                                    <Flyout>
+                                        <StackPanel>
+                                            <TextBlock 
+                                        Style="{ThemeResource BaseTextBlockStyle}"
+                                        Text="The selected language will be deleted. Do you want to continue?" Margin="0 0 0 12" />
+                                            <Button 
+                                        HorizontalAlignment="Right"
+                                        Content="Yes" />
+                                        </StackPanel>
+                                    </Flyout>
+                                </Button.Flyout>
+                            </Button>
+                        </StackPanel>
+                    </Expander.Header>
+                    <Expander.Content>
+                        <StackPanel
+                            HorizontalAlignment="Stretch"
+                            MinWidth="400">
+                            <TextBox
+                                x:Name="DisplayNameTextBox"
+                                Header="Display Name"/>
+                            <TextBox
+                                x:Name="LanguageCodeTextBox"
+                                Header="Language Code"
+                                Margin="0 4 0 0"/>
+                            <CheckBox
+                                x:Name="NeedCompileCheckBox"
+                                Content="Need Compile"
+                                Margin="0 4 0 0"/>
+                            <TextBox
+                                x:Name="CompileCommandTextBox"
+                                Visibility="{x:Bind NeedCompileCheckBox.IsChecked, Mode=OneWay}"
+                                Header="Compile Command"
+                                Margin="0 4 0 0"/>
+                            <TextBox
+                                x:Name="CompileArgumentTextBox"
+                                Visibility="{x:Bind NeedCompileCheckBox.IsChecked, Mode=OneWay}"
+                                Header="Compile Argument"
+                                Margin="0 4 0 0"/>
+                            <TextBox
+                                x:Name="RunCommandTextBox"
+                                Header="Run Command"
+                                Margin="0 4 0 0"/>
+                            <TextBox
+                                x:Name="RunArgumentsTextBox"
+                                Header="Run Arguments"
+                                Margin="0 4 0 0"/>
+                            <TextBox
+                                x:Name="FileExtensionTextBox"
+                                PlaceholderText=".*"
+                                Header="File Extension"
+                                Margin="0 4 0 0"/>
+                        </StackPanel>
+                    </Expander.Content>
+                </Expander>
                 <TextBlock
                     Style="{ThemeResource SubtitleTextBlockStyle}"
                     Margin="0 20 0 0"
                     FontWeight="Normal"
                     Text="About" />
                 <HyperlinkButton 
+                    Margin="0 4 0 0"
                     Content="GitHub"
                     NavigateUri="https://github.com/HEIGE-PCloud/Algorithm-Dynamics"/>
                 <HyperlinkButton 
+                    Margin="0 4 0 0"
                     Content="Website"
                     NavigateUri="https://algorithmdynamics.com/"/>
                 <HyperlinkButton 
+                    Margin="0 4 0 0"
                     Content="Report"
                     NavigateUri="https://algorithmdynamics.com/report.pdf"/>
                 <TextBlock

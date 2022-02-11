@@ -185,8 +185,13 @@
                     <Button.Flyout>
                         <Flyout x:Name="CancelConfirmFlyout">
                             <StackPanel>
-                                <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="All changes will be lost. Do you want to continue?" Margin="0,0,0,12" />
-                                <Button HorizontalAlignment="Right" Click="CancelCreation"  Content="Yes" />
+                                <TextBlock
+                                    Style="{ThemeResource BaseTextBlockStyle}"
+                                    Text="All changes will be lost. Do you want to continue?" Margin="0 0 0 12" />
+                                <Button 
+                                    HorizontalAlignment="Right" 
+                                    Click="CancelCreation"  
+                                    Content="Yes" />
                             </StackPanel>
                         </Flyout>
                     </Button.Flyout>
