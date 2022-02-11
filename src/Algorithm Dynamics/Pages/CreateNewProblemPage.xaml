@@ -14,7 +14,7 @@
             Margin="32"
             x:Name="FormStackPanel">
             <TextBlock
-                Text="Create Problem"
+                Text="{x:Bind Title, Mode=OneTime}"
                 Style="{ThemeResource TitleTextBlockStyle}"/>
             <TextBox
                 Margin="0 22 0 0"
@@ -175,7 +175,7 @@
                 Orientation="Horizontal">
                 <Button 
                     Margin="0 0 4 0"
-                    Content="Create"
+                    Content="Save"
                     Width="100"
                     Click="CreateProblem"
                     Style="{ThemeResource AccentButtonStyle}"/>
