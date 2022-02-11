@@ -26,7 +26,7 @@ namespace Algorithm_Dynamics.Pages
     {
         public SettingsPage()
         {
-            this.InitializeComponent();
+            InitializeComponent();
 
             GetCurrentTheme();
         }
@@ -39,7 +39,7 @@ namespace Algorithm_Dynamics.Pages
             dialog.CloseButtonText = "Cancel";
             dialog.Content = "Content";
             dialog.DefaultButton = ContentDialogButton.Primary;
-            dialog.XamlRoot = this.Content.XamlRoot;
+            dialog.XamlRoot = Content.XamlRoot;
             var result = await dialog.ShowAsync();
             if (result == ContentDialogResult.Primary)
             {
