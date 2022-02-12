@@ -68,6 +68,15 @@ namespace Algorithm_Dynamics.Pages
             App.NavigateTo(typeof(AssignmentDetailsPage));
         }
 
+        private void CreateAssignment(object sender, RoutedEventArgs e)
+        {
+            App.NavigateTo(typeof(CreateNewProblemListPage), Tuple.Create(CreateNewProblemListPage.Mode.CreateAssignment, 0));
+        }
+
+        private void ImportAssignment(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 
     public class Assignment

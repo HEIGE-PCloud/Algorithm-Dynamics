@@ -13,7 +13,7 @@
             Margin="32"
             x:Name="FormStackPanel">
             <TextBlock
-                Text="Create Problem List"
+                Text="{x:Bind _title, Mode=OneTime}"
                 Style="{ThemeResource TitleTextBlockStyle}"/>
             <TextBox
                 Margin="0 22 0 0"
@@ -80,12 +80,12 @@
                 </ListView.ItemTemplate>
             </ListView>
             <StackPanel 
-                Margin="0 12 12 0"
+                Margin="0 22 12 0"
                 HorizontalAlignment="Left"
                 Orientation="Horizontal">
                 <Button
                     x:Name="SaveButton"
-                    Content="Create"
+                    Content="Save"
                     Width="100"
                     Margin="0 0 4 0"
                     Click="SaveButton_Click"
@@ -106,7 +106,7 @@
                                         x:Name="DoneButton"
                                         Margin="0 0 4 0"
                                         Content="Done"
-                                        Click="GoBackToProblemsPage"/>
+                                        Click="Finish"/>
                                     <Button 
                                         Style="{ThemeResource AccentButtonStyle}"
                                         Content="Export"/>
@@ -126,7 +126,7 @@
                                     Text="All changes will be lost. Do you want to continue?" Margin="0 0 0 12" />
                                 <Button 
                                     HorizontalAlignment="Right" 
-                                    Click="GoBackToProblemsPage"
+                                    Click="Finish"
                                     Content="Yes" />
                             </StackPanel>
                         </Flyout>
