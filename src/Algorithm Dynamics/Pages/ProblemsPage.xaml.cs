@@ -28,6 +28,7 @@ namespace Algorithm_Dynamics.Pages
         public ObservableCollection<string> Lists = new() { "List 1", "List 2", "List 3" };
         public ObservableCollection<string> Tags = new() { "Tag 1", "Tag 2", "Tag 3"};
         public ObservableCollection<Problem> Problems = new();
+
         /// <summary>
         /// Display the <see cref="ListMenuFlyout"/> when the <see cref="ListComboBox"/> is right tapped
         /// </summary>
@@ -72,7 +73,7 @@ namespace Algorithm_Dynamics.Pages
         private void EditProblemList(object sender, RoutedEventArgs e)
         {
             // TODO: Navigate to edit page
-            App.NavigateTo(typeof(CreateNewProblemListPage));
+            App.NavigateTo(typeof(CreateNewProblemListPage), Tuple.Create(CreateNewProblemListPage.Mode.EditProblemList, 0));
         }
 
         /// <summary>
