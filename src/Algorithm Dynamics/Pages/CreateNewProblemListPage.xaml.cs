@@ -35,7 +35,7 @@ namespace Algorithm_Dynamics.Pages
             CreateAssignment,
             EditAssignment
         }
-        private Mode PageMode { get; set; } = Mode.CreateProblemList;
+        private Mode PageMode = Mode.CreateProblemList;
         private string _title
         {
             get

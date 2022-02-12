@@ -1,21 +1,10 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
-using Windows.Foundation.Collections;
-
 
 namespace Algorithm_Dynamics.Pages
 {
@@ -31,27 +20,30 @@ namespace Algorithm_Dynamics.Pages
             Create,
             Edit
         }
-        private Mode PageMode { get; set; } = Mode.Create;
+        private Mode _pageMode = Mode.Create;
         private string _title
         {
             get
             {
-                if (PageMode == Mode.Create)
+                if (_pageMode == Mode.Create)
                     return "Create Problem";
                 else
                     return "Edit Problem";
             }
         }
+        private Problem _problem;
         /// <summary>
         /// Handle the Navigation Arguments
-        /// Set the <see cref="PageMode"/> if the Parameter is not <see cref="null"/>.
+        /// Set the <see cref="_pageMode"/> if the Parameter is not <see cref="null"/>.
         /// </summary>
         /// <param name="e"></param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             if (e.Parameter != null)
             {
-                PageMode = ((Tuple<Mode, int>)e.Parameter).Item1;
+                var parameter = (Tuple<Mode, Problem>)e.Parameter;
+                _pageMode = parameter.Item1;
+                _problem = parameter.Item2;
             }
             base.OnNavigatedTo(e);
         }

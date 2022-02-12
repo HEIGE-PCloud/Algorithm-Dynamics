@@ -5161,6 +5161,462 @@ Now when I run the program, I can edit all fields successfully after clicking th
 
 \subsubsection{Implementation}
 
+For the CreateNewProblemPage, it contains a form for the user to input data to create new problems. I use a ScrollViewer to wrap everything up so the user can scroll in the page when the elements overflow. Inside the ScrollViewer, I place a StackPanel as the root panel to organize everything.
+
+\begin{minted}{xml}
+<ScrollViewer x:Name="scrollViewer">
+    <StackPanel
+        Margin="32"
+        x:Name="FormStackPanel">
+        <!-- Form controls -->
+    </StackPanel>
+</ScrollViewer>
+\end{minted}
+
+I use TextBoxes to allow the user to input problem name, a TokenizingTextBox for the tag, ComboBox for difficult, and NumberBox for time limit and memory limit.
+
+\begin{minted}{xml}
+<TextBlock
+    Text="Create Problem"
+    Style="{ThemeResource TitleTextBlockStyle}"/>
+<TextBox
+    Margin="0 22 0 0"
+    Header="Problem Name"
+    MaxLength="64"
+    Width="400"
+    HorizontalAlignment="Left"/>
+<controls:TokenizingTextBox
+    Header="Tags"
+    Margin="0 22 0 0" 
+    Width="400"
+    MaximumTokens="3"
+    PlaceholderText="Add Tags"
+    SelectionMode="Extended"
+    HorizontalAlignment="Left"/>
+<ComboBox
+    Header="Difficulty"
+    SelectedIndex="0"
+    Margin="0 22 0 0"
+    Width="400"
+    HorizontalAlignment="Left">
+    <x:String>Easy</x:String>
+    <x:String>Medium</x:String>
+    <x:String>Hard</x:String>
+</ComboBox>
+<NumberBox
+    Header="Time Limit (ms)"
+    Value="1000"
+    Width="400"
+    Minimum="100"
+    Margin="0 22 0 0"
+    HorizontalAlignment="Left"
+    SpinButtonPlacementMode="Inline"
+    SmallChange="100"
+    LargeChange="500"/>
+<NumberBox
+    Header="Memory Limit (MB)"
+    Value="64"
+    Width="400"
+    Margin="0 22 0 0"
+    Minimum="16"
+    HorizontalAlignment="Left"
+    SpinButtonPlacementMode="Inline"
+    SmallChange="64"
+    LargeChange="256"/>
+\end{minted}
+
+For the description, I use a Pivot to organize the input TextBox and the preview MarkdownRenderer.
+
+\begin{minted}{xml}
+<Pivot
+    x:Name="DescriptionPivot">
+    <PivotItem
+        Header="Description">
+        <TextBox
+            x:Name="DescriptionTextBox"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            TextWrapping="Wrap" 
+            AcceptsReturn="True" 
+            IsSpellCheckEnabled="True"
+            MinHeight="200"
+            MaxHeight="840"/>
+    </PivotItem>
+    <PivotItem
+        Header="Preview">
+        <controls:MarkdownTextBlock
+            x:Name="ProblemMarkdownTextBlock"
+            Margin="8"
+            Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+            Text="{x:Bind DescriptionTextBox.Text, Mode=OneWay}"/>
+    </PivotItem>
+</Pivot>
+\end{minted}
+
+Next, I implement the TestCase list. Similarly as the ProblemList before, I use a ListView and bind the TestCases collection to it.
+
+\begin{minted}{xml}
+<ListView
+    x:Name="TestCasesListView"
+    Margin="0 22 0 0"
+    Header="Test Cases"
+    SelectionMode="None"
+    ItemsSource="{x:Bind TestCases, Mode=OneWay}">
+    <ListView.ItemTemplate>
+        <DataTemplate x:DataType="local:TestCase">
+            <Grid
+                Margin="0 10 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox
+                    Grid.Column="0"
+                    Margin="4"
+                    AcceptsReturn="True"
+                    MaxHeight="100"
+                    VerticalAlignment="Center"
+                    PlaceholderText="Input Data"
+                    Text="{x:Bind Input, Mode=TwoWay}"/>
+                <TextBox
+                    Grid.Column="1"
+                    Margin="4"
+                    AcceptsReturn="True"
+                    MaxHeight="100"
+                    VerticalAlignment="Center"
+                    PlaceholderText="Output Data"
+                    Text="{x:Bind Output, Mode=TwoWay}"/>
+                <CheckBox
+                    Grid.Column="2"
+                    Margin="40 0 0 0"
+                    Content="Example"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    IsChecked="{x:Bind IsExample, Mode=TwoWay}"/>
+                <Button
+                    x:Name="DeleteSingleTestCaseButton"
+                    Grid.Column="3"
+                    Margin="0"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    Click="DeleteSingleTestCase">
+                    <Button.Content>
+                        <SymbolIcon Symbol="Delete"/>
+                    </Button.Content>
+                </Button>
+            </Grid>
+        </DataTemplate>
+    </ListView.ItemTemplate>
+</ListView>
+\end{minted}
+
+\begin{minted}{csharp}
+public ObservableCollection<TestCase> TestCases = new() { new TestCase("", "", true) };
+\end{minted}
+
+
+I implement a simple TestCase class for this iteration, so the UI can be tested. A more detailed one will be implemented in the later iteration.
+
+\begin{minted}{csharp}
+public class TestCase
+{
+    public string Input { get; set; }
+    public string Output { get; set; }
+    public bool IsExample { get; set; }
+    public TestCase(string input, string output, bool isExample)
+    {
+        Input = input;
+        Output = output;
+        IsExample = isExample;
+    }
+}
+\end{minted}
+
+I add another StackPanel to organize the buttons to add new test cases and delete all test cases.
+
+\begin{minted}{xml}
+<StackPanel 
+    Margin="0 12 0 0"
+    HorizontalAlignment="Right"
+    Orientation="Horizontal">
+    <Button
+        x:Name="AddTestCaseButton"
+        Click="AddTestCase">
+        <Button.Content>
+            <SymbolIcon Symbol="Add"/>
+        </Button.Content>
+    </Button>
+    <Button 
+        Margin="4 0 12 0">
+        <Button.Content>
+            <SymbolIcon Symbol="Delete"/>
+        </Button.Content>
+        <Button.Flyout>
+            <Flyout x:Name="DeleteConfirmFlyout">
+                <StackPanel>
+                    <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="All test cases will be deleted. Do you want to continue?" Margin="0,0,0,12" />
+                    <Button HorizontalAlignment="Right" Click="DeleteAllTestCases"  Content="Yes" />
+                </StackPanel>
+            </Flyout>
+        </Button.Flyout>
+    </Button>
+</StackPanel>
+\end{minted}
+
+At the bottom of the page, a StackPanel is used to organize the save and cancel button. Flyouts are added to all delete and cancel buttons to confirm before actually performing the action.
+
+\begin{minted}{xml}
+<StackPanel 
+    Margin="0 12 12 0"
+    HorizontalAlignment="Left"
+    Orientation="Horizontal">
+    <Button 
+        Margin="0 0 4 0"
+        Content="Save"
+        Width="100"
+        Click="CreateProblem"
+        Style="{ThemeResource AccentButtonStyle}"/>
+    <Button 
+        Width="100"
+        Content="Cancel">
+        <Button.Flyout>
+            <Flyout x:Name="CancelConfirmFlyout">
+                <StackPanel>
+                    <TextBlock
+                        Style="{ThemeResource BaseTextBlockStyle}"
+                        Text="All changes will be lost. Do you want to continue?" Margin="0 0 0 12" />
+                    <Button 
+                        HorizontalAlignment="Right" 
+                        Click="CancelCreation"  
+                        Content="Yes" />
+                </StackPanel>
+            </Flyout>
+        </Button.Flyout>
+    </Button>
+</StackPanel>
+</StackPanel>
+\end{minted}
+
+The CreateNewProblemPage can be navigated to from the ProblemsPage. I connect the add problem in the ProblemsPage to the navigation function. Instead of manually navigate through the ContentFrame, I decide to encapsulate the management of the NavigationView through an App.NavigateTo function. Which enables me to reuse this part of code, and make it less likely for me to get the navigation wrong in the future. I expose the \verb|m_window| and the \verb|MainNavView| as global static variables, so the can be accessed easily in the App level.
+
+\begin{minted}{csharp}
+public static MainWindow m_window;
+public static NavigationView MainNavView { get => m_window.MainNavView; }
+public static Frame ContentFrame { get => m_window.ContentFrame; }
+
+\end{minted}
+
+\begin{minted}{csharp}
+/// <summary>
+/// Navigate to the <see cref="CreateNewProblemPage"/> to create a new <see cref="Problem"/>.
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
+private void CreateNewProblem(object sender, RoutedEventArgs e)
+{
+    App.NavigateTo(typeof(CreateNewProblemPage));
+}
+/// <summary>
+/// Handle the navigation of the main <see cref="ContentFrame"/>
+/// When the page is listed in the <see cref="MainNavView"/>, 
+/// change the <see cref="MainNavView.SelectedItem"/> directly.
+/// Otherwise, set the <see cref="MainNavView.SelectedItem"/> to null and 
+/// apply the navigation on the Frame directly.
+/// </summary>
+/// <param name="type"></param>
+/// <param name="parameter"></param>
+public static void NavigateTo(Type type, object parameter = null)
+{
+    if (type == typeof(HomePage))
+        MainNavView.SelectedItem = MainNavView.MenuItems[0];
+    else if (type == typeof(ProblemsPage))
+        MainNavView.SelectedItem = MainNavView.MenuItems[1];
+    else if (type == typeof(AssignmentsPage))
+        MainNavView.SelectedItem = MainNavView.MenuItems[2];
+    else if (type == typeof(PlaygroundPage))
+        MainNavView.SelectedItem = MainNavView.MenuItems[3];
+    else if (type == typeof(AccountPage))
+        MainNavView.SelectedItem = MainNavView.FooterMenuItems[0];
+    else if (type == typeof(SettingsPage))
+        MainNavView.SelectedItem = MainNavView.SettingsItem;
+    else
+    {
+        ContentFrame.Navigate(type, parameter);
+        MainNavView.SelectedItem = null;
+    }
+}
+\end{minted}
+
+Now I can easily navigate to the CreateNewProblemPage through App.NavigateTo function.
+
+\begin{minted}{csharp}
+/// <summary>
+/// Navigate to the <see cref="CreateNewProblemPage"/> to create a new <see cref="Problem"/>.
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
+private void CreateNewProblem(object sender, RoutedEventArgs e)
+{
+    App.NavigateTo(typeof(CreateNewProblemPage));
+}
+\end{minted}
+
+When I click the Add Problem button in the ProblemsPage, the ContentFrame navigates to the CreateNew Page successfully. The MainNavView is deselected correctly as well.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CreateNewProblemPage-Layout}
+
+I can input all data for a new problem. The length validation for the problem name and the tag box is working as intended. The time limit field and memory limit field also rejecte any non-numerical input as intended. However, when I try to delete a token in the TokenizingTextBox, an exception is thrown and the app crashes.
+
+\begin{minted}{text}
+Unhandled exception at 0x00007FFCDA3E6328 (Microsoft.ui.xaml.dll) in Algorithm Dynamics.exe: 0xC000027B: An application-internal exception has occurred (parameters: 0x000001DCA9C47860, 0x0000000000000006).
+\end{minted}
+
+It seems to be an internal issue with Microsoft.ui.xaml.dll. After some research, I found that this is caused by an internal bug with the TokenizingTextBox\cite{github:WindowsCommunityToolkit:4437}. I will keep an eye on the issue and update the dependency as soon as it gets fixed. For now, I will just leave it as this and mark this as a known issue.
+
+Next, I implement a series of functions in the code behind to handle the add/delete test case function, and the save/cancel function.
+
+\begin{minted}{csharp}
+/// <summary>
+/// Add a new <see cref="TestCase"/> to the list.
+/// Scroll the <see cref="scrollViewer"/> to the new position.
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
+private void AddTestCase(object sender, RoutedEventArgs e)
+{
+    TestCases.Add(new TestCase("", "", false));
+    GeneralTransform transform = AddTestCaseButton.TransformToVisual((UIElement)scrollViewer.Content);
+    Point position = transform.TransformPoint(new Point(0, 0));
+    scrollViewer.ChangeView(null, position.Y, null, false);
+}
+
+/// <summary>
+/// Delete the selected <see cref="TestCase"/>. Update the <see cref="TestCase.Id"/>.
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
+private void DeleteSingleTestCase(object sender, RoutedEventArgs e)
+{
+    TestCase selectedItem = ((FrameworkElement)sender).DataContext as TestCase;
+    TestCases.Remove(selectedItem);
+}
+
+/// <summary>
+/// Delete all <see cref="TestCase"/>, hide the <see cref="DeleteConfirmFlyout"/>.
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
+private void DeleteAllTestCases(object sender, RoutedEventArgs e)
+{
+    TestCases.Clear();
+    DeleteConfirmFlyout.Hide();
+}
+
+/// <summary>
+/// Cancel the creation, navigate back to the <see cref="ProblemsPage"/>.
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
+private void CancelCreation(object sender, RoutedEventArgs e)
+{
+    CancelConfirmFlyout.Hide();
+    App.NavigateTo(typeof(ProblemsPage));
+}
+
+/// <summary>
+/// Create the problem and save it into the database.
+/// Navigate back to the <see cref="ProblemsPage"/> afterwards.
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
+private void CreateProblem(object sender, RoutedEventArgs e)
+{
+    // TODO: save the Problem to database
+    App.NavigateTo(typeof(ProblemsPage));
+}
+\end{minted}
+
+For the edit problem page, I find that there is not much difference from the create page. The edit problem page is just a create problem page with a different title, and some pre-loaded problem data. I think I can reuse most of the existing code to implement the edit page.
+
+I add an enumeration of \verb|Mode| to the page to specify whether it is a create page or an edit page.
+
+\begin{minted}{csharp}
+public enum Mode
+{
+    Create,
+    Edit
+}
+private Mode PageMode = Mode.Create;
+\end{minted}
+
+I use a private readonly variable \verb|_title| to store the string of the title of the page. It determines the correct title for the page based on the page mode.
+
+\begin{minted}{csharp}
+private string _title
+{
+    get
+    {
+        if (PageMode == Mode.Create)
+            return "Create Problem";
+        else
+            return "Edit Problem";
+    }
+}
+\end{minted}
+
+I bind the title TextBox to the \verb|_title| variable. Each time when the page is loaded, its value is recalculated and the correct one will be displayed.
+
+\begin{minted}{xml}
+<TextBlock
+    Text="{x:Bind _title, Mode=OneTime}"
+    Style="{ThemeResource TitleTextBlockStyle}"/>
+\end{minted}
+
+To allow the page mode to be set, I need to handle the OnNavigatedTo event and process the arguments correctly to retrieve the page mode.
+
+\begin{minted}{csharp}
+/// <summary>
+/// Handle the Navigation Arguments
+/// Set the <see cref="PageMode"/> if the Parameter is not <see cref="null"/>.
+/// </summary>
+/// <param name="e"></param>
+protected override void OnNavigatedTo(NavigationEventArgs e)
+{
+    if (e.Parameter != null)
+    {
+        PageMode = ((Tuple<Mode, int>)e.Parameter).Item1;
+    }
+    base.OnNavigatedTo(e);
+}
+\end{minted}
+
+Now, I can connect the edit button in the ProblemsPage to the edit page mode, so the correct title is displayed.
+
+\begin{minted}{csharp}
+private Problem _problem;
+/// <summary>
+/// Handle the Navigation Arguments
+/// Set the <see cref="_pageMode"/> if the Parameter is not <see cref="null"/>.
+/// </summary>
+/// <param name="e"></param>
+protected override void OnNavigatedTo(NavigationEventArgs e)
+{
+    if (e.Parameter != null)
+    {
+        var parameter = (Tuple<Mode, Problem>)e.Parameter;
+        _pageMode = parameter.Item1;
+        _problem = parameter.Item2;
+    }
+    base.OnNavigatedTo(e);
+}
+\end{minted}
+
+Now when I right click a problem in the ProblemsPage and click the edit button in the flyout, the edit page mode is loaded correctly with the problem data being filled for me.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CreateNewProblemPage-Edit}
+
 \subsubsection{Testing and validation}
 
 \subsection{Create the AssignmentsPage}
