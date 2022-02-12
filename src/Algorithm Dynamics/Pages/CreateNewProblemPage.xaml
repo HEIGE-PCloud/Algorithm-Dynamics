@@ -21,6 +21,7 @@
                 Header="Problem Name"
                 MaxLength="64"
                 Width="400"
+                Text="{x:Bind _problem.Name, Mode=TwoWay}"
                 HorizontalAlignment="Left"/>
             <controls:TokenizingTextBox
                 Header="Tags"
@@ -29,12 +30,14 @@
                 MaximumTokens="3"
                 PlaceholderText="Add Tags"
                 SelectionMode="Extended"
+                Text="{x:Bind _problem.Tags, Mode=TwoWay}"
                 HorizontalAlignment="Left"/>
             <ComboBox
                 Header="Difficulty"
                 SelectedIndex="0"
                 Margin="0 22 0 0"
                 Width="400"
+                Text="{x:Bind _problem.Difficulty, Mode=TwoWay}"
                 HorizontalAlignment="Left">
                 <x:String>Easy</x:String>
                 <x:String>Medium</x:String>

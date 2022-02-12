@@ -25,9 +25,16 @@ namespace Algorithm_Dynamics.Pages
     {
         public AssignmentDetailsPage()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
-
+        public enum Mode
+        {
+            Student,
+            Teacher
+        }
+        private Mode PageMode = Mode.Student;
+        private bool _isStudentMode { get => PageMode == Mode.Student; }
+        private bool _isTeacherMode { get => PageMode == Mode.Teacher; }
         private void ProblemListView_ItemClick(object sender, ItemClickEventArgs e)
         {
             App.NavigateTo(typeof(CodingPage));

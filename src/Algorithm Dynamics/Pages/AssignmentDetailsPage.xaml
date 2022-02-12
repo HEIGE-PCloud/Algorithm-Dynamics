@@ -22,11 +22,28 @@
                     Text="Due 01/01/2022"/>
                 <Button
                     x:Name="StartButton"
+                    Margin="4"
+                    Visibility="{x:Bind _isStudentMode, Mode=OneTime}"
                     RelativePanel.LeftOf="SubmitButton"
                     Content="Start"/>
                 <Button
                     x:Name="SubmitButton"
                     Content="Submit"
+                    Margin="4"
+                    Visibility="{x:Bind _isStudentMode, Mode=OneTime}"
+                    RelativePanel.AlignRightWithPanel="True"
+                    Style="{ThemeResource AccentButtonStyle}"/>
+                <Button
+                    x:Name="EditButton"
+                    Content="Edit"
+                    Margin="4"
+                    Visibility="{x:Bind _isTeacherMode, Mode=OneTime}"
+                    RelativePanel.LeftOf="ImportSubmissionButton"/>
+                <Button
+                    x:Name="ImportSubmissionButton"
+                    Content="Import Submission"
+                    Margin="4"
+                    Visibility="{x:Bind _isTeacherMode, Mode=OneTime}"
                     RelativePanel.AlignRightWithPanel="True"
                     Style="{ThemeResource AccentButtonStyle}"/>
             </RelativePanel>
@@ -85,7 +102,8 @@
             </Grid>
             <StackPanel 
                 Orientation="Horizontal"
-                HorizontalAlignment="Right">
+                HorizontalAlignment="Right"
+                Visibility="{x:Bind _isTeacherMode, Mode=OneTime}">
                 <ProgressRing 
                     Margin="4"
                     IsActive="True"

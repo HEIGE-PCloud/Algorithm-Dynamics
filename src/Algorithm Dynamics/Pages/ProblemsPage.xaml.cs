@@ -127,8 +127,7 @@ namespace Algorithm_Dynamics.Pages
         /// <param name="e"></param>
         private void EditProblem(object sender, RoutedEventArgs e)
         {
-            // TODO: Navigate to the EditProblemPage
-            App.NavigateTo(typeof(CreateNewProblemPage), Tuple.Create(CreateNewProblemPage.Mode.Edit, 1));
+            App.NavigateTo(typeof(CreateNewProblemPage), Tuple.Create(CreateNewProblemPage.Mode.Edit, (Problem)ProblemsListView.SelectedItem));
         }
 
         /// <summary>
@@ -208,7 +207,7 @@ namespace Algorithm_Dynamics.Pages
         }
 
         /// <summary>
-        /// Navigate to the CodingPage, pass the current Problem and ProblemList
+        /// Navigate to the <see cref="CodingPage"/>, pass the current Problem and ProblemList
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -217,6 +216,11 @@ namespace Algorithm_Dynamics.Pages
             App.NavigateTo(typeof(CodingPage));
         }
 
+        /// <summary>
+        /// Navigate to the <see cref="CreateNewProblemPage"/> to create a new <see cref="Problem"/>.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CreateNewProblem(object sender, RoutedEventArgs e)
         {
             App.NavigateTo(typeof(CreateNewProblemPage));

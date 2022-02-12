@@ -55,29 +55,17 @@ namespace Algorithm_Dynamics
         public static void NavigateTo(Type type, object parameter = null)
         {
             if (type == typeof(HomePage))
-            {
                 MainNavView.SelectedItem = MainNavView.MenuItems[0];
-            }
             else if (type == typeof(ProblemsPage))
-            {
                 MainNavView.SelectedItem = MainNavView.MenuItems[1];
-            }
             else if (type == typeof(AssignmentsPage))
-            {
                 MainNavView.SelectedItem = MainNavView.MenuItems[2];
-            }
             else if (type == typeof(PlaygroundPage))
-            {
                 MainNavView.SelectedItem = MainNavView.MenuItems[3];
-            }
             else if (type == typeof(AccountPage))
-            {
                 MainNavView.SelectedItem = MainNavView.FooterMenuItems[0];
-            }
             else if (type == typeof(SettingsPage))
-            {
                 MainNavView.SelectedItem = MainNavView.SettingsItem;
-            }
             else
             {
                 ContentFrame.Navigate(type, parameter);
