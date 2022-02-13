@@ -28,6 +28,7 @@ namespace Algorithm_Dynamics.Pages
         public ObservableCollection<string> Lists = new() { "List 1", "List 2", "List 3" };
         public ObservableCollection<string> Tags = new() { "Tag 1", "Tag 2", "Tag 3"};
         public ObservableCollection<Problem> Problems = new();
+
         /// <summary>
         /// Display the <see cref="ListMenuFlyout"/> when the <see cref="ListComboBox"/> is right tapped
         /// </summary>
@@ -72,7 +73,7 @@ namespace Algorithm_Dynamics.Pages
         private void EditProblemList(object sender, RoutedEventArgs e)
         {
             // TODO: Navigate to edit page
-            App.NavigateTo(typeof(CreateNewProblemListPage));
+            App.NavigateTo(typeof(CreateNewProblemListPage), Tuple.Create(CreateNewProblemListPage.Mode.EditProblemList, 0));
         }
 
         /// <summary>
@@ -126,8 +127,7 @@ namespace Algorithm_Dynamics.Pages
         /// <param name="e"></param>
         private void EditProblem(object sender, RoutedEventArgs e)
         {
-            // TODO: Navigate to the EditProblemPage
-            App.NavigateTo(typeof(CreateNewProblemPage));
+            App.NavigateTo(typeof(CreateNewProblemPage), Tuple.Create(CreateNewProblemPage.Mode.Edit, (Problem)ProblemsListView.SelectedItem));
         }
 
         /// <summary>
@@ -207,7 +207,7 @@ namespace Algorithm_Dynamics.Pages
         }
 
         /// <summary>
-        /// Navigate to the CodingPage, pass the current Problem and ProblemList
+        /// Navigate to the <see cref="CodingPage"/>, pass the current Problem and ProblemList
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -216,6 +216,11 @@ namespace Algorithm_Dynamics.Pages
             App.NavigateTo(typeof(CodingPage));
         }
 
+        /// <summary>
+        /// Navigate to the <see cref="CreateNewProblemPage"/> to create a new <see cref="Problem"/>.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CreateNewProblem(object sender, RoutedEventArgs e)
         {
             App.NavigateTo(typeof(CreateNewProblemPage));

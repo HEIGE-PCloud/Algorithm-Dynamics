@@ -79,7 +79,8 @@
                     FontWeight="Normal"
                     Text="Preferred Programming Language" />
                 <Expander
-                    Margin="0 20 0 0">
+                    Margin="0 20 0 0"
+                    IsExpanded="True">
                     <Expander.Header>
                         <StackPanel 
                             Orientation="Horizontal">
@@ -110,11 +111,11 @@
                                     <Flyout>
                                         <StackPanel>
                                             <TextBlock 
-                                        Style="{ThemeResource BaseTextBlockStyle}"
-                                        Text="The selected language will be deleted. Do you want to continue?" Margin="0 0 0 12" />
+                                                Style="{ThemeResource BaseTextBlockStyle}"
+                                                Text="The selected language configuration will be deleted. Do you want to continue?" Margin="0 0 0 12" />
                                             <Button 
-                                        HorizontalAlignment="Right"
-                                        Content="Yes" />
+                                                HorizontalAlignment="Right"
+                                                Content="Yes" />
                                         </StackPanel>
                                     </Flyout>
                                 </Button.Flyout>
@@ -159,6 +160,15 @@
                                 PlaceholderText=".*"
                                 Header="File Extension"
                                 Margin="0 4 0 0"/>
+                            <StackPanel 
+                                Margin="0 16 0 0"
+                                Orientation="Horizontal">
+                                <Button
+                                    Content="Save"
+                                    Style="{ThemeResource AccentButtonStyle}">
+                                </Button>
+
+                            </StackPanel>
                         </StackPanel>
                     </Expander.Content>
                 </Expander>

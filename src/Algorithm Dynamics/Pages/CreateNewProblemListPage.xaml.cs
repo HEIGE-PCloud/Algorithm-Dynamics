@@ -28,7 +28,45 @@ namespace Algorithm_Dynamics.Pages
         {
             InitializeComponent();
         }
-        public ObservableCollection<Problem> Problems = new() { new Problem("Problem 1", "Hard", "ToDo", "Data structure") };
+        public enum Mode
+        {
+            CreateProblemList,
+            EditProblemList,
+            CreateAssignment,
+            EditAssignment
+        }
+        private Mode PageMode = Mode.CreateProblemList;
+        private string _title
+        {
+            get
+            {
+                if (PageMode == Mode.CreateProblemList)
+                    return "Create Problem List";
+                else if (PageMode == Mode.EditProblemList)
+                    return "Edit Problem List";
+                else if (PageMode == Mode.CreateAssignment)
+                    return "Create Assignment";
+                else
+                    return "Edit Assignment";
+            }
+        }
+
+        /// <summary>
+        /// Handle the Navigation Arguments
+        /// Set the <see cref="PageMode"/> if the Parameter is not <see cref="null"/>.
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            if (e.Parameter != null)
+            {
+                PageMode = ((Tuple<Mode, int>)e.Parameter).Item1;
+            }
+            base.OnNavigatedTo(e);
+        }
+
+
+        private ObservableCollection<Problem> Problems = new() { new Problem("Problem 1", "Hard", "ToDo", "Data structure") };
 
         private void AddProblemBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
@@ -61,10 +99,19 @@ namespace Algorithm_Dynamics.Pages
             Problems.Remove(selectedItem);
         }
 
-        private void GoBackToProblemsPage(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Finish create or edit the ProblemList or Assignment.
+        /// Go back to <see cref="ProblemsPage"/> or <see cref="AssignmentsPage"/> based on <see cref="PageMode"/>.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Finish(object sender, RoutedEventArgs e)
         {
             SaveFlyout.Hide();
-            App.NavigateTo(typeof(ProblemsPage));
+            if (PageMode == Mode.CreateProblemList || PageMode == Mode.EditProblemList)
+                App.NavigateTo(typeof(ProblemsPage));
+            else
+                App.NavigateTo(typeof(AssignmentsPage));
         }
     }
 }

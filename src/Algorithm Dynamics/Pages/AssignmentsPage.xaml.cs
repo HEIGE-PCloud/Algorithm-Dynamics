@@ -1,18 +1,10 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using WinRT.Interop;
+using Windows.Storage;
+using Windows.Storage.Pickers;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -68,6 +60,28 @@ namespace Algorithm_Dynamics.Pages
             App.NavigateTo(typeof(AssignmentDetailsPage));
         }
 
+        private void CreateAssignment(object sender, RoutedEventArgs e)
+        {
+            App.NavigateTo(typeof(CreateNewProblemListPage), Tuple.Create(CreateNewProblemListPage.Mode.CreateAssignment, 0));
+        }
+
+        private async void ImportAssignment(object sender, RoutedEventArgs e)
+        {
+            // https://github.com/microsoft/WindowsAppSDK/issues/1188
+            // https://docs.microsoft.com/en-us/windows/uwp/files/quickstart-using-file-and-folder-pickers
+            FileOpenPicker filePicker = new FileOpenPicker();
+
+            // Get the current window's HWND by passing in the Window object
+            IntPtr hwnd = WindowNative.GetWindowHandle(App.m_window);
+
+            // Associate the HWND with the file picker
+            InitializeWithWindow.Initialize(filePicker, hwnd);
+
+            // Use file picker
+            filePicker.FileTypeFilter.Add("*");
+            StorageFile file = await filePicker.PickSingleFileAsync();
+            // TODO: Import file into the Database.
+        }
     }
 
     public class Assignment

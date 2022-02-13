@@ -36,8 +36,12 @@
                 <DropDownButton Content="Add">
                     <DropDownButton.Flyout>
                         <MenuFlyout Placement="Bottom">
-                            <MenuFlyoutItem Text="Create"/>
-                            <MenuFlyoutItem Text="Import"/>
+                            <MenuFlyoutItem 
+                                Text="Create"
+                                Click="CreateAssignment"/>
+                            <MenuFlyoutItem 
+                                Text="Import"
+                                Click="ImportAssignment"/>
                         </MenuFlyout>
                     </DropDownButton.Flyout>
                 </DropDownButton>
