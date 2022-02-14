@@ -17,10 +17,15 @@
                 Style="{ThemeResource TitleTextBlockStyle}"/>
             <TextBox
                 Margin="0 22 0 0"
-                Header="List Name"
+                Header="Title"
                 MaxLength="64"
                 Width="400"
                 HorizontalAlignment="Left"/>
+            <CalendarDatePicker 
+                Margin="0 22 0 0"
+                Visibility="{x:Bind _isAssignmentMode, Mode=OneTime}"
+                PlaceholderText="Set the due date" 
+                Header="Due Date"/>
             <TextBox
                 Margin="0 22 0 0"
                 Header="Description"
@@ -108,6 +113,8 @@
                                         Content="Done"
                                         Click="Finish"/>
                                     <Button 
+                                        x:Name="ExportButton"
+                                        Click="ExportAndFinish"
                                         Style="{ThemeResource AccentButtonStyle}"
                                         Content="Export"/>
                                 </StackPanel>

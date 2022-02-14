@@ -72,5 +72,6 @@ namespace Algorithm_Dynamics
                 MainNavView.SelectedItem = null;
             }
         }
+        public static bool CanGoBack { get => ContentFrame.CanGoBack; }
     }
 }
