@@ -39,5 +39,10 @@ namespace Algorithm_Dynamics.Pages
         {
             App.NavigateTo(typeof(CodingPage));
         }
+
+        private void EditAssignment(object sender, RoutedEventArgs e)
+        {
+            App.NavigateTo(typeof(CreateNewProblemListPage), Tuple.Create(CreateNewProblemListPage.Mode.EditAssignment));
+        }
     }
 }

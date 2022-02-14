@@ -37,6 +37,7 @@
                     x:Name="EditButton"
                     Content="Edit"
                     Margin="4"
+                    Click="EditAssignment"
                     Visibility="{x:Bind _isTeacherMode, Mode=OneTime}"
                     RelativePanel.LeftOf="ImportSubmissionButton"/>
                 <Button

@@ -18,7 +18,7 @@
                 Style="{ThemeResource TitleTextBlockStyle}"/>
             <TextBox
                 Margin="0 22 0 0"
-                Header="Problem Name"
+                Header="Title"
                 MaxLength="64"
                 Width="400"
                 Text="{x:Bind _problem.Name, Mode=TwoWay}"
