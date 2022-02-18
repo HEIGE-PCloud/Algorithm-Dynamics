@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Windows.Storage;
 using Windows.Storage.Pickers;
+using Windows.Storage.Provider;
 using WinRT.Interop;
 
 namespace Algorithm_Dynamics.Pages
@@ -54,15 +55,20 @@ namespace Algorithm_Dynamics.Pages
             base.OnNavigatedTo(e);
         }
 
-
         private ObservableCollection<Problem> Problems = new() { new Problem("Problem 1", "Hard", "ToDo", "Data structure") };
 
+        /// <summary>
+        /// When the text is changed in the search box, search in the database and create suggestion items. 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
         private void AddProblemBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
             if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
             {
                 var suitableItems = new List<string>();
                 suitableItems.Add(sender.Text);
+                // TODO: search the actual problem from the database
                 if (suitableItems.Count == 0)
                 {
                     suitableItems.Add("No results found");
@@ -72,17 +78,33 @@ namespace Algorithm_Dynamics.Pages
 
         }
 
+        /// <summary>
+        /// When a suggestion is chosen, add it in to the list.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
         private void AddProblemBox_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
         {
             Problems.Add(new Problem(sender.Text, "Easy", "ToDo", "Data structure"));
         }
 
+        /// <summary>
+        /// When the save button is clicked, save the problem list and change the description test.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
+            // TODO: actually save the problem to the database.
             TestTextBlock.Text = "The Problem List is saved.";
         }
 
-        private void DeleteSingleTestCase(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Delete the selected problem from the list.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DeleteSingleProblem(object sender, RoutedEventArgs e)
         {
             Problem selectedItem = ((FrameworkElement)sender).DataContext as Problem;
             Problems.Remove(selectedItem);
@@ -103,6 +125,12 @@ namespace Algorithm_Dynamics.Pages
                 App.NavigateTo(typeof(AssignmentsPage));
         }
 
+        /// <summary>
+        /// Display the <see cref="FileSavePicker"/> to get the file path.
+        /// Save the file and finish.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void ExportAndFinish(object sender, RoutedEventArgs e)
         {
             var savePicker = new FileSavePicker();
@@ -119,12 +147,12 @@ namespace Algorithm_Dynamics.Pages
                 // we finish making changes and call CompleteUpdatesAsync.
                 CachedFileManager.DeferUpdates(file);
                 // write to file
-                await FileIO.WriteTextAsync(file, file.Name);
+                await FileIO.WriteTextAsync(file, "TODO: export the Problem List/Assignment");
                 // Let Windows know that we're finished changing the file so
                 // the other app can update the remote version of the file.
                 // Completing updates may require Windows to ask for user input.
-                Windows.Storage.Provider.FileUpdateStatus status = await CachedFileManager.CompleteUpdatesAsync(file);
-                if (status == Windows.Storage.Provider.FileUpdateStatus.Complete)
+                FileUpdateStatus status = await CachedFileManager.CompleteUpdatesAsync(file);
+                if (status == FileUpdateStatus.Complete)
                 {
                     SaveFlyout.Hide();
                     if (_pageMode == Mode.CreateProblemList || _pageMode == Mode.EditProblemList)
@@ -134,15 +162,13 @@ namespace Algorithm_Dynamics.Pages
                 }
                 else
                 {
-                    // saved failed
+                    // TODO: handle saved failed
                 }
             }
             else
             {
-                // Cancelled
+                // TODO: handle cancelled
             }
-
-
         }
     }
 }

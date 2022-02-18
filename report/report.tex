@@ -5617,7 +5617,364 @@ Now when I right click a problem in the ProblemsPage and click the edit button i
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CreateNewProblemPage-Edit}
 
+For the CreateNewProblemListPage, I create it in a very similar way - but with different fields and options.
+
+\begin{minted}{xml}
+<ScrollViewer x:Name="scrollViewer">
+    <StackPanel
+        Margin="32"
+        x:Name="FormStackPanel">
+        <TextBlock
+            Text="{x:Bind _title, Mode=OneTime}"
+            Style="{ThemeResource TitleTextBlockStyle}"/>
+        <TextBox
+            Margin="0 22 0 0"
+            Header="Title"
+            MaxLength="64"
+            Width="400"
+            HorizontalAlignment="Left"/>
+        <CalendarDatePicker 
+            Margin="0 22 0 0"
+            Visibility="{x:Bind _isAssignmentMode, Mode=OneTime}"
+            PlaceholderText="Set the due date" 
+            Header="Due Date"/>
+        <TextBox
+            Margin="0 22 0 0"
+            Header="Description"
+            HorizontalAlignment="Left"
+            TextWrapping="Wrap" 
+            AcceptsReturn="True" 
+            IsSpellCheckEnabled="True"
+            MinWidth="400"
+            MinHeight="200"
+            MaxHeight="840"/>
+        <AutoSuggestBox
+            x:Name="AddProblemBox"
+            Header="Add Problems"
+            Margin="0 22 0 0"
+            HorizontalAlignment="Left"
+            QueryIcon="Find"
+            Width="400"
+            TextChanged="AddProblemBox_TextChanged"
+            SuggestionChosen="AddProblemBox_SuggestionChosen"/>
+        <ListView
+            Margin="0 22 0 0"
+            SelectionMode="None"
+            ItemsSource="{x:Bind Problems, Mode=OneWay}">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="local:Problem">
+                    <Grid
+                        Margin="0 10 0 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            Grid.Column="0"
+                            VerticalAlignment="Center"
+                            Text="{x:Bind Name}"/>
+                        <TextBlock
+                            Grid.Column="1"
+                            VerticalAlignment="Center"
+                            Text="{x:Bind Difficulty}"/>
+                        <TextBlock
+                            Grid.Column="2"
+                            VerticalAlignment="Center"
+                            Text="{x:Bind Tags}"/>
+                        <Button
+                            x:Name="DeleteButton"
+                            Grid.Column="3"
+                            HorizontalAlignment="Right"
+                            Click="DeleteSingleTestCase">
+                            <Button.Content>
+                                <SymbolIcon Symbol="Delete"/>
+                            </Button.Content>
+                        </Button>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <StackPanel 
+            Margin="0 22 12 0"
+            HorizontalAlignment="Left"
+            Orientation="Horizontal">
+            <Button
+                x:Name="SaveButton"
+                Content="Save"
+                Width="100"
+                Margin="0 0 4 0"
+                Click="SaveButton_Click"
+                Style="{ThemeResource AccentButtonStyle}">
+                <Button.Flyout>
+                    <Flyout
+                        x:Name="SaveFlyout">
+                        <StackPanel>
+                            <TextBlock 
+                                x:Name="TestTextBlock"
+                                Style="{ThemeResource BaseTextBlockStyle}"
+                                Text="The Problem List is not saved." 
+                                Margin="0 0 0 12" />
+                            <StackPanel 
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Right">
+                                <Button
+                                    x:Name="DoneButton"
+                                    Margin="0 0 4 0"
+                                    Content="Done"
+                                    Click="Finish"/>
+                                <Button 
+                                    x:Name="ExportButton"
+                                    Click="ExportAndFinish"
+                                    Style="{ThemeResource AccentButtonStyle}"
+                                    Content="Export"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Flyout>
+                </Button.Flyout>
+            </Button>
+            <Button
+                Content="Cancel"
+                Width="100">
+                <Button.Flyout>
+                    <Flyout>
+                        <StackPanel>
+                            <TextBlock
+                                Style="{ThemeResource BaseTextBlockStyle}"
+                                Text="All changes will be lost. Do you want to continue?" Margin="0 0 0 12" />
+                            <Button 
+                                HorizontalAlignment="Right" 
+                                Click="Finish"
+                                Content="Yes" />
+                        </StackPanel>
+                    </Flyout>
+                </Button.Flyout>
+            </Button>
+        </StackPanel>
+    </StackPanel>
+</ScrollViewer>
+\end{minted}
+
+Similarly, I reuse the same page for create/edit ProblemList and Assignments by managing different page mode.
+
+\begin{minted}{csharp}
+public enum Mode
+{
+    CreateProblemList,
+    EditProblemList,
+    CreateAssignment,
+    EditAssignment
+}
+private Mode _pageMode = Mode.CreateProblemList;
+private bool _isAssignmentMode { get => _pageMode == Mode.CreateAssignment || _pageMode == Mode.EditAssignment; }
+private string _title
+{
+    get
+    {
+        if (_pageMode == Mode.CreateProblemList)
+            return "Create Problem List";
+        else if (_pageMode == Mode.EditProblemList)
+            return "Edit Problem List";
+        else if (_pageMode == Mode.CreateAssignment)
+            return "Create Assignment";
+        else
+            return "Edit Assignment";
+    }
+}
+
+/// <summary>
+/// Handle the Navigation Arguments
+/// Set the <see cref="_pageMode"/> if the Parameter is not <see cref="null"/>.
+/// </summary>
+/// <param name="e"></param>
+protected override void OnNavigatedTo(NavigationEventArgs e)
+{
+    if (e.Parameter != null)
+    {
+        _pageMode = ((Tuple<Mode>)e.Parameter).Item1;
+    }
+    base.OnNavigatedTo(e);
+}
+\end{minted}
+
+
+Differently, instead of asking the user to create new test cases, the user is required to search and select problems from the existing database. I use a procedure to handle the event when the user is inputing in the search box.
+
+\begin{minted}{csharp}
+/// <summary>
+/// When the text is changed in the search box, search in the database and create suggestion items. 
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="args"></param>
+private void AddProblemBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+{
+    if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
+    {
+        var suitableItems = new List<string>();
+        suitableItems.Add(sender.Text);
+        // TODO: search the actual problem from the database
+        if (suitableItems.Count == 0)
+        {
+            suitableItems.Add("No results found");
+        }
+        sender.ItemsSource = suitableItems;
+    }
+
+}
+/// <summary>
+/// When a suggestion is chosen, add it in to the list.
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="args"></param>
+private void AddProblemBox_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
+{
+    Problems.Add(new Problem(sender.Text, "Easy", "ToDo", "Data structure"));
+}
+\end{minted}
+
+When the user clicks the delete button on a problem, I use a procedure to delete the problem from the list.
+
+\begin{minted}{csharp}
+/// <summary>
+/// Delete the selected problem from the list.
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
+private void DeleteSingleProblem(object sender, RoutedEventArgs e)
+{
+    Problem selectedItem = ((FrameworkElement)sender).DataContext as Problem;
+    Problems.Remove(selectedItem);
+}
+\end{minted}
+
+When the user click the save button, I use a procedure to save the problem to the database.
+
+\begin{minted}{csharp}
+/// <summary>
+/// When the save button is clicked, save the problem list and change the description test.
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
+private void SaveButton_Click(object sender, RoutedEventArgs e)
+{
+    // TODO: actually save the problem to the database.
+    TestTextBlock.Text = "The Problem List is saved.";
+}
+\end{minted}
+
+When the user has finished editing, a procedure will hide all the flyouts and navigate the user back to the ProblemsPage.
+
+\begin{minted}{csharp}
+/// <summary>
+/// Finish create or edit the ProblemList or Assignment.
+/// Go back to <see cref="ProblemsPage"/> or <see cref="AssignmentsPage"/> based on <see cref="_pageMode"/>.
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
+private void Finish(object sender, RoutedEventArgs e)
+{
+    SaveFlyout.Hide();
+    if (_pageMode == Mode.CreateProblemList || _pageMode == Mode.EditProblemList)
+        App.NavigateTo(typeof(ProblemsPage));
+    else
+        App.NavigateTo(typeof(AssignmentsPage));
+}
+\end{minted}
+
+When the user clicks the export button, a dialog is shown allowing the user to save the file at a desired location\cite{microsoft:docs:quickstart-using-file-and-folder-pickers}. Then the file is saved to that path.
+
+\begin{minted}{csharp}
+/// <summary>
+/// Display the <see cref="FileSavePicker"/> to get the file path.
+/// Save the file and finish.
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
+private async void ExportAndFinish(object sender, RoutedEventArgs e)
+{
+    var savePicker = new FileSavePicker();
+    savePicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
+    savePicker.FileTypeChoices.Add("JSON file", new List<string>() { ".json" });
+    savePicker.SuggestedFileName = "Assignment Name";
+    StorageFile file = await savePicker.PickSaveFileAsync();
+
+    if (file != null)
+    {
+        // Prevent updates to the remote version of the file until
+        // we finish making changes and call CompleteUpdatesAsync.
+        CachedFileManager.DeferUpdates(file);
+        // write to file
+        await FileIO.WriteTextAsync(file, "TODO: export the Problem List/Assignment");
+        // Let Windows know that we're finished changing the file so
+        // the other app can update the remote version of the file.
+        // Completing updates may require Windows to ask for user input.
+        FileUpdateStatus status = await CachedFileManager.CompleteUpdatesAsync(file);
+        if (status == FileUpdateStatus.Complete)
+        {
+            SaveFlyout.Hide();
+            if (_pageMode == Mode.CreateProblemList || _pageMode == Mode.EditProblemList)
+                App.NavigateTo(typeof(ProblemsPage));
+            else
+                App.NavigateTo(typeof(AssignmentsPage));
+        }
+        else
+        {
+            // TODO: handle saved failed
+        }
+    }
+    else
+    {
+        // TODO: handle cancelled
+    }
+}
+\end{minted}
+
+Similarly, I go back to the ProblemsPage and link the buttons to the CreateNewProblemListPage.
+
+\begin{minted}{csharp}
+/// <summary>
+/// Navigate to the edit ProblemList page
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
+/// <exception cref="NotImplementedException"></exception>
+private void EditProblemList(object sender, RoutedEventArgs e)
+{
+    App.NavigateTo(typeof(CreateNewProblemListPage), Tuple.Create(CreateNewProblemListPage.Mode.EditProblemList));
+}
+private void CreateNewProblemList(object sender, RoutedEventArgs e)
+{
+    App.NavigateTo(typeof(CreateNewProblemListPage));
+}
+\end{minted}
+
+Now, when I run the app, I can visit the CreateNewProblemListPage from the CodingPage.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CreateNewProblemListPage-CreateList}
+
+The title displays correctly, and all fields and the search box is working as intended. I can add and delete problems. When I click the cancel button, I can navigate back to the ProblemsPage correctly. However, when I click the export button, the app crashes.
+
+\begin{minted}{text}
+Unhandled exception at 0x00007FFB617D5B2C (CoreMessagingXP.dll) in Algorithm Dynamics.exe: 0xC000027B: An application-internal exception has occurred (parameters: 0x00000281960E3F70, 0x0000000000000001).
+\end{minted}
+
+The CoreMessagingXP.dll suggests that this might caused by another internal bug. After doing some research, there is a way around it. I need to obtain the current HWND and set the HWND on the picker\cite{github:WindowsAppSDK:1188}.
+
+\begin{minted}{csharp}
+// Get the current window's HWND by passing in the Window object
+var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
+
+// Associate the HWND with the file picker
+WinRT.Interop.InitializeWithWindow.Initialize(filePicker, hwnd);
+\end{minted}
+
+After adding these two lines, the save file picker can work correctly.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CreateNewProblemListPage-FilePicker}
+
 \subsubsection{Testing and validation}
+
 
 \subsection{Create the AssignmentsPage}
 

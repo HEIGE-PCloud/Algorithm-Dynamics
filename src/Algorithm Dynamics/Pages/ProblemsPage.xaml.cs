@@ -72,8 +72,7 @@ namespace Algorithm_Dynamics.Pages
         /// <exception cref="NotImplementedException"></exception>
         private void EditProblemList(object sender, RoutedEventArgs e)
         {
-            // TODO: Navigate to edit page
-            App.NavigateTo(typeof(CreateNewProblemListPage), Tuple.Create(CreateNewProblemListPage.Mode.EditProblemList, 0));
+            App.NavigateTo(typeof(CreateNewProblemListPage), Tuple.Create(CreateNewProblemListPage.Mode.EditProblemList));
         }
 
         /// <summary>
