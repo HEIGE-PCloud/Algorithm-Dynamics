@@ -5975,6 +5975,52 @@ After adding these two lines, the save file picker can work correctly.
 
 \subsubsection{Testing and validation}
 
+\begin{tabulary}{\linewidth}{|L|l|L|}
+    \hline
+    Test & Result & Remark \\
+    \hline
+    Does it load & Pass & \\
+    \hline
+    Does the title field work & Pass &  \\
+    \hline
+    Does the tags field work & Failed & Marked as a known issue, waiting to be fixed by upstream. \\
+    \hline
+    Does the difficulty field work & Pass & \\
+    \hline
+    Does the time limit field work and validate the data & Pass & \\
+    \hline
+    Does the memory limit field work and validate the data & Pass & \\
+    \hline
+    Does the description field work & Pass & \\
+    \hline
+    Does the preview block work & Pass & \\
+    \hline
+    Is it possible to add or remove test cases & Pass & \\
+    \hline
+    Does the cancel button work & Pass & \\
+    \hline
+    Does the save button work & Failed & The save button depends on the database and export function. Which will not be implemented in this iteration.
+    \hline
+\end{tabulary}
+
+
+\begin{tabulary}{\linewidth}{|L|l|L|}
+    \hline
+    Does it load & Pass & \\
+    \hline
+    Does the title field work & Pass & \\
+    \hline
+    Does the description field work & Pass & \\
+    \hline
+    Does the search box work & Pass & \\
+    \hline
+    Does the cancel button work & Pass & \\
+    \hline
+    Does the save button work & Failed & The save button depends on the database and export function. Which will not be implemented in this iteration. \\
+    \hline
+    Does the export button work & Pass & The file picker shows up correctly. But similarly, the actual content is not saved to the disk.
+    \hline
+\end{tabulary}
 
 \subsection{Create the AssignmentsPage}
 
