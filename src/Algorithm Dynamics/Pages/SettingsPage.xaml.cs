@@ -43,7 +43,7 @@ namespace Algorithm_Dynamics.Pages
             var result = await dialog.ShowAsync();
             if (result == ContentDialogResult.Primary)
             {
-                // TODO: Delete the selected problem list
+                // TODO: Delete the selected language list
                 throw new NotImplementedException();
             }
         }
@@ -55,6 +55,12 @@ namespace Algorithm_Dynamics.Pages
                 ThemePanel.Children.Cast<RadioButton>().FirstOrDefault(c => c?.Tag?.ToString() == currentTheme).IsChecked = true;
             }
         }
+
+        /// <summary>
+        /// Change the application request theme to the selected theme when the radio button is clicked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ThemeRadioButton_Checked(object sender, RoutedEventArgs e)
         {
             var selectedTheme = ((RadioButton)sender)?.Tag?.ToString();
