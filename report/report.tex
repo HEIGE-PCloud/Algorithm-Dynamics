@@ -503,7 +503,7 @@ Again, most of the components on the page are either read-only (such as the ques
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{AssignmentsPage-design}
 
-The AssignmentPage is where the user interacts with the assignments. For students, they can work on their assignments; for teachers, they can create and mark assignments.
+The AssignmentsPage is where the user interacts with the assignments. For students, they can work on their assignments; for teachers, they can create and mark assignments.
 
 \subsubsection{Usability feature}
 
@@ -633,12 +633,12 @@ There will be an autosuggest box for the user to search for problems and add the
 
 A similar validation is performed just like the CreateNewProblempage. For the List Name field, the user can enter 32 characters at maximum.
 
-\subsection{CreateNewAssignmentPage}
-\label{sec:CreateNewAssignmentPageDesign}
+\subsection{CreateNewAssignmentsPage}
+\label{sec:CreateNewAssignmentsPageDesign}
 
-\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CreateNewAssignmentPage-design}
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CreateNewAssignmentsPage-design}
 
-The CreateNewAssignmentPage is used to create new assignments. It contains multiple text boxes for the user to input assignment data.
+The CreateNewAssignmentsPage is used to create new assignments. It contains multiple text boxes for the user to input assignment data.
 
 The page will be reused for editing existing assignments as well. The title will be altered correspondingly.
 
@@ -679,7 +679,7 @@ I choose to use Microsoft.Data.SQLite for the database interface, which allows m
 
 The API module will allow the user to log in to their Microsoft Education account, and interact with the Education Assignment function. Users will be able to create and manage assignments using education assignments APIs provided by Microsoft.
 
-When the user clicks the login button in the SettingsPage, the API module will handle the login requests. When a logged-in user opens the AssignmentPage, the API module will fetch all assignments. The API module will also allow the teachers to distribute assignments directly through API calls and the students to hand in submissions without any kind of exporting.
+When the user clicks the login button in the SettingsPage, the API module will handle the login requests. When a logged-in user opens the AssignmentsPage, the API module will fetch all assignments. The API module will also allow the teachers to distribute assignments directly through API calls and the students to hand in submissions without any kind of exporting.
 
 The API module will be implemented at the end after all local functions are working correctly. The corresponding API calls and endpoints will be discussed later.
 
@@ -2446,7 +2446,7 @@ At this milestone, the database is implemented. A series of tests are designed t
     \hline
     Create/Edit a ProblemList with invalid data & The change is rejected. & A erroneous test to make sure the data validation is working correctly. \\
     \hline
-    Create/Edit an Assignment in the CreateNewAssignmentPage & The Assignment is created successfully. & A normal test to make sure the database insert/update is working correctly. \\
+    Create/Edit an Assignment in the CreateNewAssignmentsPage & The Assignment is created successfully. & A normal test to make sure the database insert/update is working correctly. \\
     \hline
     Create/Edit an Assignment with invalid data & The change is rejected. & A erroneous test to make sure the data validation is working correctly. \\
     \hline
@@ -3262,7 +3262,7 @@ private void InitializeRecItems()
 }
 \end{minted}
 
-I need to handle the click event as well. And because neither the AssignmentPage nor the CodingPage is ready, it will throw an NotImplementedException too.
+I need to handle the click event as well. And because neither the AssignmentsPage nor the CodingPage is ready, it will throw an NotImplementedException too.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -3274,7 +3274,7 @@ I need to handle the click event as well. And because neither the AssignmentPage
 private void RecGridView_ItemClick(object sender, ItemClickEventArgs e)
 {
     // TODO: Handle the navigation.
-    throw new NotImplementedException("[Blocking]: The CodingPage or the AssignmentPage has not been implemented yet.");
+    throw new NotImplementedException("[Blocking]: The CodingPage or the AssignmentsPage has not been implemented yet.");
 }
 \end{minted}
 
@@ -6210,9 +6210,210 @@ The file picker also shows up correctly.
 
 Now, I need to create the AssignmentDetailsPage to display the detailed information about each assignment. The AssignmentDetailsPage will be different for the student or the teacher, but I will use the same page mode idea here to reuse as much code as possible.
 
+I wrap everything in a ScrollViewer so all components will be responsive on different screen sizes. In the ScrollViewer, I use a StackPanel to group all components together.
 
+\begin{minted}{xml}
+<ScrollViewer>
+    <StackPanel
+        Margin="32">
+        <!-- Main components -->
+    </StackPanel>
+</ScrollViewer>
+\end{minted}
 
-\subsection{Testing and validation}
+I place a header at the top.
+
+\begin{minted}{xml}
+<TextBlock
+        Text="Assignment 1"
+        Style="{ThemeResource TitleTextBlockStyle}"/>
+\end{minted}
+
+Then, a RelativePanel to display all basic information of the assignment.
+
+\begin{minted}{xml}
+<RelativePanel>
+    <TextBlock 
+        Margin="4"
+        RelativePanel.AlignLeftWithPanel="True"
+        Text="Due 01/01/2022"/>
+    <Button
+        x:Name="StartButton"
+        Margin="4"
+        Visibility="{x:Bind _isStudentMode, Mode=OneTime}"
+        RelativePanel.LeftOf="SubmitButton"
+        Content="Start"/>
+    <Button
+        x:Name="SubmitButton"
+        Content="Submit"
+        Margin="4"
+        Visibility="{x:Bind _isStudentMode, Mode=OneTime}"
+        RelativePanel.AlignRightWithPanel="True"
+        Style="{ThemeResource AccentButtonStyle}"/>
+    <Button
+        x:Name="EditButton"
+        Content="Edit"
+        Margin="4"
+        Click="EditAssignment"
+        Visibility="{x:Bind _isTeacherMode, Mode=OneTime}"
+        RelativePanel.LeftOf="ImportSubmissionButton"/>
+    <Button
+        x:Name="ImportSubmissionButton"
+        Content="Import Submission"
+        Margin="4"
+        Visibility="{x:Bind _isTeacherMode, Mode=OneTime}"
+        RelativePanel.AlignRightWithPanel="True"
+        Style="{ThemeResource AccentButtonStyle}"/>
+</RelativePanel>
+\end{minted}
+
+A two by two grid to put the description of the assignment, the problem list and the submission list.
+
+\begin{minted}{xml}
+<Grid>
+    <Grid.RowDefinitions>
+        <RowDefinition Height="auto"/>
+        <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="*"/>
+    </Grid.ColumnDefinitions>
+    <TextBlock 
+        Grid.Row="0"
+        Grid.Column="0"
+        TextWrapping="Wrap"
+        Margin="4"
+        Text="Description."/>
+    <ListView
+        x:Name="ProblemListView"
+        Grid.Row="1"
+        Grid.Column="0"
+        Header="Problems"
+        IsItemClickEnabled="True"
+        ItemClick="ProblemListView_ItemClick"
+        ItemsSource="{x:Bind Problems, Mode=OneWay}"
+        Margin="4">
+        <ListView.ItemTemplate>
+            <DataTemplate x:DataType="local:Problem">
+                <TextBlock Text="{x:Bind Name, Mode=OneWay}"/>
+            </DataTemplate>
+        </ListView.ItemTemplate>
+    </ListView>
+    <ListView
+        Grid.Row="0"
+        Grid.RowSpan="2"
+        Grid.Column="1"
+        Margin="4"
+        Visibility="{x:Bind _isTeacherMode, Mode=OneTime}"
+        ItemsSource="{x:Bind Submissions, Mode=OneWay}"
+        Header="Submissions">
+        <ListView.ItemTemplate>
+            <DataTemplate x:DataType="local:Submission">
+                <TextBlock Text="{x:Bind Status, Mode=OneWay}"/>
+            </DataTemplate>
+        </ListView.ItemTemplate>
+    </ListView>
+</Grid>
+\end{minted}
+
+Similarly, I use the PageMode to manage visibility for different components, therefore display a different page for students and teachers.
+
+\begin{minted}{csharp}
+public enum Mode
+{
+    Student,
+    Teacher
+}
+private Mode _pageMode = Mode.Student;
+private bool _isStudentMode { get => _pageMode == Mode.Student; }
+private bool _isTeacherMode { get => _pageMode == Mode.Teacher; }
+
+/// <summary>
+/// Handle the Navigation Arguments
+/// Set the <see cref="_pageMode"/> if the Parameter is not <see cref="null"/>.
+/// </summary>
+/// <param name="e"></param>
+protected override void OnNavigatedTo(NavigationEventArgs e)
+{
+    if (e.Parameter != null)
+    {
+        _pageMode = ((Tuple<Mode>)e.Parameter).Item1;
+    }
+    base.OnNavigatedTo(e);
+}
+\end{minted}
+
+I can modify the navigate function in the AssignmentsPage to pass the correct argument for corresponding assignment.
+
+\begin{minted}{csharp}
+/// <summary>
+/// Navigate the the <see cref="AssignmentDetailsPage"/> when an assignment is clicked in the list.
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
+private void ListView_ItemClick(object sender, ItemClickEventArgs e)
+{
+    // TODO: use logged in user information to determine which page to display 
+    var assignment = e.ClickedItem as Assignment;
+    if (assignment.Description == "Created Assignment")
+    {
+        App.NavigateTo(typeof(AssignmentDetailsPage), Tuple.Create(AssignmentDetailsPage.Mode.Teacher));
+    }
+    else
+    {
+        App.NavigateTo(typeof(AssignmentDetailsPage), Tuple.Create(AssignmentDetailsPage.Mode.Student));
+    }
+}
+\end{minted}
+
+When I click the assignments under the Assigned panel, the student view with the correct submit button shows up correctly.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{AssignmentDetailsPage-Student}
+
+When I click the assignments under the Created panel, the teacher view with the correct buttons and submissions shows up correctly.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{AssignmentDetailsPage-Teacher}
+
+All these buttons are not working right now, since the UI is the only thing that will be implemented in this iteration.
+
+\subsubsection{Testing and validation}
+
+\begin{tabulary}{\linewidth}{|L|l|L|}
+    \hline
+    Test & Result & Remark \\
+    \hline
+    Does it load & Pass & \\
+    \hline
+    Does the navigation panel work & Pass &  \\
+    \hline
+    Does the import button work & Failed & The import function will not be implemented in this iteration.  \\
+    \hline
+    Does the create button work & Pass & \\
+    \hline
+    Does the assignment details navigation work & Pass & \\
+    \hline
+    Does different page modes work & Pass & \\
+    \hline
+    Does the description show up correctly & Pass & \\
+    \hline
+    Does the problem list show up correctly & Pass & \\
+    \hline
+    Does the submission list show up correctly & Pass & \\
+    \hline
+    Does the due date show up correctly & Pass & \\
+    \hline
+    Does the start button work & Pass & \\
+    \hline
+    Does the submit button work & Failed & The export function will not be implemented in this iteration. \\
+    \hline
+    Does the edit button work & Pass & \\
+    \hline
+    Does the judge button work & Failed & The Judger will not be implemented in this iteration. \\
+    \hline
+    Does the export button work & Failed & The export function will not be implemented in this iteration. \\
+    \hline
+\end{tabulary}
 
 \subsection{Create the SettingsPage}
 
