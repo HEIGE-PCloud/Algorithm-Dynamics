@@ -80,7 +80,7 @@
                     Text="Preferred Programming Language" />
                 <Expander
                     Margin="0 20 0 0"
-                    IsExpanded="True">
+                    IsExpanded="False">
                     <Expander.Header>
                         <StackPanel 
                             Orientation="Horizontal">
@@ -167,7 +167,6 @@
                                     Content="Save"
                                     Style="{ThemeResource AccentButtonStyle}">
                                 </Button>
-
                             </StackPanel>
                         </StackPanel>
                     </Expander.Content>

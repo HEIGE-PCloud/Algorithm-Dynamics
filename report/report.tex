@@ -6032,7 +6032,261 @@ After adding these two lines, the save file picker can work correctly.
 
 \subsubsection{Implementation}
 
+Similarly, I wrap a ScrollViewer around all the components so they can be responsive to different screen size.
+
+\begin{minted}{xml}
+<ScrollViewer>
+    <StackPanel
+        Margin="32">
+        <!-- ... -->
+    </StackPanel>
+</ScrollViewer>
+\end{minted}
+
+For the theme selection, I use three radio buttons so the user can select between different themes easily.
+
+\begin{minted}{xml}
+<TextBlock
+    Style="{ThemeResource SubtitleTextBlockStyle}"
+    Margin="0 12 0 0"
+    FontWeight="Normal"
+    Text="Theme Mode" />
+<StackPanel x:Name="ThemePanel" Margin="0 10 0 0">
+    <RadioButton 
+        Tag="Light" 
+        Content="Light"
+        Checked="ThemeRadioButton_Checked"/>
+    <RadioButton 
+        Tag="Dark" 
+        Content="Dark"
+        Checked="ThemeRadioButton_Checked"/>
+    <RadioButton 
+        Tag="Default" 
+        Content="Use system settings"
+        Checked="ThemeRadioButton_Checked"/>
+</StackPanel>
+\end{minted}
+
+The radio buttons are bind to a procedure, so when they are checked, the subroutine gets executed.
+
+\begin{minted}{csharp}
+/// <summary>
+/// Change the application request theme to the selected theme when the radio button is clicked
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
+private void ThemeRadioButton_Checked(object sender, RoutedEventArgs e)
+{
+    var selectedTheme = ((RadioButton)sender)?.Tag?.ToString();
+
+    if (selectedTheme != null && App.m_window.Content is FrameworkElement rootElement)
+    {
+        rootElement.RequestedTheme = GetEnum<ElementTheme>(selectedTheme);
+    }
+}
+\end{minted}
+
+The run code time limit and memory limit are two simple number box, which automatically validate the input.
+
+\begin{minted}{xml}
+<TextBlock
+    Style="{ThemeResource SubtitleTextBlockStyle}"
+    Margin="0 20 0 0"
+    FontWeight="Normal"
+    Text="Run Code Time Limit" />
+<StackPanel 
+    Margin="0 10 0 0"
+    Orientation="Horizontal">
+    <NumberBox
+        SpinButtonPlacementMode="Inline"
+        Value="1000"
+        Minimum="100"
+        SmallChange="100"
+        LargeChange="500" />
+    <TextBlock 
+        Margin="8"
+        Text="ms"
+        VerticalAlignment="Center"/>
+</StackPanel>
+<TextBlock
+    Style="{ThemeResource SubtitleTextBlockStyle}"
+    Margin="0 20 0 0"
+    FontWeight="Normal"
+    Text="Run Code Memory Limit" />
+<StackPanel 
+    Margin="0 10 0 0"
+    Orientation="Horizontal">
+    <NumberBox
+        Value="64"
+        Minimum="16"
+        SpinButtonPlacementMode="Inline"
+        SmallChange="64"
+        LargeChange="256" />
+    <TextBlock
+        Margin="8"
+        Text="MB"
+        VerticalAlignment="Center"/>
+</StackPanel>
+\end{minted}
+
+I use an expander to hold the programming language configuration editor. It expands when the user clicks it, which makes the interface looks simple when the user does not want to modify this part of settings.
+
+\begin{minted}{xml}
+<TextBlock
+    Style="{ThemeResource SubtitleTextBlockStyle}"
+    Margin="0 20 0 0"
+    FontWeight="Normal"
+    Text="Preferred Programming Language" />
+<Expander
+    Margin="0 20 0 0"
+    IsExpanded="False">
+    <Expander.Header>
+        <StackPanel 
+            Orientation="Horizontal">
+            <ComboBox
+                VerticalAlignment="Stretch"
+                Margin="2"
+                SelectedIndex="0">
+                <x:String>C</x:String>
+                <x:String>C++</x:String>
+                <x:String>Python</x:String>
+            </ComboBox>
+            <Button 
+                x:Name="AddLangButton"
+                ToolTipService.ToolTip="Add a new Programming Language configuration"
+                Margin="2"
+                Click="AddLangButton_Click">
+                <Button.Content>
+                    <SymbolIcon Symbol="Add"/>
+                </Button.Content>
+            </Button>
+            <Button 
+                ToolTipService.ToolTip="Delete the selected configuration"
+                Margin="2">
+                <Button.Content>
+                    <SymbolIcon Symbol="Delete"/>
+                </Button.Content>
+                <Button.Flyout>
+                    <Flyout>
+                        <StackPanel>
+                            <TextBlock 
+                                Style="{ThemeResource BaseTextBlockStyle}"
+                                Text="The selected language configuration will be deleted. Do you want to continue?" Margin="0 0 0 12" />
+                            <Button 
+                                HorizontalAlignment="Right"
+                                Content="Yes" />
+                        </StackPanel>
+                    </Flyout>
+                </Button.Flyout>
+            </Button>
+        </StackPanel>
+    </Expander.Header>
+    <Expander.Content>
+        <StackPanel
+            HorizontalAlignment="Stretch"
+            MinWidth="400">
+            <TextBox
+                x:Name="DisplayNameTextBox"
+                Header="Display Name"/>
+            <TextBox
+                x:Name="LanguageCodeTextBox"
+                Header="Language Code"
+                Margin="0 4 0 0"/>
+            <CheckBox
+                x:Name="NeedCompileCheckBox"
+                Content="Need Compile"
+                Margin="0 4 0 0"/>
+            <TextBox
+                x:Name="CompileCommandTextBox"
+                Visibility="{x:Bind NeedCompileCheckBox.IsChecked, Mode=OneWay}"
+                Header="Compile Command"
+                Margin="0 4 0 0"/>
+            <TextBox
+                x:Name="CompileArgumentTextBox"
+                Visibility="{x:Bind NeedCompileCheckBox.IsChecked, Mode=OneWay}"
+                Header="Compile Argument"
+                Margin="0 4 0 0"/>
+            <TextBox
+                x:Name="RunCommandTextBox"
+                Header="Run Command"
+                Margin="0 4 0 0"/>
+            <TextBox
+                x:Name="RunArgumentsTextBox"
+                Header="Run Arguments"
+                Margin="0 4 0 0"/>
+            <TextBox
+                x:Name="FileExtensionTextBox"
+                PlaceholderText=".*"
+                Header="File Extension"
+                Margin="0 4 0 0"/>
+            <StackPanel 
+                Margin="0 16 0 0"
+                Orientation="Horizontal">
+                <Button
+                    Content="Save"
+                    Style="{ThemeResource AccentButtonStyle}">
+                </Button>
+            </StackPanel>
+        </StackPanel>
+    </Expander.Content>
+</Expander>
+\end{minted}
+
+At the bottom, I put up some links about the project and a disclaimer.
+
+\begin{minted}{xml}
+<TextBlock
+    Style="{ThemeResource SubtitleTextBlockStyle}"
+    Margin="0 20 0 0"
+    FontWeight="Normal"
+    Text="About" />
+<HyperlinkButton 
+    Margin="0 4 0 0"
+    Content="GitHub"
+    NavigateUri="https://github.com/HEIGE-PCloud/Algorithm-Dynamics"/>
+<HyperlinkButton 
+    Margin="0 4 0 0"
+    Content="Website"
+    NavigateUri="https://algorithmdynamics.com/"/>
+<HyperlinkButton 
+    Margin="0 4 0 0"
+    Content="Report"
+    NavigateUri="https://algorithmdynamics.com/report.pdf"/>
+<TextBlock
+    Style="{ThemeResource SubtitleTextBlockStyle}"
+    Margin="0 20 0 0"
+    FontWeight="Normal"
+    Text="Disclaimer" />
+<RichTextBlock>
+    <Paragraph>THIS CODE AND INFORMATION IS PROVIDED ‘AS IS’ WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.</Paragraph>
+</RichTextBlock>
+\end{minted}
+
+All the data should be immediately saved to the disk after the user changes a value. For now, the data will not be saved to the disk as the settings module will not be implemented in this iteration.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{SettingsPage-Light}
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{SettingsPage-Dark}
+
 \subsubsection{Testing and validation}
+
+\begin{tabulary}{\linewidth}{|L|l|L|}
+    \hline
+    Does it load & Pass & \\
+    \hline
+    Does theme switch work & Pass & \\
+    \hline
+    Does the run code time limit field work and validate the data & Pass & \\
+    \hline
+    Does the run code memory limit field work and validate the data & Pass & \\
+    \hline
+    Does the language configuration editor works & Pass & \\
+    \hline
+    Does the about buttons work & Pass & \\
+    \hline
+    Does the settings get loaded and saved correctly & Failed & The core of the settings module will be implemented in a later iteration. \\
+    \hline
+\end{tabulary}
 
 \section{Milestone 2: Implement the data structures}
 
