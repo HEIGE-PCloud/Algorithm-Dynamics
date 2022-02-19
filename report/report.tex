@@ -6026,6 +6026,192 @@ After adding these two lines, the save file picker can work correctly.
 
 \subsubsection{Implementation}
 
+I first implement the AssignmentsPage, which allows the user to broswe existing assignments. I decide to use a grid of two rows to organize the navigation bar and the assignment list.
+
+\begin{minted}{xml}
+<Grid>
+    <Grid.RowDefinitions>
+        <RowDefinition Height="auto"/>
+        <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+
+    <NavigationView>
+        <!-- Navigation Menu -->
+    </NavigationView>
+
+    <ListView>
+        <!-- Assignment List -->
+    </ListView>
+</Grid>
+\end{minted}
+
+For the navigation panel, it has three tabs, assigned, completed and created. It also has a ComboBox, which allows the user to create or import assignments.
+
+\begin{minted}{xml}
+<NavigationView 
+    x:Name="AssignmentsNavView"
+    IsSettingsVisible="False"
+    IsBackButtonVisible="Collapsed"
+    IsBackEnabled="False"
+    SelectionChanged="AssignmentsNavView_SelectionChanged"
+    Header="Header"
+    AlwaysShowHeader="False"
+    PaneDisplayMode="Top"
+    ExpandedModeThresholdWidth="500"
+    SelectionFollowsFocus="Disabled"
+    IsTabStop="False">
+    <NavigationView.MenuItems>
+        <NavigationViewItem Content="Assigned" x:Name="AssignedItem"/>
+        <NavigationViewItem Content="Completed" x:Name="CompletedItem"/>
+        <NavigationViewItem Content="Created" x:Name="CreatedItem"/>
+    </NavigationView.MenuItems>
+
+    <NavigationView.PaneFooter>
+        <DropDownButton Content="Add">
+            <DropDownButton.Flyout>
+                <MenuFlyout Placement="Bottom">
+                    <MenuFlyoutItem 
+                        Text="Create"
+                        Click="CreateAssignment"/>
+                    <MenuFlyoutItem 
+                        Text="Import"
+                        Click="ImportAssignment"/>
+                </MenuFlyout>
+            </DropDownButton.Flyout>
+        </DropDownButton>
+    </NavigationView.PaneFooter>
+</NavigationView>
+\end{minted}
+
+I bind the selection changed event to a procedure to switch between different assignment lists.
+
+\begin{minted}{csharp}
+/// <summary>
+/// Set the <see cref="Assignments"/> based on different SelectedItem
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="args"></param>
+private void AssignmentsNavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
+{
+    if (AssignmentsNavView.SelectedItem == AssignmentsNavView.MenuItems[0])
+    {
+        // TODO: Query the database and retrieve the assigned assignments
+    }
+    else if (AssignmentsNavView.SelectedItem == AssignmentsNavView.MenuItems[1])
+    {
+        // TODO: Query the database and retrieve the completed assignments
+    }
+    else
+    {
+        // TODO: Query the database and retrieve the created assignments
+    }
+}
+\end{minted}
+
+For the CreateAssignment button, when the user clicks it, the App will navigate to the CreateNewProblemListPage with the correct argument so the assignment mode is loaded.
+
+\begin{minted}{csharp}
+/// <summary>
+/// Navigate to the <see cref="CreateNewProblemListPage"/> with <see cref="CreateNewProblemListPage.Mode.CreateAssignment"/>.
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
+private void CreateAssignment(object sender, RoutedEventArgs e)
+{
+    App.NavigateTo(typeof(CreateNewProblemListPage), Tuple.Create(CreateNewProblemListPage.Mode.CreateAssignment));
+}
+\end{minted}
+
+For the ImportAssignment button, it shows a similar file picker for the user to pick a file to import.
+
+\begin{minted}{csharp}
+/// <summary>
+/// Display a <see cref="FileOpenPicker"/> and load the assignment from the file
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
+private async void ImportAssignment(object sender, RoutedEventArgs e)
+{
+    FileOpenPicker filePicker = new FileOpenPicker();
+
+    // Get the current window's HWND by passing in the Window object
+    IntPtr hwnd = WindowNative.GetWindowHandle(App.m_window);
+
+    // Associate the HWND with the file picker
+    InitializeWithWindow.Initialize(filePicker, hwnd);
+
+    // Use file picker
+    filePicker.FileTypeFilter.Add("*");
+    StorageFile file = await filePicker.PickSingleFileAsync();
+    // TODO: Import file into the Database.
+}
+\end{minted}
+
+For the assignment list, I bind it to an ObserableCollection and display its name and DueDate.
+
+\begin{minted}{xml}
+<ListView
+    Grid.Row="1"
+    SelectionMode="None"
+    IsItemClickEnabled="True"
+    ItemClick="ListView_ItemClick"
+    ItemsSource="{x:Bind Assignments, Mode=OneWay}">
+    <ListView.ItemTemplate>
+        <DataTemplate x:DataType="local:Assignment">
+            <Grid
+                Height="50">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock 
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    Text="{x:Bind Name}"/>
+                <TextBlock
+                    Grid.Column="1"
+                    VerticalAlignment="Center"
+                    Text="{x:Bind DueDate}"/>
+            </Grid>
+        </DataTemplate>
+    </ListView.ItemTemplate>
+</ListView>
+\end{minted}
+
+\begin{minted}{csharp}
+public ObservableCollection<Assignment> Assignments = new();
+\end{minted}
+
+And when an item is clicked, it should navigate to the AssignmentDetailsPage.
+
+\begin{minted}{csharp}
+/// <summary>
+/// Navigate the the <see cref="AssignmentDetailsPage"/> when an assignment is clicked in the list.
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
+private void ListView_ItemClick(object sender, ItemClickEventArgs e)
+{
+    App.NavigateTo(typeof(AssignmentDetailsPage));
+}
+\end{minted}
+
+Now, when I run the App, the assignment page is loaded correctly.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{AssignmentsPage-Layout}
+
+The create button navigates to the CreateProblemListPage with the correct page mode.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{AssignmentsPage-Create}
+
+The file picker also shows up correctly.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{AssignmentsPage-FilePicker}
+
+Now, I need to create the AssignmentDetailsPage to display the detailed information about each assignment. The AssignmentDetailsPage will be different for the student or the teacher, but I will use the same page mode idea here to reuse as much code as possible.
+
+
+
 \subsection{Testing and validation}
 
 \subsection{Create the SettingsPage}

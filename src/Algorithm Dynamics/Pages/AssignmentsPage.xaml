@@ -27,9 +27,9 @@
             SelectionFollowsFocus="Disabled"
             IsTabStop="False">
             <NavigationView.MenuItems>
-                <NavigationViewItem Content="Assigned" Tag="SamplePage1" x:Name="SamplePage1Item"/>
-                <NavigationViewItem Content="Completed" Tag="SamplePage2" x:Name="SamplePage2Item"/>
-                <NavigationViewItem Content="Created" Tag="SamplePage3" x:Name="SamplePage3Item"/>
+                <NavigationViewItem Content="Assigned" x:Name="AssignedItem"/>
+                <NavigationViewItem Content="Completed" x:Name="CompletedItem"/>
+                <NavigationViewItem Content="Created" x:Name="CreatedItem"/>
             </NavigationView.MenuItems>
 
             <NavigationView.PaneFooter>
@@ -47,9 +47,10 @@
                 </DropDownButton>
             </NavigationView.PaneFooter>
         </NavigationView>
+
         <ListView
             Grid.Row="1"
-            SelectionMode="None"
+            SelectionMode="Single"
             IsItemClickEnabled="True"
             ItemClick="ListView_ItemClick"
             ItemsSource="{x:Bind Assignments, Mode=OneWay}">

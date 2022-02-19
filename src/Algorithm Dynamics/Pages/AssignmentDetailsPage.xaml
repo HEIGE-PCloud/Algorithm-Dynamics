@@ -9,7 +9,6 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <ScrollViewer>
-        
         <StackPanel
             Margin="32">
             <TextBlock
@@ -70,35 +69,26 @@
                     Header="Problems"
                     IsItemClickEnabled="True"
                     ItemClick="ProblemListView_ItemClick"
+                    ItemsSource="{x:Bind Problems, Mode=OneWay}"
                     Margin="4">
-                    <ListViewItem Content="Problem 1"/>
-                    <ListViewItem Content="Problem 2"/>
-                    <ListViewItem Content="Problem 3"/>
-                    <ListViewItem Content="Problem 4"/>
-                    <ListViewItem Content="Problem 5"/>
-                    <ListViewItem Content="Problem 6"/>
-                    <ListViewItem Content="Problem 7"/>
-                    <ListViewItem Content="Problem 8"/>
-                    <ListViewItem Content="Problem 9"/>
-                    <ListViewItem Content="Problem 10"/>
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="local:Problem">
+                            <TextBlock Text="{x:Bind Name, Mode=OneWay}"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
                 </ListView>
                 <ListView
                     Grid.Row="0"
                     Grid.RowSpan="2"
                     Grid.Column="1"
                     Margin="4"
+                    ItemsSource="{x:Bind Submissions, Mode=OneWay}"
                     Header="Submissions">
-                    <ListViewItem Content="Submission 1"/>
-                    <ListViewItem Content="Submission 1"/>
-                    <ListViewItem Content="Submission 1"/>
-                    <ListViewItem Content="Submission 1"/>
-                    <ListViewItem Content="Submission 1"/>
-                    <ListViewItem Content="Submission 1"/>
-                    <ListViewItem Content="Submission 1"/>
-                    <ListViewItem Content="Submission 1"/>
-                    <ListViewItem Content="Submission 1"/>
-                    <ListViewItem Content="Submission 1"/>
-                    <ListViewItem Content="Submission 1"/>
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="local:Submission">
+                            <TextBlock Text="{x:Bind Status, Mode=OneWay}"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
                 </ListView>
             </Grid>
             <StackPanel 
