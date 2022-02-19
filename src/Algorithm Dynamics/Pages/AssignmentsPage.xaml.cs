@@ -24,6 +24,11 @@ namespace Algorithm_Dynamics.Pages
         }
         public ObservableCollection<Assignment> Assignments = new();
 
+        /// <summary>
+        /// Set the <see cref="Assignments"/> based on different SelectedItem
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
         private void AssignmentsNavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
             if (AssignmentsNavView.SelectedItem == AssignmentsNavView.MenuItems[0])
@@ -55,20 +60,41 @@ namespace Algorithm_Dynamics.Pages
             }
         }
 
+        /// <summary>
+        /// Navigate the the <see cref="AssignmentDetailsPage"/> when an assignment is clicked in the list.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ListView_ItemClick(object sender, ItemClickEventArgs e)
         {
-            App.NavigateTo(typeof(AssignmentDetailsPage));
+            var assignment = e.ClickedItem as Assignment;
+            if (assignment.Description == "Created Assignment")
+            {
+               App.NavigateTo(typeof(AssignmentDetailsPage), Tuple.Create(AssignmentDetailsPage.Mode.Teacher));
+            }
+            else
+            {
+                App.NavigateTo(typeof(AssignmentDetailsPage), Tuple.Create(AssignmentDetailsPage.Mode.Student));
+            }
         }
 
+        /// <summary>
+        /// Navigate to the <see cref="CreateNewProblemListPage"/> with <see cref="CreateNewProblemListPage.Mode.CreateAssignment"/>.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CreateAssignment(object sender, RoutedEventArgs e)
         {
             App.NavigateTo(typeof(CreateNewProblemListPage), Tuple.Create(CreateNewProblemListPage.Mode.CreateAssignment));
         }
 
+        /// <summary>
+        /// Display a <see cref="FileOpenPicker"/> and load the assignment from the file
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void ImportAssignment(object sender, RoutedEventArgs e)
         {
-            // https://github.com/microsoft/WindowsAppSDK/issues/1188
-            // https://docs.microsoft.com/en-us/windows/uwp/files/quickstart-using-file-and-folder-pickers
             FileOpenPicker filePicker = new FileOpenPicker();
 
             // Get the current window's HWND by passing in the Window object
