@@ -14,7 +14,7 @@ namespace Algorithm_Dynamics.Test
         [TestMethod]
         public void TestSingleData()
         {
-            DataAccess.InitializeDatabase(@"temp\TestSingleData.db");
+            DataAccess.InitializeDatabase("TestSingleData.db");
             DataAccess.AddData("Text1");
             Assert.AreEqual(DataAccess.GetData().Count, 1);
             Assert.AreEqual(DataAccess.GetData()[0], "Text1");
@@ -23,7 +23,7 @@ namespace Algorithm_Dynamics.Test
         [TestMethod]
         public void TestMultipleData()
         {
-            DataAccess.InitializeDatabase(@"temp\TestMultipleData.db");
+            DataAccess.InitializeDatabase("TestMultipleData.db");
             int count = 100;
             List<string> list = new();
             for (int i = 0; i < count; i++)
@@ -38,7 +38,7 @@ namespace Algorithm_Dynamics.Test
         [TestMethod]
         public void TestUserData()
         {
-            DataAccess.InitializeDatabase(@"temp\UserData.db");
+            DataAccess.InitializeDatabase("UserData.db");
             User user = User.Create("Test User", "test@example.com", Role.Student);
 
             List<User> expectedUsers = new() { user };
