@@ -9,13 +9,17 @@ namespace Algorithm_Dynamics.Test
     public class TestJudger
     {
         [TestMethod]
-        [DataRow("print('hello world')", "", 1000, 64*1024*1024, "hello world\n")]
 
-        public async Task TestRunCode(string code, string input, int timeLimit, int memoryLimit, string expected)
+        public async Task TestRunCode()
         {
+            string code = "print('hello world')";
+            string input = "";
+            int timeLimit = 1000;
+            int memoryLimit = 64 * 1024 * 1024;
+            string expected = "hello world\n";
             Judger.SetSourceCodeFilePath("temp", "sol");
             RunCodeResult result = await Judger.RunCode(code, input, LanguageConfig.Python, timeLimit, memoryLimit, new Progress<int>());
-            Assert.AreEqual(result.StandardOutput, "hello world\n");
+            Assert.AreEqual(result.StandardOutput, expected);
         }
     }
 }
