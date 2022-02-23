@@ -6,7 +6,7 @@ using System.IO;
 
 namespace Algorithm_Dynamics.Core.Helpers
 {
-    public static class DataAccess
+    internal static class DataAccess
     {
         private static string DbPath;
         public static void InitializeDatabase(string dbPath)
@@ -183,6 +183,11 @@ namespace Algorithm_Dynamics.Core.Helpers
             }
 
             return users;
+        }
+
+        public static void EditUser(User user, string newName, string newEmail, Role newRole)
+        {
+
         }
     }
 }
