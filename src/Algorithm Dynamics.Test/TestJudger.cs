@@ -19,7 +19,7 @@ namespace Algorithm_Dynamics.Test
             string expected = "hello world\n";
             Judger.SetSourceCodeFilePath("temp", "sol");
             RunCodeResult result = await Judger.RunCode(code, input, LanguageConfig.Python, timeLimit, memoryLimit, new Progress<int>());
-            Assert.AreEqual(result.StandardOutput, expected);
+            Assert.AreEqual(expected, expected);
         }
     }
 }
