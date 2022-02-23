@@ -38,9 +38,8 @@ namespace Algorithm_Dynamics.Test
         [TestMethod]
         public void TestUserData()
         {
-            User user = User.Create("Test User", "test@example.com", Role.Student);
             DataAccess.InitializeDatabase(@"temp\UserData.db");
-            DataAccess.AddUser(user);
+            User user = User.Create("Test User", "test@example.com", Role.Student);
 
             List<User> expectedUsers = new() { user };
             List<User> actualUsers = DataAccess.GetAllUsers();

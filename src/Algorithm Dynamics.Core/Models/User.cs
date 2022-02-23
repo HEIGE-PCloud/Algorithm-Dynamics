@@ -1,3 +1,4 @@
+using Algorithm_Dynamics.Core.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,10 +9,48 @@ namespace Algorithm_Dynamics.Core.Models
 {
     public class User
     {
-        public Guid Uid { get; set; }
-        public string Name { get; set; }
-        public string Email { get; set; }
-        public Role Role { get; set; }
+        private Guid _guid;
+        private string _name;
+        private string _email;
+        private Role _role;
+
+        public Guid Uid { get => _guid; private set => _guid = value; }
+        public string Name 
+        { 
+            get => _name;
+            set 
+            {
+                if (value != _name)
+                {
+                    _name = value;
+                    DataAccess.EditUser(this, _name, _email, _role);
+                }
+            }
+        }
+        public string Email 
+        { 
+            get => _email;
+            set
+            {
+                if (value != _email)
+                {
+                    _email = value;
+                    DataAccess.EditUser(this, _name, _email, _role);
+                }
+            }
+        }
+        public Role Role 
+        {
+            get => _role;
+            set
+            {
+                if (value != _role)
+                {
+                    _role = value;
+                    DataAccess.EditUser(this, _name, _email, _role);
+                }
+            }
+        }
         private User(Guid uid, string name, string email, Role role)
         {
             Uid = uid;
@@ -21,7 +60,9 @@ namespace Algorithm_Dynamics.Core.Models
         }
         public static User Create(string name, string email, Role role)
         {
-            return new User(Guid.NewGuid(), name, email, role);
+            User user = new User(Guid.NewGuid(), name, email, role);
+            DataAccess.AddUser(user);
+            return user;
         }
         public static User Load(Guid uid, string name, string email, Role role)
         {
@@ -35,6 +76,10 @@ namespace Algorithm_Dynamics.Core.Models
                 return false;
 
             return user.Uid == Uid && user.Name == Name && user.Email == Email && user.Role == Role;
+        }
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Uid, Name, Email, Role);
         }
     }
     public enum Role
