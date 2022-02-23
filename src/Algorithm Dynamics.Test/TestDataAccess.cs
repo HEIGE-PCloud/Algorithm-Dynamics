@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System;
 using System.IO;
 using System.Collections.Generic;
+using Algorithm_Dynamics.Core.Models;
 
 namespace Algorithm_Dynamics.Test
 {
@@ -18,6 +19,7 @@ namespace Algorithm_Dynamics.Test
             Assert.AreEqual(DataAccess.GetData().Count, 1);
             Assert.AreEqual(DataAccess.GetData()[0], "Text1");
         }
+
         [TestMethod]
         public void TestMultipleData()
         {
@@ -31,7 +33,19 @@ namespace Algorithm_Dynamics.Test
             }
             Assert.AreEqual(DataAccess.GetData().Count, count);
             CollectionAssert.AreEqual(list, DataAccess.GetData());
+        }
 
+        [TestMethod]
+        public void TestUserData()
+        {
+            User user = User.Create("Test User", "test@example.com", Role.Student);
+            DataAccess.InitializeDatabase(@"temp\UserData.db");
+            DataAccess.AddUser(user);
+
+            List<User> expectedUsers = new() { user };
+            List<User> actualUsers = DataAccess.GetAllUsers();
+            Assert.AreEqual(actualUsers.Count, 1);
+            CollectionAssert.AreEqual(actualUsers, expectedUsers);
         }
     }
 }
