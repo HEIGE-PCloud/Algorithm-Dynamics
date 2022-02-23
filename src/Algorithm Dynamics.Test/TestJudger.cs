@@ -17,9 +17,9 @@ namespace Algorithm_Dynamics.Test
             int timeLimit = 1000;
             int memoryLimit = 64 * 1024 * 1024;
             string expected = "hello world\n";
-            Judger.SetSourceCodeFilePath("temp", "sol");
+            Judger.SetSourceCodeFilePath(".", "sol");
             RunCodeResult result = await Judger.RunCode(code, input, LanguageConfig.Python, timeLimit, memoryLimit, new Progress<int>());
-            Assert.AreEqual(expected, expected);
+            Assert.AreEqual(expected, result.StandardOutput);
         }
     }
 }
