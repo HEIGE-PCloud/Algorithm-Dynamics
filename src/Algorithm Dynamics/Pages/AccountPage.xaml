@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Algorithm_Dynamics.Pages"
+    xmlns:helpers="using:Algorithm_Dynamics.Helpers"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
@@ -37,7 +38,7 @@
                     x:Name="EditNameTextBox"
                     PlaceholderText="Name"
                     Margin="2"
-                    Text="Name"
+                    Text="{x:Bind _user.Name, Mode=TwoWay}"
                     HorizontalAlignment="Stretch"
                     Visibility="{x:Bind IsEditMode, Mode=OneWay}"/>
                 <TextBlock
@@ -49,7 +50,7 @@
                 <TextBox
                     x:Name="EditEmailTextBox"
                     PlaceholderText="Email"
-                    Text="Email"
+                    Text="{x:Bind _user.Email, Mode=TwoWay}"
                     Margin="2"
                     HorizontalAlignment="Stretch"
                     Visibility="{x:Bind IsEditMode, Mode=OneWay}"/>
@@ -64,7 +65,10 @@
                     Visibility="{x:Bind IsEditMode, Mode=OneWay}"
                     HorizontalAlignment="Stretch"
                     Margin="2"
-                    SelectedIndex="0">
+                    SelectedIndex="{x:Bind RoleIndex, Mode=TwoWay}">
+                    <ComboBox.Resources>
+                        <helpers:IntToEnumConverter x:Key="IntToEnumConverter"/>
+                    </ComboBox.Resources>
                     <x:String>Student</x:String>
                     <x:String>Teacher</x:String>
                 </ComboBox>

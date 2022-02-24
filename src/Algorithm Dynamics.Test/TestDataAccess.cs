@@ -59,5 +59,14 @@ namespace Algorithm_Dynamics.Test
             User actualUser = DataAccess.GetAllUsers()[0];
             Assert.AreEqual(user, actualUser);
         }
+
+        [TestMethod]
+        public void TestGetUser()
+        {
+            DataAccess.InitializeDatabase("GetUser.db");
+            User user = User.Create("Test User", "Test@example.com", Role.Student);
+            User actualUser = DataAccess.GetUser(user.Uid);
+            Assert.AreEqual(user, actualUser);
+        }
     }
 }

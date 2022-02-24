@@ -6,13 +6,21 @@ using System.IO;
 
 namespace Algorithm_Dynamics.Core.Helpers
 {
-    internal static class DataAccess
+    public static class DataAccess
     {
         private static string DbPath;
+
+        /// <summary>
+        /// Initialize the database at the <see cref="dbPath"/> given.
+        /// </summary>
+        /// <param name="dbPath"></param>
         public static void InitializeDatabase(string dbPath)
         {
             DbPath = dbPath;
-            File.CreateText(dbPath).Close();
+            if (!File.Exists(dbPath))
+            {
+                File.CreateText(dbPath).Close();
+            }
             using (SqliteConnection db = new($"Filename={DbPath}"))
             {
                 db.Open();
@@ -98,7 +106,7 @@ namespace Algorithm_Dynamics.Core.Helpers
             }
         }
 
-        public static void AddData(string inputText)
+        internal static void AddData(string inputText)
         {
             using SqliteConnection db = new($"Filename={DbPath}");
             db.Open();
@@ -115,7 +123,7 @@ namespace Algorithm_Dynamics.Core.Helpers
             db.Close();
         }
 
-        public static List<string> GetData()
+        internal static List<string> GetData()
         {
             List<string> entries = new();
 
@@ -138,7 +146,7 @@ namespace Algorithm_Dynamics.Core.Helpers
             return entries;
         }
 
-        public static void AddUser(User user)
+        internal static void AddUser(User user)
         {
             using SqliteConnection db = new($"Filename={DbPath}");
             db.Open();
@@ -158,7 +166,30 @@ namespace Algorithm_Dynamics.Core.Helpers
             db.Close();
         }
 
-        public static List<User> GetAllUsers()
+        public static User GetUser(Guid Uid)
+        {
+            SqliteConnection db = new($"Filename={DbPath}");
+            User user;
+            db.Open();
+
+            SqliteCommand selectCommand = new();
+            selectCommand.Connection = db;
+            selectCommand.CommandText = "SELECT * FROM User WHERE Uid = @Uid";
+            selectCommand.Parameters.AddWithValue("@Uid", Uid.ToString());
+            SqliteDataReader query = selectCommand.ExecuteReader();
+
+            if (query.Read())
+            {
+                user = new(Uid, query.GetString(1), query.GetString(2), (Role)query.GetInt32(3));
+            }
+            else
+            {
+                user = new(Uid, "", "", Role.Student);
+            }
+            db.Close();
+            return user;
+        }
+        internal static List<User> GetAllUsers()
         {
             List<User> users = new();
 
@@ -185,7 +216,7 @@ namespace Algorithm_Dynamics.Core.Helpers
             return users;
         }
 
-        public static void EditUser(User user, string newName, string newEmail, Role newRole)
+        internal static void EditUser(User user, string newName, string newEmail, Role newRole)
         {
             using SqliteConnection db = new($"Filename={DbPath}");
             db.Open();
