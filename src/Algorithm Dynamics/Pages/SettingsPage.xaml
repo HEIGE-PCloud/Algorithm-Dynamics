@@ -45,7 +45,7 @@
                     Orientation="Horizontal">
                     <NumberBox
                         SpinButtonPlacementMode="Inline"
-                        Value="1000"
+                        Value="{x:Bind TimeLimit, Mode=TwoWay}"
                         Minimum="100"
                         SmallChange="100"
                         LargeChange="500" />

@@ -23,7 +23,6 @@ namespace Algorithm_Dynamics.Pages
             StatsItems.Add(new StatisticsItem("Favourite Topic", "Data structure"));
             StatsItems.Add(new StatisticsItem("Favourite Language", "Python"));
             ApplicationDataContainer roamingSettings = ApplicationData.Current.RoamingSettings;
-            //roamingSettings.Values["CurrentUser"] = null;
             var CurrentUserValue = roamingSettings.Values["CurrentUser"];
             if (CurrentUserValue != null)
             {
