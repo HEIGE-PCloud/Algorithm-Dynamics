@@ -9,12 +9,12 @@ namespace Algorithm_Dynamics.Core.Models
 {
     public class User
     {
-        private Guid _guid;
+        private Guid _uid;
         private string _name;
         private string _email;
         private Role _role;
 
-        public Guid Uid { get => _guid; private set => _guid = value; }
+        public Guid Uid { get => _uid; private set => _uid = value; }
         public string Name 
         { 
             get => _name;
@@ -23,7 +23,7 @@ namespace Algorithm_Dynamics.Core.Models
                 if (value != _name)
                 {
                     _name = value;
-                    DataAccess.EditUser(this, _name, _email, _role);
+                    DataAccess.EditUser(this, value, _email, _role);
                 }
             }
         }
@@ -35,7 +35,7 @@ namespace Algorithm_Dynamics.Core.Models
                 if (value != _email)
                 {
                     _email = value;
-                    DataAccess.EditUser(this, _name, _email, _role);
+                    DataAccess.EditUser(this, _name, value, _role);
                 }
             }
         }
@@ -47,26 +47,29 @@ namespace Algorithm_Dynamics.Core.Models
                 if (value != _role)
                 {
                     _role = value;
-                    DataAccess.EditUser(this, _name, _email, _role);
+                    DataAccess.EditUser(this, _name, _email, value);
                 }
             }
         }
-        private User(Guid uid, string name, string email, Role role)
+        internal User(Guid uid, string name, string email, Role role)
         {
-            Uid = uid;
-            Name = name;
-            Email = email;
-            Role = role;
+            _uid = uid;
+            _name = name;
+            _email = email;
+            _role = role;
         }
+        /// <summary>
+        /// Create a new <see cref="User"/> and save it into the database
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="email"></param>
+        /// <param name="role"></param>
+        /// <returns></returns>
         public static User Create(string name, string email, Role role)
         {
-            User user = new User(Guid.NewGuid(), name, email, role);
+            User user = new(Guid.NewGuid(), name, email, role);
             DataAccess.AddUser(user);
             return user;
-        }
-        public static User Load(Guid uid, string name, string email, Role role)
-        {
-            return new User(uid, name, email, role);
         }
         public override bool Equals(object obj)
         {
