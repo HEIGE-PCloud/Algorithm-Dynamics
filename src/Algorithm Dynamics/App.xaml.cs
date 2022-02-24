@@ -39,10 +39,22 @@ namespace Algorithm_Dynamics
             DataAccess.InitializeDatabase(Path.Combine(LocalFolder.Path, "Data.db"));
 
             m_window = new MainWindow();
-            // Force a light theme for screenshots
+
+            ApplicationDataContainer roamingSettings = ApplicationData.Current.RoamingSettings;
+            var CurrentThemeValue = roamingSettings.Values["Theme"];
+            ElementTheme theme;
+            if (CurrentThemeValue != null)
+            {
+                theme = (ElementTheme)CurrentThemeValue;
+            }
+            else
+            {
+                theme = ElementTheme.Default;
+                roamingSettings.Values["Theme"] = (int)ElementTheme.Default;
+            }
             if (m_window.Content is FrameworkElement rootElement)
             {
-                //rootElement.RequestedTheme = ElementTheme.Light;
+                rootElement.RequestedTheme = theme;
             }
             m_window.Activate();
         }
