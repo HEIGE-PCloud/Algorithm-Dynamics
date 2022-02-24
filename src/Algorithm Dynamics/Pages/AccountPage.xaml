@@ -24,7 +24,7 @@
                 Margin="32"
                 RelativePanel.AlignLeftWithPanel="True"
                 RelativePanel.AlignVerticalCenterWithPanel="True"
-                ProfilePicture="https://docs.microsoft.com/windows/uwp/contacts-and-calendar/images/shoulder-tap-static-payload.png" />
+                DisplayName="{x:Bind _user.Name, Mode=OneTime}n"/>
             <StackPanel
                 RelativePanel.RightOf="AvatarPicture"
                 RelativePanel.AlignVerticalCenterWithPanel="True">
