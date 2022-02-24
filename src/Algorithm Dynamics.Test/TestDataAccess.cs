@@ -46,5 +46,18 @@ namespace Algorithm_Dynamics.Test
             Assert.AreEqual(actualUsers.Count, 1);
             CollectionAssert.AreEqual(actualUsers, expectedUsers);
         }
+
+        [TestMethod]
+        public void TestEditData()
+        {
+            DataAccess.InitializeDatabase("EditData.db");
+            User user = User.Create("Test User", "test@example.com", Role.Student);
+            user.Name = "Edited Name";
+            user.Email = "new@example.com";
+            user.Role = Role.Teacher;
+
+            User actualUser = DataAccess.GetAllUsers()[0];
+            Assert.AreEqual(user, actualUser);
+        }
     }
 }

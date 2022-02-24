@@ -176,7 +176,7 @@ namespace Algorithm_Dynamics.Core.Helpers
                     string name = query.GetString(1);
                     string email = query.GetString(2);
                     Role role = (Role)query.GetInt32(3);
-                    users.Add(User.Load(uid, name, email, role));
+                    users.Add(new User(uid, name, email, role));
                 }
 
                 db.Close();
@@ -187,7 +187,21 @@ namespace Algorithm_Dynamics.Core.Helpers
 
         public static void EditUser(User user, string newName, string newEmail, Role newRole)
         {
+            using SqliteConnection db = new($"Filename={DbPath}");
+            db.Open();
 
+            SqliteCommand updateCommand = new();
+            updateCommand.Connection = db;
+
+            updateCommand.CommandText = "UPDATE User SET Name = @newName, Email = @newEmail, Role = @newRole WHERE Uid = @Uid;";
+            updateCommand.Parameters.AddWithValue("@newName", newName);
+            updateCommand.Parameters.AddWithValue("@newEmail", newEmail);
+            updateCommand.Parameters.AddWithValue("@newRole", newRole);
+            updateCommand.Parameters.AddWithValue("@Uid", user.Uid.ToString());
+
+            updateCommand.ExecuteNonQuery();
+
+            db.Close();
         }
     }
 }
