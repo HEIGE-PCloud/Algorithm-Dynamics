@@ -66,7 +66,7 @@ namespace Algorithm_Dynamics.Pages
 
             }
         }
-        private async void AddLangButton_Click(object sender, RoutedEventArgs e)
+        private void AddLangButton_Click(object sender, RoutedEventArgs e)
         {
 
         }
@@ -74,13 +74,14 @@ namespace Algorithm_Dynamics.Pages
         {
             if (App.m_window.Content is FrameworkElement rootElement)
             {
-                var currentTheme = rootElement.RequestedTheme.ToString();
+                string currentTheme = rootElement.RequestedTheme.ToString();
                 ThemePanel.Children.Cast<RadioButton>().FirstOrDefault(c => c?.Tag?.ToString() == currentTheme).IsChecked = true;
             }
         }
 
         /// <summary>
         /// Change the application request theme to the selected theme when the radio button is clicked
+        /// Save the theme into settings
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -91,6 +92,8 @@ namespace Algorithm_Dynamics.Pages
             if (selectedTheme != null && App.m_window.Content is FrameworkElement rootElement)
             {
                 rootElement.RequestedTheme = GetEnum<ElementTheme>(selectedTheme);
+                ApplicationDataContainer roamingSettings = ApplicationData.Current.RoamingSettings;
+                roamingSettings.Values["Theme"] = (int)rootElement.RequestedTheme;
             }
         }
         private static TEnum GetEnum<TEnum>(string text) where TEnum : struct
