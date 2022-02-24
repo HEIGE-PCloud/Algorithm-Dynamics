@@ -4,6 +4,8 @@ using Microsoft.UI.Xaml.Controls;
 using System;
 using Windows.Storage;
 using Algorithm_Dynamics.Pages;
+using Algorithm_Dynamics.Core.Helpers;
+using System.IO;
 
 namespace Algorithm_Dynamics
 {
@@ -28,8 +30,14 @@ namespace Algorithm_Dynamics
         /// <param name="args">Details about the launch request and process.</param>
         protected override void OnLaunched(LaunchActivatedEventArgs args)
         {
+            // Init Judger
             StorageFolder TemporaryFolder = ApplicationData.Current.TemporaryFolder;
             Judger.SetSourceCodeFilePath(TemporaryFolder.Path, "main");
+
+            // Init Database
+            StorageFolder LocalFolder = ApplicationData.Current.LocalFolder;
+            DataAccess.InitializeDatabase(Path.Combine(LocalFolder.Path, "Data.db"));
+
             m_window = new MainWindow();
             // Force a light theme for screenshots
             if (m_window.Content is FrameworkElement rootElement)
