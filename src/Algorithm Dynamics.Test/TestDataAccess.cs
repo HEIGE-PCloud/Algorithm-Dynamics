@@ -11,10 +11,15 @@ namespace Algorithm_Dynamics.Test
     [TestClass]
     public class TestDataAccess
     {
+        private void DropDatabase(string dbPath)
+        {
+            File.Delete(dbPath);
+        }
         [TestMethod]
         public void TestSingleData()
         {
-            DataAccess.InitializeDatabase("TestSingleData.db");
+            DropDatabase("SingleData.db");
+            DataAccess.InitializeDatabase("SingleData.db");
             DataAccess.AddData("Text1");
             Assert.AreEqual(DataAccess.GetData().Count, 1);
             Assert.AreEqual(DataAccess.GetData()[0], "Text1");
@@ -23,7 +28,8 @@ namespace Algorithm_Dynamics.Test
         [TestMethod]
         public void TestMultipleData()
         {
-            DataAccess.InitializeDatabase("TestMultipleData.db");
+            DropDatabase("MultipleData.db");
+            DataAccess.InitializeDatabase("MultipleData.db");
             int count = 100;
             List<string> list = new();
             for (int i = 0; i < count; i++)
@@ -38,18 +44,20 @@ namespace Algorithm_Dynamics.Test
         [TestMethod]
         public void TestUserData()
         {
+            DropDatabase("UserData.db");
             DataAccess.InitializeDatabase("UserData.db");
             User user = User.Create("Test User", "test@example.com", Role.Student);
 
             List<User> expectedUsers = new() { user };
             List<User> actualUsers = DataAccess.GetAllUsers();
-            Assert.AreEqual(actualUsers.Count, 1);
+            Assert.AreEqual(1, actualUsers.Count);
             CollectionAssert.AreEqual(actualUsers, expectedUsers);
         }
 
         [TestMethod]
         public void TestEditData()
         {
+            DropDatabase("EditData.db");
             DataAccess.InitializeDatabase("EditData.db");
             User user = User.Create("Test User", "test@example.com", Role.Student);
             user.Name = "Edited Name";
@@ -63,6 +71,7 @@ namespace Algorithm_Dynamics.Test
         [TestMethod]
         public void TestGetUser()
         {
+            DropDatabase("GetUser.db");
             DataAccess.InitializeDatabase("GetUser.db");
             User user = User.Create("Test User", "Test@example.com", Role.Student);
             User actualUser = DataAccess.GetUser(user.Uid);

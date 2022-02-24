@@ -19,7 +19,7 @@ namespace Algorithm_Dynamics.Core.Helpers
             DbPath = dbPath;
             if (!File.Exists(dbPath))
             {
-                File.CreateText(dbPath).Close();
+                File.CreateText(dbPath).Dispose();
             }
             using (SqliteConnection db = new($"Filename={DbPath}"))
             {
@@ -102,10 +102,12 @@ namespace Algorithm_Dynamics.Core.Helpers
                 SqliteCommand createTable = new(tableCommand, db);
 
                 createTable.ExecuteReader();
-                db.Close();
             }
         }
-
+        internal static void DropDatabase()
+        {
+            File.Delete(DbPath);
+        }
         internal static void AddData(string inputText)
         {
             using SqliteConnection db = new($"Filename={DbPath}");
