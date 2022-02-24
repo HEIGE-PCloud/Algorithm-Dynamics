@@ -24,7 +24,7 @@
                 Margin="32"
                 RelativePanel.AlignLeftWithPanel="True"
                 RelativePanel.AlignVerticalCenterWithPanel="True"
-                DisplayName="{x:Bind _user.Name, Mode=OneTime}n"/>
+                DisplayName="{x:Bind _user.Name, Mode=OneTime}"/>
             <StackPanel
                 RelativePanel.RightOf="AvatarPicture"
                 RelativePanel.AlignVerticalCenterWithPanel="True">
