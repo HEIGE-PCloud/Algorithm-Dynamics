@@ -17,26 +17,29 @@ namespace Algorithm_Dynamics.Pages
         }
         private const int DEFAULT_RUN_CODE_TIMELIMIT = 1000;
         private const int DEFAULT_RUN_CODE_MEMORYLIMIT = 64 * 1024 * 1024;
+        private const string TIMELIMIT_KEY = "RunCodeTimeLimit";
+        private const string MEMORYLIMIT_KEY = "RunCodeMemoryLimit";
+
         public int TimeLimit
         {
             get
             {
                 ApplicationDataContainer roamingSettings = ApplicationData.Current.RoamingSettings;
-                var CurrentValue = roamingSettings.Values["RunCodeMemoryLimit"];
+                var CurrentValue = roamingSettings.Values[TIMELIMIT_KEY];
                 if (CurrentValue != null)
                 {
                     return (int)CurrentValue;
                 }
                 else
                 {
-                    roamingSettings.Values["RunCodeMemoryLimit"] = DEFAULT_RUN_CODE_MEMORYLIMIT;
-                    return DEFAULT_RUN_CODE_MEMORYLIMIT;
+                    roamingSettings.Values[TIMELIMIT_KEY] = DEFAULT_RUN_CODE_TIMELIMIT;
+                    return DEFAULT_RUN_CODE_TIMELIMIT;
                 }
             }
             set
             {
                 ApplicationDataContainer roamingSettings = ApplicationData.Current.RoamingSettings;
-                roamingSettings.Values["RunCodeMemoryLimit"] = value;
+                roamingSettings.Values[TIMELIMIT_KEY] = value;
 
             }
         }
@@ -45,21 +48,21 @@ namespace Algorithm_Dynamics.Pages
             get
             {
                 ApplicationDataContainer roamingSettings = ApplicationData.Current.RoamingSettings;
-                var CurrentValue = roamingSettings.Values["RunCodeMemoryLimit"];
+                var CurrentValue = roamingSettings.Values[MEMORYLIMIT_KEY];
                 if (CurrentValue != null)
                 {
                     return (int)CurrentValue;
                 }
                 else
                 {
-                    roamingSettings.Values["RunCodeMemoryLimit"] = DEFAULT_RUN_CODE_TIMELIMIT;
-                    return DEFAULT_RUN_CODE_TIMELIMIT;
+                    roamingSettings.Values[MEMORYLIMIT_KEY] = DEFAULT_RUN_CODE_MEMORYLIMIT;
+                    return DEFAULT_RUN_CODE_MEMORYLIMIT;
                 }
             }
             set
             {
                 ApplicationDataContainer roamingSettings = ApplicationData.Current.RoamingSettings;
-                roamingSettings.Values["RunCodeMemoryLimit"] = value;
+                roamingSettings.Values[MEMORYLIMIT_KEY] = value;
 
             }
         }
