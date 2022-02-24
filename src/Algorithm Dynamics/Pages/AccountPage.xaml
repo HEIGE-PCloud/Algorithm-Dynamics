@@ -24,7 +24,7 @@
                 Margin="32"
                 RelativePanel.AlignLeftWithPanel="True"
                 RelativePanel.AlignVerticalCenterWithPanel="True"
-                DisplayName="{x:Bind _user.Name, Mode=OneTime}"/>
+                DisplayName="{x:Bind EditNameTextBox.Text , Mode=OneWay}"/>
             <StackPanel
                 RelativePanel.RightOf="AvatarPicture"
                 RelativePanel.AlignVerticalCenterWithPanel="True">
@@ -38,6 +38,7 @@
                     x:Name="EditNameTextBox"
                     PlaceholderText="Name"
                     Margin="2"
+                    MaxLength="32"
                     Text="{x:Bind _user.Name, Mode=TwoWay}"
                     HorizontalAlignment="Stretch"
                     Visibility="{x:Bind IsEditMode, Mode=OneWay}"/>
@@ -50,6 +51,7 @@
                 <TextBox
                     x:Name="EditEmailTextBox"
                     PlaceholderText="Email"
+                    MaxLength="32"
                     Text="{x:Bind _user.Email, Mode=TwoWay}"
                     Margin="2"
                     HorizontalAlignment="Stretch"
