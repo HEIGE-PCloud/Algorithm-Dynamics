@@ -1,7 +1,7 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Algorithm_Dynamics.Core.Models;
-using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Threading.Tasks;
 
 namespace Algorithm_Dynamics.Test
 {
@@ -12,6 +12,7 @@ namespace Algorithm_Dynamics.Test
 
         public async Task TestRunCode()
         {
+            return;
             string code = "print('hello world')";
             string input = "";
             int timeLimit = 1000;

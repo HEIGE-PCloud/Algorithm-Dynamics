@@ -3,7 +3,8 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml;
 using System.Collections.ObjectModel;
 using System;
-using Windows.Storage.Pickers;
+using Algorithm_Dynamics.Helpers;
+using Windows.Storage;
 
 namespace Algorithm_Dynamics.Pages
 {
@@ -227,20 +228,7 @@ namespace Algorithm_Dynamics.Pages
 
         private async void Import(object sender, RoutedEventArgs e)
         {
-            // https://github.com/microsoft/WindowsAppSDK/issues/1188
-            // https://docs.microsoft.com/en-us/windows/uwp/files/quickstart-using-file-and-folder-pickers
-            var filePicker = new FileOpenPicker();
-
-            // Get the current window's HWND by passing in the Window object
-            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.m_window);
-
-            // Associate the HWND with the file picker
-            WinRT.Interop.InitializeWithWindow.Initialize(filePicker, hwnd);
-
-            // Use file picker like normal!
-            filePicker.FileTypeFilter.Add("*");
-            var file = await filePicker.PickSingleFileAsync();
-
+            StorageFile file = await FileHelper.FileOpenPicker("*");
         }
 
         private void CreateNewProblemList(object sender, RoutedEventArgs e)

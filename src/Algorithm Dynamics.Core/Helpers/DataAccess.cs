@@ -87,18 +87,56 @@ namespace Algorithm_Dynamics.Core.Helpers
                         FOREIGN KEY (ProblemId) REFERENCES Problem (Id)
                     );";
 
-                //// Create Submission table
-                //tableCommand +=
-                //    @"CREATE TABLE IF NOT EXISTS Submission
-                //    (
-                //        Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                //        ProblemId INTEGER FOREIGN KEY REFERENCES Problem(Id),
-                //        Code TEXT,
-                //        Time TEXT NOT NULL,
-                //        Language TEXT NOT NULL,
-                //        UserUid TEXT FOREIGN KEY REFERENCES User(Uid),
-                //        AssignmentSubmissionResultUid TEXT FOREIGN KEY REFERENCES AssignmentSubmission(Uid)
-                //    );";
+                // Create Submission table
+                tableCommand +=
+                    @"CREATE TABLE IF NOT EXISTS Submission
+                    (
+                        Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        Code TEXT,
+                        Time TEXT NOT NULL,
+                        Language TEXT NOT NULL,
+                        UserUid TEXT,
+                        ProblemId INTEGER,
+                        AssignmentSubmissionResultUid TEXT,
+                        FOREIGN KEY (UserUid) REFERENCES User(Uid),
+                        FOREIGN KEY (ProblemId) REFERENCES Problem(Id),
+                        FOREIGN KEY (AssignmentSubmissionResultUid) REFERENCES AssignmentSubmission(Uid)
+                    );";
+
+                // Create ProblemList table
+                tableCommand +=
+                    @"CREATE TABLE IF NOT EXISTS ProblemList
+                    (
+                        Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        Name TEXT NOT NULL,
+                        Description TEXT NOT NULL
+                    );";
+
+                // Create ProblemListRecord table
+                tableCommand +=
+                    @"CREATE TABLE IF NOT EXISTS ProblemListRecord
+                    (
+                        Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        ProblemId INTEGER NOT NULL,
+                        ProblemListId INTEGER NOT NULL,
+                        FOREIGN KEY (ProblemId) REFERENCES Problem(Id),
+                        FOREIGN KEY (ProblemListId) REFERENCES ProblemList(Id)
+                    );";
+
+                // Create Assignment table
+                tableCommand +=
+                    @"CREATE TABLE IF NOT EXISTS Assignment
+                    (
+                        Uid TEXT PRIMARY KEY NOT NULL,
+                        Name TEXT NOT NULL,
+                        Description TEXT NOT NULL,
+                        DueDate TEXT NOT NULL,
+                        Status INTEGER NOT NULL,
+                        Type INTEGER NOT NULL,
+                        UserUid TEXT,
+                        FOREIGN KEY (UserUid) REFERENCES User(Uid)
+                    );";
+
                 SqliteCommand createTable = new(tableCommand, db);
 
                 createTable.ExecuteReader();

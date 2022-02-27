@@ -7,8 +7,8 @@ namespace Algorithm_Dynamics.Models
     {
         public string Name { get; set; }
         public Symbol Icon { get; set; }
-        public Action<MainWindow> Action { get; set; }
-        public QuickAccessItem(string name, Symbol icon, Action<MainWindow> action)
+        public Action Action { get; set; }
+        public QuickAccessItem(string name, Symbol icon, Action action)
         {
             Name = name;
             Icon = icon;

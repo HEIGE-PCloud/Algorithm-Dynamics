@@ -1,8 +1,10 @@
-﻿using Algorithm_Dynamics.Models;
+﻿using Algorithm_Dynamics.Helpers;
+using Algorithm_Dynamics.Models;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.ObjectModel;
+using Windows.Storage;
 
 namespace Algorithm_Dynamics.Pages
 {
@@ -53,10 +55,9 @@ namespace Algorithm_Dynamics.Pages
         /// <param name="e"></param>
         private void QAGridView_ItemClick(object sender, ItemClickEventArgs e)
         {
-            MainWindow m_window = App.m_window;
             if (e.ClickedItem is QuickAccessItem item)
             {
-                item.Action(m_window);
+                item.Action();
             }
         }
 
@@ -75,27 +76,20 @@ namespace Algorithm_Dynamics.Pages
         private void InitializeQAItems()
         {
             QAItems.Clear();
-            QAItems.Add(new QuickAccessItem("Random Problem", Symbol.Shuffle, (m_window) =>
+            QAItems.Add(new QuickAccessItem("Random Problem", Symbol.Shuffle, () =>
             {
-                m_window.MainNavView.SelectedItem = null;
-                // TODO: Navigate the ContentFrame to the Coding page manually
-                throw new NotImplementedException("[Blocking]: The CodingPage has not been implemented yet.");
+                // TODO: pick a random problem from the database
+                App.NavigateTo(typeof(CodingPage));
             }));
-            QAItems.Add(new QuickAccessItem("Playground", Symbol.Edit, (m_window) =>
-                m_window.MainNavView.SelectedItem = m_window.MainNavView.MenuItems[3]));
-            QAItems.Add(new QuickAccessItem("Assignments", Symbol.Library, (m_window) =>
-                m_window.MainNavView.SelectedItem = m_window.MainNavView.MenuItems[2]));
-            QAItems.Add(new QuickAccessItem("Problems", Symbol.List, (m_window) =>
-                m_window.MainNavView.SelectedItem = m_window.MainNavView.MenuItems[1]));
-            QAItems.Add(new QuickAccessItem("Settings", Symbol.Setting, (m_window) =>
-                m_window.MainNavView.SelectedItem = m_window.MainNavView.SettingsItem));
-            QAItems.Add(new QuickAccessItem("Account", Symbol.Contact, (m_window) =>
-                m_window.MainNavView.SelectedItem = m_window.MainNavView.FooterMenuItems[0]));
-            QAItems.Add(new QuickAccessItem("Import", Symbol.Import, (m_window) =>
+            QAItems.Add(new QuickAccessItem("Playground", Symbol.Edit, () => App.NavigateTo(typeof(PlaygroundPage))));
+            QAItems.Add(new QuickAccessItem("Assignments", Symbol.Library, () => App.NavigateTo(typeof(AssignmentsPage))));
+            QAItems.Add(new QuickAccessItem("Problems", Symbol.List, () => App.NavigateTo(typeof(ProblemsPage))));
+            QAItems.Add(new QuickAccessItem("Settings", Symbol.Setting, () => App.NavigateTo(typeof(SettingsPage))));
+            QAItems.Add(new QuickAccessItem("Account", Symbol.Contact, () => App.NavigateTo(typeof(AccountPage))));
+            QAItems.Add(new QuickAccessItem("Import", Symbol.Import, async () =>
             {
-                m_window.MainNavView.SelectedItem = null;
-                // TODO: Handle the import logic
-                throw new NotImplementedException("[Blocking]: The import logic has not been implemented yet.");
+                StorageFile file = await FileHelper.FileOpenPicker("*");
+                // TODO: Import into the database
             }));
         }
 
