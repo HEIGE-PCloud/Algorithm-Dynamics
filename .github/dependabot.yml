@@ -7,11 +7,11 @@ updates:
       interval: "daily"
 
   - package-ecosystem: "nuget"
-    directory: "/Algorithm Dynamics/Algorithm Dynamics/Algorithm Dynamics"
+    directory: "/src/Algorithm Dynamics"
     schedule:
       interval: "daily"
 
   - package-ecosystem: "nuget"
-    directory: "/Algorithm Dynamics/Algorithm Dynamics.Core/"
+    directory: "/src/Algorithm Dynamics.Core/"
     schedule:
       interval: "daily"
