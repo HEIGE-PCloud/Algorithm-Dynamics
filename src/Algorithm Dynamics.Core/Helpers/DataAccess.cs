@@ -50,10 +50,10 @@ namespace Algorithm_Dynamics.Core.Helpers
                         Uid TEXT NOT NULL,
                         Name TEXT NOT NULL,
                         Description TEXT NOT NULL,
-                        Status INTEGER NOT NULL,
-                        Difficulty INTEGER NOT NULL,
                         TimeLimit INTEGER NOT NULL,
-                        MemoryLimit INTEGER NOT NULL
+                        MemoryLimit INTEGER NOT NULL,
+                        Status INTEGER NOT NULL,
+                        Difficulty INTEGER NOT NULL
                     );";
 
                 // CREATE Tag table
@@ -167,20 +167,19 @@ namespace Algorithm_Dynamics.Core.Helpers
         {
             List<string> entries = new();
 
-            using (SqliteConnection db = new($"Filename={DbPath}"))
+            using (SqliteConnection connection = new($"Filename={DbPath}"))
             {
-                db.Open();
+                connection.Open();
 
-                SqliteCommand selectCommand = new("SELECT Text_Entry from MyTable", db);
+                SqliteCommand selectCommand = new("SELECT Text_Entry from MyTable", connection);
 
-                SqliteDataReader query = selectCommand.ExecuteReader();
-
-                while (query.Read())
+                using (var reader = selectCommand.ExecuteReader())
                 {
-                    entries.Add(query.GetString(0));
+                    while (reader.Read())
+                    {
+                        entries.Add(reader.GetString(0));
+                    }
                 }
-
-                db.Close();
             }
 
             return entries;
@@ -188,25 +187,24 @@ namespace Algorithm_Dynamics.Core.Helpers
 
         internal static void AddUser(User user)
         {
-            using SqliteConnection db = new($"Filename={DbPath}");
-            db.Open();
+            using (SqliteConnection connection = new($"Filename={DbPath}"))
+            {
+                connection.Open();
 
-            SqliteCommand insertCommand = new();
-            insertCommand.Connection = db;
+                SqliteCommand insertCommand = new();
+                insertCommand.Connection = connection;
 
-            // Use parameterized query to prevent SQL injection attacks
-            insertCommand.CommandText = "INSERT INTO User VALUES (@Uid, @Name, @Email, @Role);";
-            insertCommand.Parameters.AddWithValue("@Uid", user.Uid.ToString());
-            insertCommand.Parameters.AddWithValue("@Name", user.Name);
-            insertCommand.Parameters.AddWithValue("@Email", user.Email);
-            insertCommand.Parameters.AddWithValue("@Role", user.Role);
+                insertCommand.CommandText = "INSERT INTO User VALUES (@Uid, @Name, @Email, @Role);";
+                insertCommand.Parameters.AddWithValue("@Uid", user.Uid.ToString());
+                insertCommand.Parameters.AddWithValue("@Name", user.Name);
+                insertCommand.Parameters.AddWithValue("@Email", user.Email);
+                insertCommand.Parameters.AddWithValue("@Role", user.Role);
 
-            insertCommand.ExecuteReader();
-
-            db.Close();
+                insertCommand.ExecuteNonQuery();
+            }
         }
 
-        public static User GetUser(Guid Uid)
+        internal static User GetUser(Guid Uid)
         {
             SqliteConnection db = new($"Filename={DbPath}");
             User user;
@@ -274,5 +272,55 @@ namespace Algorithm_Dynamics.Core.Helpers
 
             db.Close();
         }
+
+        internal static void AddProblem(Problem problem)
+        {
+            using SqliteConnection db = new($"Filename={DbPath}");
+            db.Open();
+
+            SqliteCommand insertCommand = new();
+            insertCommand.Connection = db;
+
+            insertCommand.CommandText = "INSERT INTO Problem VALUES (@Id, @Uid, @Name, @Description, @TimeLimit, @MemoryLimit, @Status, @Difficulty);";
+            insertCommand.Parameters.AddWithValue("@Id", problem.Id);
+            insertCommand.Parameters.AddWithValue("@Uid", problem.Uid);
+            insertCommand.Parameters.AddWithValue("@Name", problem.Name);
+            insertCommand.Parameters.AddWithValue("@Description", problem.Description);
+            insertCommand.Parameters.AddWithValue("@TimeLimit", problem.TimeLimit);
+            insertCommand.Parameters.AddWithValue("@MemoryLimit", problem.MemoryLimit);
+            insertCommand.Parameters.AddWithValue("@Status", problem.Status);
+            insertCommand.Parameters.AddWithValue("@Difficulty", problem.Difficulty);
+
+            insertCommand.ExecuteReader();
+
+            db.Close();
+        }
+
+        internal static Problem GetProblem(int Id)
+        {
+            Problem problem;
+            using (var connection = new SqliteConnection($"Filename ={ DbPath }"))
+            {
+                connection.Open();
+                SqliteCommand selectCommand = new();
+                selectCommand.Connection = connection;
+                selectCommand.CommandText = "SELECT * FROM Problem WHERE Id = @Id";
+                selectCommand.Parameters.AddWithValue("@Id", Id);
+                SqliteDataReader query = selectCommand.ExecuteReader();
+
+                if (query.Read())
+                {
+                    problem = new(query.GetInt32(0), query.GetGuid(1), query.GetString(2), query.GetString(3), query.GetInt32(4), query.GetInt32(5), (ProblemStatus)query.GetInt32(6), (Difficulty)query.GetInt32(7), new List<TestCase> { }, new List<Tag> { });
+                }
+                else
+                {
+                    throw new KeyNotFoundException($"The Problem with Id = {Id} is not found in the database.");
+                }
+
+            }
+
+            return problem;
+        }
+
     }
 }

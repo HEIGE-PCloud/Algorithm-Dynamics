@@ -77,5 +77,16 @@ namespace Algorithm_Dynamics.Test
             User actualUser = DataAccess.GetUser(user.Uid);
             Assert.AreEqual(user, actualUser);
         }
+
+        [TestMethod]
+        public void TestCreateProblem()
+        {
+            DropDatabase("CreateProblem.db");
+            DataAccess.InitializeDatabase("CreateProblem.db");
+            Problem problem = new(1, Guid.NewGuid(), "Test Problem", "Description", 1000, 64 * 1024 * 1024, ProblemStatus.Todo, Difficulty.Easy, new List<TestCase> { }, new List<Tag> { });
+            DataAccess.AddProblem(problem);
+
+            Assert.AreEqual(problem, DataAccess.GetProblem(problem.Id));
+        }
     }
 }
