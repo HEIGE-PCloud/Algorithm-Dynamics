@@ -27,7 +27,7 @@ namespace Algorithm_Dynamics.Pages
             if (CurrentUserValue != null)
             {
                 Guid CurrentUserUid = (Guid)CurrentUserValue;
-                _user = DataAccess.GetUser(CurrentUserUid);
+                _user = User.Get(CurrentUserUid);
             }
             else
             {

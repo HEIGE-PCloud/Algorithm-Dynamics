@@ -71,6 +71,10 @@ namespace Algorithm_Dynamics.Core.Models
             DataAccess.AddUser(user);
             return user;
         }
+        public static User Get(Guid Uid)
+        {
+            return DataAccess.GetUser(Uid);
+        }
         public override bool Equals(object obj)
         {
             var user = obj as User;
