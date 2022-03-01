@@ -275,25 +275,24 @@ namespace Algorithm_Dynamics.Core.Helpers
 
         internal static void AddProblem(Problem problem)
         {
-            using SqliteConnection db = new($"Filename={DbPath}");
-            db.Open();
+            using (SqliteConnection connection = new($"Filename={DbPath}"))
+            {
+                connection.Open();
+                SqliteCommand insertCommand = new();
+                insertCommand.Connection = connection;
 
-            SqliteCommand insertCommand = new();
-            insertCommand.Connection = db;
+                insertCommand.CommandText = "INSERT INTO Problem VALUES (@Id, @Uid, @Name, @Description, @TimeLimit, @MemoryLimit, @Status, @Difficulty);";
+                insertCommand.Parameters.AddWithValue("@Id", problem.Id);
+                insertCommand.Parameters.AddWithValue("@Uid", problem.Uid);
+                insertCommand.Parameters.AddWithValue("@Name", problem.Name);
+                insertCommand.Parameters.AddWithValue("@Description", problem.Description);
+                insertCommand.Parameters.AddWithValue("@TimeLimit", problem.TimeLimit);
+                insertCommand.Parameters.AddWithValue("@MemoryLimit", problem.MemoryLimit);
+                insertCommand.Parameters.AddWithValue("@Status", problem.Status);
+                insertCommand.Parameters.AddWithValue("@Difficulty", problem.Difficulty);
 
-            insertCommand.CommandText = "INSERT INTO Problem VALUES (@Id, @Uid, @Name, @Description, @TimeLimit, @MemoryLimit, @Status, @Difficulty);";
-            insertCommand.Parameters.AddWithValue("@Id", problem.Id);
-            insertCommand.Parameters.AddWithValue("@Uid", problem.Uid);
-            insertCommand.Parameters.AddWithValue("@Name", problem.Name);
-            insertCommand.Parameters.AddWithValue("@Description", problem.Description);
-            insertCommand.Parameters.AddWithValue("@TimeLimit", problem.TimeLimit);
-            insertCommand.Parameters.AddWithValue("@MemoryLimit", problem.MemoryLimit);
-            insertCommand.Parameters.AddWithValue("@Status", problem.Status);
-            insertCommand.Parameters.AddWithValue("@Difficulty", problem.Difficulty);
-
-            insertCommand.ExecuteReader();
-
-            db.Close();
+                insertCommand.ExecuteReader();
+            }
         }
 
         internal static Problem GetProblem(int Id)
@@ -322,5 +321,78 @@ namespace Algorithm_Dynamics.Core.Helpers
             return problem;
         }
 
+        internal static List<Problem> GetAllProblems()
+        {
+            List<Problem> problems = new();
+
+            using (SqliteConnection connection = new($"Filename={DbPath}"))
+            {
+                connection.Open();
+
+                SqliteCommand selectCommand = new("SELECT * from Problem", connection);
+
+                SqliteDataReader query = selectCommand.ExecuteReader();
+
+                while (query.Read())
+                {
+                    problems.Add(new(query.GetInt32(0), query.GetGuid(1), query.GetString(2), query.GetString(3), query.GetInt32(4), query.GetInt32(5), (ProblemStatus)query.GetInt32(6), (Difficulty)query.GetInt32(7), new List<TestCase> { }, new List<Tag> { })); 
+                }
+
+            }
+            return problems;
+        }
+
+        /// <summary>
+        /// Pass in a <see cref="TestCase"/> without <see cref="TestCase.Id"/>.
+        /// Save the <see cref="TestCase"/> into database and return a <see cref="TestCase"/> with Id.
+        /// </summary>
+        /// <param name="testCase"></param>
+        /// <param name="problemId"></param>
+        /// <returns></returns>
+        internal static TestCase AddTestCase(TestCase testCase, int? problemId = null)
+        {
+            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            {
+                conn.Open();
+                SqliteCommand insertCommand = new();
+                insertCommand.Connection = conn;
+
+                insertCommand.CommandText = "INSERT INTO TestCase (Input, Output, IsExample, ProblemId) VALUES (@Input, @Output, @IsExample, @ProblemId);";
+                insertCommand.Parameters.AddWithValue("@Input", testCase.Input);
+                insertCommand.Parameters.AddWithValue("@Output", testCase.Output);
+                insertCommand.Parameters.AddWithValue("@IsExample", testCase.IsExample);
+                insertCommand.Parameters.AddWithValue("@ProblemId", problemId == null ? DBNull.Value : problemId);
+
+                insertCommand.ExecuteNonQuery();
+
+                SqliteCommand selectIdCommand = new("SELECT last_insert_rowid();", conn);
+                var query = selectIdCommand.ExecuteReader();
+                if (query.Read())
+                {
+                    testCase.Id = query.GetInt32(0);
+                }
+                return testCase;
+            }
+        }
+
+        internal static List<TestCase> GetAllTestCases()
+        {
+            List<TestCase> testCases = new();
+
+            using (SqliteConnection connection = new($"Filename={DbPath}"))
+            {
+                connection.Open();
+
+                SqliteCommand selectCommand = new("SELECT * from TestCase", connection);
+
+                SqliteDataReader query = selectCommand.ExecuteReader();
+
+                while (query.Read())
+                {
+                    testCases.Add(new(query.GetInt32(0), query.GetString(1), query.GetString(2), query.GetBoolean(3)));
+                }
+            }
+            return testCases;
+        }
     }
 }

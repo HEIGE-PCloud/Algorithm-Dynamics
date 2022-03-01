@@ -81,12 +81,32 @@ namespace Algorithm_Dynamics.Test
         [TestMethod]
         public void TestCreateProblem()
         {
-            DropDatabase("CreateProblem.db");
-            DataAccess.InitializeDatabase("CreateProblem.db");
+            DropDatabase("AddProblem.db");
+            DataAccess.InitializeDatabase("AddProblem.db");
             Problem problem = new(1, Guid.NewGuid(), "Test Problem", "Description", 1000, 64 * 1024 * 1024, ProblemStatus.Todo, Difficulty.Easy, new List<TestCase> { }, new List<Tag> { });
             DataAccess.AddProblem(problem);
 
             Assert.AreEqual(problem, DataAccess.GetProblem(problem.Id));
+        }
+
+        [TestMethod]
+        public void TestGetAllProblems()
+        {
+            DropDatabase("GetAllProblems.db");
+            DataAccess.InitializeDatabase("GetAllProblems.db");
+            Problem problem = new(1, Guid.NewGuid(), "Test Problem", "Description", 1000, 64 * 1024 * 1024, ProblemStatus.Todo, Difficulty.Easy, new List<TestCase> { }, new List<Tag> { });
+            DataAccess.AddProblem(problem);
+            Assert.AreEqual(1, DataAccess.GetAllProblems().Count);
+            Assert.AreEqual(problem, DataAccess.GetAllProblems()[0]);
+        }
+
+        [TestMethod]
+        public void TestAddTestCase()
+        {
+            DropDatabase("AddTestCase.db");
+            DataAccess.InitializeDatabase("AddTestCase.db");
+            TestCase testCase1 = TestCase.Create("input", "output", true);
+            Assert.AreEqual(testCase1, DataAccess.GetAllTestCases()[0]);
         }
     }
 }
