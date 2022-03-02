@@ -349,7 +349,7 @@ namespace Algorithm_Dynamics.Core.Helpers
         /// <param name="testCase"></param>
         /// <param name="problemId"></param>
         /// <returns></returns>
-        internal static TestCase AddTestCase(TestCase testCase, int? problemId = null)
+        internal static TestCase AddTestCase(string input, string output, bool isExample, int? problemId = null)
         {
             using (SqliteConnection conn = new($"Filename={DbPath}"))
             {
@@ -358,20 +358,17 @@ namespace Algorithm_Dynamics.Core.Helpers
                 insertCommand.Connection = conn;
 
                 insertCommand.CommandText = "INSERT INTO TestCase (Input, Output, IsExample, ProblemId) VALUES (@Input, @Output, @IsExample, @ProblemId);";
-                insertCommand.Parameters.AddWithValue("@Input", testCase.Input);
-                insertCommand.Parameters.AddWithValue("@Output", testCase.Output);
-                insertCommand.Parameters.AddWithValue("@IsExample", testCase.IsExample);
+                insertCommand.Parameters.AddWithValue("@Input", input);
+                insertCommand.Parameters.AddWithValue("@Output", output);
+                insertCommand.Parameters.AddWithValue("@IsExample", isExample);
                 insertCommand.Parameters.AddWithValue("@ProblemId", problemId == null ? DBNull.Value : problemId);
 
                 insertCommand.ExecuteNonQuery();
 
                 SqliteCommand selectIdCommand = new("SELECT last_insert_rowid();", conn);
                 var query = selectIdCommand.ExecuteReader();
-                if (query.Read())
-                {
-                    testCase.Id = query.GetInt32(0);
-                }
-                return testCase;
+                query.Read();
+                return new TestCase(query.GetInt32(0), input, output, isExample);
             }
         }
 
@@ -394,6 +391,41 @@ namespace Algorithm_Dynamics.Core.Helpers
             }
             return testCases;
         }
+
+        internal static void EditTestCase(TestCase testCase, string newInput, string newOutput, bool newIsExample, int? newProblemId = null)
+        {
+            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            {
+                conn.Open();
+
+                SqliteCommand updateCommand = new();
+                updateCommand.Connection = conn;
+
+                updateCommand.CommandText = "UPDATE TestCase SET Input = @newInput, Output = @newOutput, IsExample = @newIsExample, ProblemId = @newProblemId WHERE Id = @Id;";
+                updateCommand.Parameters.AddWithValue("@newInput", newInput);
+                updateCommand.Parameters.AddWithValue("@newOutput", newOutput);
+                updateCommand.Parameters.AddWithValue("@newIsExample", newIsExample);
+                updateCommand.Parameters.AddWithValue("@newProblemId", newProblemId == null ? DBNull.Value : newProblemId);
+                updateCommand.Parameters.AddWithValue("@Id", testCase.Id);
+
+                updateCommand.ExecuteNonQuery();
+            }
+        }
+
+        internal static void DeleteTestCase(TestCase testCase)
+        {
+            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            {
+                conn.Open();
+
+                SqliteCommand deleteCommand = new();
+                deleteCommand.Connection = conn;
+                deleteCommand.CommandText = "DELETE FROM TestCase WHERE Id = @Id";
+                deleteCommand.Parameters.AddWithValue("@Id", testCase.Id);
+                deleteCommand.ExecuteNonQuery();
+            }
+        }
+
         /// <summary>
         /// Pass in a <see cref="Tag"/> without <see cref="Tag.Id"/>.
         /// Save the <see cref="Tag"/> into database and return a <see cref="Tag"/> with Id.

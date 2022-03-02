@@ -108,6 +108,29 @@ namespace Algorithm_Dynamics.Test
             TestCase testCase1 = TestCase.Create("input", "output", true);
             Assert.AreEqual(testCase1, DataAccess.GetAllTestCases()[0]);
         }
+
+        [TestMethod]
+        public void TestEditTestCase()
+        {
+            DropDatabase("EditTestCase.db");
+            DataAccess.InitializeDatabase("EditTestCase.db");
+            TestCase testCase = TestCase.Create("input", "output", true);
+            testCase.Input = "newInput";
+            testCase.Output = "newOutput";
+            testCase.IsExample = false;
+            Assert.AreEqual(testCase, DataAccess.GetAllTestCases()[0]);
+        }
+
+        [TestMethod]
+        public void TestDeleteTestCase()
+        {
+            DropDatabase("DeleteTestCase.db");
+            DataAccess.InitializeDatabase("DeleteTestCase.db");
+            TestCase testCase = TestCase.Create("input", "output", true);
+            testCase.Delete();
+            Assert.AreEqual(0, DataAccess.GetAllTestCases().Count);
+        }
+
         [TestMethod]
         public void TestAddTag()
         {
