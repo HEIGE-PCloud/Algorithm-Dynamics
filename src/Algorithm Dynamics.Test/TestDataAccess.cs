@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Algorithm_Dynamics.Core.Helpers;
 using System.Threading.Tasks;
 using System;
@@ -107,6 +107,36 @@ namespace Algorithm_Dynamics.Test
             DataAccess.InitializeDatabase("AddTestCase.db");
             TestCase testCase1 = TestCase.Create("input", "output", true);
             Assert.AreEqual(testCase1, DataAccess.GetAllTestCases()[0]);
+        }
+        [TestMethod]
+        public void TestAddTag()
+        {
+            DropDatabase("AddTag.db");
+            DataAccess.InitializeDatabase("AddTag.db");
+            Tag tag = Tag.Create("tag");
+            Assert.AreEqual(tag, DataAccess.GetAllTags()[0]);
+        }
+
+        [TestMethod]
+        public void TestTagExists()
+        {
+            DropDatabase("TagExists.db");
+            DataAccess.InitializeDatabase("TagExists.db");
+            Assert.AreEqual(false, DataAccess.TagExists("tag"));
+            Tag.Create("tag");
+            Assert.AreEqual(true, DataAccess.TagExists("tag"));
+        }
+
+        [TestMethod]
+        public void TestGetTag()
+        {
+            DropDatabase("GetTag.db");
+            DataAccess.InitializeDatabase("GetTag.db");
+            Tag tag = Tag.Create("tag");
+            Assert.AreEqual(tag, DataAccess.GetTag(tag.Id));
+            Assert.AreEqual(tag, DataAccess.GetTag(tag.Name));
+            Assert.AreEqual(null, DataAccess.GetTag("Non-exist Tag"));
+            Assert.AreEqual(null, DataAccess.GetTag(100));
         }
     }
 }
