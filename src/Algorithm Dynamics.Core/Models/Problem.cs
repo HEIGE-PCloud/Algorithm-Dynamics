@@ -1,8 +1,7 @@
-﻿using System;
+﻿using Algorithm_Dynamics.Core.Helpers;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Algorithm_Dynamics.Core.Models
 {
@@ -19,7 +18,7 @@ namespace Algorithm_Dynamics.Core.Models
         public List<TestCase> TestCases { get; set; }
         public List<Tag> Tags { get; set; }
 
-        public Problem(int id, Guid uid, string name, string description, int timeLimit, long memoryLimit, ProblemStatus status, Difficulty difficulty, List<TestCase> testCases, List<Tag> tags)
+        internal Problem(int id, Guid uid, string name, string description, int timeLimit, long memoryLimit, ProblemStatus status, Difficulty difficulty, List<TestCase> testCases, List<Tag> tags)
         {
             Id = id;
             Uid = uid;
@@ -33,9 +32,23 @@ namespace Algorithm_Dynamics.Core.Models
             Tags = tags;
         }
 
+        public static Problem Create(Guid uid, string name, string description, int timeLimit, long memoryLimit, ProblemStatus status, Difficulty difficulty, List<TestCase> testCases, List<Tag> tags)
+        {
+            var problem = DataAccess.AddProblem(uid, name, description, timeLimit, memoryLimit, status, difficulty, testCases, tags);
+            foreach (var testCase in testCases)
+            {
+                testCase.ProblemId = problem.Id;
+            }
+            foreach (var tag in tags)
+            {
+                DataAccess.AddTagRecord(problem.Id, tag.Id);
+            }
+            return problem;
+        }
+
         public override bool Equals(object obj)
         {
-            var problem = obj as Problem;
+            Problem problem = obj as Problem;
 
             if (problem == null)
                 return false;
@@ -46,6 +59,7 @@ namespace Algorithm_Dynamics.Core.Models
             return HashCode.Combine(Id, Uid, Name, Description);
         }
     }
+
     public enum Difficulty
     {
         Easy,

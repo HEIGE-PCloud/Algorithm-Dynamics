@@ -1,4 +1,4 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Algorithm_Dynamics.Core.Helpers;
 using System.Threading.Tasks;
 using System;
@@ -11,6 +11,7 @@ namespace Algorithm_Dynamics.Test
     [TestClass]
     public class TestDataAccess
     {
+        const int MB = 1024 * 1024;
         private void DropDatabase(string dbPath)
         {
             File.Delete(dbPath);
@@ -83,9 +84,14 @@ namespace Algorithm_Dynamics.Test
         {
             DropDatabase("AddProblem.db");
             DataAccess.InitializeDatabase("AddProblem.db");
-            Problem problem = new(1, Guid.NewGuid(), "Test Problem", "Description", 1000, 64 * 1024 * 1024, ProblemStatus.Todo, Difficulty.Easy, new List<TestCase> { }, new List<Tag> { });
-            DataAccess.AddProblem(problem);
+            TestCase testCase1 = TestCase.Create("input1", "output1", true);
+            TestCase testCase2 = TestCase.Create("input2", "output2", false);
 
+            Tag tag1 = Tag.Create("tag1");
+            Tag tag2 = Tag.Create("tag2");
+            var testCases = new List<TestCase>() { testCase1, testCase2};
+            var tags = new List<Tag>() { tag1, tag2 };
+            Problem problem = Problem.Create(Guid.NewGuid(), "Test Problem", "Description", 1000, 64 * MB, ProblemStatus.Todo, Difficulty.Easy, testCases, tags);
             Assert.AreEqual(problem, DataAccess.GetProblem(problem.Id));
         }
 
@@ -94,10 +100,14 @@ namespace Algorithm_Dynamics.Test
         {
             DropDatabase("GetAllProblems.db");
             DataAccess.InitializeDatabase("GetAllProblems.db");
-            Problem problem = new(1, Guid.NewGuid(), "Test Problem", "Description", 1000, 64 * 1024 * 1024, ProblemStatus.Todo, Difficulty.Easy, new List<TestCase> { }, new List<Tag> { });
-            DataAccess.AddProblem(problem);
-            Assert.AreEqual(1, DataAccess.GetAllProblems().Count);
-            Assert.AreEqual(problem, DataAccess.GetAllProblems()[0]);
+            TestCase testCase1 = TestCase.Create("input1", "output1", true);
+            TestCase testCase2 = TestCase.Create("input2", "output2", false);
+
+            Tag tag1 = Tag.Create("tag1");
+            Tag tag2 = Tag.Create("tag2");
+
+            //Problem problem = Problem.Create(Guid.NewGuid());
+
         }
 
         [TestMethod]

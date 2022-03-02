@@ -1,4 +1,4 @@
-using Algorithm_Dynamics.Core.Models;
+﻿using Algorithm_Dynamics.Core.Models;
 using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
@@ -273,25 +273,29 @@ namespace Algorithm_Dynamics.Core.Helpers
             db.Close();
         }
 
-        internal static void AddProblem(Problem problem)
+        internal static Problem AddProblem(Guid uid, string name, string description, int timeLimit, long memoryLimit, ProblemStatus status, Difficulty difficulty, List<TestCase> testCases, List<Tag> tags)
         {
-            using (SqliteConnection connection = new($"Filename={DbPath}"))
+            using (SqliteConnection conn = new($"Filename={DbPath}"))
             {
-                connection.Open();
+                conn.Open();
                 SqliteCommand insertCommand = new();
-                insertCommand.Connection = connection;
+                insertCommand.Connection = conn;
 
-                insertCommand.CommandText = "INSERT INTO Problem VALUES (@Id, @Uid, @Name, @Description, @TimeLimit, @MemoryLimit, @Status, @Difficulty);";
-                insertCommand.Parameters.AddWithValue("@Id", problem.Id);
-                insertCommand.Parameters.AddWithValue("@Uid", problem.Uid);
-                insertCommand.Parameters.AddWithValue("@Name", problem.Name);
-                insertCommand.Parameters.AddWithValue("@Description", problem.Description);
-                insertCommand.Parameters.AddWithValue("@TimeLimit", problem.TimeLimit);
-                insertCommand.Parameters.AddWithValue("@MemoryLimit", problem.MemoryLimit);
-                insertCommand.Parameters.AddWithValue("@Status", problem.Status);
-                insertCommand.Parameters.AddWithValue("@Difficulty", problem.Difficulty);
+                insertCommand.CommandText = "INSERT INTO Problem (Uid, Name, Description, TimeLimit, MemoryLimit, Status, Difficulty) VALUES (@Uid, @Name, @Description, @TimeLimit, @MemoryLimit, @Status, @Difficulty);";
+                insertCommand.Parameters.AddWithValue("@Uid", uid);
+                insertCommand.Parameters.AddWithValue("@Name", name);
+                insertCommand.Parameters.AddWithValue("@Description", description);
+                insertCommand.Parameters.AddWithValue("@TimeLimit", timeLimit);
+                insertCommand.Parameters.AddWithValue("@MemoryLimit", memoryLimit);
+                insertCommand.Parameters.AddWithValue("@Status", status);
+                insertCommand.Parameters.AddWithValue("@Difficulty", difficulty);
 
-                insertCommand.ExecuteReader();
+                insertCommand.ExecuteNonQuery();
+
+                SqliteCommand selectIdCommand = new("SELECT last_insert_rowid();", conn);
+                var query = selectIdCommand.ExecuteReader();
+                query.Read();
+                return new Problem(query.GetInt32(0), uid, name, description, timeLimit, memoryLimit, status, difficulty, new List<TestCase>() { }, new List<Tag>() { });
             }
         }
 
