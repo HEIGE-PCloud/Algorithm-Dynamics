@@ -1,7 +1,7 @@
 ﻿using Algorithm_Dynamics.Core.Helpers;
 using System;
 using System.Collections.Generic;
-
+using System.Collections.ObjectModel;
 
 namespace Algorithm_Dynamics.Core.Models
 {
@@ -15,9 +15,36 @@ namespace Algorithm_Dynamics.Core.Models
         public long MemoryLimit { get; set; }
         public ProblemStatus Status { get; set; }
         public Difficulty Difficulty { get; set; }
-        public List<TestCase> TestCases { get; set; }
-        public List<Tag> Tags { get; set; }
-
+        private List<TestCase> _testCases;
+        public ReadOnlyCollection<TestCase> TestCases
+        {
+            get => _testCases.AsReadOnly();
+        }
+        public List<Tag> _tags;
+        public ReadOnlyCollection<Tag> Tags
+        {
+            get => _tags.AsReadOnly();
+        }
+        public void AddTestCase(TestCase testCase)
+        {
+            testCase.ProblemId = Id;
+            _testCases.Add(testCase);
+        }
+        public void AddTag(Tag tag)
+        {
+            DataAccess.AddTagRecord(Id, tag.Id);
+            _tags.Add(tag);
+        }
+        public void RemoveTestCase(TestCase testCase)
+        {
+            testCase.Delete();
+            _testCases.Remove(testCase);
+        }
+        public void RemoveTag(Tag tag)
+        {
+            DataAccess.DeleteTagRecord(Id, tag.Id);
+            _tags.Remove(tag);
+        }
         internal Problem(int id, Guid uid, string name, string description, int timeLimit, long memoryLimit, ProblemStatus status, Difficulty difficulty, List<TestCase> testCases, List<Tag> tags)
         {
             Id = id;
@@ -28,21 +55,33 @@ namespace Algorithm_Dynamics.Core.Models
             MemoryLimit = memoryLimit;
             Status = status;
             Difficulty = difficulty;
-            TestCases = testCases;
-            Tags = tags;
+            _testCases = testCases;
+            _tags = tags;
         }
 
-        public static Problem Create(Guid uid, string name, string description, int timeLimit, long memoryLimit, ProblemStatus status, Difficulty difficulty, List<TestCase> testCases, List<Tag> tags)
+        public static Problem Create(Guid uid, string name, string description, int timeLimit, long memoryLimit, ProblemStatus status, Difficulty difficulty, List<TestCase> testCases = null, List<Tag> tags = null)
         {
+            // Create record for Problem
             var problem = DataAccess.AddProblem(uid, name, description, timeLimit, memoryLimit, status, difficulty, testCases, tags);
-            foreach (var testCase in testCases)
+            
+            // Add testcases to problem
+            if (testCases != null)
             {
-                testCase.ProblemId = problem.Id;
+                foreach (var testCase in testCases)
+                {
+                    testCase.ProblemId = problem.Id;
+                }
             }
-            foreach (var tag in tags)
+
+            // Add tags to problem
+            if (tags != null)
             {
-                DataAccess.AddTagRecord(problem.Id, tag.Id);
+                foreach (var tag in tags)
+                {
+                    tag.AttachTo(problem.Id);
+                }
             }
+
             return problem;
         }
 
