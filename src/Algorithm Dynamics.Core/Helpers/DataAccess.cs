@@ -1,4 +1,4 @@
-using Algorithm_Dynamics.Core.Models;
+﻿using Algorithm_Dynamics.Core.Models;
 using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
@@ -547,6 +547,20 @@ namespace Algorithm_Dynamics.Core.Helpers
                 insertCommand.Parameters.AddWithValue("@TagId", tagId);
 
                 insertCommand.ExecuteNonQuery();
+            }
+        }
+
+        internal static void DeleteTagRecord(int problemId, int tagId)
+        {
+            using (SqliteConnection conn = new($"FileName={DbPath}"))
+            {
+                conn.Open();
+                SqliteCommand deleteCommand = new();
+                deleteCommand.Connection = conn;
+                deleteCommand.CommandText = "DELETE FROM TagRecord WHERE ProblemId = @ProblemId AND TagId = @TagId";
+                deleteCommand.Parameters.AddWithValue("@ProblemId", problemId);
+                deleteCommand.Parameters.AddWithValue("@TagId", tagId);
+                deleteCommand.ExecuteNonQuery();
             }
         }
     }

@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Algorithm_Dynamics.Core.Helpers;
 using System.Threading.Tasks;
 using System;
@@ -170,6 +170,20 @@ namespace Algorithm_Dynamics.Test
             Assert.AreEqual(tag, DataAccess.GetTag(tag.Name));
             Assert.AreEqual(null, DataAccess.GetTag("Non-exist Tag"));
             Assert.AreEqual(null, DataAccess.GetTag(100));
+        }
+
+        [TestMethod]
+        public void TestAddDeleteTagRecord()
+        {
+            DropDatabase("AddDeleteTagRecord");
+            DataAccess.InitializeDatabase("AddDeleteTagRecord");
+            Tag tag1 = Tag.Create("tag1");
+            Tag tag2 = Tag.Create("tag2");
+            Problem problem = Problem.Create(Guid.NewGuid(), "Test Problem", "Description", 1000, 64 * MB, ProblemStatus.Todo, Difficulty.Easy);
+            problem.AddTag(tag1);
+            problem.AddTag(tag2);
+            problem.RemoveTag(tag1);
+            Assert.AreEqual(problem, DataAccess.GetAllProblems()[0]);
         }
     }
 }
