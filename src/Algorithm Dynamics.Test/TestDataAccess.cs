@@ -1,4 +1,4 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Algorithm_Dynamics.Core.Helpers;
 using System.Threading.Tasks;
 using System;
@@ -89,7 +89,7 @@ namespace Algorithm_Dynamics.Test
 
             Tag tag1 = Tag.Create("tag1");
             Tag tag2 = Tag.Create("tag2");
-            var testCases = new List<TestCase>() { testCase1, testCase2};
+            var testCases = new List<TestCase>() { testCase1, testCase2 };
             var tags = new List<Tag>() { tag1, tag2 };
             Problem problem = Problem.Create(Guid.NewGuid(), "Test Problem", "Description", 1000, 64 * MB, ProblemStatus.Todo, Difficulty.Easy, testCases, tags);
             Assert.AreEqual(problem, DataAccess.GetProblem(problem.Id));
@@ -105,9 +105,11 @@ namespace Algorithm_Dynamics.Test
 
             Tag tag1 = Tag.Create("tag1");
             Tag tag2 = Tag.Create("tag2");
-
-            //Problem problem = Problem.Create(Guid.NewGuid());
-
+            var testCases = new List<TestCase>() { testCase1, testCase2 };
+            var tags = new List<Tag>() { tag1, tag2 };
+            Problem problem = Problem.Create(Guid.NewGuid(), "Test Problem", "Description", 1000, 64 * MB, ProblemStatus.Todo, Difficulty.Easy, testCases, tags);
+            Problem problem2 = Problem.Create(Guid.NewGuid(), "Test Problem2", "Description2", 2000, 6 * MB, ProblemStatus.Attempted, Difficulty.Hard, testCases, tags);
+            CollectionAssert.AreEqual(new List<Problem>() { problem, problem2 }, DataAccess.GetAllProblems());
         }
 
         [TestMethod]
