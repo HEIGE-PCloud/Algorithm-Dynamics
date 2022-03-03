@@ -1,9 +1,5 @@
 ﻿using Algorithm_Dynamics.Core.Helpers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Algorithm_Dynamics.Core.Models
 {
@@ -20,9 +16,13 @@ namespace Algorithm_Dynamics.Core.Models
         {
             return DataAccess.AddTestCase(input, output, isExample);
         }
-        public void Delete()
+
+        /// <summary>
+        /// Delete the <see cref="TestCase"/> from Database
+        /// </summary>
+        internal void Delete()
         {
-            DataAccess.DeleteTestCase(this);
+            DataAccess.DeleteTestCase(_id);
         }
         public override bool Equals(object obj)
         {
@@ -53,7 +53,7 @@ namespace Algorithm_Dynamics.Core.Models
                 if (value == _input)
                 {
                     _input = value;
-                    DataAccess.EditTestCase(this, value, _output, _isExample);
+                    DataAccess.EditTestCase(_id, value, _output, _isExample);
                 }
             }
         }
@@ -65,7 +65,7 @@ namespace Algorithm_Dynamics.Core.Models
                 if (value != _output)
                 {
                     _output = value;
-                    DataAccess.EditTestCase(this, _input, value, _isExample);
+                    DataAccess.EditTestCase(_id, _input, value, _isExample);
                 }
             }
         }
@@ -77,7 +77,7 @@ namespace Algorithm_Dynamics.Core.Models
                 if (value != _isExample)
                 {
                     _isExample = value;
-                    DataAccess.EditTestCase(this, _input, _output, value);
+                    DataAccess.EditTestCase(_id, _input, _output, value);
                 }
             }
         }
@@ -85,7 +85,7 @@ namespace Algorithm_Dynamics.Core.Models
         {
             set
             {
-                DataAccess.EditTestCase(this, _input, _output, _isExample, value);
+                DataAccess.EditTestCase(_id, _input, _output, _isExample, value);
             }
         }
     }

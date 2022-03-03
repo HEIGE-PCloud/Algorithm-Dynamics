@@ -23,7 +23,7 @@ namespace Algorithm_Dynamics.Core.Models
                 if (value != _name)
                 {
                     _name = value;
-                    DataAccess.EditUser(this, value, _email, _role);
+                    DataAccess.EditUser(_uid, value, _email, _role);
                 }
             }
         }
@@ -35,7 +35,7 @@ namespace Algorithm_Dynamics.Core.Models
                 if (value != _email)
                 {
                     _email = value;
-                    DataAccess.EditUser(this, _name, value, _role);
+                    DataAccess.EditUser(_uid, _name, value, _role);
                 }
             }
         }
@@ -47,7 +47,7 @@ namespace Algorithm_Dynamics.Core.Models
                 if (value != _role)
                 {
                     _role = value;
-                    DataAccess.EditUser(this, _name, _email, value);
+                    DataAccess.EditUser(_uid, _name, _email, value);
                 }
             }
         }

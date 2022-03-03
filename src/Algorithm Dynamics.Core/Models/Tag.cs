@@ -18,6 +18,14 @@ namespace Algorithm_Dynamics.Core.Models
         public string Name { get; set; }
 
         /// <summary>
+        /// Attach the Tag to a problem
+        /// </summary>
+        /// <param name="id"></param>
+        public void AttachTo(int problemId)
+        {
+            DataAccess.AddTagRecord(problemId, Id);
+        }
+        /// <summary>
         /// Create a new <see cref="Tag"/> with a name, and an auto-generated <see cref="Id"/> and save to the Database.
         /// The <see cref="Name"/> is unique, so if a tag exists in the database, it will be returned directly.
         /// </summary>
@@ -40,6 +48,7 @@ namespace Algorithm_Dynamics.Core.Models
             var name = "Tag name";
             return new Tag(id, name);
         }
+
         public override bool Equals(object obj)
         {
             var tag = obj as Tag;
