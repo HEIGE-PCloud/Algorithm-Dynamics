@@ -61,5 +61,9 @@ namespace Algorithm_Dynamics.Core.Models
         {
             return HashCode.Combine(Id, Name);
         }
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

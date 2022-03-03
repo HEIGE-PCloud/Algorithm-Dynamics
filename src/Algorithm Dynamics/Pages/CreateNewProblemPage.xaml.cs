@@ -17,7 +17,7 @@ namespace Algorithm_Dynamics.Pages
         {
             InitializeComponent();
         }
-        public ObservableCollection<PrimitiveTestCase> TestCases = new() { new PrimitiveTestCase("", "", true) };
+        public ObservableCollection<PrimitiveTestCase> TestCases;
         public enum Mode
         {
             Create,
@@ -34,11 +34,14 @@ namespace Algorithm_Dynamics.Pages
                     return "Edit Problem";
             }
         }
-        private string _name;
-        private string _description;
+        bool _isEdit = false;
+        private Problem _problem;
+        private string _name = "";
+        private string _tags = "";
+        private string _description = "";
         private int _timeLimit = 1000;
         private int _memoryLimit = 64;
-        private Difficulty _difficulty;
+        private int _difficulty = (int)Difficulty.Easy;
         /// <summary>
         /// Handle the Navigation Arguments
         /// Set the <see cref="_pageMode"/> if the Parameter is not <see cref="null"/>.
@@ -48,9 +51,30 @@ namespace Algorithm_Dynamics.Pages
         {
             if (e.Parameter != null)
             {
+                _isEdit = true;
                 var parameter = (Tuple<Mode, Problem>)e.Parameter;
                 _pageMode = parameter.Item1;
-                //_problem = parameter.Item2;
+                _problem = parameter.Item2;
+                _name = _problem.Name;
+                _description = _problem.Description;
+                _timeLimit = _problem.TimeLimit;
+                _memoryLimit = (int)_problem.MemoryLimit / 1024 / 1024;
+                _difficulty = (int)_problem.Difficulty;
+                TestCases = new();
+                foreach (var t in _problem.TestCases)
+                {
+                    TestCases.Add(new PrimitiveTestCase(t.Input, t.Output, t.IsExample));
+                }
+                for (int i = 0; i < _problem.Tags.Count - 1; i++)
+                {
+                    _tags += _problem.Tags[i].Name + ", ";
+                }
+                _tags += _problem.Tags[_problem.Tags.Count - 1];
+            }
+            else
+            {
+                _isEdit = false;
+                TestCases = new() { new PrimitiveTestCase("", "", true) };
             }
             base.OnNavigatedTo(e);
         }
@@ -109,22 +133,46 @@ namespace Algorithm_Dynamics.Pages
         /// <param name="e"></param>
         private void CreateProblem(object sender, RoutedEventArgs e)
         {
-            // Create tag
-            List<Tag> tags = new();
-            foreach (var tagName in TokenTextBox.Text.Split(',').ToList())
+            if (_isEdit == false)
             {
-                tags.Add(Core.Models.Tag.Create(tagName));
-            }
+                // Create tag
+                List<Tag> tags = new();
+                foreach (var t in _tags.Split(',').ToList())
+                {
+                    tags.Add(Core.Models.Tag.Create(t.Trim()));
+                }
 
-            // Create test cases
-            List<TestCase> testCases = new();
-            foreach (var t in TestCases)
+                // Create test cases
+                List<TestCase> testCases = new();
+                foreach (var t in TestCases)
+                {
+                    testCases.Add(TestCase.Create(t.Input, t.Output, t.IsExample));
+                }
+
+                // Create Problem
+                Problem.Create(_name, _description, _timeLimit, _memoryLimit * 1024 * 1024, (Difficulty)_difficulty, testCases, tags);
+            }
+            else
             {
-                testCases.Add(TestCase.Create(t.Input, t.Output, t.IsExample));
-            }
+                _problem.Name = _name;
+                _problem.Description = _description;
+                _problem.TimeLimit = _timeLimit;
+                _problem.MemoryLimit = _memoryLimit * 1024 * 1024;
+                _problem.Difficulty = (Difficulty)_difficulty;
+                while (_problem.Tags.Count != 0) _problem.RemoveTag(_problem.Tags[0]);
+                while (_problem.TestCases.Count != 0) _problem.RemoveTestCase(_problem.TestCases[0]);
+                // Create tag
+                foreach (var t in _tags.Split(',').ToList())
+                {
+                    _problem.AddTag(Core.Models.Tag.Create(t.Trim()));
+                }
 
-            // Create Problem
-            Problem.Create(_name, _description, _timeLimit, _memoryLimit, _difficulty);
+                // Create test cases
+                foreach (var t in TestCases)
+                {
+                    _problem.AddTestCase(TestCase.Create(t.Input, t.Output, t.IsExample));
+                }
+            }
             App.NavigateTo(typeof(ProblemsPage));
         }
     }

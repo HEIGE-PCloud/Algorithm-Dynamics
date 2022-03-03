@@ -43,10 +43,14 @@ namespace Algorithm_Dynamics.Core.Models
         {
             get
             {
-                string str = "";
-                foreach (var tag in _tags)
+                string str = " ";
+                if (_tags.Count > 0)
                 {
-                    str += tag.Name + ", ";
+                    for (int i = 0; i < _tags.Count - 1; i++)
+                    {
+                        str += _tags[i].Name + ", ";
+                    }
+                    str += _tags[^1].Name;
                 }
                 return str;
             }

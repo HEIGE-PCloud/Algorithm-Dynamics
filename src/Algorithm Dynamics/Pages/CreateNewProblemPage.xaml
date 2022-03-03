@@ -24,16 +24,16 @@
                 Text="{x:Bind _name, Mode=TwoWay}"
                 HorizontalAlignment="Left"/>
             <TextBox
-                x:Name="TokenTextBox"
                 Header="Tags"
                 Margin="0 22 0 0"
                 MaxLength="64"
                 Width="400"
+                Text="{x:Bind _tags, Mode=TwoWay}"
                 PlaceholderText="Add Tags"
                 HorizontalAlignment="Left"/>
             <ComboBox
                 Header="Difficulty"
-                SelectedIndex="0"
+                SelectedIndex="{x:Bind _difficulty, Mode=TwoWay}"
                 Margin="0 22 0 0"
                 Width="400"
                 Text="{x:Bind _difficulty, Mode=TwoWay}"
