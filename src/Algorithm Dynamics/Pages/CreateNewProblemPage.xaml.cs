@@ -34,7 +34,6 @@ namespace Algorithm_Dynamics.Pages
                     return "Edit Problem";
             }
         }
-        bool _isEdit = false;
         private Problem _problem;
         private string _name = "";
         private string _tags = "";
@@ -51,30 +50,27 @@ namespace Algorithm_Dynamics.Pages
         {
             if (e.Parameter != null)
             {
-                _isEdit = true;
                 var parameter = (Tuple<Mode, Problem>)e.Parameter;
                 _pageMode = parameter.Item1;
                 _problem = parameter.Item2;
-                _name = _problem.Name;
-                _description = _problem.Description;
-                _timeLimit = _problem.TimeLimit;
-                _memoryLimit = (int)_problem.MemoryLimit / 1024 / 1024;
-                _difficulty = (int)_problem.Difficulty;
-                TestCases = new();
-                foreach (var t in _problem.TestCases)
+                if (_pageMode == Mode.Edit)
                 {
-                    TestCases.Add(new PrimitiveTestCase(t.Input, t.Output, t.IsExample));
+                    _name = _problem.Name;
+                    _description = _problem.Description;
+                    _timeLimit = _problem.TimeLimit;
+                    _memoryLimit = (int)_problem.MemoryLimit / 1024 / 1024;
+                    _difficulty = (int)_problem.Difficulty;
+                    TestCases = new();
+                    foreach (var t in _problem.TestCases)
+                    {
+                        TestCases.Add(new PrimitiveTestCase(t.Input, t.Output, t.IsExample));
+                    }
+                    _tags = _problem.str_Tags;
                 }
-                for (int i = 0; i < _problem.Tags.Count - 1; i++)
+                else
                 {
-                    _tags += _problem.Tags[i].Name + ", ";
+                    TestCases = new() { new PrimitiveTestCase("", "", true) };
                 }
-                _tags += _problem.Tags[_problem.Tags.Count - 1];
-            }
-            else
-            {
-                _isEdit = false;
-                TestCases = new() { new PrimitiveTestCase("", "", true) };
             }
             base.OnNavigatedTo(e);
         }
@@ -133,7 +129,7 @@ namespace Algorithm_Dynamics.Pages
         /// <param name="e"></param>
         private void CreateProblem(object sender, RoutedEventArgs e)
         {
-            if (_isEdit == false)
+            if (_pageMode == Mode.Create)
             {
                 // Create tag
                 List<Tag> tags = new();
