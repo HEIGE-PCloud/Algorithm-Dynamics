@@ -34,7 +34,7 @@
                         x:Name="ProblemMarkdownTextBlock"
                         Margin="8"
                         Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-                        Text="{x:Bind CodeEditor.Code, Mode=OneWay}"/>
+                        Text="{x:Bind ProblemDescription, Mode=OneTime}"/>
                 </ScrollViewer>
             </PivotItem>
             <PivotItem Header="Submissions">

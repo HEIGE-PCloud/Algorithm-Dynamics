@@ -8,6 +8,7 @@ using Windows.Storage;
 using Algorithm_Dynamics.Core.Helpers;
 using Algorithm_Dynamics.Core.Models;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Algorithm_Dynamics.Pages
 {
@@ -224,7 +225,9 @@ namespace Algorithm_Dynamics.Pages
         /// <param name="e"></param>
         private void StartProblem(object sender, RoutedEventArgs e)
         {
-            App.NavigateTo(typeof(CodingPage));
+            var button = (Button)sender;
+            var problem = (Problem)button.DataContext;
+            App.NavigateTo(typeof(CodingPage), Tuple.Create(problem, Problems.ToList()));
         }
 
         /// <summary>
@@ -245,6 +248,38 @@ namespace Algorithm_Dynamics.Pages
         private void CreateNewProblemList(object sender, RoutedEventArgs e)
         {
             App.NavigateTo(typeof(CreateNewProblemListPage));
+        }
+
+        private void Search(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+        {
+
+        }
+
+        private void Search(object sender, SelectionChangedEventArgs e)
+        {
+            Problems.Clear();
+            var problems = DataAccess.GetAllProblems();
+            //if (DifficultyComboBox.SelectedIndex == -1 && TagComboBox.SelectedIndex == -1 && ListComboBox.SelectedIndex == -1 && StatusComboBox.SelectedIndex == -1)
+            //{
+
+            //    return;
+            //}
+
+            if (DifficultyComboBox.SelectedIndex != -1)
+            {
+                var difficulty = (Difficulty)DifficultyComboBox.SelectedIndex;
+                foreach (var problem in problems)
+                {
+                    if (problem.Difficulty != difficulty)
+                        problems.Remove(problem);
+                }
+            }
+
+            foreach (var problem in problems)
+            {
+                Problems.Add(problem);
+            }
+
         }
     }
 }

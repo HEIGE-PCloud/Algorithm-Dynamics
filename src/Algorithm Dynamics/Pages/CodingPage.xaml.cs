@@ -1,7 +1,10 @@
-﻿using Microsoft.UI.Windowing;
+﻿using Algorithm_Dynamics.Core.Models;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Navigation;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -11,6 +14,19 @@ namespace Algorithm_Dynamics.Pages
 {
     public sealed partial class CodingPage : Page
     {
+        private Problem _currentProblem;
+        private List<Problem> _currentProblemList;
+        public string ProblemDescription
+        {
+            get
+            {
+                // TODO: compose time limit and example test cases
+                if (_currentProblem != null)
+                    return _currentProblem.Description;
+                return "";
+            }
+        }
+
         public string Code { get; set; }
         public CodingPage()
         {
@@ -19,23 +35,21 @@ namespace Algorithm_Dynamics.Pages
         public ObservableCollection<Submission> Submissions = new() 
         {
             new Submission(DateTime.Now, "Accepted", "8 ms", "9 MB", "cpp", "hello world"),
-            new Submission(DateTime.Now, "Accepted", "8 ms", "9 MB", "cpp", "hello world"),
-            new Submission(DateTime.Now, "Accepted", "8 ms", "9 MB", "cpp", "hello world"),
-            new Submission(DateTime.Now, "Accepted", "8 ms", "9 MB", "cpp", "hello world"),
-            new Submission(DateTime.Now, "Accepted", "8 ms", "9 MB", "cpp", "hello world"),
-            new Submission(DateTime.Now, "Accepted", "8 ms", "9 MB", "cpp", "hello world"),
-            new Submission(DateTime.Now, "Accepted", "8 ms", "9 MB", "cpp", "hello world"),
-            new Submission(DateTime.Now, "Accepted", "8 ms", "9 MB", "cpp", "hello world"),
-            new Submission(DateTime.Now, "Accepted", "8 ms", "9 MB", "cpp", "hello world"),
-            new Submission(DateTime.Now, "Accepted", "8 ms", "9 MB", "cpp", "hello world"),
-            new Submission(DateTime.Now, "Accepted", "8 ms", "9 MB", "cpp", "hello world"),
-            new Submission(DateTime.Now, "Accepted", "8 ms", "9 MB", "cpp", "hello world"),
         };
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            if (e.Parameter != null)
+            {
+                var parameter = (Tuple<Problem, List<Problem>>)e.Parameter;
+                _currentProblem = parameter.Item1;
+                _currentProblemList = parameter.Item2;
+            }
+            base.OnNavigatedTo(e);
+        }
         private void LanguageComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             CodeEditor.Lang = LanguageComboBox.SelectedItem as string;
         }
-
         /// <summary>
         /// Toggle the fullscreen mode for the app
         /// Toggle the <see cref="AppWindowPresenterKind"/> and <see cref="FullScreenIcon.Glyph"/>
