@@ -1,4 +1,4 @@
-﻿using Algorithm_Dynamics.Core.Models;
+using Algorithm_Dynamics.Core.Models;
 using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
@@ -254,7 +254,7 @@ namespace Algorithm_Dynamics.Core.Helpers
             return users;
         }
 
-        internal static void EditUser(User user, string newName, string newEmail, Role newRole)
+        internal static void EditUser(Guid uid, string newName, string newEmail, Role newRole)
         {
             using SqliteConnection db = new($"Filename={DbPath}");
             db.Open();
@@ -266,7 +266,7 @@ namespace Algorithm_Dynamics.Core.Helpers
             updateCommand.Parameters.AddWithValue("@newName", newName);
             updateCommand.Parameters.AddWithValue("@newEmail", newEmail);
             updateCommand.Parameters.AddWithValue("@newRole", newRole);
-            updateCommand.Parameters.AddWithValue("@Uid", user.Uid.ToString());
+            updateCommand.Parameters.AddWithValue("@Uid", uid.ToString());
 
             updateCommand.ExecuteNonQuery();
 
@@ -396,7 +396,7 @@ namespace Algorithm_Dynamics.Core.Helpers
             return testCases;
         }
 
-        internal static void EditTestCase(TestCase testCase, string newInput, string newOutput, bool newIsExample, int? newProblemId = null)
+        internal static void EditTestCase(int id, string newInput, string newOutput, bool newIsExample, int? newProblemId = null)
         {
             using (SqliteConnection conn = new($"Filename={DbPath}"))
             {
@@ -410,13 +410,13 @@ namespace Algorithm_Dynamics.Core.Helpers
                 updateCommand.Parameters.AddWithValue("@newOutput", newOutput);
                 updateCommand.Parameters.AddWithValue("@newIsExample", newIsExample);
                 updateCommand.Parameters.AddWithValue("@newProblemId", newProblemId == null ? DBNull.Value : newProblemId);
-                updateCommand.Parameters.AddWithValue("@Id", testCase.Id);
+                updateCommand.Parameters.AddWithValue("@Id", id);
 
                 updateCommand.ExecuteNonQuery();
             }
         }
 
-        internal static void DeleteTestCase(TestCase testCase)
+        internal static void DeleteTestCase(int id)
         {
             using (SqliteConnection conn = new($"Filename={DbPath}"))
             {
@@ -425,7 +425,7 @@ namespace Algorithm_Dynamics.Core.Helpers
                 SqliteCommand deleteCommand = new();
                 deleteCommand.Connection = conn;
                 deleteCommand.CommandText = "DELETE FROM TestCase WHERE Id = @Id";
-                deleteCommand.Parameters.AddWithValue("@Id", testCase.Id);
+                deleteCommand.Parameters.AddWithValue("@Id", id);
                 deleteCommand.ExecuteNonQuery();
             }
         }
