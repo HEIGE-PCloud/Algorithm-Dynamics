@@ -7,14 +7,100 @@ namespace Algorithm_Dynamics.Core.Models
 {
     public class Problem
     {
-        public int Id { get; set; }
-        public Guid Uid { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public int TimeLimit { get; set; }
-        public long MemoryLimit { get; set; }
-        public ProblemStatus Status { get; set; }
-        public Difficulty Difficulty { get; set; }
+        private int _id;
+        private Guid _uid;
+        private string _name;
+        private string _description;
+        private int _timeLimit;
+        private long _memoryLimit;
+        private ProblemStatus _status;
+        private Difficulty _difficulty;
+        private void UpdateDatabase()
+        {
+            DataAccess.EditProblem(_id, _name, _description, _timeLimit, _memoryLimit, _status, _difficulty);
+        }
+        public int Id 
+        { 
+            get => _id; 
+            private set => _id = value;
+        }
+        public Guid Uid 
+        { 
+            get => _uid;
+            private set => _uid = value;
+        }
+        public string Name 
+        { 
+            get => _name; 
+            set
+            {
+                if (_name != value)
+                {
+                    _name = value;
+                    UpdateDatabase();
+                }
+            }
+        }
+        public string Description
+        {
+            get => _description;
+            set
+            {
+                if (_description != value)
+                {
+                    _description = value;
+                    UpdateDatabase();
+                }
+            }
+        }
+        public int TimeLimit 
+        { 
+            get => _timeLimit;
+            set 
+            {
+                if (_timeLimit != value)
+                {
+                    _timeLimit = value;
+                    UpdateDatabase();
+                }
+            }
+        }
+        public long MemoryLimit 
+        { 
+            get => _memoryLimit;
+            set
+            {
+                if (_memoryLimit != value)
+                {
+                    _memoryLimit = value;
+                    UpdateDatabase();
+                }
+            }
+        }
+        public ProblemStatus Status 
+        { 
+            get => _status;
+            set
+            { 
+                if (_status != value)
+                {
+                    _status = value;
+                    UpdateDatabase();
+                }
+            }
+        }
+        public Difficulty Difficulty 
+        {
+            get => _difficulty;
+            set
+            {
+                if (_difficulty != value)
+                {
+                    _difficulty = value;
+                    UpdateDatabase();
+                }
+            }
+        }
         public string str_Difficulty
         {
             get
@@ -87,17 +173,16 @@ namespace Algorithm_Dynamics.Core.Models
         }
         internal Problem(int id, Guid uid, string name, string description, int timeLimit, long memoryLimit, ProblemStatus status, Difficulty difficulty, List<TestCase> testCases, List<Tag> tags)
         {
-            Id = id;
-            Uid = uid;
-            Name = name;
-            Description = description;
-            TimeLimit = timeLimit;
-            MemoryLimit = memoryLimit;
-            Status = status;
-            Difficulty = difficulty;
+            _id = id;
+            _uid = uid;
+            _name = name;
+            _description = description;
+            _timeLimit = timeLimit;
+            _memoryLimit = memoryLimit;
+            _status = status;
+            _difficulty = difficulty;
             _testCases = testCases;
             _tags = tags;
-
         }
 
         public static Problem Create(string name, string description, int timeLimit, long memoryLimit, Difficulty difficulty, List<TestCase> testCases = null, List<Tag> tags = null)

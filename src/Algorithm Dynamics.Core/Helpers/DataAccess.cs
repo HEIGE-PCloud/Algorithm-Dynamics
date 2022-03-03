@@ -333,6 +333,26 @@ namespace Algorithm_Dynamics.Core.Helpers
             return problem;
         }
 
+        internal static void EditProblem(int id, string name, string description, int timeLimit, long memoryLimit, ProblemStatus status, Difficulty difficulty)
+        {
+            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            {
+                conn.Open();
+                SqliteCommand updateCommand = new();
+                updateCommand.Connection = conn;
+                updateCommand.CommandText = "UPDATE Problem SET Name = @Name, Description = @Description, TimeLimit = @TimeLimit, MemoryLimit = @MemoryLimit, Status = @Status, Difficulty = @Difficulty WHERE Id = @Id;";
+                updateCommand.Parameters.AddWithValue("@Name", name);
+                updateCommand.Parameters.AddWithValue("@Description", description);
+                updateCommand.Parameters.AddWithValue("@TimeLimit", timeLimit);
+                updateCommand.Parameters.AddWithValue("@MemoryLimit", memoryLimit);
+                updateCommand.Parameters.AddWithValue("@Status", status);
+                updateCommand.Parameters.AddWithValue("@Difficulty", difficulty);
+                updateCommand.Parameters.AddWithValue("@Id", id);
+
+                updateCommand.ExecuteNonQuery();
+            }
+        }
+
         public static List<Problem> GetAllProblems()
         {
             List<Problem> problems = new();

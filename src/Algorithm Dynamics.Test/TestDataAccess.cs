@@ -96,6 +96,21 @@ namespace Algorithm_Dynamics.Test
         }
 
         [TestMethod]
+        public void TestEditProblem()
+        {
+            DropDatabase("EditProblem.db");
+            DataAccess.InitializeDatabase("EditProblem.db");
+            Problem problem = Problem.Create("Test Problem", "Description", 1000, 64 * MB, Difficulty.Easy);
+            problem.Name = "New name";
+            problem.Description = "New description";
+            problem.TimeLimit = 2000;
+            problem.MemoryLimit = 128 * MB;
+            problem.Difficulty = Difficulty.Easy;
+            problem.Status = ProblemStatus.Solved;
+            Assert.AreEqual(problem, DataAccess.GetProblem(problem.Id));
+        }
+
+        [TestMethod]
         public void TestGetAllProblems()
         {
             DropDatabase("GetAllProblems.db");
