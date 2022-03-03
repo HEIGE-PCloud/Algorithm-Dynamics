@@ -295,7 +295,7 @@ namespace Algorithm_Dynamics.Core.Helpers
                 SqliteCommand selectIdCommand = new("SELECT last_insert_rowid();", conn);
                 var query = selectIdCommand.ExecuteReader();
                 query.Read();
-                return new Problem(query.GetInt32(0), uid, name, description, timeLimit, memoryLimit, status, difficulty, new List<TestCase>() { }, new List<Tag>() { });
+                return new Problem(query.GetInt32(0), uid, name, description, timeLimit, memoryLimit, status, difficulty, testCases, tags);
             }
         }
 
@@ -313,7 +313,15 @@ namespace Algorithm_Dynamics.Core.Helpers
 
                 if (query.Read())
                 {
-                    problem = new(query.GetInt32(0), query.GetGuid(1), query.GetString(2), query.GetString(3), query.GetInt32(4), query.GetInt32(5), (ProblemStatus)query.GetInt32(6), (Difficulty)query.GetInt32(7), new List<TestCase> { }, new List<Tag> { });
+                    int id = query.GetInt32(0);
+                    Guid uid = query.GetGuid(1);
+                    string name = query.GetString(2);
+                    string description = query.GetString(3);
+                    int timeLimit = query.GetInt32(4);
+                    int memoryLimit = query.GetInt32(5);
+                    ProblemStatus status = (ProblemStatus)query.GetInt32(6);
+                    Difficulty difficulty = (Difficulty)query.GetInt32(7);
+                    problem = new(id, uid, name, description, timeLimit, memoryLimit, status, difficulty, GetTestCases(id), GetTags(id));
                 }
                 else
                 {
@@ -339,7 +347,15 @@ namespace Algorithm_Dynamics.Core.Helpers
 
                 while (query.Read())
                 {
-                    problems.Add(new(query.GetInt32(0), query.GetGuid(1), query.GetString(2), query.GetString(3), query.GetInt32(4), query.GetInt32(5), (ProblemStatus)query.GetInt32(6), (Difficulty)query.GetInt32(7), new List<TestCase> { }, new List<Tag> { })); 
+                    int id = query.GetInt32(0);
+                    Guid uid = query.GetGuid(1);
+                    string name = query.GetString(2);
+                    string description = query.GetString(3);
+                    int timeLimit = query.GetInt32(4);
+                    int memoryLimit = query.GetInt32(5);
+                    ProblemStatus status = (ProblemStatus)query.GetInt32(6);
+                    Difficulty difficulty = (Difficulty)query.GetInt32(7);
+                    problems.Add(new(id, uid, name, description, timeLimit, memoryLimit, status, difficulty, GetTestCases(id), GetTags(id))); 
                 }
 
             }
@@ -428,6 +444,31 @@ namespace Algorithm_Dynamics.Core.Helpers
                 deleteCommand.Parameters.AddWithValue("@Id", id);
                 deleteCommand.ExecuteNonQuery();
             }
+        }
+
+        /// <summary>
+        /// Get all TestCases under that have the problemId
+        /// </summary>
+        /// <returns></returns>
+        internal static List<TestCase> GetTestCases(int problemId)
+        {
+            List<TestCase> testCases = new();
+            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            {
+                conn.Open();
+
+                SqliteCommand selectCommand = new();
+                selectCommand.Connection = conn;
+                selectCommand.CommandText = "SELECT * FROM TestCase WHERE ProblemId = @ProblemId";
+                selectCommand.Parameters.AddWithValue("@ProblemId", problemId);
+                SqliteDataReader query = selectCommand.ExecuteReader();
+
+                while (query.Read())
+                {
+                    testCases.Add(new TestCase(query.GetInt32(0), query.GetString(1), query.GetString(2), query.GetBoolean(3)));
+                }
+            }
+            return testCases;
         }
 
         /// <summary>
@@ -532,6 +573,27 @@ namespace Algorithm_Dynamics.Core.Helpers
                     return null;
                 }
             }
+        }
+
+        internal static List<Tag> GetTags(int problemId)
+        {
+            List<Tag> tags = new();
+            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            {
+                conn.Open();
+
+                SqliteCommand selectCommand = new();
+                selectCommand.Connection = conn;
+                selectCommand.CommandText = "SELECT TagRecord.TagId, Tag.Name FROM TagRecord INNER JOIN Tag ON TagRecord.TagId = Tag.Id WHERE ProblemId = @ProblemId ";
+                selectCommand.Parameters.AddWithValue("@ProblemId", problemId);
+                SqliteDataReader query = selectCommand.ExecuteReader();
+
+                while (query.Read())
+                {
+                    tags.Add(new Tag(query.GetInt32(0), query.GetString(1)));
+                }
+            }
+            return tags;
         }
 
         internal static void AddTagRecord(int problemId, int tagId)

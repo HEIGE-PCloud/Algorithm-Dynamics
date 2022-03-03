@@ -105,10 +105,11 @@ namespace Algorithm_Dynamics.Test
 
             Tag tag1 = Tag.Create("tag1");
             Tag tag2 = Tag.Create("tag2");
-            var testCases = new List<TestCase>() { testCase1, testCase2 };
+            var testCases1 = new List<TestCase>() { testCase1 };
+            var testCases2 = new List<TestCase>() { testCase2 };
             var tags = new List<Tag>() { tag1, tag2 };
-            Problem problem = Problem.Create("Test Problem", "Description", 1000, 64 * MB, Difficulty.Easy, testCases, tags);
-            Problem problem2 = Problem.Create("Test Problem2", "Description2", 2000, 6 * MB, Difficulty.Hard, testCases, tags);
+            Problem problem = Problem.Create("Test Problem", "Description", 1000, 64 * MB, Difficulty.Easy, testCases1, tags);
+            Problem problem2 = Problem.Create("Test Problem2", "Description2", 2000, 6 * MB, Difficulty.Hard, testCases2, tags);
             CollectionAssert.AreEqual(new List<Problem>() { problem, problem2 }, DataAccess.GetAllProblems());
         }
 

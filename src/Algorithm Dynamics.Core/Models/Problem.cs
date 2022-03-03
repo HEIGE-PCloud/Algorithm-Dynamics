@@ -93,6 +93,7 @@ namespace Algorithm_Dynamics.Core.Models
             Difficulty = difficulty;
             _testCases = testCases;
             _tags = tags;
+
         }
 
         public static Problem Create(string name, string description, int timeLimit, long memoryLimit, Difficulty difficulty, List<TestCase> testCases = null, List<Tag> tags = null)
@@ -108,6 +109,10 @@ namespace Algorithm_Dynamics.Core.Models
                     testCase.ProblemId = problem.Id;
                 }
             }
+            else
+            {
+                problem._testCases = new() { };
+            }
 
             // Add tags to problem
             if (tags != null)
@@ -117,6 +122,10 @@ namespace Algorithm_Dynamics.Core.Models
                     tag.AttachTo(problem.Id);
                 }
             }
+            else
+            {
+                problem._tags = new() { };
+            }
 
             return problem;
         }
@@ -124,10 +133,29 @@ namespace Algorithm_Dynamics.Core.Models
         public override bool Equals(object obj)
         {
             Problem problem = obj as Problem;
-
             if (problem == null)
                 return false;
-            return problem.Id == Id && problem.Uid == Uid && problem.Name == Name && problem.Description == Description;
+            if ((problem.Id == Id && problem.Uid == Uid && problem.Name == Name && problem.Description == Description) == false)
+                return false;
+            if (problem.TestCases.Count != TestCases.Count)
+                return false;
+            if (problem.Tags.Count != Tags.Count)
+                return false;
+            for (int i = 0; i < TestCases.Count; i++)
+            {
+                if (Equals(TestCases[i], problem.TestCases[i]) == false)
+                {
+                    return false;
+                }
+            }
+            for (int i = 0; i < Tags.Count; i++)
+            {
+                if (Equals(Tags[i], problem.Tags[i]) == false)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
         public override int GetHashCode()
         {
