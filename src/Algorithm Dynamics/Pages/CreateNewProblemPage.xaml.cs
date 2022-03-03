@@ -4,7 +4,9 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Windows.Foundation;
 
 namespace Algorithm_Dynamics.Pages
@@ -15,7 +17,7 @@ namespace Algorithm_Dynamics.Pages
         {
             InitializeComponent();
         }
-        public ObservableCollection<TestCase> TestCases = new() { new TestCase("", "", true) };
+        public ObservableCollection<PrimitiveTestCase> TestCases = new() { new PrimitiveTestCase("", "", true) };
         public enum Mode
         {
             Create,
@@ -32,7 +34,11 @@ namespace Algorithm_Dynamics.Pages
                     return "Edit Problem";
             }
         }
-        private Problem _problem;
+        private string _name;
+        private string _description;
+        private int _timeLimit = 1000;
+        private int _memoryLimit = 64;
+        private Difficulty _difficulty;
         /// <summary>
         /// Handle the Navigation Arguments
         /// Set the <see cref="_pageMode"/> if the Parameter is not <see cref="null"/>.
@@ -44,37 +50,37 @@ namespace Algorithm_Dynamics.Pages
             {
                 var parameter = (Tuple<Mode, Problem>)e.Parameter;
                 _pageMode = parameter.Item1;
-                _problem = parameter.Item2;
+                //_problem = parameter.Item2;
             }
             base.OnNavigatedTo(e);
         }
         /// <summary>
-        /// Add a new <see cref="TestCase"/> to the list.
+        /// Add a new <see cref="PrimitiveTestCase"/> to the list.
         /// Scroll the <see cref="scrollViewer"/> to the new position.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void AddTestCase(object sender, RoutedEventArgs e)
         {
-            TestCases.Add(new TestCase("", "", false));
+            TestCases.Add(new PrimitiveTestCase("", "", false));
             GeneralTransform transform = AddTestCaseButton.TransformToVisual((UIElement)scrollViewer.Content);
             Point position = transform.TransformPoint(new Point(0, 0));
             scrollViewer.ChangeView(null, position.Y, null, false);
         }
 
         /// <summary>
-        /// Delete the selected <see cref="TestCase"/>. Update the <see cref="TestCase.Id"/>.
+        /// Delete the selected <see cref="PrimitiveTestCase"/>. Update the <see cref="PrimitiveTestCase.Id"/>.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void DeleteSingleTestCase(object sender, RoutedEventArgs e)
         {
-            TestCase selectedItem = ((FrameworkElement)sender).DataContext as TestCase;
+            PrimitiveTestCase selectedItem = ((FrameworkElement)sender).DataContext as PrimitiveTestCase;
             TestCases.Remove(selectedItem);
         }
 
         /// <summary>
-        /// Delete all <see cref="TestCase"/>, hide the <see cref="DeleteConfirmFlyout"/>.
+        /// Delete all <see cref="PrimitiveTestCase"/>, hide the <see cref="DeleteConfirmFlyout"/>.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -103,16 +109,31 @@ namespace Algorithm_Dynamics.Pages
         /// <param name="e"></param>
         private void CreateProblem(object sender, RoutedEventArgs e)
         {
-            // TODO: save the Problem to database
+            // Create tag
+            List<Tag> tags = new();
+            foreach (var tagName in TokenTextBox.Text.Split(',').ToList())
+            {
+                tags.Add(Core.Models.Tag.Create(tagName));
+            }
+
+            // Create test cases
+            List<TestCase> testCases = new();
+            foreach (var t in TestCases)
+            {
+                testCases.Add(TestCase.Create(t.Input, t.Output, t.IsExample));
+            }
+
+            // Create Problem
+            Problem.Create(_name, _description, _timeLimit, _memoryLimit, _difficulty);
             App.NavigateTo(typeof(ProblemsPage));
         }
     }
-    public class TestCase
+    public class PrimitiveTestCase
     {
         public string Input { get; set; }
         public string Output { get; set; }
         public bool IsExample { get; set; }
-        public TestCase(string input, string output, bool isExample)
+        public PrimitiveTestCase(string input, string output, bool isExample)
         {
             Input = input;
             Output = output;

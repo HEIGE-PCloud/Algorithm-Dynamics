@@ -21,23 +21,22 @@
                 Header="Title"
                 MaxLength="64"
                 Width="400"
-                Text="{x:Bind _problem.Name, Mode=TwoWay}"
+                Text="{x:Bind _name, Mode=TwoWay}"
                 HorizontalAlignment="Left"/>
-            <controls:TokenizingTextBox
+            <TextBox
+                x:Name="TokenTextBox"
                 Header="Tags"
-                Margin="0 22 0 0" 
+                Margin="0 22 0 0"
+                MaxLength="64"
                 Width="400"
-                MaximumTokens="3"
                 PlaceholderText="Add Tags"
-                SelectionMode="Extended"
-                Text=""
                 HorizontalAlignment="Left"/>
             <ComboBox
                 Header="Difficulty"
                 SelectedIndex="0"
                 Margin="0 22 0 0"
                 Width="400"
-                Text="{x:Bind _problem.Difficulty, Mode=TwoWay}"
+                Text="{x:Bind _difficulty, Mode=TwoWay}"
                 HorizontalAlignment="Left">
                 <x:String>Easy</x:String>
                 <x:String>Medium</x:String>
@@ -45,7 +44,7 @@
             </ComboBox>
             <NumberBox
                 Header="Time Limit (ms)"
-                Value="1000"
+                Value="{x:Bind _timeLimit, Mode=TwoWay}"
                 Width="400"
                 Minimum="100"
                 Margin="0 22 0 0"
@@ -55,7 +54,7 @@
                 LargeChange="500"/>
             <NumberBox
                 Header="Memory Limit (MB)"
-                Value="64"
+                Value="{x:Bind _memoryLimit, Mode=TwoWay}"
                 Width="400"
                 Margin="0 22 0 0"
                 Minimum="16"
@@ -75,7 +74,8 @@
                         AcceptsReturn="True" 
                         IsSpellCheckEnabled="True"
                         MinHeight="200"
-                        MaxHeight="840"/>
+                        MaxHeight="840"
+                        Text="{x:Bind _description, Mode=TwoWay}"/>
                 </PivotItem>
                 <PivotItem
                     Header="Preview">
@@ -93,7 +93,7 @@
                 SelectionMode="None"
                 ItemsSource="{x:Bind TestCases, Mode=OneWay}">
                 <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="local:TestCase">
+                    <DataTemplate x:DataType="local:PrimitiveTestCase">
                         <Grid
                             Margin="0 10 0 0">
                             <Grid.ColumnDefinitions>

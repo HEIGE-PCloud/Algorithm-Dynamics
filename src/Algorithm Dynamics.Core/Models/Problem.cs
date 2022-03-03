@@ -56,7 +56,7 @@ namespace Algorithm_Dynamics.Core.Models
         {
             get => _testCases.AsReadOnly();
         }
-        public List<Tag> _tags;
+        private List<Tag> _tags;
         public ReadOnlyCollection<Tag> Tags
         {
             get => _tags.AsReadOnly();
@@ -95,10 +95,10 @@ namespace Algorithm_Dynamics.Core.Models
             _tags = tags;
         }
 
-        public static Problem Create(Guid uid, string name, string description, int timeLimit, long memoryLimit, ProblemStatus status, Difficulty difficulty, List<TestCase> testCases = null, List<Tag> tags = null)
+        public static Problem Create(string name, string description, int timeLimit, long memoryLimit, Difficulty difficulty, List<TestCase> testCases = null, List<Tag> tags = null)
         {
             // Create record for Problem
-            var problem = DataAccess.AddProblem(uid, name, description, timeLimit, memoryLimit, status, difficulty, testCases, tags);
+            var problem = DataAccess.AddProblem(Guid.NewGuid(), name, description, timeLimit, memoryLimit, ProblemStatus.Todo, difficulty, testCases, tags);
             
             // Add testcases to problem
             if (testCases != null)
