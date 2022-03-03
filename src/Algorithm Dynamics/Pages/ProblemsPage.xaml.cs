@@ -5,6 +5,9 @@ using System.Collections.ObjectModel;
 using System;
 using Algorithm_Dynamics.Helpers;
 using Windows.Storage;
+using Algorithm_Dynamics.Core.Helpers;
+using Algorithm_Dynamics.Core.Models;
+using System.Collections.Generic;
 
 namespace Algorithm_Dynamics.Pages
 {
@@ -13,21 +16,29 @@ namespace Algorithm_Dynamics.Pages
         public ProblemsPage()
         {
             InitializeComponent();
-            Problems.Add(new Problem("Problem 1", "Easy", "Todo", "Tag"));
-            Problems.Add(new Problem("Problem 2", "Easy", "Attempted", "Tag"));
-            Problems.Add(new Problem("Problem 3", "Easy", "Done", "Tag"));
-            Problems.Add(new Problem("Problem 4", "Medium", "Todo", "Tag"));
-            Problems.Add(new Problem("Problem 5", "Medium", "Attempted", "Tag"));
-            Problems.Add(new Problem("Problem 6", "Medium", "Done", "Tag"));
-            Problems.Add(new Problem("Problem 7", "Hard", "Todo", "Tag"));
-            Problems.Add(new Problem("Problem 8", "Hard", "Attempted", "Tag"));
-            Problems.Add(new Problem("Problem 9", "Hard", "Done", "Tag"));
-            Problems.Add(new Problem("Problem 10", "Hard", "Todo", "Tag"));
+            List<Problem> problems = DataAccess.GetAllProblems();
+            //if (problems.Count == 0)
+            //{
+            //    Problem problem1 = Problem.Create(Guid.NewGuid(), "Problem 1", "Description 1", 1000, 64 * 1024 * 1024, ProblemStatus.Todo, Difficulty.Easy);
+            //    Problem problem2 = Problem.Create(Guid.NewGuid(), "Problem 2", "Description 2", 2000, 6 * 1024 * 1024, ProblemStatus.Attempted, Difficulty.Hard);
+            //    Problem problem3 = Problem.Create(Guid.NewGuid(), "Problem 3", "Description 3", 3000, 64 * 1024 * 1024, ProblemStatus.Solved, Difficulty.Medium);
+
+            //}
+            //problems = DataAccess.GetAllProblems();
+
+            foreach (var problem in problems)
+            {
+                Problems.Add(problem);
+            }
+            foreach (var tag in DataAccess.GetAllTags())
+            {
+                Tags.Add(tag.Name);
+            }
         }
         private readonly ObservableCollection<string> Difficulties = new() { "Easy", "Medium", "Hard" };
         private readonly ObservableCollection<string> Statuses = new() { "Todo", "Attempted", "Done" };
         public ObservableCollection<string> Lists = new() { "List 1", "List 2", "List 3" };
-        public ObservableCollection<string> Tags = new() { "Tag 1", "Tag 2", "Tag 3"};
+        public ObservableCollection<string> Tags = new();
         public ObservableCollection<Problem> Problems = new();
 
         /// <summary>
@@ -202,8 +213,8 @@ namespace Algorithm_Dynamics.Pages
             var tag = TagComboBox.SelectedValue?.ToString();
             var list = ListComboBox.SelectedValue?.ToString();
             // TODO: Query(keywords, difficulty, status, tag, list);
-            Problems.Clear();
-            Problems.Add(new Problem(keywords, difficulty, status, tag));
+            //Problems.Clear();
+            //Problems.Add(new Problem(keywords, difficulty, status, tag));
         }
 
         /// <summary>
@@ -235,20 +246,5 @@ namespace Algorithm_Dynamics.Pages
         {
             App.NavigateTo(typeof(CreateNewProblemListPage));
         }
-    }
-    public class Problem
-    {
-        public Problem(string name, string difficulty, string status, string tags)
-        {
-            Name = name;
-            Difficulty = difficulty;
-            Status = status;
-            Tags = tags;
-        }
-
-        public string Name { get; set; }
-        public string Difficulty { get; set; }
-        public string Status { get; set; }
-        public string Tags { get; set; }
     }
 }

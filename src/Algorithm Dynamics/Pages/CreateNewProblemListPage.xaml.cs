@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml;
+﻿using Algorithm_Dynamics.Core.Models;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using System;
@@ -55,7 +56,7 @@ namespace Algorithm_Dynamics.Pages
             base.OnNavigatedTo(e);
         }
 
-        private ObservableCollection<Problem> Problems = new() { new Problem("Problem 1", "Hard", "ToDo", "Data structure") };
+        private ObservableCollection<Problem> Problems = new() {  };
 
         /// <summary>
         /// When the text is changed in the search box, search in the database and create suggestion items. 
@@ -85,7 +86,7 @@ namespace Algorithm_Dynamics.Pages
         /// <param name="args"></param>
         private void AddProblemBox_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
         {
-            Problems.Add(new Problem(sender.Text, "Easy", "ToDo", "Data structure"));
+            //Problems.Add(new Problem(sender.Text, "Easy", "ToDo", "Data structure"));
         }
 
         /// <summary>

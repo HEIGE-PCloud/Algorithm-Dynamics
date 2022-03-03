@@ -30,7 +30,7 @@
                 MaximumTokens="3"
                 PlaceholderText="Add Tags"
                 SelectionMode="Extended"
-                Text="{x:Bind _problem.Tags, Mode=TwoWay}"
+                Text=""
                 HorizontalAlignment="Left"/>
             <ComboBox
                 Header="Difficulty"

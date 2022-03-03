@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml;
+﻿using Algorithm_Dynamics.Core.Models;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;

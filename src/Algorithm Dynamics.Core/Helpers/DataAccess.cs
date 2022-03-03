@@ -227,7 +227,7 @@ namespace Algorithm_Dynamics.Core.Helpers
             db.Close();
             return user;
         }
-        internal static List<User> GetAllUsers()
+        public static List<User> GetAllUsers()
         {
             List<User> users = new();
 
@@ -325,7 +325,7 @@ namespace Algorithm_Dynamics.Core.Helpers
             return problem;
         }
 
-        internal static List<Problem> GetAllProblems()
+        public static List<Problem> GetAllProblems()
         {
             List<Problem> problems = new();
 
@@ -455,7 +455,7 @@ namespace Algorithm_Dynamics.Core.Helpers
             }
         }
 
-        internal static List<Tag> GetAllTags()
+        public static List<Tag> GetAllTags()
         {
             List<Tag> tags = new();
 

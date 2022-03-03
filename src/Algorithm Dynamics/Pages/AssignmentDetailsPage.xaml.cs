@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml;
+﻿using Algorithm_Dynamics.Core.Models;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
@@ -30,11 +31,11 @@ namespace Algorithm_Dynamics.Pages
         }
         public ObservableCollection<Problem> Problems = new()
         { 
-            new Problem("Problem 1", "Easy", "ToDo", "Tag"), 
-            new Problem("Problem 2", "Easy", "ToDo", "Tag"), 
-            new Problem("Problem 3", "Easy", "ToDo", "Tag"), 
-            new Problem("Problem 4", "Easy", "ToDo", "Tag"), 
-            new Problem("Problem 5", "Easy", "ToDo", "Tag"), 
+            //new Problem("Problem 1", "Easy", "ToDo", "Tag"), 
+            //new Problem("Problem 2", "Easy", "ToDo", "Tag"), 
+            //new Problem("Problem 3", "Easy", "ToDo", "Tag"), 
+            //new Problem("Problem 4", "Easy", "ToDo", "Tag"), 
+            //new Problem("Problem 5", "Easy", "ToDo", "Tag"), 
         };
         public ObservableCollection<Submission> Submissions = new() 
         { 

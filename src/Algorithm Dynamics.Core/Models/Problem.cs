@@ -15,6 +15,42 @@ namespace Algorithm_Dynamics.Core.Models
         public long MemoryLimit { get; set; }
         public ProblemStatus Status { get; set; }
         public Difficulty Difficulty { get; set; }
+        public string str_Difficulty
+        {
+            get
+            {
+                if (Difficulty == Difficulty.Easy)
+                    return "Easy";
+                else if (Difficulty == Difficulty.Medium)
+                    return "Medium";
+                else
+                    return "Hard";
+            }
+        }
+        public string str_Status
+        {
+            get
+            {
+                if (Status == ProblemStatus.Todo)
+                    return "Todo";
+                else if (Status == ProblemStatus.Attempted)
+                    return "Attempted";
+                else
+                    return "Done";
+            }
+        }
+        public string str_Tags
+        {
+            get
+            {
+                string str = "";
+                foreach (var tag in _tags)
+                {
+                    str += tag.Name + ", ";
+                }
+                return str;
+            }
+        }
         private List<TestCase> _testCases;
         public ReadOnlyCollection<TestCase> TestCases
         {
