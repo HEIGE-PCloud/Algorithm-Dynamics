@@ -15,8 +15,9 @@ namespace Algorithm_Dynamics.Pages
 
             GetCurrentTheme();
         }
+        const int MB = 1024 * 1024;
         private const int DEFAULT_RUN_CODE_TIMELIMIT = 1000;
-        private const int DEFAULT_RUN_CODE_MEMORYLIMIT = 64 * 1024 * 1024;
+        private const int DEFAULT_RUN_CODE_MEMORYLIMIT = 64 * MB;
         private const string TIMELIMIT_KEY = "RunCodeTimeLimit";
         private const string MEMORYLIMIT_KEY = "RunCodeMemoryLimit";
 
@@ -51,19 +52,18 @@ namespace Algorithm_Dynamics.Pages
                 var CurrentValue = roamingSettings.Values[MEMORYLIMIT_KEY];
                 if (CurrentValue != null)
                 {
-                    return (int)CurrentValue;
+                    return (int)CurrentValue / MB;
                 }
                 else
                 {
                     roamingSettings.Values[MEMORYLIMIT_KEY] = DEFAULT_RUN_CODE_MEMORYLIMIT;
-                    return DEFAULT_RUN_CODE_MEMORYLIMIT;
+                    return DEFAULT_RUN_CODE_MEMORYLIMIT / MB;
                 }
             }
             set
             {
                 ApplicationDataContainer roamingSettings = ApplicationData.Current.RoamingSettings;
-                roamingSettings.Values[MEMORYLIMIT_KEY] = value;
-
+                roamingSettings.Values[MEMORYLIMIT_KEY] = value * MB;
             }
         }
         private void AddLangButton_Click(object sender, RoutedEventArgs e)

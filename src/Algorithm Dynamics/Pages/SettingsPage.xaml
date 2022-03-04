@@ -63,7 +63,7 @@
                     Margin="0 10 0 0"
                     Orientation="Horizontal">
                     <NumberBox
-                        Value="64"
+                        Value="{x:Bind MemoryLimit, Mode=TwoWay}"
                         Minimum="16"
                         SpinButtonPlacementMode="Inline"
                         SmallChange="64"
