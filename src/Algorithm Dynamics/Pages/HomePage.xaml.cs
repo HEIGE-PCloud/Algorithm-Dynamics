@@ -1,8 +1,11 @@
-﻿using Algorithm_Dynamics.Helpers;
+﻿using Algorithm_Dynamics.Core.Helpers;
+using Algorithm_Dynamics.Core.Models;
+using Algorithm_Dynamics.Helpers;
 using Algorithm_Dynamics.Models;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Windows.Storage;
 
@@ -78,8 +81,18 @@ namespace Algorithm_Dynamics.Pages
             QAItems.Clear();
             QAItems.Add(new QuickAccessItem("Random Problem", Symbol.Shuffle, () =>
             {
-                // TODO: pick a random problem from the database
-                App.NavigateTo(typeof(CodingPage));
+                // Get all problems from the database
+                List<Problem> problems= DataAccess.GetAllProblems();
+
+                // Generate a random index
+                var random = new Random();
+                int randomIndex = random.Next(problems.Count);
+
+                // Get the corresponding problem
+                Problem problem = problems[randomIndex];
+
+                // Navigate to coding page with the problems as parameters
+                App.NavigateTo(typeof(CodingPage), Tuple.Create(problem, problems));
             }));
             QAItems.Add(new QuickAccessItem("Playground", Symbol.Edit, () => App.NavigateTo(typeof(PlaygroundPage))));
             QAItems.Add(new QuickAccessItem("Assignments", Symbol.Library, () => App.NavigateTo(typeof(AssignmentsPage))));
