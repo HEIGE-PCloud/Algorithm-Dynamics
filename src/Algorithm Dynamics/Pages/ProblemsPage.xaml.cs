@@ -22,7 +22,7 @@ namespace Algorithm_Dynamics.Pages
         private readonly ObservableCollection<string> Difficulties = new() { "Easy", "Medium", "Hard" };
         private readonly ObservableCollection<string> Statuses = new() { "Todo", "Attempted", "Done" };
         public ObservableCollection<string> Lists = new() { "List 1", "List 2", "List 3" };
-        public ObservableCollection<string> Tags = new();
+        public ObservableCollection<Tag> Tags = new();
         public ObservableCollection<Problem> Problems = new();
 
         public void RefreshDatabase()
@@ -30,7 +30,7 @@ namespace Algorithm_Dynamics.Pages
             Problems.Clear();
             Tags.Clear();
             foreach (var p in DataAccess.GetAllProblems()) Problems.Add(p);
-            foreach (var t in DataAccess.GetAllTags()) Tags.Add(t.Name);
+            foreach (var t in DataAccess.GetAllTags()) Tags.Add(t);
             // TODO: Problem List
         }
 
@@ -253,22 +253,33 @@ namespace Algorithm_Dynamics.Pages
         private void Search(object sender, SelectionChangedEventArgs e)
         {
             Problems.Clear();
+            NoResultTextBlock.Visibility = Visibility.Collapsed;
             var problems = DataAccess.GetAllProblems();
             //if (DifficultyComboBox.SelectedIndex == -1 && TagComboBox.SelectedIndex == -1 && ListComboBox.SelectedIndex == -1 && StatusComboBox.SelectedIndex == -1)
             //{
-
             //    return;
             //}
 
             if (DifficultyComboBox.SelectedIndex != -1)
             {
                 var difficulty = (Difficulty)DifficultyComboBox.SelectedIndex;
-                foreach (var problem in problems)
-                {
-                    if (problem.Difficulty != difficulty)
-                        problems.Remove(problem);
-                }
+                problems.RemoveAll(p => p.Difficulty != difficulty);
             }
+
+            if (StatusComboBox.SelectedIndex != -1)
+            {
+                var status = (ProblemStatus)StatusComboBox.SelectedIndex;
+                problems.RemoveAll(p => p.Status != status);
+            }
+
+            if (TagComboBox.SelectedIndex != -1)
+            {
+                var tag = (Tag)TagComboBox.SelectedItem;
+                problems.RemoveAll(p => p.Tags.Contains(tag) == false);
+            }
+
+            if (problems.Count == 0)
+                NoResultTextBlock.Visibility = Visibility.Visible;
 
             foreach (var problem in problems)
             {

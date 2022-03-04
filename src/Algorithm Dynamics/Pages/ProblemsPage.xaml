@@ -57,7 +57,13 @@
                 ItemsSource="{x:Bind Tags}"
                 HorizontalAlignment="Stretch"
                 SelectionChanged="Search"
-                RightTapped="ClearComboBox"/>
+                RightTapped="ClearComboBox">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate x:DataType="models:Tag">
+                        <TextBlock Text="{x:Bind Name}"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
             <ComboBox 
                 PlaceholderText="List"
                 x:Name="ListComboBox"
@@ -107,6 +113,12 @@
                 </DropDownButton.Flyout>
             </DropDownButton>
         </Grid>
+        <TextBlock
+            x:Name="NoResultTextBlock"
+            Grid.Row="1"
+            Visibility="Collapsed"
+            Text="Your search did not match any problems."
+            />
         <ListView
             x:Name="ProblemsListView"
             Grid.Row="1"
