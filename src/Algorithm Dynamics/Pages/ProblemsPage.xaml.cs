@@ -247,10 +247,15 @@ namespace Algorithm_Dynamics.Pages
 
         private void Search(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
-
+            Search();
         }
 
         private void Search(object sender, SelectionChangedEventArgs e)
+        {
+            Search();
+        }
+
+        private void Search()
         {
             Problems.Clear();
             NoResultTextBlock.Visibility = Visibility.Collapsed;
@@ -278,6 +283,12 @@ namespace Algorithm_Dynamics.Pages
                 problems.RemoveAll(p => p.Tags.Contains(tag) == false);
             }
 
+            if (String.IsNullOrEmpty(ProblemsSearchBox.Text) == false)
+            {
+                var name = ProblemsSearchBox.Text;
+                problems.RemoveAll(p => p.Name != name);
+            }
+
             if (problems.Count == 0)
                 NoResultTextBlock.Visibility = Visibility.Visible;
 
@@ -285,7 +296,35 @@ namespace Algorithm_Dynamics.Pages
             {
                 Problems.Add(problem);
             }
+        }
 
+        private void ProblemsSearchBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+        {
+            if (String.IsNullOrEmpty(ProblemsSearchBox.Text))
+            {
+                Search();
+
+            }
+            else
+            {
+                string keyword = ProblemsSearchBox.Text.Trim();
+                var resultList = new List<Problem>();
+                var sourceList = DataAccess.GetAllProblems();
+                var splitKeyword = keyword.ToLower().Split(' ');
+                for (int i = 0; i < sourceList.Count; i ++)
+                {
+                    for (int j = 0; j < splitKeyword.Length; j ++)
+                    {
+                        var sourceKey = sourceList[i].Name.ToLower();
+                        if (sourceKey.Contains(splitKeyword[j]))
+                        {
+                            resultList.Add(sourceList[i]);
+                            break;
+                        }
+                    }
+                }
+                sender.ItemsSource = resultList.Select(p => p.Name).ToList();
+            }
         }
     }
 }

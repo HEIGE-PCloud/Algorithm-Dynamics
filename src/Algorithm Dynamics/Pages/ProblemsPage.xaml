@@ -30,7 +30,8 @@
                 PlaceholderText="Search..."
                 x:Name="ProblemsSearchBox"
                 HorizontalAlignment="Stretch"
-                QuerySubmitted="Search"/>
+                QuerySubmitted="Search"
+                TextChanged="ProblemsSearchBox_TextChanged"/>
             <ComboBox
                 x:Name="DifficultyComboBox"
                 PlaceholderText="Difficulty"
