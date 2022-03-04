@@ -595,6 +595,29 @@ namespace Algorithm_Dynamics.Core.Helpers
             }
         }
 
+        /// <summary>
+        /// Delete a Tag from the Tag table. You need to check whether there exists a tag record first.
+        /// </summary>
+        /// <param name="id"></param>
+        internal static void DeleteTag(int id)
+        {
+            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            {
+                conn.Open();
+
+                SqliteCommand deleteCommand = new();
+                deleteCommand.Connection = conn;
+                deleteCommand.CommandText = "DELETE FROM Tag WHERE Id = @Id";
+                deleteCommand.Parameters.AddWithValue("@Id", id);
+                deleteCommand.ExecuteNonQuery();
+            }
+        }
+
+        /// <summary>
+        /// Get all tags associate to a problem.
+        /// </summary>
+        /// <param name="problemId"></param>
+        /// <returns></returns>
         internal static List<Tag> GetTags(int problemId)
         {
             List<Tag> tags = new();
@@ -643,6 +666,27 @@ namespace Algorithm_Dynamics.Core.Helpers
                 deleteCommand.Parameters.AddWithValue("@ProblemId", problemId);
                 deleteCommand.Parameters.AddWithValue("@TagId", tagId);
                 deleteCommand.ExecuteNonQuery();
+            }
+        }
+
+        /// <summary>
+        /// Check whether there is a tag record for a given tagId
+        /// </summary>
+        /// <param name="tagId"></param>
+        /// <returns></returns>
+        internal static bool TagRecordExists(int tagId)
+        {
+            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            {
+                conn.Open();
+                SqliteCommand selectCommand = new();
+                selectCommand.Connection = conn;
+                selectCommand.CommandText = "SELECT EXISTS (SELECT 1 FROM TagRecord WHERE TagId = @TagId)";
+                selectCommand.Parameters.AddWithValue("@TagId", tagId);
+
+                SqliteDataReader query = selectCommand.ExecuteReader();
+                query.Read();
+                return query.GetBoolean(0);
             }
         }
     }

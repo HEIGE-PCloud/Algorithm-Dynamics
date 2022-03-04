@@ -12,9 +12,16 @@ namespace Algorithm_Dynamics.Test
     public class TestDataAccess
     {
         const int MB = 1024 * 1024;
+        int counter = 1;
         private void DropDatabase(string dbPath)
         {
             File.Delete(dbPath);
+        }
+        private Problem GetNewTestProblem()
+        {
+            Problem problem = Problem.Create($"Test Problem {counter}", $"Description {counter}", 1000 * counter, 16 * MB * counter, Difficulty.Easy);
+            counter++;
+            return problem;
         }
         [TestMethod]
         public void TestSingleData()
@@ -202,6 +209,21 @@ namespace Algorithm_Dynamics.Test
             problem.AddTag(tag2);
             problem.RemoveTag(tag1);
             Assert.AreEqual(problem, DataAccess.GetAllProblems()[0]);
+        }
+        [TestMethod]
+        public void TestTagRecordExists()
+        {
+            DropDatabase("TagRecordExists");
+            DataAccess.InitializeDatabase("TagRecordExists");
+            Tag tag1 = Tag.Create("tag1");
+            Tag tag2 = Tag.Create("tag2");
+            Problem problem = GetNewTestProblem();
+            problem.AddTag(tag1);
+            Assert.AreEqual(true, DataAccess.TagRecordExists(tag1.Id));
+            Assert.AreEqual(false, DataAccess.TagRecordExists(tag2.Id));
+            problem.RemoveTag(tag1);
+            Assert.AreEqual(false, DataAccess.TagRecordExists(tag1.Id));
+            Assert.AreEqual(false, DataAccess.TagExists(tag1.Name));
         }
     }
 }

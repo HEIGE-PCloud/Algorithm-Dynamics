@@ -168,7 +168,9 @@ namespace Algorithm_Dynamics.Core.Models
         }
         public void RemoveTag(Tag tag)
         {
-            DataAccess.DeleteTagRecord(Id, tag.Id);
+            tag.DeleteRecord(Id);
+            if (DataAccess.TagRecordExists(tag.Id) == false)
+                tag.Delete();
             _tags.Remove(tag);
         }
         internal Problem(int id, Guid uid, string name, string description, int timeLimit, long memoryLimit, ProblemStatus status, Difficulty difficulty, List<TestCase> testCases, List<Tag> tags)

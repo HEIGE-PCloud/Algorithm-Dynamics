@@ -25,6 +25,16 @@ namespace Algorithm_Dynamics.Core.Models
         {
             DataAccess.AddTagRecord(problemId, Id);
         }
+
+        public void DeleteRecord(int problemId)
+        {
+            DataAccess.DeleteTagRecord(problemId, Id);
+        }
+
+        public void Delete()
+        {
+            DataAccess.DeleteTag(Id);
+        }
         /// <summary>
         /// Create a new <see cref="Tag"/> with a name, and an auto-generated <see cref="Id"/> and save to the Database.
         /// The <see cref="Name"/> is unique, so if a tag exists in the database, it will be returned directly.
