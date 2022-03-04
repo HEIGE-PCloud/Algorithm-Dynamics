@@ -34,6 +34,7 @@
     <None Remove="Pages\PlaygroundPage.xaml" />
     <None Remove="Pages\ProblemsPage.xaml" />
     <None Remove="Pages\SettingsPage.xaml" />
+    <None Remove="Themes\FlyoutPresenter.xaml" />
     <None Remove="Themes\Generic.xaml" />
   </ItemGroup>
 
@@ -107,6 +108,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Algorithm Dynamics.Core\Algorithm Dynamics.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Themes\FlyoutPresenter.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Pages\CreateNewProblemListPage.xaml">

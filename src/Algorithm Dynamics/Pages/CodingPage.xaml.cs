@@ -6,24 +6,34 @@ using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace Algorithm_Dynamics.Pages
 {
-    public sealed partial class CodingPage : Page
+    public sealed partial class CodingPage : Page, INotifyPropertyChanged
     {
         private Problem _currentProblem;
+        public Problem CurrentProblem
+        {
+            get => _currentProblem;
+            set
+            {
+                if (_currentProblem != value)
+                {
+                    _currentProblem = value;
+                    OnPropertyChanged(nameof(CurrentProblem));
+                    OnPropertyChanged(nameof(_currentProblem));
+                    OnPropertyChanged(nameof(_currentProblemIndex));
+                }
+            }
+        }
         private List<Problem> _currentProblemList;
-        public string ProblemDescription
+        private int _currentProblemIndex
         {
             get
             {
-                // TODO: compose time limit and example test cases
-                if (_currentProblem != null)
-                    return _currentProblem.Description;
-                return "";
+                return _currentProblemList.IndexOf(_currentProblem);
             }
         }
 
@@ -36,6 +46,19 @@ namespace Algorithm_Dynamics.Pages
         {
             new Submission(DateTime.Now, "Accepted", "8 ms", "9 MB", "cpp", "hello world"),
         };
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        /// Invoke a new <see cref="PropertyChanged"/> event.
+        /// </summary>
+        /// <param name="propertyName">Use <see cref="nameof"/> to get the name of the property.</param>
+        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            // Raise the PropertyChanged event, passing the name of the property whose value has changed.
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             if (e.Parameter != null)
@@ -76,6 +99,40 @@ namespace Algorithm_Dynamics.Pages
             Submission submission = SubmissionsDataGrid.SelectedItem as Submission;
             CodeEditor.Code = submission.Code;
             LanguageComboBox.SelectedValue = submission.Language;
+        }
+
+        private void ProblemListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var problem = ProblemListView.SelectedItem as Problem;
+            CurrentProblem = problem;
+        }
+
+        private void PreviousProblem(object sender, RoutedEventArgs e)
+        {
+            var problem = ProblemListView.SelectedItem as Problem;
+            int index = _currentProblemList.IndexOf(problem);
+            if (index == 0)
+            {
+                CurrentProblem = _currentProblemList[_currentProblemList.Count - 1];
+            }
+            else
+            {
+                CurrentProblem = _currentProblemList[index - 1];
+            }
+        }
+
+        private void NextProblem(object sender, RoutedEventArgs e)
+        {
+            var problem = ProblemListView.SelectedItem as Problem;
+            int index = _currentProblemList.IndexOf(problem);
+            if (index == _currentProblemList.Count - 1)
+            {
+                CurrentProblem = _currentProblemList[0];
+            }
+            else
+            {
+                CurrentProblem = _currentProblemList[index + 1];
+            }
         }
     }
     public class Submission

@@ -75,7 +75,7 @@ namespace Algorithm_Dynamics.Pages
             else
             {
                 TestCases.Add(new PrimitiveTestCase("", "", true));
-                 TestCases.Add(new PrimitiveTestCase("", "", false));
+                TestCases.Add(new PrimitiveTestCase("", "", false));
             }
             base.OnNavigatedTo(e);
         }
