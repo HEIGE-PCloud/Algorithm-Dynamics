@@ -17,7 +17,7 @@ namespace Algorithm_Dynamics.Pages
         {
             InitializeComponent();
         }
-        public ObservableCollection<PrimitiveTestCase> TestCases;
+        public ObservableCollection<PrimitiveTestCase> TestCases = new();
         public enum Mode
         {
             Create,
@@ -60,7 +60,6 @@ namespace Algorithm_Dynamics.Pages
                     _timeLimit = _problem.TimeLimit;
                     _memoryLimit = (int)_problem.MemoryLimit / 1024 / 1024;
                     _difficulty = (int)_problem.Difficulty;
-                    TestCases = new();
                     foreach (var t in _problem.TestCases)
                     {
                         TestCases.Add(new PrimitiveTestCase(t.Input, t.Output, t.IsExample));
@@ -69,7 +68,7 @@ namespace Algorithm_Dynamics.Pages
                 }
                 else
                 {
-                    TestCases = new() { new PrimitiveTestCase("", "", true) };
+                    TestCases.Add(new PrimitiveTestCase("", "", true));
                 }
             }
             base.OnNavigatedTo(e);

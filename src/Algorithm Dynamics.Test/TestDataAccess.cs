@@ -225,5 +225,28 @@ namespace Algorithm_Dynamics.Test
             Assert.AreEqual(false, DataAccess.TagRecordExists(tag1.Id));
             Assert.AreEqual(false, DataAccess.TagExists(tag1.Name));
         }
+        [TestMethod]
+        public void TestDeleteProblem()
+        {
+            DropDatabase("DeleteProblem");
+            DataAccess.InitializeDatabase("DeleteProblem");
+            Tag tag1 = Tag.Create("tag1");
+            Tag tag2 = Tag.Create("tag2");
+            TestCase testCase1 = TestCase.Create("input1", "output1", true);
+            TestCase testCase2 = TestCase.Create("input2", "output2", false);
+            Problem problem = GetNewTestProblem();
+            problem.AddTestCase(testCase1);
+            problem.AddTestCase(testCase2);
+            problem.AddTag(tag1);
+            problem.AddTag(tag2);
+            problem.Delete();
+
+            Assert.AreEqual(false, DataAccess.TagExists(tag1.Name));
+            Assert.AreEqual(false, DataAccess.TagExists(tag2.Name));
+            Assert.AreEqual(false, DataAccess.TagRecordExists(tag1.Id));
+            Assert.AreEqual(false, DataAccess.TagRecordExists(tag2.Id));
+            Assert.AreEqual(0, DataAccess.GetAllTestCases().Count);
+            Assert.AreEqual(0, DataAccess.GetAllProblems().Count);
+        }
     }
 }

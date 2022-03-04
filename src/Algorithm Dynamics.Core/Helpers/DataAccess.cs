@@ -382,6 +382,20 @@ namespace Algorithm_Dynamics.Core.Helpers
             return problems;
         }
 
+        internal static void DeleteProblem(int id)
+        {
+            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            {
+                conn.Open();
+
+                SqliteCommand deleteCommand = new();
+                deleteCommand.Connection = conn;
+                deleteCommand.CommandText = "DELETE FROM Problem WHERE Id = @Id";
+                deleteCommand.Parameters.AddWithValue("@Id", id);
+                deleteCommand.ExecuteNonQuery();
+            }
+        }
+
         /// <summary>
         /// Pass in a <see cref="TestCase"/> without <see cref="TestCase.Id"/>.
         /// Save the <see cref="TestCase"/> into database and return a <see cref="TestCase"/> with Id.

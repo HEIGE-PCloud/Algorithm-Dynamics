@@ -17,30 +17,22 @@ namespace Algorithm_Dynamics.Pages
         public ProblemsPage()
         {
             InitializeComponent();
-            List<Problem> problems = DataAccess.GetAllProblems();
-            //if (problems.Count == 0)
-            //{
-            //    Problem problem1 = Problem.Create(Guid.NewGuid(), "Problem 1", "Description 1", 1000, 64 * 1024 * 1024, ProblemStatus.Todo, Difficulty.Easy);
-            //    Problem problem2 = Problem.Create(Guid.NewGuid(), "Problem 2", "Description 2", 2000, 6 * 1024 * 1024, ProblemStatus.Attempted, Difficulty.Hard);
-            //    Problem problem3 = Problem.Create(Guid.NewGuid(), "Problem 3", "Description 3", 3000, 64 * 1024 * 1024, ProblemStatus.Solved, Difficulty.Medium);
-
-            //}
-            //problems = DataAccess.GetAllProblems();
-
-            foreach (var problem in problems)
-            {
-                Problems.Add(problem);
-            }
-            foreach (var tag in DataAccess.GetAllTags())
-            {
-                Tags.Add(tag.Name);
-            }
+            RefreshDatabase();
         }
         private readonly ObservableCollection<string> Difficulties = new() { "Easy", "Medium", "Hard" };
         private readonly ObservableCollection<string> Statuses = new() { "Todo", "Attempted", "Done" };
         public ObservableCollection<string> Lists = new() { "List 1", "List 2", "List 3" };
         public ObservableCollection<string> Tags = new();
         public ObservableCollection<Problem> Problems = new();
+
+        public void RefreshDatabase()
+        {
+            Problems.Clear();
+            Tags.Clear();
+            foreach (var p in DataAccess.GetAllProblems()) Problems.Add(p);
+            foreach (var t in DataAccess.GetAllTags()) Tags.Add(t.Name);
+            // TODO: Problem List
+        }
 
         /// <summary>
         /// Display the <see cref="ListMenuFlyout"/> when the <see cref="ListComboBox"/> is right tapped
@@ -150,18 +142,21 @@ namespace Algorithm_Dynamics.Pages
         /// <exception cref="NotImplementedException"></exception>
         private async void DeleteProblem(object sender, RoutedEventArgs e)
         {
-            ContentDialog dialog = new ContentDialog();
-            dialog.Title = "Delete Problem";
-            dialog.PrimaryButtonText = "Delete";
-            dialog.CloseButtonText = "Cancel";
-            dialog.Content = $"Are you sure that you want to permanently delete {(ProblemsListView.SelectedItem as Problem).Name}?";
-            dialog.DefaultButton = ContentDialogButton.Close;
-            dialog.XamlRoot = this.Content.XamlRoot;
+            ContentDialog dialog = new()
+            {
+                Title = "Delete Problem",
+                PrimaryButtonText = "Delete",
+                CloseButtonText = "Cancel",
+                Content = $"Are you sure that you want to permanently delete {(ProblemsListView.SelectedItem as Problem).Name}?",
+                DefaultButton = ContentDialogButton.Close,
+                XamlRoot = this.Content.XamlRoot
+            };
             var result = await dialog.ShowAsync();
             if (result == ContentDialogResult.Primary)
             {
-                // TODO: Delete the selected problem
-                throw new NotImplementedException();
+                var problem = (Problem)ProblemsListView.SelectedItem;
+                problem.Delete();
+                RefreshDatabase();
             }
         }
 

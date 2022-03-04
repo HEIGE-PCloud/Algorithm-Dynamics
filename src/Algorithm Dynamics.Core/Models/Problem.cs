@@ -173,6 +173,12 @@ namespace Algorithm_Dynamics.Core.Models
                 tag.Delete();
             _tags.Remove(tag);
         }
+        public void Delete()
+        {
+            while (_testCases.Count != 0) RemoveTestCase(_testCases[0]);
+            while (_tags.Count != 0) RemoveTag(_tags[0]);
+            DataAccess.DeleteProblem(_id);
+        }
         internal Problem(int id, Guid uid, string name, string description, int timeLimit, long memoryLimit, ProblemStatus status, Difficulty difficulty, List<TestCase> testCases, List<Tag> tags)
         {
             _id = id;
