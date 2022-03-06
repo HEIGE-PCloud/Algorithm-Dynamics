@@ -36,18 +36,26 @@ namespace Algorithm_Dynamics.Pages
         /// </summary>
         private void SetWelcomeMessage()
         {
+            ApplicationDataContainer roamingSettings = ApplicationData.Current.RoamingSettings;
+            var CurrentUserValue = roamingSettings.Values["CurrentUser"];
+            string userName = "User";
+            if (CurrentUserValue != null)
+            {
+                Guid CurrentUserUid = (Guid)CurrentUserValue;
+                userName = User.Get(CurrentUserUid).Name;
+            }
             TimeSpan now = DateTime.Now.TimeOfDay;
             if (now >= new TimeSpan(00, 00, 00) && now < new TimeSpan(12, 00, 00))
             {
-                WelcomeMessage = "Good morning, user!";
+                WelcomeMessage = $"Good morning, {userName}!";
             }
             else if (now >= new TimeSpan(12, 00, 00) && now < new TimeSpan(17, 00, 00))
             {
-                WelcomeMessage = "Good afternoon, user!";
+                WelcomeMessage = $"Good afternoon, {userName}!";
             }
             else if (now >= new TimeSpan(17, 00, 00) && now <= new TimeSpan(23, 59, 59))
             {
-                WelcomeMessage = "Good evening, user!";
+                WelcomeMessage = $"Good evening, {userName}!";
             }
         }
 

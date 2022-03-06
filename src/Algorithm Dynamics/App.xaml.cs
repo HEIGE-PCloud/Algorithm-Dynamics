@@ -34,6 +34,11 @@ namespace Algorithm_Dynamics
             StorageFolder TemporaryFolder = ApplicationData.Current.TemporaryFolder;
             Judger.SetSourceCodeFilePath(TemporaryFolder.Path, "main");
 
+
+            // Init Database
+            StorageFolder LocalFolder = ApplicationData.Current.LocalFolder;
+            DataAccess.InitializeDatabase(Path.Combine(LocalFolder.Path, "Data.db"));
+
             m_window = new MainWindow();
 
             ApplicationDataContainer roamingSettings = ApplicationData.Current.RoamingSettings;
@@ -53,9 +58,6 @@ namespace Algorithm_Dynamics
                 rootElement.RequestedTheme = theme;
             }
 
-            // Init Database
-            StorageFolder LocalFolder = ApplicationData.Current.LocalFolder;
-            DataAccess.InitializeDatabase(Path.Combine(LocalFolder.Path, "Data.db"));
             if (DataAccess.GetAllUsers().Count == 0)
             {
                 User user = User.Create("User", "user@example.com", Role.Student);
