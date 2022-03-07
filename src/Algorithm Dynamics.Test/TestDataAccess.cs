@@ -29,12 +29,30 @@ namespace Algorithm_Dynamics.Test
             }
         }
 
-        private Problem GetNewTestProblem()
+        /// <summary>
+        /// Create a random new <see cref="Problem"/> without any testcase or tag and save it into the database.
+        /// </summary>
+        /// <returns></returns>
+        private Problem CreateNewProblem()
         {
             Problem problem = Problem.Create($"Test Problem {counter}", $"Description {counter}", 1000 * counter, 16 * MB * counter, Difficulty.Easy);
             counter++;
             return problem;
         }
+
+        private Tag CreateNewTag()
+        {
+            Tag tag = Tag.Create($"Tag {counter++}");
+            return tag;
+        }
+
+        private TestCase CreateNewTestCase()
+        {
+            TestCase testCase = TestCase.Create($"Input {counter}", $"Output {counter}", true);
+            counter++;
+            return testCase;
+        }
+
 
         [TestMethod]
         public void TestSingleData()
@@ -198,7 +216,7 @@ namespace Algorithm_Dynamics.Test
         {
             Tag tag1 = Tag.Create("tag1");
             Tag tag2 = Tag.Create("tag2");
-            Problem problem = GetNewTestProblem();
+            Problem problem = CreateNewProblem();
             problem.AddTag(tag1);
             Assert.AreEqual(true, DataAccess.TagRecordExists(tag1.Id));
             Assert.AreEqual(false, DataAccess.TagRecordExists(tag2.Id));
@@ -213,7 +231,7 @@ namespace Algorithm_Dynamics.Test
             Tag tag2 = Tag.Create("tag2");
             TestCase testCase1 = TestCase.Create("input1", "output1", true);
             TestCase testCase2 = TestCase.Create("input2", "output2", false);
-            Problem problem = GetNewTestProblem();
+            Problem problem = CreateNewProblem();
             problem.AddTestCase(testCase1);
             problem.AddTestCase(testCase2);
             problem.AddTag(tag1);
@@ -231,8 +249,8 @@ namespace Algorithm_Dynamics.Test
         [TestMethod]
         public void TestAddProblemList()
         {
-            DataAccess.AddProblemList("Problem List", "Description", null);
-
+            ProblemList problemList = DataAccess.AddProblemList("Problem List", "Description", new());
+            Assert.AreEqual(problemList, DataAccess.GetAllProblemLists()[0]);
         }
     }
 }

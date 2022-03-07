@@ -28,7 +28,7 @@ namespace Algorithm_Dynamics.Core.Helpers
                 SqliteCommand selectIdCommand = new("SELECT last_insert_rowid();", conn);
                 var query = selectIdCommand.ExecuteReader();
                 query.Read();
-                return new ProblemList(query.GetInt32(0), name, description, problems);
+                return new(query.GetInt32(0), name, description, problems);
             }
         }
 
@@ -60,16 +60,49 @@ namespace Algorithm_Dynamics.Core.Helpers
             {
                 conn.Open();
 
-                SqliteCommand selectCommand = new("SELECT * from Tag", conn);
+                SqliteCommand selectCommand = new("SELECT * from ProblemList", conn);
 
                 SqliteDataReader query = selectCommand.ExecuteReader();
 
                 while (query.Read())
                 {
-                    //problemLists.Add(new(query.GetInt32(0), query.GetString(1), query.GetString(2)));
+                    int id = query.GetInt32(0);
+                    string name = query.GetString(1);
+                    string description = query.GetString(2);
+                    problemLists.Add(new(id, name, description, GetProblems(id)));
                 }
             }
             return problemLists;
+        }
+
+        internal static void AddProblemListRecord(int problemListId, int problemId)
+        {
+            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            {
+                conn.Open();
+                SqliteCommand insertCommand = new();
+                insertCommand.Connection = conn;
+
+                insertCommand.CommandText = "INSERT INTO ProblemListRecord (ProblemId, ProblemListId) VALUES (@ProblemId, @ProblemListId);";
+                insertCommand.Parameters.AddWithValue("@ProblemId", problemId);
+                insertCommand.Parameters.AddWithValue("@ProblemListId", problemListId);
+
+                insertCommand.ExecuteNonQuery();
+            }
+        }
+
+        internal static void DeleteProblemListRecord(int problemId, int problemListId)
+        {
+            using (SqliteConnection conn = new($"FileName={DbPath}"))
+            {
+                conn.Open();
+                SqliteCommand deleteCommand = new();
+                deleteCommand.Connection = conn;
+                deleteCommand.CommandText = "DELETE FROM ProblemListRecord WHERE ProblemId = @ProblemId AND ProblemListId = @ProblemListId";
+                deleteCommand.Parameters.AddWithValue("@ProblemId", problemId);
+                deleteCommand.Parameters.AddWithValue("@ProblemListId", problemListId);
+                deleteCommand.ExecuteNonQuery();
+            }
         }
     }
 }

@@ -64,7 +64,7 @@ namespace Algorithm_Dynamics.Pages
                     {
                         TestCases.Add(new PrimitiveTestCase(t.Input, t.Output, t.IsExample));
                     }
-                    _tags = _problem.str_Tags;
+                    _tags = _problem.TagsAsString;
                 }
                 else
                 {

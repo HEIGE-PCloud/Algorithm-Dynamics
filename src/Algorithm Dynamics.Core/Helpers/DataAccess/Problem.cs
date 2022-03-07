@@ -61,12 +61,42 @@ namespace Algorithm_Dynamics.Core.Helpers
                 {
                     throw new KeyNotFoundException($"The Problem with Id = {Id} is not found in the database.");
                 }
-
             }
-
             return problem;
         }
 
+        /// <summary>
+        /// Get all Problems under a ProblemList
+        /// </summary>
+        /// <returns></returns>
+        internal static List<Problem> GetProblems(int problemListId)
+        {
+            List<Problem> problems = new();
+            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            {
+                conn.Open();
+
+                SqliteCommand selectCommand = new();
+                selectCommand.Connection = conn;
+                selectCommand.CommandText = "SELECT ProblemListRecord.ProblemId, Problem.Uid, Problem.Name, Problem.Description, Problem.TimeLimit, Problem.MemoryLimit, Problem.Status, Problem.Difficulty FROM ProblemListRecord INNER JOIN Problem ON ProblemListRecord.ProblemId = Problem.Id WHERE ProblemListId = @ProblemListId";
+                selectCommand.Parameters.AddWithValue("@ProblemListId", problemListId);
+                SqliteDataReader query = selectCommand.ExecuteReader();
+
+                while (query.Read())
+                {
+                    int id = query.GetInt32(0);
+                    Guid uid = query.GetGuid(1);
+                    string name = query.GetString(2);
+                    string description = query.GetString(3);
+                    int timeLimit = query.GetInt32(4);
+                    int memoryLimit = query.GetInt32(5);
+                    ProblemStatus status = (ProblemStatus)query.GetInt32(6);
+                    Difficulty difficulty = (Difficulty)query.GetInt32(7);
+                    problems.Add(new Problem(id, uid, name, description, timeLimit, memoryLimit, status, difficulty, GetTestCases(id), GetTags(id)));
+                }
+            }
+            return problems;
+        }
         internal static void EditProblem(int id, string name, string description, int timeLimit, long memoryLimit, ProblemStatus status, Difficulty difficulty)
         {
             using (SqliteConnection conn = new($"Filename={DbPath}"))

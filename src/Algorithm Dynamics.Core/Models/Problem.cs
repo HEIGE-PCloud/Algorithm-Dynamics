@@ -101,7 +101,7 @@ namespace Algorithm_Dynamics.Core.Models
                 }
             }
         }
-        public string str_Difficulty
+        public string DifficultyAsString
         {
             get
             {
@@ -113,7 +113,7 @@ namespace Algorithm_Dynamics.Core.Models
                     return "Hard";
             }
         }
-        public string str_Status
+        public string StatusAsString
         {
             get
             {
@@ -125,7 +125,11 @@ namespace Algorithm_Dynamics.Core.Models
                     return "Done";
             }
         }
-        public string str_Tags
+
+        /// <summary>
+        /// Return all tags as a string in the format "Tag1, Tag2, Tag3"
+        /// </summary>
+        public string TagsAsString
         {
             get
             {
@@ -141,7 +145,12 @@ namespace Algorithm_Dynamics.Core.Models
                 return str;
             }
         }
-        public string str_Tag
+
+        /// <summary>
+        /// Return the first tag as string if there exists any
+        /// Or an empty string if there is no tag
+        /// </summary>
+        public string TagAsString
         {
             get
             {

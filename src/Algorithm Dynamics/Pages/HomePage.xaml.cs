@@ -126,7 +126,7 @@ namespace Algorithm_Dynamics.Pages
             for (int i = 0; i < problems.Count && i < 4; i ++)
             {
                 var problem = problems[i];
-                RecItems.Add(new RecommendItem(problem.Name, $"{problem.str_Difficulty} | {problem.str_Tag}", () => { App.NavigateTo(typeof(CodingPage), Tuple.Create(problem, Problem.All)); }));
+                RecItems.Add(new RecommendItem(problem.Name, $"{problem.DifficultyAsString} | {problem.TagAsString}", () => { App.NavigateTo(typeof(CodingPage), Tuple.Create(problem, Problem.All)); }));
             }
 
             // Create Assignment

@@ -1,4 +1,5 @@
 ﻿using Algorithm_Dynamics.Core.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
@@ -51,5 +52,57 @@ namespace Algorithm_Dynamics.Core.Models
         }
         private List<Problem> _problems;
         public ReadOnlyCollection<Problem> Problems { get => _problems.AsReadOnly(); }
+
+        public override bool Equals(object obj)
+        {
+            ProblemList problemList = obj as ProblemList;
+            if (problemList == null)
+                return false;
+            if (problemList.Id != Id || problemList.Description != Description || problemList.Name != Name) 
+                return false;
+            if (problemList.Problems.Count != Problems.Count) 
+                return false;
+            for (int i = 0; i < _problems.Count; i++)
+            {
+                if (Equals(Problems[i], problemList.Problems[i]) == false)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id, Name, Description);
+        }
+
+        public ProblemList Create(string name, string description, List<Problem> problems)
+        {
+            var problemList = DataAccess.AddProblemList(name, description, problems);
+            if (problems != null)
+            {
+                foreach(var problem in problems)
+                {
+                    AddProblem(problem);
+                }
+            }
+            else
+            {
+                _problems = new() { };
+            }
+
+            return problemList;
+        }
+        public void AddProblem(Problem problem)
+        {
+            DataAccess.AddProblemListRecord(Id, problem.Id);
+            _problems.Add(problem);
+        }
+
+        public void RemoveProblem(Problem problem)
+        {
+            DataAccess.DeleteProblemListRecord(Id, problem.Id);
+            _problems.Remove(problem);
+        }
     }
 }
