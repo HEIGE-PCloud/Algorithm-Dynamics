@@ -129,7 +129,7 @@ namespace Algorithm_Dynamics.Core.Models
         {
             get
             {
-                string str = " ";
+                string str = "";
                 if (_tags.Count > 0)
                 {
                     for (int i = 0; i < _tags.Count - 1; i++)
@@ -141,6 +141,19 @@ namespace Algorithm_Dynamics.Core.Models
                 return str;
             }
         }
+        public string str_Tag
+        {
+            get
+            {
+                string str = "";
+                if (_tags.Count > 0)
+                { 
+                    str = _tags[0].Name;
+                }
+                return str;
+            }
+        }
+
         public string Markdown
         {
             get
@@ -157,7 +170,13 @@ namespace Algorithm_Dynamics.Core.Models
                 return markdown;
             }
         }
-
+        public static List<Problem> All
+        {
+            get
+            {
+                return DataAccess.GetAllProblems();
+            }
+        }
         private List<TestCase> _testCases;
         public ReadOnlyCollection<TestCase> TestCases
         {

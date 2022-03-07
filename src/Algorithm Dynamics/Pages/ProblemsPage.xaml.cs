@@ -29,7 +29,7 @@ namespace Algorithm_Dynamics.Pages
         {
             Problems.Clear();
             Tags.Clear();
-            foreach (var p in DataAccess.GetAllProblems()) Problems.Add(p);
+            foreach (var p in Problem.All) Problems.Add(p);
             foreach (var t in DataAccess.GetAllTags()) Tags.Add(t);
             // TODO: Problem List
         }
@@ -181,18 +181,21 @@ namespace Algorithm_Dynamics.Pages
         /// <exception cref="NotImplementedException"></exception>
         private async void DeleteProblems(object sender, RoutedEventArgs e)
         {
-            ContentDialog dialog = new ContentDialog();
-            dialog.Title = "Delete Problem";
-            dialog.PrimaryButtonText = "Delete";
-            dialog.CloseButtonText = "Cancel";
-            dialog.Content = $"Are you sure that you want to permanently delete these {ProblemsListView.SelectedItems.Count} Problems?";
-            dialog.DefaultButton = ContentDialogButton.Close;
-            dialog.XamlRoot = this.Content.XamlRoot;
+            ContentDialog dialog = new()
+            {
+                Title = "Delete Problem",
+                PrimaryButtonText = "Delete",
+                CloseButtonText = "Cancel",
+                Content = $"Are you sure that you want to permanently delete these {ProblemsListView.SelectedItems.Count} Problems?",
+                DefaultButton = ContentDialogButton.Close,
+                XamlRoot = Content.XamlRoot
+            };
             var result = await dialog.ShowAsync();
             if (result == ContentDialogResult.Primary)
             {
-                // TODO: Delete the selected problems
-                throw new NotImplementedException();
+                var problems = ProblemsListView.SelectedItems;
+                foreach (Problem problem in problems) problem.Delete();
+                RefreshDatabase();
             }
         }
 
@@ -259,7 +262,7 @@ namespace Algorithm_Dynamics.Pages
         {
             Problems.Clear();
             NoResultTextBlock.Visibility = Visibility.Collapsed;
-            var problems = DataAccess.GetAllProblems();
+            var problems = Problem.All;
             //if (DifficultyComboBox.SelectedIndex == -1 && TagComboBox.SelectedIndex == -1 && ListComboBox.SelectedIndex == -1 && StatusComboBox.SelectedIndex == -1)
             //{
             //    return;
@@ -309,7 +312,7 @@ namespace Algorithm_Dynamics.Pages
             {
                 string keyword = ProblemsSearchBox.Text.Trim();
                 var resultList = new List<Problem>();
-                var sourceList = DataAccess.GetAllProblems();
+                var sourceList = Problem.All;
                 var splitKeyword = keyword.ToLower().Split(' ');
                 for (int i = 0; i < sourceList.Count; i ++)
                 {

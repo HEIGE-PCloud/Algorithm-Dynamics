@@ -107,8 +107,7 @@ namespace Algorithm_Dynamics.Core.Models
             _StatusCode = StatusCode.RUNNING;
 
             // Start the time monitor
-            Timer timer = new(delegate
-            {
+            Timer timer = new((e) => {
                 if (_StatusCode == StatusCode.RUNNING && ExecuteProcess.HasExited == false)
                 {
                     ExecuteProcess.Kill();
@@ -117,8 +116,7 @@ namespace Algorithm_Dynamics.Core.Models
             }, null, TimeLimit, Timeout.Infinite);
 
             // Create the memory monitor
-            Thread MemoryMonitor = new(() =>
-            {
+            Thread MemoryMonitor = new(() => {
                 while (ExecuteProcess.HasExited == false)
                 {
                     ExecuteProcess.Refresh();
@@ -149,6 +147,7 @@ namespace Algorithm_Dynamics.Core.Models
         public async static Task<RunCodeResult> RunCode(string UserCode, string Input, Language language, int TimeLimit, long MemoryLimit, IProgress<int> Progress)
         {
             Progress.Report(0);
+            // Add a \n to the end for the input
             if (string.IsNullOrEmpty(Input) == false && Input[^1] != '\n') Input += '\n';
             // Set file extension
             _SourceCodeFilePath = _SourceCodeFilePath.Replace("{SourceCodeFileExtension}", language.FileExtension);
@@ -166,7 +165,7 @@ namespace Algorithm_Dynamics.Core.Models
                     return result;
                 }
             }
-            Progress.Report(50);
+            Progress.Report(10);
             var watch = new Stopwatch();
             watch.Start();
             result.ExitCode = await Execute(Input, language, TimeLimit, MemoryLimit);

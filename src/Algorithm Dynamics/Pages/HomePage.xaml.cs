@@ -2,7 +2,6 @@
 using Algorithm_Dynamics.Core.Models;
 using Algorithm_Dynamics.Helpers;
 using Algorithm_Dynamics.Models;
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
@@ -80,8 +79,10 @@ namespace Algorithm_Dynamics.Pages
         /// <param name="e"></param>
         private void RecGridView_ItemClick(object sender, ItemClickEventArgs e)
         {
-            // TODO: Handle the navigation.
-            throw new NotImplementedException("[Blocking]: The CodingPage or the AssignmentPage has not been implemented yet.");
+            if (e.ClickedItem is RecommendItem item)
+            {
+                item.Action();
+            }
         }
 
         private void InitializeQAItems()
@@ -90,7 +91,7 @@ namespace Algorithm_Dynamics.Pages
             QAItems.Add(new QuickAccessItem("Random Problem", Symbol.Shuffle, () =>
             {
                 // Get all problems from the database
-                List<Problem> problems= DataAccess.GetAllProblems();
+                List<Problem> problems= Problem.All;
 
                 // Generate a random index
                 var random = new Random();
@@ -120,14 +121,19 @@ namespace Algorithm_Dynamics.Pages
         private void InitializeRecItems()
         {
             RecItems.Clear();
-            RecItems.Add(new RecommendItem("Problem 1", "Easy | Data structure"));
-            RecItems.Add(new RecommendItem("Problem 2", "Medium | Sorting"));
-            RecItems.Add(new RecommendItem("Problem 3", "Hard | Graph"));
-            RecItems.Add(new RecommendItem("Problem 4", "Easy | Data structure"));
-            RecItems.Add(new RecommendItem("Assignment 1", "Due in 2 days"));
-            RecItems.Add(new RecommendItem("Assignment 2", "Due in 3 days"));
-            RecItems.Add(new RecommendItem("Assignment 3", "Due in 4 days"));
-            RecItems.Add(new RecommendItem("Assignment 4", "Due in 5 days"));
+            // Create Problem
+            var problems = Problem.All;
+            for (int i = 0; i < problems.Count && i < 4; i ++)
+            {
+                var problem = problems[i];
+                RecItems.Add(new RecommendItem(problem.Name, $"{problem.str_Difficulty} | {problem.str_Tag}", () => { App.NavigateTo(typeof(CodingPage), Tuple.Create(problem, Problem.All)); }));
+            }
+
+            // Create Assignment
+            RecItems.Add(new RecommendItem("Assignment 1", "Due in 2 days", () => { }));
+            RecItems.Add(new RecommendItem("Assignment 2", "Due in 3 days", () => { }));
+            RecItems.Add(new RecommendItem("Assignment 3", "Due in 4 days", () => { }));
+            RecItems.Add(new RecommendItem("Assignment 4", "Due in 5 days", () => { }));
         }
     }
 }

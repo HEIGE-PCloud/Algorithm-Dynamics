@@ -248,5 +248,14 @@ namespace Algorithm_Dynamics.Test
             Assert.AreEqual(0, DataAccess.GetAllTestCases().Count);
             Assert.AreEqual(0, DataAccess.GetAllProblems().Count);
         }
+
+        [TestMethod]
+        public void TestAddProblemList()
+        {
+            DropDatabase("AddProblemList");
+            DataAccess.InitializeDatabase("AddProblemList");
+            DataAccess.AddProblemList("Problem List", "Description", null);
+
+        }
     }
 }
