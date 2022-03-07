@@ -3,6 +3,7 @@ using Algorithm_Dynamics.Core.Helpers;
 using System.IO;
 using System.Collections.Generic;
 using Algorithm_Dynamics.Core.Models;
+using System;
 
 namespace Algorithm_Dynamics.Test
 {
@@ -11,21 +12,33 @@ namespace Algorithm_Dynamics.Test
     {
         const int MB = 1024 * 1024;
         int counter = 1;
-        private void DropDatabase(string dbPath)
+        [TestInitialize]
+        public void InitDb()
         {
-            File.Delete(dbPath);
+            string path = $"{Guid.NewGuid()}.db";
+            File.Delete(path);
+            DataAccess.InitializeDatabase(path);
         }
+
+        [AssemblyCleanup]
+        public static void AssemblyCleanup()
+        {
+            foreach (string path in Directory.GetFiles(".", "*.db"))
+            {
+                File.Delete(path);
+            }
+        }
+
         private Problem GetNewTestProblem()
         {
             Problem problem = Problem.Create($"Test Problem {counter}", $"Description {counter}", 1000 * counter, 16 * MB * counter, Difficulty.Easy);
             counter++;
             return problem;
         }
+
         [TestMethod]
         public void TestSingleData()
         {
-            DropDatabase("SingleData.db");
-            DataAccess.InitializeDatabase("SingleData.db");
             DataAccess.AddData("Text1");
             Assert.AreEqual(DataAccess.GetData().Count, 1);
             Assert.AreEqual(DataAccess.GetData()[0], "Text1");
@@ -34,8 +47,6 @@ namespace Algorithm_Dynamics.Test
         [TestMethod]
         public void TestMultipleData()
         {
-            DropDatabase("MultipleData.db");
-            DataAccess.InitializeDatabase("MultipleData.db");
             int count = 100;
             List<string> list = new();
             for (int i = 0; i < count; i++)
@@ -50,8 +61,6 @@ namespace Algorithm_Dynamics.Test
         [TestMethod]
         public void TestUserData()
         {
-            DropDatabase("UserData.db");
-            DataAccess.InitializeDatabase("UserData.db");
             User user = User.Create("Test User", "test@example.com", Role.Student);
 
             List<User> expectedUsers = new() { user };
@@ -63,8 +72,6 @@ namespace Algorithm_Dynamics.Test
         [TestMethod]
         public void TestEditData()
         {
-            DropDatabase("EditData.db");
-            DataAccess.InitializeDatabase("EditData.db");
             User user = User.Create("Test User", "test@example.com", Role.Student);
             user.Name = "Edited Name";
             user.Email = "new@example.com";
@@ -77,8 +84,6 @@ namespace Algorithm_Dynamics.Test
         [TestMethod]
         public void TestGetUser()
         {
-            DropDatabase("GetUser.db");
-            DataAccess.InitializeDatabase("GetUser.db");
             User user = User.Create("Test User", "Test@example.com", Role.Student);
             User actualUser = DataAccess.GetUser(user.Uid);
             Assert.AreEqual(user, actualUser);
@@ -87,8 +92,6 @@ namespace Algorithm_Dynamics.Test
         [TestMethod]
         public void TestCreateProblem()
         {
-            DropDatabase("AddProblem.db");
-            DataAccess.InitializeDatabase("AddProblem.db");
             TestCase testCase1 = TestCase.Create("input1", "output1", true);
             TestCase testCase2 = TestCase.Create("input2", "output2", false);
 
@@ -103,8 +106,6 @@ namespace Algorithm_Dynamics.Test
         [TestMethod]
         public void TestEditProblem()
         {
-            DropDatabase("EditProblem.db");
-            DataAccess.InitializeDatabase("EditProblem.db");
             Problem problem = Problem.Create("Test Problem", "Description", 1000, 64 * MB, Difficulty.Easy);
             problem.Name = "New name";
             problem.Description = "New description";
@@ -118,8 +119,6 @@ namespace Algorithm_Dynamics.Test
         [TestMethod]
         public void TestGetAllProblems()
         {
-            DropDatabase("GetAllProblems.db");
-            DataAccess.InitializeDatabase("GetAllProblems.db");
             TestCase testCase1 = TestCase.Create("input1", "output1", true);
             TestCase testCase2 = TestCase.Create("input2", "output2", false);
 
@@ -136,8 +135,6 @@ namespace Algorithm_Dynamics.Test
         [TestMethod]
         public void TestAddTestCase()
         {
-            DropDatabase("AddTestCase.db");
-            DataAccess.InitializeDatabase("AddTestCase.db");
             TestCase testCase1 = TestCase.Create("input", "output", true);
             Assert.AreEqual(testCase1, DataAccess.GetAllTestCases()[0]);
         }
@@ -145,8 +142,6 @@ namespace Algorithm_Dynamics.Test
         [TestMethod]
         public void TestEditTestCase()
         {
-            DropDatabase("EditTestCase.db");
-            DataAccess.InitializeDatabase("EditTestCase.db");
             TestCase testCase = TestCase.Create("input", "output", true);
             testCase.Input = "newInput";
             testCase.Output = "newOutput";
@@ -157,8 +152,6 @@ namespace Algorithm_Dynamics.Test
         [TestMethod]
         public void TestDeleteTestCase()
         {
-            DropDatabase("DeleteTestCase.db");
-            DataAccess.InitializeDatabase("DeleteTestCase.db");
             TestCase testCase = TestCase.Create("input", "output", true);
             testCase.Delete();
             Assert.AreEqual(0, DataAccess.GetAllTestCases().Count);
@@ -167,8 +160,6 @@ namespace Algorithm_Dynamics.Test
         [TestMethod]
         public void TestAddTag()
         {
-            DropDatabase("AddTag.db");
-            DataAccess.InitializeDatabase("AddTag.db");
             Tag tag = Tag.Create("tag");
             Assert.AreEqual(tag, DataAccess.GetAllTags()[0]);
         }
@@ -176,8 +167,6 @@ namespace Algorithm_Dynamics.Test
         [TestMethod]
         public void TestTagExists()
         {
-            DropDatabase("TagExists.db");
-            DataAccess.InitializeDatabase("TagExists.db");
             Assert.AreEqual(false, DataAccess.TagExists("tag"));
             Tag.Create("tag");
             Assert.AreEqual(true, DataAccess.TagExists("tag"));
@@ -186,8 +175,6 @@ namespace Algorithm_Dynamics.Test
         [TestMethod]
         public void TestGetTag()
         {
-            DropDatabase("GetTag.db");
-            DataAccess.InitializeDatabase("GetTag.db");
             Tag tag = Tag.Create("tag");
             Assert.AreEqual(tag, DataAccess.GetTag(tag.Id));
             Assert.AreEqual(tag, DataAccess.GetTag(tag.Name));
@@ -198,8 +185,6 @@ namespace Algorithm_Dynamics.Test
         [TestMethod]
         public void TestAddDeleteTagRecord()
         {
-            DropDatabase("AddDeleteTagRecord");
-            DataAccess.InitializeDatabase("AddDeleteTagRecord");
             Tag tag1 = Tag.Create("tag1");
             Tag tag2 = Tag.Create("tag2");
             Problem problem = Problem.Create("Test Problem", "Description", 1000, 64 * MB, Difficulty.Easy);
@@ -211,8 +196,6 @@ namespace Algorithm_Dynamics.Test
         [TestMethod]
         public void TestTagRecordExists()
         {
-            DropDatabase("TagRecordExists");
-            DataAccess.InitializeDatabase("TagRecordExists");
             Tag tag1 = Tag.Create("tag1");
             Tag tag2 = Tag.Create("tag2");
             Problem problem = GetNewTestProblem();
@@ -226,8 +209,6 @@ namespace Algorithm_Dynamics.Test
         [TestMethod]
         public void TestDeleteProblem()
         {
-            DropDatabase("DeleteProblem");
-            DataAccess.InitializeDatabase("DeleteProblem");
             Tag tag1 = Tag.Create("tag1");
             Tag tag2 = Tag.Create("tag2");
             TestCase testCase1 = TestCase.Create("input1", "output1", true);
@@ -250,8 +231,6 @@ namespace Algorithm_Dynamics.Test
         [TestMethod]
         public void TestAddProblemList()
         {
-            DropDatabase("AddProblemList");
-            DataAccess.InitializeDatabase("AddProblemList");
             DataAccess.AddProblemList("Problem List", "Description", null);
 
         }
