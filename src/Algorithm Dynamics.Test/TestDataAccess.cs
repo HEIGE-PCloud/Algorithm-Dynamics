@@ -266,7 +266,7 @@ namespace Algorithm_Dynamics.Test
             problem1.AddTag(tag2);
             Problem problem2 = CreateNewProblem();
             problem2.AddTestCase(testCase2);
-            ProblemList problemList = ProblemList.Create("Problem List", "Description", new() { problem1, problem2});
+            ProblemList problemList = ProblemList.Create("Problem List", "Description", new() { problem1, problem2 });
             Assert.AreEqual(problemList, DataAccess.GetAllProblemLists()[0]);
         }
         
@@ -277,6 +277,15 @@ namespace Algorithm_Dynamics.Test
             problemList.Name = "New name";
             problemList.Description = "New description";
             Assert.AreEqual(problemList, DataAccess.GetAllProblemLists()[0]);
+        }
+
+        [TestMethod]
+        public void TestDeleteProblemList()
+        {
+            ProblemList problemList = ProblemList.Create("Problem List", "Description", new());
+            Assert.AreEqual(1, ProblemList.All.Count);
+            problemList.Delete();
+            Assert.AreEqual(0, ProblemList.All.Count);
         }
     }
 }

@@ -102,5 +102,19 @@ namespace Algorithm_Dynamics.Core.Helpers
                 deleteCommand.ExecuteNonQuery();
             }
         }
+
+        internal static void DeleteProblemList(int id)
+        {
+            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            {
+                conn.Open();
+
+                SqliteCommand deleteCommand = new();
+                deleteCommand.Connection = conn;
+                deleteCommand.CommandText = "DELETE FROM ProblemList WHERE Id = @Id";
+                deleteCommand.Parameters.AddWithValue("@Id", id);
+                deleteCommand.ExecuteNonQuery();
+            }
+        }
     }
 }

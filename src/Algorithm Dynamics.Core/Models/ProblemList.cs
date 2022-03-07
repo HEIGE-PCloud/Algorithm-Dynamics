@@ -50,6 +50,10 @@ namespace Algorithm_Dynamics.Core.Models
                 }
             }
         }
+        public static List<ProblemList> All
+        {
+            get => DataAccess.GetAllProblemLists();
+        }
         private List<Problem> _problems;
         public ReadOnlyCollection<Problem> Problems { get => _problems.AsReadOnly(); }
 
@@ -103,6 +107,12 @@ namespace Algorithm_Dynamics.Core.Models
         {
             DataAccess.DeleteProblemListRecord(Id, problem.Id);
             _problems.Remove(problem);
+        }
+
+        public void Delete()
+        {
+            while (_problems.Count != 0) RemoveProblem(_problems[0]);
+            DataAccess.DeleteProblemList(_id);
         }
     }
 }
