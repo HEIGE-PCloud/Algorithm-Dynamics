@@ -269,5 +269,14 @@ namespace Algorithm_Dynamics.Test
             ProblemList problemList = ProblemList.Create("Problem List", "Description", new() { problem1, problem2});
             Assert.AreEqual(problemList, DataAccess.GetAllProblemLists()[0]);
         }
+        
+        [TestMethod]
+        public void TestEditProblemList()
+        {
+            ProblemList problemList = ProblemList.Create("Problem List", "Description", new());
+            problemList.Name = "New name";
+            problemList.Description = "New description";
+            Assert.AreEqual(problemList, DataAccess.GetAllProblemLists()[0]);
+        }
     }
 }

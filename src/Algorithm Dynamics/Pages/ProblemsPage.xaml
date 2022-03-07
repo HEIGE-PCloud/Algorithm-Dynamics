@@ -144,19 +144,19 @@
                             VerticalAlignment="Center"
                             Margin="4 0 0 0"/>
                         <TextBlock
-                            Text="{x:Bind str_Difficulty}"
+                            Text="{x:Bind DifficultyAsString}"
                             Grid.Column="1"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
                             Margin="10 0 0 0"/>
                         <TextBlock
-                            Text="{x:Bind str_Status}"
+                            Text="{x:Bind StatusAsString}"
                             Grid.Column="2"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
                             Margin="14 0 0 0"/>
                         <TextBlock
-                            Text="{x:Bind str_Tags}"
+                            Text="{x:Bind TagsAsString}"
                             Grid.Column="3"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"

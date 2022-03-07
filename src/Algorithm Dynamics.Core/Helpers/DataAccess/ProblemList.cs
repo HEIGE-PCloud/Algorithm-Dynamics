@@ -32,7 +32,7 @@ namespace Algorithm_Dynamics.Core.Helpers
             }
         }
 
-        internal static void EditProblemList(string name, string description)
+        internal static void EditProblemList(int id, string name, string description)
         {
             using (SqliteConnection conn = new($"Filename={DbPath}"))
             {
@@ -41,12 +41,10 @@ namespace Algorithm_Dynamics.Core.Helpers
                 SqliteCommand updateCommand = new();
                 updateCommand.Connection = conn;
 
-                //updateCommand.CommandText = "UPDATE TestCase SET Input = @newInput, Output = @newOutput, IsExample = @newIsExample, ProblemId = @newProblemId WHERE Id = @Id;";
-                //updateCommand.Parameters.AddWithValue("@newInput", newInput);
-                //updateCommand.Parameters.AddWithValue("@newOutput", newOutput);
-                //updateCommand.Parameters.AddWithValue("@newIsExample", newIsExample);
-                //updateCommand.Parameters.AddWithValue("@newProblemId", newProblemId == null ? DBNull.Value : newProblemId);
-                //updateCommand.Parameters.AddWithValue("@Id", id);
+                updateCommand.CommandText = "UPDATE ProblemList SET Name = @Name, Description = @Description WHERE Id = @Id;";
+                updateCommand.Parameters.AddWithValue("@Name", name);
+                updateCommand.Parameters.AddWithValue("@Description", description);
+                updateCommand.Parameters.AddWithValue("@Id", id);
 
                 updateCommand.ExecuteNonQuery();
             }

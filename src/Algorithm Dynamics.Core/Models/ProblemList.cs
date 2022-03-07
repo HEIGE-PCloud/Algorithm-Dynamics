@@ -9,14 +9,14 @@ namespace Algorithm_Dynamics.Core.Models
     {
         internal ProblemList(int id, string name, string description, List<Problem> problems)
         {
-            Id = id;
-            Name = name;
-            Description = description;
+            _id = id;
+            _name = name;
+            _description = description;
             _problems = problems;
         }
         private void UpdateDatabase()
         {
-            DataAccess.EditProblemList(_name, _description);
+            DataAccess.EditProblemList(_id, _name, _description);
         }
         private int _id;
         private string _name;
