@@ -76,19 +76,19 @@ namespace Algorithm_Dynamics.Core.Models
             return HashCode.Combine(Id, Name, Description);
         }
 
-        public ProblemList Create(string name, string description, List<Problem> problems)
+        public static ProblemList Create(string name, string description, List<Problem> problems)
         {
             var problemList = DataAccess.AddProblemList(name, description, problems);
             if (problems != null)
             {
                 foreach(var problem in problems)
                 {
-                    AddProblem(problem);
+                    problem.AttachTo(problemList.Id);
                 }
             }
             else
             {
-                _problems = new() { };
+                problemList._problems = new() { };
             }
 
             return problemList;

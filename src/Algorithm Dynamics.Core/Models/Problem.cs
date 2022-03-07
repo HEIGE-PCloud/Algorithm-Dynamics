@@ -271,7 +271,10 @@ namespace Algorithm_Dynamics.Core.Models
 
             return problem;
         }
-
+        public void AttachTo(int problemListId)
+        {
+            DataAccess.AddProblemListRecord(problemListId, Id);
+        }
         public override bool Equals(object obj)
         {
             Problem problem = obj as Problem;
