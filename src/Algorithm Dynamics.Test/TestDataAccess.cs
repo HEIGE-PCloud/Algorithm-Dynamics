@@ -1,7 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Algorithm_Dynamics.Core.Helpers;
-using System.Threading.Tasks;
-using System;
 using System.IO;
 using System.Collections.Generic;
 using Algorithm_Dynamics.Core.Models;
