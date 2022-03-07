@@ -287,5 +287,12 @@ namespace Algorithm_Dynamics.Test
             problemList.Delete();
             Assert.AreEqual(0, ProblemList.All.Count);
         }
+
+        [TestMethod]
+        public void TestGetProblemList()
+        {
+            ProblemList problemList = ProblemList.Create("Problem List", "Description", new());
+            Assert.AreEqual(problemList, DataAccess.GetProblemList(problemList.Id));
+        }
     }
 }

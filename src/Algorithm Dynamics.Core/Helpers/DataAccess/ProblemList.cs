@@ -50,6 +50,33 @@ namespace Algorithm_Dynamics.Core.Helpers
             }
         }
 
+        public static ProblemList GetProblemList(int Id)
+        {
+            ProblemList problemList;
+
+            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            {
+                conn.Open();
+
+                SqliteCommand selectCommand = new("SELECT * FROM ProblemList WHERE Id = @Id", conn);
+                selectCommand.Parameters.AddWithValue("@Id", Id);
+                SqliteDataReader query = selectCommand.ExecuteReader();
+
+                if (query.Read())
+                {
+                    int id = query.GetInt32(0);
+                    string name = query.GetString(1);
+                    string description = query.GetString(2);
+                    problemList = new(id, name, description, GetProblems(id));
+                }
+                else
+                {
+                    throw new KeyNotFoundException($"The ProblemList with Id = {Id} is not found in the database.");
+                }
+            }
+            return problemList;
+        }
+
         public static List<ProblemList> GetAllProblemLists()
         {
             List<ProblemList> problemLists = new();
