@@ -175,7 +175,8 @@
             <DropDownButton
                 Grid.Column="1"
                 Content="{x:Bind CurrentProblem.Name, Mode=OneWay}"
-                VerticalAlignment="Stretch">
+                VerticalAlignment="Stretch"
+                MinWidth="200">
                 <DropDownButton.Flyout>
                     <Flyout 
                         FlyoutPresenterStyle="{ThemeResource FlyoutPresenterStyle}"

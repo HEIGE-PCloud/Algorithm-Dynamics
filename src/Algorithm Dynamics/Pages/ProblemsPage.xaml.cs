@@ -303,10 +303,9 @@ namespace Algorithm_Dynamics.Pages
 
         private void ProblemsSearchBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
-            if (String.IsNullOrEmpty(ProblemsSearchBox.Text))
+            if (string.IsNullOrEmpty(ProblemsSearchBox.Text))
             {
                 Search();
-
             }
             else
             {

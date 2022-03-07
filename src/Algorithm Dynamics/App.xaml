@@ -7,8 +7,9 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
-                <ResourceDictionary Source="/Themes/Generic.xaml"/>
                 <ResourceDictionary Source="/Themes/FlyoutPresenter.xaml"/>
+                <ResourceDictionary Source="/Themes/GridSplitter.xaml"/>
+                <ResourceDictionary Source="/Themes/Pivot.xaml"/>
                 <!-- Other merged dictionaries here -->
             </ResourceDictionary.MergedDictionaries>
             <!-- Other app resources here -->
