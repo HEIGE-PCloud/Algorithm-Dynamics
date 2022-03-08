@@ -62,7 +62,7 @@
                 SelectedIndex="0"
                 VerticalAlignment="Stretch"
                 SelectionChanged="LanguageComboBox_SelectionChanged"
-                ItemsSource="{x:Bind languages, Mode=OneWay}"
+                ItemsSource="{x:Bind Languages, Mode=OneWay}"
                 DisplayMemberPath="DisplayName">
             </ComboBox>
         </Grid>

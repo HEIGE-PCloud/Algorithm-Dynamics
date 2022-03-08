@@ -12,6 +12,7 @@ namespace Algorithm_Dynamics.Pages
         public PlaygroundPage()
         {
             InitializeComponent();
+            Core.Models.Language.All.ForEach(lang => Languages.Add(lang));
         }
         public string Code { get; set; }
         public string Input { get; set; }
@@ -22,7 +23,7 @@ namespace Algorithm_Dynamics.Pages
         private int _timeLimit = DEFAULT_RUN_CODE_TIMELIMIT;
         private int _memoryLimit = DEFAULT_RUN_CODE_MEMORYLIMIT;
 
-        private readonly ObservableCollection<Language> languages = new() { LanguageConfig.C, LanguageConfig.Cpp, LanguageConfig.Python, LanguageConfig.JavaScript, LanguageConfig.Rust, LanguageConfig.Go, LanguageConfig.Java};
+        private readonly ObservableCollection<Language> Languages = new();
         private async void RunCodeButton_Click(object sender, RoutedEventArgs e)
         {
             // Read Run Code Time Limit and Memory Limit from the Setting
@@ -50,7 +51,7 @@ namespace Algorithm_Dynamics.Pages
             
             RunCodeButton.IsEnabled = false;
 
-            RunCodeResult result = await Judger.RunCode(CodeEditor.Code, Input, languages[LanguageComboBox.SelectedIndex], _timeLimit, _memoryLimit, progress);
+            RunCodeResult result = await Judger.RunCode(CodeEditor.Code, Input, Languages[LanguageComboBox.SelectedIndex], _timeLimit, _memoryLimit, progress);
             
             RunCodeButton.IsEnabled = true;
             
