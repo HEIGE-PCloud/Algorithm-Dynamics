@@ -69,11 +69,9 @@
                 x:Name="LanguageComboBox"
                 SelectedIndex="0"
                 VerticalAlignment="Stretch"
-                SelectionChanged="LanguageComboBox_SelectionChanged">
-                <x:String>python</x:String>
-                <x:String>c</x:String>
-                <x:String>cpp</x:String>
-                <x:String>javascript</x:String>
+                SelectionChanged="LanguageComboBox_SelectionChanged"
+                ItemsSource="{x:Bind Languages, Mode=OneWay}"
+                DisplayMemberPath="DisplayName">
             </ComboBox>
             <Button
                 x:Name="FullScreenButton"
@@ -92,6 +90,7 @@
         </Grid>
 
         <Pivot
+            x:Name="IOPivot"
             Grid.Row="2"
             Grid.Column="1"
             Margin="8 8 0 0">
@@ -133,13 +132,15 @@
             </Grid.ColumnDefinitions>
 
             <ProgressBar
+                x:Name="RunCodeProgressBar"
                 Grid.Row="0"
                 Grid.Column="0"
                 Grid.ColumnSpan="3"
-                IsIndeterminate="True"
+                IsIndeterminate="False"
                 ShowPaused="False"
                 ShowError="False"/>
             <TextBlock
+                x:Name="StatusTextBlock"
                 Grid.Row="1"
                 Grid.Column="0"
                 Text="Status"
@@ -151,9 +152,11 @@
                 Content="Submit"
                 Style="{StaticResource AccentButtonStyle}"/>
             <Button
+                x:Name="RunCodeButton"
                 Grid.Row="1"
                 Grid.Column="1"
-                Content="Run Code"/>
+                Content="Run Code"
+                Click="RunCodeButton_Click"/>
         </Grid>
 
         <Grid

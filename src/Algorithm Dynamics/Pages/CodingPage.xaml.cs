@@ -29,6 +29,8 @@ namespace Algorithm_Dynamics.Pages
             }
         }
         private List<Problem> _currentProblemList;
+        private readonly ObservableCollection<Language> Languages = new();
+
         private int _currentProblemIndex
         {
             get
@@ -41,6 +43,8 @@ namespace Algorithm_Dynamics.Pages
         public CodingPage()
         {
             InitializeComponent();
+            Core.Models.Language.All.ForEach(lang => Languages.Add(lang));
+
         }
         public ObservableCollection<Submission> Submissions = new() 
         {
@@ -71,7 +75,8 @@ namespace Algorithm_Dynamics.Pages
         }
         private void LanguageComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            CodeEditor.Lang = LanguageComboBox.SelectedItem as string;
+            Language language = LanguageComboBox.SelectedItem as Language;
+            CodeEditor.Lang = language.Name;
         }
         /// <summary>
         /// Toggle the fullscreen mode for the app
@@ -132,6 +137,29 @@ namespace Algorithm_Dynamics.Pages
             else
             {
                 CurrentProblem = _currentProblemList[index + 1];
+            }
+        }
+
+        private async void RunCodeButton_Click(object sender, RoutedEventArgs e)
+        {
+            var progress = new Progress<int>(percent => { RunCodeProgressBar.Value = percent; });
+
+            RunCodeButton.IsEnabled = false;
+
+            RunCodeResult result = await Judger.RunCode(CodeEditor.Code, InputTextBox.Text, Languages[LanguageComboBox.SelectedIndex], _currentProblem.TimeLimit, CurrentProblem.MemoryLimit, progress);
+
+            RunCodeButton.IsEnabled = true;
+
+            StatusTextBlock.Text = $"{result.ResultCode} Time: {result.CPUTime} ms Memory: {result.MemoryUsage / 1024 / 1024} MB";
+            OutputTextBox.Text = result.StandardOutput;
+            ErrorTextBox.Text = result.StandardError;
+            if (string.IsNullOrEmpty(result.StandardError))
+            {
+                IOPivot.SelectedIndex = 1;
+            }
+            else
+            {
+                IOPivot.SelectedIndex = 2;
             }
         }
     }

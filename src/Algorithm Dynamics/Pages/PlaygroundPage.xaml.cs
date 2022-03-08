@@ -57,11 +57,13 @@ namespace Algorithm_Dynamics.Pages
             
             StatusTextBlock.Text = $"{result.ResultCode} Time: {result.CPUTime} ms Memory: {result.MemoryUsage / 1024 / 1024} MB";
             OutputBox.Text = result.StandardOutput + result.StandardError;
+
         }
 
         private void LanguageComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            CodeEditor.Lang = LanguageComboBox.SelectedItem.ToString();
+            Language language = LanguageComboBox.SelectedItem as Language;
+            CodeEditor.Lang = language.Name;
         }
     }
 }
