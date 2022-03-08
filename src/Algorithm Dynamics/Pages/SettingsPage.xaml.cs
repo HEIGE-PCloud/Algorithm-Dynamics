@@ -1,26 +1,52 @@
-﻿using Microsoft.UI.Xaml;
+﻿using Algorithm_Dynamics.Core.Models;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Windows.Storage;
 
 namespace Algorithm_Dynamics.Pages
 {
-    public sealed partial class SettingsPage : Page
+    public sealed partial class SettingsPage : Page, INotifyPropertyChanged
     {
         public SettingsPage()
         {
             InitializeComponent();
 
             GetCurrentTheme();
+
+            Core.Models.Language.All.ForEach(lang => Languages.Add(lang));
         }
         const int MB = 1024 * 1024;
         private const int DEFAULT_RUN_CODE_TIMELIMIT = 1000;
         private const int DEFAULT_RUN_CODE_MEMORYLIMIT = 64 * MB;
         private const string TIMELIMIT_KEY = "RunCodeTimeLimit";
         private const string MEMORYLIMIT_KEY = "RunCodeMemoryLimit";
+        private string _displayName = "";
+        private string _name = "";
+        private bool _needCompile = false;
+        private string _complieCommand = "";
+        private string _compileArguments = "";
+        private string _runCommand = "";
+        private string _runArguments = "";
+        private string _fileExtension = "";
 
+        public event PropertyChangedEventHandler PropertyChanged;
+        /// <summary>
+        /// Invoke a new <see cref="PropertyChanged"/> event.
+        /// </summary>
+        /// <param name="propertyName">Use <see cref="nameof"/> to get the name of the property.</param>
+        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            // Raise the PropertyChanged event, passing the name of the property whose value has changed.
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        public ObservableCollection<Language> Languages { get; set; } = new();
         public int TimeLimit
         {
             get
@@ -68,7 +94,7 @@ namespace Algorithm_Dynamics.Pages
         }
         private void AddLangButton_Click(object sender, RoutedEventArgs e)
         {
-
+            LanguageComboBox.SelectedIndex = -1;
         }
         private void GetCurrentTheme()
         {
@@ -103,6 +129,79 @@ namespace Algorithm_Dynamics.Pages
                 throw new InvalidOperationException("Generic parameter 'TEnum' must be an enum.");
             }
             return (TEnum)Enum.Parse(typeof(TEnum), text);
+        }
+
+        private void SaveLanguage_Click(object sender, RoutedEventArgs e)
+        {
+            if (LanguageComboBox.SelectedIndex == -1)
+            {
+                // Create a new one
+                var lang = Core.Models.Language.Create(_name, _displayName, _needCompile, _complieCommand, _compileArguments, _runCommand, _runArguments, _fileExtension);
+                Languages.Add(lang);
+                LanguageComboBox.SelectedItem = lang;
+            }
+            else
+            {
+                // Edit an existing one
+                var lang = LanguageComboBox.SelectedItem as Language;
+                lang.Name = _name;
+                lang.DisplayName = _displayName;
+                lang.NeedCompile = _needCompile;
+                lang.CompileCommand = _complieCommand;
+                lang.CompileArguments = _compileArguments;
+                lang.RunCommand = _runCommand;
+                lang.RunArguments = _runArguments;
+                lang.FileExtension = _fileExtension;
+            }
+
+        }
+
+        private void LanguageComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var lang = LanguageComboBox.SelectedItem as Core.Models.Language;
+            if (lang != null)
+            {
+                _name = lang.Name;
+                _displayName = lang.DisplayName;
+                _needCompile = lang.NeedCompile;
+                _complieCommand = lang.CompileCommand;
+                _compileArguments = lang.CompileArguments;
+                _runCommand = lang.RunCommand;
+                _runArguments = lang.RunArguments;
+                _fileExtension = lang.FileExtension;
+            }
+            else
+            {
+                _name = "";
+                _displayName = "";
+                _needCompile = false;
+                _complieCommand = "";
+                _compileArguments = "";
+                _runCommand = "";
+                _runArguments = "";
+                _fileExtension = "";
+            }
+            OnPropertyChanged(nameof(_name));
+            OnPropertyChanged(nameof(_displayName));
+            OnPropertyChanged(nameof(_needCompile));
+            OnPropertyChanged(nameof(_complieCommand));
+            OnPropertyChanged(nameof(_compileArguments));
+            OnPropertyChanged(nameof(_runCommand));
+            OnPropertyChanged(nameof(_runArguments));
+            OnPropertyChanged(nameof(_fileExtension));
+
+        }
+
+        private void DeleteLanguageButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (LanguageComboBox.SelectedItem != null)
+            {
+                var lang = LanguageComboBox.SelectedItem as Language;
+                Languages.Remove(lang);
+                lang.Delete();
+                if (Languages.Count > 0)
+                    LanguageComboBox.SelectedIndex = 0;
+            }
         }
     }
 }

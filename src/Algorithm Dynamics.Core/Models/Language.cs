@@ -1,5 +1,6 @@
 using Algorithm_Dynamics.Core.Helpers;
 using System;
+using System.Collections.Generic;
 
 namespace Algorithm_Dynamics.Core.Models
 {
@@ -111,6 +112,11 @@ namespace Algorithm_Dynamics.Core.Models
                 }
             }
         }
+
+        public static List<Language> All
+        {
+            get => DataAccess.GetAllLanguages();
+        }
         internal Language(string displayName, string name, string fileExtension, bool needCompile, string compileCommand, string compileArguments, string runCommand, string runArguments)
         {
             _displayName = displayName;
@@ -147,6 +153,10 @@ namespace Algorithm_Dynamics.Core.Models
             _fileExtension = fileExtension;
         }
 
+        public void Delete()
+        {
+            DataAccess.DeleteLanguage(Id);
+        }
         private void UpdateDatabase()
         {
             DataAccess.EditLanguage(_id, _name, _displayName, _needCompile, _compileCommand, _compileArguments, _runCommand, _runArguments, _fileExtension);

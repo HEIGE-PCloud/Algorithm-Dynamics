@@ -63,6 +63,12 @@ namespace Algorithm_Dynamics
                 User user = User.Create("User", "user@example.com", Role.Student);
                 roamingSettings.Values["CurrentUser"] = user.Uid;
             }
+
+            if (Language.All.Count == 0)
+            {
+                Language.Create("python", "Python", false, "", "", "python", "{SourceCodeFilePath}", ".py");
+                Language.Create("c", "C", true, "gcc", "-x c {SourceCodeFilePath} -o {ExecutableFilePath}", "{ExecutableFilePath}", "", ".c");
+            }
             m_window.Activate();
         }
 

@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Algorithm_Dynamics.Pages"
+    xmlns:models="using:Algorithm_Dynamics.Core.Models" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
@@ -85,12 +86,17 @@
                         <StackPanel 
                             Orientation="Horizontal">
                             <ComboBox
+                                x:Name="LanguageComboBox"
                                 VerticalAlignment="Stretch"
                                 Margin="2"
-                                SelectedIndex="0">
-                                <x:String>C</x:String>
-                                <x:String>C++</x:String>
-                                <x:String>Python</x:String>
+                                SelectedIndex="0"
+                                SelectionChanged="LanguageComboBox_SelectionChanged"
+                                ItemsSource="{x:Bind Languages, Mode=OneWay}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate x:DataType="models:Language">
+                                        <TextBlock Text="{x:Bind DisplayName, Mode=OneWay}"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
                             </ComboBox>
                             <Button 
                                 x:Name="AddLangButton"
@@ -102,6 +108,7 @@
                                 </Button.Content>
                             </Button>
                             <Button 
+                                Visibility="Visible"
                                 ToolTipService.ToolTip="Delete the selected configuration"
                                 Margin="2">
                                 <Button.Content>
@@ -114,8 +121,10 @@
                                                 Style="{ThemeResource BaseTextBlockStyle}"
                                                 Text="The selected language configuration will be deleted. Do you want to continue?" Margin="0 0 0 12" />
                                             <Button 
+                                                x:Name="DeleteLanguageButton"
                                                 HorizontalAlignment="Right"
-                                                Content="Yes" />
+                                                Content="Yes"
+                                                Click="DeleteLanguageButton_Click"/>
                                         </StackPanel>
                                     </Flyout>
                                 </Button.Flyout>
@@ -128,43 +137,53 @@
                             MinWidth="400">
                             <TextBox
                                 x:Name="DisplayNameTextBox"
-                                Header="Display Name"/>
+                                Header="Display Name"
+                                Text="{x:Bind _displayName, Mode=TwoWay}"/>
                             <TextBox
                                 x:Name="LanguageCodeTextBox"
                                 Header="Language Code"
-                                Margin="0 4 0 0"/>
+                                Margin="0 4 0 0"
+                                Text="{x:Bind _name, Mode=TwoWay}"/>
                             <CheckBox
                                 x:Name="NeedCompileCheckBox"
                                 Content="Need Compile"
-                                Margin="0 4 0 0"/>
+                                Margin="0 4 0 0"
+                                IsChecked="{x:Bind _needCompile, Mode=TwoWay}"/>
                             <TextBox
                                 x:Name="CompileCommandTextBox"
                                 Visibility="{x:Bind NeedCompileCheckBox.IsChecked, Mode=OneWay}"
                                 Header="Compile Command"
-                                Margin="0 4 0 0"/>
+                                Margin="0 4 0 0"
+                                Text="{x:Bind _complieCommand, Mode=TwoWay}"/>
                             <TextBox
                                 x:Name="CompileArgumentTextBox"
                                 Visibility="{x:Bind NeedCompileCheckBox.IsChecked, Mode=OneWay}"
                                 Header="Compile Argument"
-                                Margin="0 4 0 0"/>
+                                Margin="0 4 0 0"
+                                Text="{x:Bind _compileArguments, Mode=TwoWay}"/>
                             <TextBox
                                 x:Name="RunCommandTextBox"
                                 Header="Run Command"
-                                Margin="0 4 0 0"/>
+                                Margin="0 4 0 0"
+                                Text="{x:Bind _runCommand, Mode=TwoWay}"/>
                             <TextBox
                                 x:Name="RunArgumentsTextBox"
                                 Header="Run Arguments"
-                                Margin="0 4 0 0"/>
+                                Margin="0 4 0 0"
+                                Text="{x:Bind _runArguments, Mode=TwoWay}"/>
                             <TextBox
                                 x:Name="FileExtensionTextBox"
                                 PlaceholderText=".*"
                                 Header="File Extension"
-                                Margin="0 4 0 0"/>
+                                Margin="0 4 0 0"
+                                Text="{x:Bind _fileExtension, Mode=TwoWay}"/>
                             <StackPanel 
                                 Margin="0 16 0 0"
                                 Orientation="Horizontal">
                                 <Button
+                                    x:Name="SaveLanguage"
                                     Content="Save"
+                                    Click="SaveLanguage_Click"
                                     Style="{ThemeResource AccentButtonStyle}">
                                 </Button>
                             </StackPanel>
