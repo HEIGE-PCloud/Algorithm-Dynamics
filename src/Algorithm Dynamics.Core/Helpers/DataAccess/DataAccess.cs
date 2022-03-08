@@ -109,20 +109,6 @@ namespace Algorithm_Dynamics.Core.Helpers
                         FOREIGN KEY (ProblemListId) REFERENCES ProblemList(Id)
                     );";
 
-                // Create Assignment table
-                tableCommand +=
-                    @"CREATE TABLE IF NOT EXISTS Assignment
-                    (
-                        Uid TEXT PRIMARY KEY NOT NULL,
-                        Name TEXT NOT NULL,
-                        Description TEXT NOT NULL,
-                        DueDate TEXT NOT NULL,
-                        Status INTEGER NOT NULL,
-                        Type INTEGER NOT NULL,
-                        UserUid TEXT,
-                        FOREIGN KEY (UserUid) REFERENCES User(Uid)
-                    );";
-
                 // Create Language table
                 tableCommand +=
                     @"CREATE TABLE IF NOT EXISTS Language
@@ -151,6 +137,30 @@ namespace Algorithm_Dynamics.Core.Helpers
                         FOREIGN KEY (LanguageId) REFERENCES Language(Id),
                         FOREIGN KEY (UserUid) REFERENCES User(Uid),
                         FOREIGN KEY (ProblemId) REFERENCES Problem(Id)
+                    );";
+
+                // Create SubmissionResult table
+                tableCommand +=
+                    @"CREATE TABLE IF NOT EXISTS SubmissionResult
+                    (
+                        Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        SubmissionId INTEGER NOT NULL,
+                        FOREIGN KEY (SubmissionId) REFERENCES Submission(Id)
+                    );";
+
+                // Create TestCaseResult table
+                tableCommand +=
+                    @"CREATE TABLE IF NOT EXISTS TestCaseResult
+                    (
+                        Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        StandardOutput TEXT NOT NULL,
+                        StandardError TEXT NOT NULL,
+                        ExitCode INTEGER NOT NULL,
+                        CPUTime INTEGER NOT NULL,
+                        MemoryUsage INTEGER NOT NULL,
+                        ResultCode INTEGER NOT NULL,
+                        SubmissionResultId INTEGER,
+                        FOREIGN KEY (SubmissionResultId) REFERENCES SubmissionResult(Id)
                     );";
 
                 SqliteCommand createTable = new(tableCommand, db);

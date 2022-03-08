@@ -196,7 +196,8 @@ namespace Algorithm_Dynamics.Core.Models
         }
         public async static Task<TestCaseResult> JudgeTestCase(string UserCode, TestCase TestCase, Language Language, int TimeLimit, long MemoryLimit)
         {
-            TestCaseResult result = new(TestCase, await RunCode(UserCode, TestCase.Input, Language, TimeLimit, MemoryLimit, new Progress<int>()));
+            RunCodeResult runCodeResult = await RunCode(UserCode, TestCase.Input, Language, TimeLimit, MemoryLimit, new Progress<int>());
+            TestCaseResult result = TestCaseResult.Create(runCodeResult, null);
             if (result.ResultCode == ResultCode.SUCCESS)
             {
                 if (result.StandardOutput.Trim() != TestCase.Output.Trim())
@@ -208,21 +209,13 @@ namespace Algorithm_Dynamics.Core.Models
         }
         public async static Task<SubmissionResult> JudgeProblem(Submission Submission)
         {
-            SubmissionResult Result = new();
+            SubmissionResult Result = SubmissionResult.Create(Submission, new());
             Result.Submission = Submission;
             Queue<TestCase> JudgeQueue = new(Submission.Problem.TestCases);
             while (JudgeQueue.Count > 0)
             {
-                Result.Add(
-                    await JudgeTestCase(
-                        Submission.Code,
-                        JudgeQueue.Dequeue(),
-                        Submission.Language,
-                        Submission.Problem.TimeLimit,
-                        Submission.Problem.MemoryLimit
-                    )
-                );
-            }
+                Result.AddTestCaseResult(await JudgeTestCase(Submission.Code, JudgeQueue.Dequeue(), Submission.Language, Submission.Problem.TimeLimit, Submission.Problem.MemoryLimit));
+             }
             return Result;
         }
         public async static Task<AssignmentSubmissionResult> JudgeAssignment(AssignmentSubmission AssignmentSubmission)

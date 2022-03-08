@@ -378,5 +378,17 @@ namespace Algorithm_Dynamics.Test
             Assert.AreEqual(2, DataAccess.GetAllSubmissions().Count);
             CollectionAssert.AreEqual(new List<Submission>() { sub1, sub2 }, DataAccess.GetAllSubmissions());
         }
+
+        [TestMethod]
+        public void TestAddSubmissionResult()
+        {
+            var problem = CreateNewProblem();
+            var user = CreateNewUser();
+            var lang = CreateNewLanguage();
+            var submission = Submission.Create("code", lang, user, problem);
+
+            SubmissionResult submissionResult = SubmissionResult.Create(submission, new());
+            Assert.AreEqual(submissionResult, DataAccess.GetSubmissionResult(submissionResult.Id));
+        }
     }
 }
