@@ -27,12 +27,13 @@ namespace Algorithm_Dynamics.Pages
 
         public void RefreshDatabase()
         {
-            Problems.Clear();
-            Tags.Clear();
             ProblemLists.Clear();
-            foreach (var p in Problem.All) Problems.Add(p);
-            foreach (var t in Core.Models.Tag.All) Tags.Add(t);
-            foreach (var p in ProblemList.All) ProblemLists.Add(p);
+            Tags.Clear();
+            Problems.Clear();
+
+            Problem.All.ForEach(problem => Problems.Add(problem));
+            Core.Models.Tag.All.ForEach(tag => Tags.Add(tag));
+            ProblemList.All.ForEach(problemList => ProblemLists.Add(problemList));
         }
 
         /// <summary>
