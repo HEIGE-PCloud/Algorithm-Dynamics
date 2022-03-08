@@ -53,9 +53,9 @@ jobs:
     # Setup Python for unit test
     - name: Setup Python
       uses: actions/setup-python@v2
-        with:
-          python-version: '3.x'
-          architecture: 'x64'
+      with:
+        python-version: '3.x'
+        architecture: 'x64'
 
     # Execute all unit tests in the solution
     - name: Execute unit tests
