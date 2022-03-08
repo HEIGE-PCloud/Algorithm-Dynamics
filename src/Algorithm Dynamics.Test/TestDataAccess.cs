@@ -53,6 +53,13 @@ namespace Algorithm_Dynamics.Test
             return testCase;
         }
 
+        private ProblemList CreateNewProblemList()
+        {
+            ProblemList problemList = ProblemList.Create($"Problem List {counter}", $"Description {counter}", new());
+            counter++;
+            return problemList;
+        }
+
 
         [TestMethod]
         public void TestSingleData()
@@ -293,6 +300,18 @@ namespace Algorithm_Dynamics.Test
         {
             ProblemList problemList = ProblemList.Create("Problem List", "Description", new());
             Assert.AreEqual(problemList, DataAccess.GetProblemList(problemList.Id));
+        }
+
+        [TestMethod]
+        public void TestAddDeleteProblemListRecord()
+        {
+            var problemList = CreateNewProblemList();
+            var problem1 = CreateNewProblem();
+            var problem2 = CreateNewProblem();
+            problemList.AddProblem(problem1);
+            problemList.AddProblem(problem2);
+            problemList.RemoveProblem(problem1);
+            CollectionAssert.AreEqual(problemList.Problems, ProblemList.All[0].Problems);
         }
     }
 }

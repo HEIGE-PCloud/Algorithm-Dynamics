@@ -306,6 +306,11 @@ namespace Algorithm_Dynamics.Core.Models
         {
             return HashCode.Combine(Id, Uid, Name, Description);
         }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 
     public enum Difficulty

@@ -16,6 +16,7 @@ namespace Algorithm_Dynamics.Core.Models
         }
         public int Id { get; }
         public string Name { get; set; }
+        public static List<Tag> All { get => DataAccess.GetAllTags(); }
 
         /// <summary>
         /// Attach the Tag to a problem
@@ -51,12 +52,6 @@ namespace Algorithm_Dynamics.Core.Models
             {
                 return DataAccess.AddTag(name);
             }
-        }
-        public static Tag Load(int id)
-        {
-            // TODO: retrieve the tag name somehow
-            var name = "Tag name";
-            return new Tag(id, name);
         }
 
         public override bool Equals(object obj)

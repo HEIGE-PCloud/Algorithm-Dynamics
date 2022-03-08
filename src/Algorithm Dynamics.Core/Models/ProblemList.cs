@@ -114,5 +114,10 @@ namespace Algorithm_Dynamics.Core.Models
             while (_problems.Count != 0) RemoveProblem(_problems[0]);
             DataAccess.DeleteProblemList(_id);
         }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

@@ -50,7 +50,7 @@ namespace Algorithm_Dynamics.Core.Helpers
             }
         }
 
-        public static ProblemList GetProblemList(int Id)
+        internal static ProblemList GetProblemList(int Id)
         {
             ProblemList problemList;
 
@@ -77,7 +77,7 @@ namespace Algorithm_Dynamics.Core.Helpers
             return problemList;
         }
 
-        public static List<ProblemList> GetAllProblemLists()
+        internal static List<ProblemList> GetAllProblemLists()
         {
             List<ProblemList> problemLists = new();
 
@@ -116,14 +116,14 @@ namespace Algorithm_Dynamics.Core.Helpers
             }
         }
 
-        internal static void DeleteProblemListRecord(int problemId, int problemListId)
+        internal static void DeleteProblemListRecord(int problemListId, int problemId)
         {
             using (SqliteConnection conn = new($"FileName={DbPath}"))
             {
                 conn.Open();
                 SqliteCommand deleteCommand = new();
                 deleteCommand.Connection = conn;
-                deleteCommand.CommandText = "DELETE FROM ProblemListRecord WHERE ProblemId = @ProblemId AND ProblemListId = @ProblemListId";
+                deleteCommand.CommandText = "DELETE FROM ProblemListRecord WHERE ProblemId = @ProblemId AND ProblemListId = @ProblemListId;";
                 deleteCommand.Parameters.AddWithValue("@ProblemId", problemId);
                 deleteCommand.Parameters.AddWithValue("@ProblemListId", problemListId);
                 deleteCommand.ExecuteNonQuery();

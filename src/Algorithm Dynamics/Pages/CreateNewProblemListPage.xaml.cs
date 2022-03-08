@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Storage.Provider;
@@ -42,6 +43,10 @@ namespace Algorithm_Dynamics.Pages
             }
         }
 
+        private ProblemList _problemList;
+        private string _name = "";
+        private string _description = "";
+
         /// <summary>
         /// Handle the Navigation Arguments
         /// Set the <see cref="_pageMode"/> if the Parameter is not <see cref="null"/>.
@@ -51,7 +56,15 @@ namespace Algorithm_Dynamics.Pages
         {
             if (e.Parameter != null)
             {
-                _pageMode = ((Tuple<Mode>)e.Parameter).Item1;
+                var parameter = (Tuple<Mode, ProblemList>)e.Parameter;
+                _pageMode = parameter.Item1;
+                _problemList = parameter.Item2;
+                if (_pageMode == Mode.EditProblemList && _problemList != null)
+                {
+                    _name = _problemList.Name;
+                    _description = _problemList.Description;
+                    _problemList.Problems.ToList().ForEach(problem => Problems.Add(problem));
+                }
             }
             base.OnNavigatedTo(e);
         }
@@ -67,26 +80,39 @@ namespace Algorithm_Dynamics.Pages
         {
             if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
             {
-                var suitableItems = new List<string>();
-                suitableItems.Add(sender.Text);
-                // TODO: search the actual problem from the database
-                if (suitableItems.Count == 0)
+                if (string.IsNullOrEmpty(AddProblemBox.Text))
                 {
-                    suitableItems.Add("No results found");
+                    sender.ItemsSource = Problem.All;
                 }
-                sender.ItemsSource = suitableItems;
+                else
+                {
+                    string keyword = AddProblemBox.Text.Trim();
+                    List<Problem> resultList = new List<Problem>();
+                    List<Problem> sourceList = Problem.All;
+                    Problems.ToList().ForEach(problem => sourceList.Remove(problem));
+                    var splitKeyword = keyword.ToLower().Split(' ');
+                    for (int i = 0; i < sourceList.Count; i++)
+                    {
+                        for (int j = 0; j < splitKeyword.Length; j++)
+                        {
+                            var sourceKey = sourceList[i].Name.ToLower();
+                            if (sourceKey.Contains(splitKeyword[j]))
+                            {
+                                resultList.Add(sourceList[i]);
+                                break;
+                            }
+                        }
+                    }
+                    sender.ItemsSource = resultList.ToList();
+                }
             }
-
         }
 
-        /// <summary>
-        /// When a suggestion is chosen, add it in to the list.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
-        private void AddProblemBox_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
+
+        private void AddProblemBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
-            //Problems.Add(new Problem(sender.Text, "Easy", "ToDo", "Data structure"));
+
+            Problem.All.Where(problem => problem.Name == sender.Text).ToList().ForEach(problem => { if (!Problems.Contains(problem)) Problems.Add(problem); });
         }
 
         /// <summary>
@@ -96,7 +122,29 @@ namespace Algorithm_Dynamics.Pages
         /// <param name="e"></param>
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            // TODO: actually save the problem to the database.
+            if (_pageMode == Mode.CreateProblemList)
+            {
+                ProblemList.Create(_name, _description, Problems.ToList());
+            }
+            else if (_pageMode == Mode.EditProblemList)
+            {
+                _problemList.Name = _name;
+                _problemList.Description = _description;
+                Problems.ToList().ForEach(problem =>
+                {
+                    if (_problemList.Problems.Contains(problem) == false)
+                    {
+                        _problemList.AddProblem(problem);
+                    }
+                });
+                _problemList.Problems.ToList().ForEach(problem =>
+                {
+                    if (Problems.Contains(problem) == false)
+                    {
+                        _problemList.RemoveProblem(problem);
+                    }
+                });
+            }
             TestTextBlock.Text = "The Problem List is saved.";
         }
 
@@ -171,5 +219,6 @@ namespace Algorithm_Dynamics.Pages
                 // TODO: handle cancelled
             }
         }
+
     }
 }

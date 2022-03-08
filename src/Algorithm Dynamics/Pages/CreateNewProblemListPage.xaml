@@ -18,7 +18,8 @@
                 Style="{ThemeResource TitleTextBlockStyle}"/>
             <TextBox
                 Margin="0 22 0 0"
-                Header="Title"
+                Header="Name"
+                Text="{x:Bind _name, Mode=TwoWay}"
                 MaxLength="64"
                 Width="400"
                 HorizontalAlignment="Left"/>
@@ -34,6 +35,7 @@
                 TextWrapping="Wrap" 
                 AcceptsReturn="True" 
                 IsSpellCheckEnabled="True"
+                Text="{x:Bind _description, Mode=TwoWay}"
                 MinWidth="400"
                 MinHeight="200"
                 MaxHeight="840"/>
@@ -45,7 +47,13 @@
                 QueryIcon="Find"
                 Width="400"
                 TextChanged="AddProblemBox_TextChanged"
-                SuggestionChosen="AddProblemBox_SuggestionChosen"/>
+                QuerySubmitted="AddProblemBox_QuerySubmitted">
+                <AutoSuggestBox.ItemTemplate>
+                    <DataTemplate x:DataType="models:Problem">
+                        <TextBlock Text="{x:Bind Name}"/>
+                    </DataTemplate>
+                </AutoSuggestBox.ItemTemplate>
+            </AutoSuggestBox>
             <ListView
                 Margin="0 22 0 0"
                 SelectionMode="None"
@@ -67,11 +75,11 @@
                             <TextBlock
                                 Grid.Column="1"
                                 VerticalAlignment="Center"
-                                Text="{x:Bind Difficulty}"/>
+                                Text="{x:Bind DifficultyAsString}"/>
                             <TextBlock
                                 Grid.Column="2"
                                 VerticalAlignment="Center"
-                                Text="{x:Bind Tags}"/>
+                                Text="{x:Bind TagsAsString}"/>
                             <Button
                                 x:Name="DeleteButton"
                                 Grid.Column="3"

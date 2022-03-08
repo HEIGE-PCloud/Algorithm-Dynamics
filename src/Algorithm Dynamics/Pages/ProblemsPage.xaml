@@ -70,10 +70,15 @@
                 x:Name="ListComboBox"
                 Grid.Column="4"
                 Margin="4"
-                ItemsSource="{x:Bind Lists}"
+                ItemsSource="{x:Bind ProblemLists}"
                 HorizontalAlignment="Stretch"
                 SelectionChanged="Search"
                 RightTapped="ListComboBox_RightTapped">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate x:DataType="models:ProblemList">
+                        <TextBlock Text="{x:Bind Name}"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
                 <ComboBox.Resources>
                     <MenuFlyout x:Name="ListMenuFlyout">
                         <MenuFlyout.Items>

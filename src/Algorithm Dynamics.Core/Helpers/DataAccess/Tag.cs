@@ -35,7 +35,7 @@ namespace Algorithm_Dynamics.Core.Helpers
             }
         }
 
-        public static List<Tag> GetAllTags()
+        internal static List<Tag> GetAllTags()
         {
             List<Tag> tags = new();
 

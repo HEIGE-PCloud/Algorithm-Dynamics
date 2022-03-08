@@ -21,7 +21,7 @@ namespace Algorithm_Dynamics.Pages
         }
         private readonly ObservableCollection<string> Difficulties = new() { "Easy", "Medium", "Hard" };
         private readonly ObservableCollection<string> Statuses = new() { "Todo", "Attempted", "Done" };
-        public ObservableCollection<string> Lists = new() { "List 1", "List 2", "List 3" };
+        public ObservableCollection<ProblemList> ProblemLists = new();
         public ObservableCollection<Tag> Tags = new();
         public ObservableCollection<Problem> Problems = new();
 
@@ -29,9 +29,10 @@ namespace Algorithm_Dynamics.Pages
         {
             Problems.Clear();
             Tags.Clear();
+            ProblemLists.Clear();
             foreach (var p in Problem.All) Problems.Add(p);
-            foreach (var t in DataAccess.GetAllTags()) Tags.Add(t);
-            // TODO: Problem List
+            foreach (var t in Core.Models.Tag.All) Tags.Add(t);
+            foreach (var p in ProblemList.All) ProblemLists.Add(p);
         }
 
         /// <summary>
@@ -77,7 +78,7 @@ namespace Algorithm_Dynamics.Pages
         /// <exception cref="NotImplementedException"></exception>
         private void EditProblemList(object sender, RoutedEventArgs e)
         {
-            App.NavigateTo(typeof(CreateNewProblemListPage), Tuple.Create(CreateNewProblemListPage.Mode.EditProblemList));
+            App.NavigateTo(typeof(CreateNewProblemListPage), Tuple.Create(CreateNewProblemListPage.Mode.EditProblemList, (ProblemList)ListComboBox.SelectedItem));
         }
 
         /// <summary>
@@ -94,12 +95,13 @@ namespace Algorithm_Dynamics.Pages
             dialog.CloseButtonText = "Cancel";
             dialog.Content = $"Are you sure that you want to permanently delete {ListComboBox.SelectedItem}?";
             dialog.DefaultButton = ContentDialogButton.Close;
-            dialog.XamlRoot = this.Content.XamlRoot;
+            dialog.XamlRoot = Content.XamlRoot;
             var result = await dialog.ShowAsync();
             if (result == ContentDialogResult.Primary)
             {
-                // TODO: Delete the selected problem list
-                throw new NotImplementedException();
+                var problemList = (ProblemList)ListComboBox.SelectedItem;
+                problemList.Delete();
+                RefreshDatabase();
             }
         }
 
@@ -149,7 +151,7 @@ namespace Algorithm_Dynamics.Pages
                 CloseButtonText = "Cancel",
                 Content = $"Are you sure that you want to permanently delete {(ProblemsListView.SelectedItem as Problem).Name}?",
                 DefaultButton = ContentDialogButton.Close,
-                XamlRoot = this.Content.XamlRoot
+                XamlRoot = Content.XamlRoot
             };
             var result = await dialog.ShowAsync();
             if (result == ContentDialogResult.Primary)
@@ -263,10 +265,6 @@ namespace Algorithm_Dynamics.Pages
             Problems.Clear();
             NoResultTextBlock.Visibility = Visibility.Collapsed;
             var problems = Problem.All;
-            //if (DifficultyComboBox.SelectedIndex == -1 && TagComboBox.SelectedIndex == -1 && ListComboBox.SelectedIndex == -1 && StatusComboBox.SelectedIndex == -1)
-            //{
-            //    return;
-            //}
 
             if (DifficultyComboBox.SelectedIndex != -1)
             {
@@ -286,7 +284,13 @@ namespace Algorithm_Dynamics.Pages
                 problems.RemoveAll(p => p.Tags.Contains(tag) == false);
             }
 
-            if (String.IsNullOrEmpty(ProblemsSearchBox.Text) == false)
+            if (ListComboBox.SelectedIndex != -1)
+            {
+                var list = (ProblemList)ListComboBox.SelectedItem;
+                problems.RemoveAll(p => list.Problems.Contains(p) == false);
+            }
+
+            if (string.IsNullOrEmpty(ProblemsSearchBox.Text) == false)
             {
                 var name = ProblemsSearchBox.Text;
                 problems.RemoveAll(p => p.Name != name);
