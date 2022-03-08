@@ -57,6 +57,11 @@ jobs:
         python-version: '3.x'
         architecture: 'x64'
 
+    - name: Check version
+      run: |
+        python --version
+        g++ --version
+
     # Execute all unit tests in the solution
     - name: Execute unit tests
       working-directory: src\Algorithm Dynamics.Test

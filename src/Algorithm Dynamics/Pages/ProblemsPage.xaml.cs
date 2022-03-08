@@ -90,13 +90,15 @@ namespace Algorithm_Dynamics.Pages
         /// <exception cref="NotImplementedException"></exception>
         private async void DeleteProblemList(object sender, RoutedEventArgs e)
         {
-            ContentDialog dialog = new ContentDialog();
-            dialog.Title = "Delete Problem List";
-            dialog.PrimaryButtonText = "Delete";
-            dialog.CloseButtonText = "Cancel";
-            dialog.Content = $"Are you sure that you want to permanently delete {ListComboBox.SelectedItem}?";
-            dialog.DefaultButton = ContentDialogButton.Close;
-            dialog.XamlRoot = Content.XamlRoot;
+            ContentDialog dialog = new()
+            {
+                Title = "Delete Problem List",
+                PrimaryButtonText = "Delete",
+                CloseButtonText = "Cancel",
+                Content = $"Are you sure that you want to permanently delete {ListComboBox.SelectedItem}?",
+                DefaultButton = ContentDialogButton.Close,
+                XamlRoot = Content.XamlRoot
+            };
             var result = await dialog.ShowAsync();
             if (result == ContentDialogResult.Primary)
             {
