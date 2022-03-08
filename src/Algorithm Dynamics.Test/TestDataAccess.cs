@@ -60,6 +60,18 @@ namespace Algorithm_Dynamics.Test
             return problemList;
         }
 
+        private User CreateNewUser()
+        {
+            User user = User.Create($"User {counter}", $"user{counter}@example.com", Role.Student);
+            counter++;
+            return user;
+        }
+
+        private Language CreateNewLanguage()
+        {
+            Language lang = Language.Create($"lang {counter++}", "Lang", false, "", "", "RunCmd", "RunArgs", ".example");
+            return lang;
+        }
 
         [TestMethod]
         public void TestSingleData()
@@ -342,6 +354,29 @@ namespace Algorithm_Dynamics.Test
             Language lang1 = Language.Create("name", "displayname", true, "compileCommand", "compileArguments", "runCommand", "runArguments", "fileExtension");
             Language lang2 = Language.Create("name", "displayname", true, "compileCommand", "compileArguments", "runCommand", "runArguments", "fileExtension");
             CollectionAssert.AreEqual(new List<Language>() { lang1, lang2 }, DataAccess.GetAllLanguages());
+        }
+
+        [TestMethod]
+        public void TestAddSubmission()
+        {
+            var problem = CreateNewProblem();
+            var user = CreateNewUser();
+            var lang = CreateNewLanguage();
+            var sub = Submission.Create("code", lang, user, problem);
+
+            Assert.AreEqual(sub, DataAccess.GetSubmission(sub.Id));
+        }
+
+        [TestMethod]
+        public void TestGetAllSubmissions()
+        {
+            var problem = CreateNewProblem();
+            var user = CreateNewUser();
+            var lang = CreateNewLanguage();
+            var sub1 = Submission.Create("code", lang, user, problem);
+            var sub2 = Submission.Create("code", lang, user, problem);
+            Assert.AreEqual(2, DataAccess.GetAllSubmissions().Count);
+            CollectionAssert.AreEqual(new List<Submission>() { sub1, sub2 }, DataAccess.GetAllSubmissions());
         }
     }
 }

@@ -145,14 +145,12 @@ namespace Algorithm_Dynamics.Core.Helpers
                         Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                         Code TEXT NOT NULL,
                         Time TEXT NOT NULL,
-                        LanguageId INTEGER NOT NULL,
+                        LanguageId INTEGER,
                         UserUid TEXT NOT NULL,
                         ProblemId INTEGER NOT NULL,
-                        AssignmentSubmissionResultUid TEXT,
                         FOREIGN KEY (LanguageId) REFERENCES Language(Id),
                         FOREIGN KEY (UserUid) REFERENCES User(Uid),
-                        FOREIGN KEY (ProblemId) REFERENCES Problem(Id),
-                        FOREIGN KEY (AssignmentSubmissionResultUid) REFERENCES AssignmentSubmission(Uid)
+                        FOREIGN KEY (ProblemId) REFERENCES Problem(Id)
                     );";
 
                 SqliteCommand createTable = new(tableCommand, db);
