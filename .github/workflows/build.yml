@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Build graphs
+      - name: Build Graphs
         run: |
           npm install @mermaid-js/mermaid-cli
           python report/graphs/build_graphs.py --command ./node_modules/.bin/mmdc
@@ -49,6 +49,13 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 6.0.x
+
+    # Setup Python for unit test
+    - name: Setup Python
+      uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+          architecture: 'x64'
 
     # Execute all unit tests in the solution
     - name: Execute unit tests
