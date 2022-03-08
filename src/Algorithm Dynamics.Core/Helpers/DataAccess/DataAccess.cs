@@ -89,22 +89,6 @@ namespace Algorithm_Dynamics.Core.Helpers
                         FOREIGN KEY (ProblemId) REFERENCES Problem (Id)
                     );";
 
-                // Create Submission table
-                tableCommand +=
-                    @"CREATE TABLE IF NOT EXISTS Submission
-                    (
-                        Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                        Code TEXT,
-                        Time TEXT NOT NULL,
-                        Language TEXT NOT NULL,
-                        UserUid TEXT,
-                        ProblemId INTEGER,
-                        AssignmentSubmissionResultUid TEXT,
-                        FOREIGN KEY (UserUid) REFERENCES User(Uid),
-                        FOREIGN KEY (ProblemId) REFERENCES Problem(Id),
-                        FOREIGN KEY (AssignmentSubmissionResultUid) REFERENCES AssignmentSubmission(Uid)
-                    );";
-
                 // Create ProblemList table
                 tableCommand +=
                     @"CREATE TABLE IF NOT EXISTS ProblemList
@@ -137,6 +121,38 @@ namespace Algorithm_Dynamics.Core.Helpers
                         Type INTEGER NOT NULL,
                         UserUid TEXT,
                         FOREIGN KEY (UserUid) REFERENCES User(Uid)
+                    );";
+
+                // Create Language table
+                tableCommand +=
+                    @"CREATE TABLE IF NOT EXISTS Language
+                    (
+                        Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        Name TEXT NOT NULL,
+                        DisplayName TEXT NOT NULL,
+                        NeedCompile INTEGER NOT NULL,
+                        CompileCommand TEXT NOT NULL,
+                        CompileArguments TEXT NOT NULL,
+                        RunCommand TEXT NOT NULL,
+                        RunArguments TEXT NOT NULL,
+                        FileExtension TEXT NOT NULL
+                    );";
+
+                // Create Submission table
+                tableCommand +=
+                    @"CREATE TABLE IF NOT EXISTS Submission
+                    (
+                        Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        Code TEXT NOT NULL,
+                        Time TEXT NOT NULL,
+                        LanguageId INTEGER NOT NULL,
+                        UserUid TEXT NOT NULL,
+                        ProblemId INTEGER NOT NULL,
+                        AssignmentSubmissionResultUid TEXT,
+                        FOREIGN KEY (LanguageId) REFERENCES Language(Id),
+                        FOREIGN KEY (UserUid) REFERENCES User(Uid),
+                        FOREIGN KEY (ProblemId) REFERENCES Problem(Id),
+                        FOREIGN KEY (AssignmentSubmissionResultUid) REFERENCES AssignmentSubmission(Uid)
                     );";
 
                 SqliteCommand createTable = new(tableCommand, db);

@@ -313,5 +313,35 @@ namespace Algorithm_Dynamics.Test
             problemList.RemoveProblem(problem1);
             CollectionAssert.AreEqual(problemList.Problems, ProblemList.All[0].Problems);
         }
+
+        [TestMethod]
+        public void TestAddLanguage()
+        {
+            Language language = DataAccess.AddLanguage("name", "displayname", true, "compleCommand", "compileArguments", "runCommand", "runArguments", "fileExtension");
+            Assert.AreEqual(language, DataAccess.GetLanguage(language.Id));
+        }
+
+        [TestMethod]
+        public void TestEditLanguage()
+        {
+            Language lang = Language.Create("name", "displayname", true, "compileCommand", "compileArguments", "runCommand", "runArguments", "fileExtension");
+            lang.Name = "New Name";
+            lang.DisplayName = "New DisplayName";
+            lang.NeedCompile = false;
+            lang.CompileCommand = "New command";
+            lang.CompileArguments = "New arguments";
+            lang.RunCommand = "New command";
+            lang.RunArguments = "New arguments";
+            lang.FileExtension = "new extension";
+            Assert.AreEqual(lang, DataAccess.GetLanguage(lang.Id));
+        }
+
+        [TestMethod]
+        public void TestGetAllLanguages()
+        {
+            Language lang1 = Language.Create("name", "displayname", true, "compileCommand", "compileArguments", "runCommand", "runArguments", "fileExtension");
+            Language lang2 = Language.Create("name", "displayname", true, "compileCommand", "compileArguments", "runCommand", "runArguments", "fileExtension");
+            CollectionAssert.AreEqual(new List<Language>() { lang1, lang2 }, DataAccess.GetAllLanguages());
+        }
     }
 }
