@@ -22,9 +22,19 @@ namespace Algorithm_Dynamics.Core.Models
                 DataAccess.EditTestCaseResult(Id, value);
             }
         }
-        public static TestCaseResult Create(RunCodeResult r, int? submissionResultId)
+        public static TestCaseResult Create(RunCodeResult r)
         {
-            return DataAccess.AddTestCaseResult(r.StandardOutput, r.StandardError, r.ExitCode, r.CPUTime, r.MemoryUsage, r.ResultCode, submissionResultId);
+            return DataAccess.AddTestCaseResult(r.StandardOutput, r.StandardError, r.ExitCode, r.CPUTime, r.MemoryUsage, r.ResultCode, null);
+        }
+        public override bool Equals(object obj)
+        {
+            if (obj is not TestCaseResult result)
+                return false;
+            return Id == result.Id && StandardOutput == result.StandardOutput && StandardError == result.StandardError && ExitCode == result.ExitCode && CPUTime == result.CPUTime && MemoryUsage == result.MemoryUsage && ResultCode == result.ResultCode;
+        }
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 }

@@ -390,5 +390,24 @@ namespace Algorithm_Dynamics.Test
             SubmissionResult submissionResult = SubmissionResult.Create(submission, new());
             Assert.AreEqual(submissionResult, DataAccess.GetSubmissionResult(submissionResult.Id));
         }
+
+        [TestMethod]
+        public void TestTestCaseResult()
+        {
+            var problem = CreateNewProblem();
+            var user = CreateNewUser();
+            var lang = CreateNewLanguage();
+            var submission = Submission.Create("code", lang, user, problem);
+
+            TestCaseResult t1 = TestCaseResult.Create(new("stdout1", "stderr1", 0, 1000, 64 * MB, ResultCode.SUCCESS));
+            TestCaseResult t2 = TestCaseResult.Create(new("stdout2", "stderr2", 1, 2000, 16 * MB, ResultCode.TIME_LIMIT_EXCEEDED));
+            SubmissionResult result = SubmissionResult.Create(submission, new());
+            result.AddTestCaseResult(t1);
+            result.AddTestCaseResult(t2);
+
+            Assert.AreEqual(result, DataAccess.GetSubmissionResult(result.Id));
+            CollectionAssert.AreEqual(result.Results, DataAccess.GetSubmissionResult(result.Id).Results);
+            CollectionAssert.AreEqual(result.Results, DataAccess.GetTestCaseResults(result.Id));
+        }
     }
 }

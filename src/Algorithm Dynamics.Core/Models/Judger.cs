@@ -197,7 +197,7 @@ namespace Algorithm_Dynamics.Core.Models
         public async static Task<TestCaseResult> JudgeTestCase(string UserCode, TestCase TestCase, Language Language, int TimeLimit, long MemoryLimit)
         {
             RunCodeResult runCodeResult = await RunCode(UserCode, TestCase.Input, Language, TimeLimit, MemoryLimit, new Progress<int>());
-            TestCaseResult result = TestCaseResult.Create(runCodeResult, null);
+            TestCaseResult result = TestCaseResult.Create(runCodeResult);
             if (result.ResultCode == ResultCode.SUCCESS)
             {
                 if (result.StandardOutput.Trim() != TestCase.Output.Trim())

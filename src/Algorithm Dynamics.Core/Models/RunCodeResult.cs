@@ -2,6 +2,16 @@
 {
     public class RunCodeResult
     {
+        public RunCodeResult(string standardOutput = "", string standardError = "", int exitCode = 0, long cPUTime = 0, long memoryUsage = 0, ResultCode resultCode = ResultCode.SUCCESS)
+        {
+            StandardOutput = standardOutput;
+            StandardError = standardError;
+            ExitCode = exitCode;
+            CPUTime = cPUTime;
+            MemoryUsage = memoryUsage;
+            ResultCode = resultCode;
+        }
+
         public string StandardOutput { get; set; }
         public string StandardError { get; set; }
         public int ExitCode { get; set; }
