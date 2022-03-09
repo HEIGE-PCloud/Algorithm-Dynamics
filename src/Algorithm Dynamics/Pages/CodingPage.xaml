@@ -99,6 +99,7 @@
                     x:Name="InputTextBox"
                     x:FieldModifier="public"
                     PlaceholderText="Input Panel"
+                    IsSpellCheckEnabled="False"
                     AcceptsReturn="True"/>
             </PivotItem>
             <PivotItem Header="Output">
@@ -106,6 +107,7 @@
                     x:Name="OutputTextBox"
                     x:FieldModifier="public"
                     PlaceholderText="Output Panel"
+                    IsSpellCheckEnabled="False"
                     AcceptsReturn="True"/>
             </PivotItem>
             <PivotItem Header="Error">
@@ -113,6 +115,7 @@
                     x:Name="ErrorTextBox"
                     x:FieldModifier="public"
                     PlaceholderText="Error Panel"
+                    IsSpellCheckEnabled="False"
                     AcceptsReturn="True"/>
             </PivotItem>
         </Pivot>

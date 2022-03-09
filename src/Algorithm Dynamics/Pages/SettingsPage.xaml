@@ -138,11 +138,13 @@
                             <TextBox
                                 x:Name="DisplayNameTextBox"
                                 Header="Display Name"
+                                IsSpellCheckEnabled="False"
                                 Text="{x:Bind _displayName, Mode=TwoWay}"/>
                             <TextBox
                                 x:Name="LanguageCodeTextBox"
                                 Header="Language Code"
                                 Margin="0 4 0 0"
+                                IsSpellCheckEnabled="False"
                                 Text="{x:Bind _name, Mode=TwoWay}"/>
                             <CheckBox
                                 x:Name="NeedCompileCheckBox"
@@ -154,28 +156,33 @@
                                 Visibility="{x:Bind NeedCompileCheckBox.IsChecked, Mode=OneWay}"
                                 Header="Compile Command"
                                 Margin="0 4 0 0"
+                                IsSpellCheckEnabled="False"
                                 Text="{x:Bind _complieCommand, Mode=TwoWay}"/>
                             <TextBox
                                 x:Name="CompileArgumentTextBox"
                                 Visibility="{x:Bind NeedCompileCheckBox.IsChecked, Mode=OneWay}"
                                 Header="Compile Argument"
                                 Margin="0 4 0 0"
+                                IsSpellCheckEnabled="False"
                                 Text="{x:Bind _compileArguments, Mode=TwoWay}"/>
                             <TextBox
                                 x:Name="RunCommandTextBox"
                                 Header="Run Command"
                                 Margin="0 4 0 0"
+                                IsSpellCheckEnabled="False"
                                 Text="{x:Bind _runCommand, Mode=TwoWay}"/>
                             <TextBox
                                 x:Name="RunArgumentsTextBox"
                                 Header="Run Arguments"
                                 Margin="0 4 0 0"
+                                IsSpellCheckEnabled="False"
                                 Text="{x:Bind _runArguments, Mode=TwoWay}"/>
                             <TextBox
                                 x:Name="FileExtensionTextBox"
                                 PlaceholderText=".*"
                                 Header="File Extension"
                                 Margin="0 4 0 0"
+                                IsSpellCheckEnabled="False"
                                 Text="{x:Bind _fileExtension, Mode=TwoWay}"/>
                             <StackPanel 
                                 Margin="0 16 0 0"

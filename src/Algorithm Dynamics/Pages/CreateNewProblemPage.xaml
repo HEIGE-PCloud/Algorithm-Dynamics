@@ -109,6 +109,7 @@
                                 MaxHeight="100"
                                 VerticalAlignment="Center"
                                 PlaceholderText="Input Data"
+                                IsSpellCheckEnabled="False"
                                 Text="{x:Bind Input, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                             <TextBox
                                 Grid.Column="1"
@@ -117,6 +118,7 @@
                                 MaxHeight="100"
                                 VerticalAlignment="Center"
                                 PlaceholderText="Output Data"
+                                IsSpellCheckEnabled="False"
                                 Text="{x:Bind Output, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                             <CheckBox
                                 Grid.Column="2"
