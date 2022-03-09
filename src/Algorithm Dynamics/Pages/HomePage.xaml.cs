@@ -128,12 +128,6 @@ namespace Algorithm_Dynamics.Pages
                 var problem = problems[i];
                 RecItems.Add(new RecommendItem(problem.Name, $"{problem.DifficultyAsString} | {problem.TagAsString}", () => { App.NavigateTo(typeof(CodingPage), Tuple.Create(problem, Problem.All)); }));
             }
-
-            // Create Assignment
-            RecItems.Add(new RecommendItem("Assignment 1", "Due in 2 days", () => { }));
-            RecItems.Add(new RecommendItem("Assignment 2", "Due in 3 days", () => { }));
-            RecItems.Add(new RecommendItem("Assignment 3", "Due in 4 days", () => { }));
-            RecItems.Add(new RecommendItem("Assignment 4", "Due in 5 days", () => { }));
         }
     }
 }
