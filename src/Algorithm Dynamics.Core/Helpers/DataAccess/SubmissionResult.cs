@@ -50,7 +50,7 @@ namespace Algorithm_Dynamics.Core.Helpers
             }
         }
 
-        internal static List<SubmissionResult> GetAllSubmissionResult()
+        internal static List<SubmissionResult> GetAllSubmissionResults()
         {
             List<SubmissionResult> submissionResults = new();
 

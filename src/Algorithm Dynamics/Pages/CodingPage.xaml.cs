@@ -46,9 +46,7 @@ namespace Algorithm_Dynamics.Pages
             Core.Models.Language.All.ForEach(lang => Languages.Add(lang));
 
         }
-        public ObservableCollection<Submission> Submissions = new() 
-        {
-        };
+        public ObservableCollection<SubmissionResult> Submissions { get => new(SubmissionResult.All); }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -100,9 +98,11 @@ namespace Algorithm_Dynamics.Pages
 
         private void SubmissionsDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Submission submission = SubmissionsDataGrid.SelectedItem as Submission;
-            CodeEditor.Code = submission.Code;
-            LanguageComboBox.SelectedValue = submission.Language;
+            if (SubmissionsDataGrid.SelectedItem is SubmissionResult result)
+            {
+                CodeEditor.Code = result.Submission.Code;
+                LanguageComboBox.SelectedItem = result.Submission.Language;
+            }
         }
 
         private void ProblemListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -176,7 +176,8 @@ namespace Algorithm_Dynamics.Pages
             SubmitCodeButton.IsEnabled = true;
 
             StatusTextBlock.Text = $"{result.ResultCode} Time: {result.CPUTime} ms Memory: {result.MemoryUsage / 1024 / 1024} MB";
-
+            ErrorTextBox.Text = result.StandardError;
+            OnPropertyChanged(nameof(Submissions));
         }
     }
 }

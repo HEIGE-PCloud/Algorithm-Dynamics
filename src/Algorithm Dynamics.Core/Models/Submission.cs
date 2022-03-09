@@ -1,5 +1,6 @@
 ﻿using Algorithm_Dynamics.Core.Helpers;
 using System;
+using System.Collections.Generic;
 
 namespace Algorithm_Dynamics.Core.Models
 {
@@ -20,6 +21,8 @@ namespace Algorithm_Dynamics.Core.Models
         public Language Language { get; set; }
         public User Submitter { get; set; }
         public Problem Problem { get; set; }
+
+        public static List<Submission> All { get => DataAccess.GetAllSubmissions(); }
 
         public static Submission Create(string code, Language language, User user, Problem problem)
         {

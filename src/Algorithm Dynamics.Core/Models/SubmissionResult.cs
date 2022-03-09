@@ -36,6 +36,19 @@ namespace Algorithm_Dynamics.Core.Models
 
         public long MemoryUsage { get => _results.Max(r => r.MemoryUsage); }
 
+        public string StandardError
+        {
+            get
+            {
+                foreach (var result in Results)
+                {
+                    if (string.IsNullOrEmpty(result.StandardError))
+                        return result.StandardError;
+                }
+                return "";
+            }
+        }
+        public static List<SubmissionResult> All { get => DataAccess.GetAllSubmissionResults(); }
         public override bool Equals(object obj)
         {
             if (obj is not SubmissionResult sub)

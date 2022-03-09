@@ -216,10 +216,20 @@ namespace Algorithm_Dynamics.Core.Models
             int testCasesCount = Submission.Problem.TestCases.Count;
             while (JudgeQueue.Count > 0)
             {
-                Result.AddTestCaseResult(await JudgeTestCase(Submission.Code, JudgeQueue.Dequeue(), Submission.Language, Submission.Problem.TimeLimit, Submission.Problem.MemoryLimit));
+                var result = await JudgeTestCase(Submission.Code, JudgeQueue.Dequeue(), Submission.Language, Submission.Problem.TimeLimit, Submission.Problem.MemoryLimit);
+                Result.AddTestCaseResult(result);
                 Progress.Report(100 * (testCasesCount - JudgeQueue.Count) / testCasesCount);
              }
             Progress.Report(100);
+            if (Result.ResultCode == ResultCode.SUCCESS)
+            {
+                Submission.Problem.Status = ProblemStatus.Solved;
+            }
+            else
+            {
+                if (Submission.Problem.Status == ProblemStatus.Todo)
+                    Submission.Problem.Status = ProblemStatus.Attempted;
+            }
             return Result;
         }
         public async static Task<AssignmentSubmissionResult> JudgeAssignment(AssignmentSubmission AssignmentSubmission)
