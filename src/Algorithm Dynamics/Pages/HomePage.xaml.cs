@@ -104,7 +104,7 @@ namespace Algorithm_Dynamics.Pages
                 App.NavigateTo(typeof(CodingPage), Tuple.Create(problem, problems));
             }));
             QAItems.Add(new QuickAccessItem("Playground", Symbol.Edit, () => App.NavigateTo(typeof(PlaygroundPage))));
-            QAItems.Add(new QuickAccessItem("Assignments", Symbol.Library, () => App.NavigateTo(typeof(AssignmentsPage))));
+            // QAItems.Add(new QuickAccessItem("Assignments", Symbol.Library, () => App.NavigateTo(typeof(AssignmentsPage))));
             QAItems.Add(new QuickAccessItem("Problems", Symbol.List, () => App.NavigateTo(typeof(ProblemsPage))));
             QAItems.Add(new QuickAccessItem("Settings", Symbol.Setting, () => App.NavigateTo(typeof(SettingsPage))));
             QAItems.Add(new QuickAccessItem("Account", Symbol.Contact, () => App.NavigateTo(typeof(AccountPage))));

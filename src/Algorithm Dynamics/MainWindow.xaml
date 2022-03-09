@@ -26,11 +26,11 @@
                     Icon="List"
                     Content="Problems"
                     Tag="ProblemsPage" />
-                <NavigationViewItem
+                <!--<NavigationViewItem
                     x:Name="AssignmentsPageNavViewItem"
                     Icon="Library"
                     Content="Assignments"
-                    Tag="AssignmentsPage"/>
+                    Tag="AssignmentsPage"/>-->
                 <NavigationViewItem
                     x:Name="PlaygroundPageNavViewItem"
                     Icon="Edit"

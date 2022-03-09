@@ -94,7 +94,7 @@
                                 ItemsSource="{x:Bind Languages, Mode=OneWay}">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate x:DataType="models:Language">
-                                        <TextBlock Text="{x:Bind DisplayName, Mode=OneWay}"/>
+                                        <TextBlock Text="{x:Bind DisplayName, Mode=OneTime}"/>
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
