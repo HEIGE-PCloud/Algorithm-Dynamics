@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Windows.Storage;
 
@@ -16,12 +17,34 @@ namespace Algorithm_Dynamics.Pages
         public AccountPage()
         {
             InitializeComponent();
-            StatsItems.Add(new StatisticsItem("Problem Solved", "10"));
-            StatsItems.Add(new StatisticsItem("Problem Attempted", "3"));
-            StatsItems.Add(new StatisticsItem("Problem Unsolved", "1100"));
-            StatsItems.Add(new StatisticsItem("Correct Rate", "10%"));
-            StatsItems.Add(new StatisticsItem("Favourite Topic", "Data structure"));
-            StatsItems.Add(new StatisticsItem("Favourite Language", "Python"));
+            StatsItems.Add(new StatisticsItem("Problem Solved", Problem.All.Count(problem => problem.Status == ProblemStatus.Solved).ToString()));
+            StatsItems.Add(new StatisticsItem("Problem Attempted", Problem.All.Count(problem => problem.Status == ProblemStatus.Attempted).ToString()));
+            StatsItems.Add(new StatisticsItem("Problem Todo", Problem.All.Count(problem => problem.Status == ProblemStatus.Todo).ToString()));
+            StatsItems.Add(new StatisticsItem("Correct Rate", $"{(SubmissionResult.All.Count(result => result.ResultCode == ResultCode.SUCCESS) * 100 / Submission.All.Count)}%"));
+            string favTag = "";
+            int maxTag = 0;
+            foreach (var tag in Core.Models.Tag.All)
+            {
+                int tagCnt = Submission.All.Count(submission => submission.Problem.Tags.Contains(tag));
+                if (tagCnt > maxTag)
+                {
+                    maxTag = tagCnt;
+                    favTag = tag.Name;
+                }
+            }
+            StatsItems.Add(new StatisticsItem("Favourite Topic", favTag));
+            string favLang = "";
+            int maxLang = 0;
+            foreach (var lang in Core.Models.Language.All)
+            {
+                int langCnt = Submission.All.Count(submission => Equals(submission.Language, lang));
+                if (langCnt > maxLang)
+                {
+                    maxLang = langCnt;
+                    favLang = lang.DisplayName;
+                }
+            }            
+            StatsItems.Add(new StatisticsItem("Favourite Language", favLang));
             ApplicationDataContainer roamingSettings = ApplicationData.Current.RoamingSettings;
             var CurrentUserValue = roamingSettings.Values["CurrentUser"];
             if (CurrentUserValue != null)
