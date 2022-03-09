@@ -79,7 +79,7 @@ namespace Algorithm_Dynamics.Pages
         /// <exception cref="NotImplementedException"></exception>
         private void EditProblemList(object sender, RoutedEventArgs e)
         {
-            App.NavigateTo(typeof(CreateNewProblemListPage), Tuple.Create(CreateNewProblemListPage.Mode.EditProblemList, (ProblemList)ListComboBox.SelectedItem));
+            App.NavigateTo(typeof(CreateNewProblemListPage), Tuple.Create(CreateNewProblemListPage.Mode.EditProblemList, (ProblemList)ListComboBox.SelectedItem, new List<Problem>()));
         }
 
         /// <summary>
@@ -174,8 +174,12 @@ namespace Algorithm_Dynamics.Pages
         /// <exception cref="NotImplementedException"></exception>
         private void CreateProblemList(object sender, RoutedEventArgs e)
         {
-            // TODO: Navigate to the CreateProblemListPage
-            throw new NotImplementedException();
+            List<Problem> problemList = new();
+            foreach (Problem item in ProblemsListView.SelectedItems.ToArray())
+            {
+                problemList.Add(item);
+            }
+            App.NavigateTo(typeof(CreateNewProblemListPage), Tuple.Create(CreateNewProblemListPage.Mode.CreateProblemList, (ProblemList)ListComboBox.SelectedItem, problemList));
         }
 
         /// <summary>
@@ -202,23 +206,6 @@ namespace Algorithm_Dynamics.Pages
                 foreach (Problem problem in problems) problem.Delete();
                 RefreshDatabase();
             }
-        }
-
-        /// <summary>
-        /// Search the problem lists that under conditions
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
-        private void Search(object sender, object args)
-        {
-            var keywords = ProblemsSearchBox.Text;
-            var difficulty = DifficultyComboBox.SelectedValue?.ToString();
-            var status = StatusComboBox.SelectedValue?.ToString();
-            var tag = TagComboBox.SelectedValue?.ToString();
-            var list = ListComboBox.SelectedValue?.ToString();
-            // TODO: Query(keywords, difficulty, status, tag, list);
-            //Problems.Clear();
-            //Problems.Add(new Problem(keywords, difficulty, status, tag));
         }
 
         /// <summary>

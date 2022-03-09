@@ -56,9 +56,14 @@ namespace Algorithm_Dynamics.Pages
         {
             if (e.Parameter != null)
             {
-                var parameter = (Tuple<Mode, ProblemList>)e.Parameter;
+                var parameter = (Tuple<Mode, ProblemList, List<Problem>>)e.Parameter;
                 _pageMode = parameter.Item1;
                 _problemList = parameter.Item2;
+                List<Problem> _problems = parameter.Item3;
+                if (_pageMode == Mode.CreateProblemList && _problems != null)
+                {
+                    _problems.ForEach(problem => Problems.Add(problem));
+                }
                 if (_pageMode == Mode.EditProblemList && _problemList != null)
                 {
                     _name = _problemList.Name;

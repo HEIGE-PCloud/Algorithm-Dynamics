@@ -194,7 +194,7 @@
                         <MenuFlyoutItem 
                             Text="Create Problem List"
                             Icon="Add"
-                            Click="CreateNewProblemList"/>
+                            Click="CreateProblemList"/>
                         <MenuFlyoutItem 
                             Text="Delete"
                             Icon="Delete"
