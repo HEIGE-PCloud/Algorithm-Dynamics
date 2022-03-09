@@ -207,15 +207,19 @@ namespace Algorithm_Dynamics.Core.Models
             }
             return result;
         }
-        public async static Task<SubmissionResult> JudgeProblem(Submission Submission)
+        public async static Task<SubmissionResult> JudgeProblem(Submission Submission, IProgress<int> Progress)
         {
             SubmissionResult Result = SubmissionResult.Create(Submission, new());
             Result.Submission = Submission;
             Queue<TestCase> JudgeQueue = new(Submission.Problem.TestCases);
+            Progress.Report(0);
+            int testCasesCount = Submission.Problem.TestCases.Count;
             while (JudgeQueue.Count > 0)
             {
                 Result.AddTestCaseResult(await JudgeTestCase(Submission.Code, JudgeQueue.Dequeue(), Submission.Language, Submission.Problem.TimeLimit, Submission.Problem.MemoryLimit));
+                Progress.Report(100 * (testCasesCount - JudgeQueue.Count) / testCasesCount);
              }
+            Progress.Report(100);
             return Result;
         }
         public async static Task<AssignmentSubmissionResult> JudgeAssignment(AssignmentSubmission AssignmentSubmission)
@@ -225,7 +229,7 @@ namespace Algorithm_Dynamics.Core.Models
             Queue<Submission> SubmissionQueue = new(AssignmentSubmission.Submissions);
             while (SubmissionQueue.Count > 0)
             {
-                Result.Add(await JudgeProblem(SubmissionQueue.Dequeue()));
+                Result.Add(await JudgeProblem(SubmissionQueue.Dequeue(), new Progress<int>()));
             }
             return Result;
         }

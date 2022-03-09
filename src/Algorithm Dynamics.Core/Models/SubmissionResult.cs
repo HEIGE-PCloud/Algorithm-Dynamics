@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Algorithm_Dynamics.Core.Models
 {
@@ -19,6 +20,21 @@ namespace Algorithm_Dynamics.Core.Models
 
         private List<TestCaseResult> _results { get; set; }
         public ReadOnlyCollection<TestCaseResult> Results { get => _results.AsReadOnly(); }
+        public ResultCode ResultCode { 
+            get 
+            {
+                foreach (var result in Results)
+                {
+                    if (result.ResultCode != ResultCode.SUCCESS)
+                        return result.ResultCode;
+                }
+                return ResultCode.SUCCESS;
+            } 
+        }
+
+        public long CPUTime { get => _results.Max(r => r.CPUTime); }
+
+        public long MemoryUsage { get => _results.Max(r => r.MemoryUsage); }
 
         public override bool Equals(object obj)
         {

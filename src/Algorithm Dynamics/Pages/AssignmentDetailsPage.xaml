@@ -87,8 +87,8 @@
                     ItemsSource="{x:Bind Submissions, Mode=OneWay}"
                     Header="Submissions">
                     <ListView.ItemTemplate>
-                        <DataTemplate x:DataType="local:Submission">
-                            <TextBlock Text="{x:Bind Status, Mode=OneWay}"/>
+                        <DataTemplate x:DataType="models:Submission">
+                            <TextBlock Text="Text"/>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>

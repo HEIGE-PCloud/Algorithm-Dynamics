@@ -150,6 +150,7 @@
                 Grid.Column="2"
                 x:Name="SubmitCodeButton"
                 Content="Submit"
+                Click="SubmitCodeButton_Click"
                 Style="{StaticResource AccentButtonStyle}"/>
             <Button
                 x:Name="RunCodeButton"

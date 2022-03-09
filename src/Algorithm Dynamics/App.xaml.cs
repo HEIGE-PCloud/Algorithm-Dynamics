@@ -36,6 +36,7 @@ namespace Algorithm_Dynamics
 
 
             // Init Database
+            // C:\Users\pcloud\AppData\Local\Packages\55445HEIGE-PCloud.AlgorithmDynamics_r55vz1why9y6a\LocalState
             StorageFolder LocalFolder = ApplicationData.Current.LocalFolder;
             DataAccess.InitializeDatabase(Path.Combine(LocalFolder.Path, "Data.db"));
 
@@ -68,6 +69,11 @@ namespace Algorithm_Dynamics
             {
                 Language.Create("python", "Python", false, "", "", "python", "{SourceCodeFilePath}", ".py");
                 Language.Create("c", "C", true, "gcc", "-x c {SourceCodeFilePath} -o {ExecutableFilePath}", "{ExecutableFilePath}", "", ".c");
+                Language.Create("cpp", "C++", true, "g++", "-x c++ {SourceCodeFilePath} -o {ExecutableFilePath}", "{ExecutableFilePath}", "", ".cpp");
+                Language.Create("rust", "Rust", true, "rustc", "{SourceCodeFilePath} -o {ExecutableFilePath}", "{ExecutableFilePath}", "", ".rs");
+                Language.Create("javascript", "JavaScript", false, "", "", "node", "{SourceCodeFilePath}", ".js");
+                Language.Create("java", "Java", false, "", "", "{SourceCodeFilePath}", "", ".java");
+                Language.Create("go", "Go", false, "", "", "run {SourceCodeFIlePath}", "", ".go");
             }
             m_window.Activate();
         }
@@ -106,5 +112,14 @@ namespace Algorithm_Dynamics
             }
         }
         public static bool CanGoBack { get => ContentFrame.CanGoBack; }
+
+        public static User CurrentUser { 
+            get
+            {
+                ApplicationDataContainer roamingSettings = ApplicationData.Current.RoamingSettings;
+                Guid uid = (Guid)roamingSettings.Values["CurrentUser"];
+                return User.Get(uid);
+            }
+        }
     }
 }

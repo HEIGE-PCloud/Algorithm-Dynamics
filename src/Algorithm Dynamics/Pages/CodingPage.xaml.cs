@@ -48,7 +48,6 @@ namespace Algorithm_Dynamics.Pages
         }
         public ObservableCollection<Submission> Submissions = new() 
         {
-            new Submission(DateTime.Now, "Accepted", "8 ms", "9 MB", "cpp", "hello world"),
         };
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -162,24 +161,22 @@ namespace Algorithm_Dynamics.Pages
                 IOPivot.SelectedIndex = 2;
             }
         }
-    }
-    public class Submission
-    {
-        public Submission(DateTime timeSubmitted, string status, string runtime, string memory, string language, string code)
-        {
-            TimeSubmitted = timeSubmitted;
-            Status = status;
-            Runtime = runtime;
-            Memory = memory;
-            Language = language;
-            Code = code;
-        }
 
-        public DateTime TimeSubmitted { get; set; }
-        public string Status { get; set; }
-        public string Runtime { get; set; }
-        public string Memory { get; set; }
-        public string Language { get; set; }
-        public string Code { get; set; }
+        private async void SubmitCodeButton_Click(object sender, RoutedEventArgs e)
+        {
+            Submission submission = Submission.Create(CodeEditor.Code, (Language)LanguageComboBox.SelectedItem, App.CurrentUser, _currentProblem);
+            var progress = new Progress<int>(percent => { RunCodeProgressBar.Value = percent; });
+
+            RunCodeButton.IsEnabled = false;
+            SubmitCodeButton.IsEnabled = false;
+
+            SubmissionResult result = await Judger.JudgeProblem(submission, progress);
+
+            RunCodeButton.IsEnabled = true;
+            SubmitCodeButton.IsEnabled = true;
+
+            StatusTextBlock.Text = $"{result.ResultCode} Time: {result.CPUTime} ms Memory: {result.MemoryUsage / 1024 / 1024} MB";
+
+        }
     }
 }

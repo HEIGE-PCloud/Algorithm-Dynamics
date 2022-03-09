@@ -39,11 +39,6 @@ namespace Algorithm_Dynamics.Pages
         };
         public ObservableCollection<Submission> Submissions = new() 
         { 
-            new Submission(DateTime.Now, "Submission 1", "RunTime", "Memory", "Language", "Code"),
-            new Submission(DateTime.Now, "Submission 2", "RunTime", "Memory", "Language", "Code"),
-            new Submission(DateTime.Now, "Submission 3", "RunTime", "Memory", "Language", "Code"),
-            new Submission(DateTime.Now, "Submission 4", "RunTime", "Memory", "Language", "Code"),
-            new Submission(DateTime.Now, "Submission 5", "RunTime", "Memory", "Language", "Code") 
         };
         public enum Mode
         {
