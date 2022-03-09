@@ -24,7 +24,7 @@ namespace Algorithm_Dynamics.Core.Helpers
                 insertCommand.Parameters.AddWithValue("@exitCode", exitCode);
                 insertCommand.Parameters.AddWithValue("@time", time);
                 insertCommand.Parameters.AddWithValue("@memory", memory);
-                insertCommand.Parameters.AddWithValue("@resultCode", (int)resultCode);
+                insertCommand.Parameters.AddWithValue("@resultCode", resultCode);
                 insertCommand.Parameters.AddWithValue("@submissionResultId", submissionResultId == null ? DBNull.Value : submissionResultId);
 
                 insertCommand.ExecuteNonQuery();

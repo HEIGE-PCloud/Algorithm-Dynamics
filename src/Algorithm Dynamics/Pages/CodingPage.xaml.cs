@@ -26,6 +26,9 @@ namespace Algorithm_Dynamics.Pages
                     OnPropertyChanged(nameof(CurrentProblem));
                     OnPropertyChanged(nameof(_currentProblem));
                     OnPropertyChanged(nameof(CurrentProblemIndex));
+                    OnPropertyChanged(nameof(ProblemMarkdown));
+                    OnPropertyChanged(nameof(Submissions));
+                    OnPropertyChanged(nameof(ReverseSubmissions));
                 }
             }
         }
@@ -41,9 +44,10 @@ namespace Algorithm_Dynamics.Pages
             {
                 if (_currentProblem != null)
                 {
+                    const int MB = 1024 * 1024;
                     string title = $"# {_currentProblem.Name}\n\n";
                     string timeLimit = $"\n\n## Time Limit\n\n{_currentProblem.TimeLimit} ms";
-                    string memoryLimit = $"\n## Memory Limit\n\n{_currentProblem.MemoryLimit} MB";
+                    string memoryLimit = $"\n## Memory Limit\n\n{_currentProblem.MemoryLimit / MB} MB";
                     string example = "\n## Example";
                     int testCaseCnt = 1;
                     _currentProblem.TestCases.Where(testCase => testCase.IsExample == true).ToList().ForEach(testCase =>
@@ -65,7 +69,8 @@ namespace Algorithm_Dynamics.Pages
             Core.Models.Language.All.ForEach(lang => Languages.Add(lang));
 
         }
-        public ObservableCollection<SubmissionResult> Submissions { get => new(SubmissionResult.All); }
+        public ObservableCollection<SubmissionResult> Submissions { get => new(SubmissionResult.All.Where(result => result.Submission.Problem.Id == _currentProblem.Id)); }
+        public ObservableCollection<SubmissionResult> ReverseSubmissions { get => new(Submissions.Reverse()); }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -197,6 +202,7 @@ namespace Algorithm_Dynamics.Pages
             StatusTextBlock.Text = $"{result.ResultCode} Time: {result.CPUTime} ms Memory: {result.MemoryUsage / 1024 / 1024} MB";
             ErrorTextBox.Text = result.StandardError;
             OnPropertyChanged(nameof(Submissions));
+            OnPropertyChanged(nameof(ReverseSubmissions));
         }
     }
 }

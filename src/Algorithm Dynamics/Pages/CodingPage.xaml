@@ -41,11 +41,35 @@
             <PivotItem Header="Submissions">
                 <controls:DataGrid
                     x:Name="SubmissionsDataGrid"
-                    AutoGenerateColumns="True"
+                    AutoGenerateColumns="False"
                     IsReadOnly="True"
                     SelectionMode="Single"
+                    CanUserReorderColumns="False"
+                    MinColumnWidth="100"
                     SelectionChanged="SubmissionsDataGrid_SelectionChanged"
-                    ItemsSource="{x:Bind Submissions, Mode=OneWay}">
+                    ItemsSource="{x:Bind ReverseSubmissions, Mode=OneWay}">
+                    <controls:DataGrid.Columns>
+                        <controls:DataGridTextColumn
+                            Header="Submit Time"
+                            Width="SizeToCells"
+                            Binding="{Binding Submission.SubmittedTime}"/>
+                        <controls:DataGridComboBoxColumn
+                            Header="Status"
+                            Width="SizeToCells"
+                            Binding="{Binding ResultAsString}"/>
+                        <controls:DataGridComboBoxColumn
+                            Header="Runtime"
+                            Width="SizeToCells"
+                            Binding="{Binding CPUTimeAsString}"/>
+                        <controls:DataGridComboBoxColumn
+                            Header="Memory"
+                            Width="SizeToCells"
+                            Binding="{Binding MemoryUsageAsString}"/>
+                        <controls:DataGridComboBoxColumn
+                            Header="Language"
+                            Width="SizeToCells"
+                            Binding="{Binding Submission.Language.DisplayName}"/>
+                    </controls:DataGrid.Columns>
                 </controls:DataGrid>
             </PivotItem>
         </Pivot>

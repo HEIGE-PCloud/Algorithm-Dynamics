@@ -197,22 +197,29 @@ namespace Algorithm_Dynamics.Core.Models
         public async static Task<TestCaseResult> JudgeTestCase(string UserCode, TestCase TestCase, Language Language, int TimeLimit, long MemoryLimit)
         {
             RunCodeResult runCodeResult = await RunCode(UserCode, TestCase.Input, Language, TimeLimit, MemoryLimit, new Progress<int>());
-            TestCaseResult result = TestCaseResult.Create(runCodeResult);
-            if (result.ResultCode == ResultCode.SUCCESS)
+            if (runCodeResult.ResultCode == ResultCode.SUCCESS)
             {
-                if (result.StandardOutput.Trim() != TestCase.Output.Trim())
+                if (runCodeResult.StandardOutput.Trim() != TestCase.Output.Trim())
                 {
-                    result.ResultCode = ResultCode.WRONG_ANSWER;
+                    runCodeResult.ResultCode = ResultCode.WRONG_ANSWER;
                 }
             }
+            
+            // Not implemented edit result so must create it at the end
+            TestCaseResult result = TestCaseResult.Create(runCodeResult);
             return result;
         }
         public async static Task<SubmissionResult> JudgeProblem(Submission Submission, IProgress<int> Progress)
         {
+            // Create SubmissionResult
             SubmissionResult Result = SubmissionResult.Create(Submission, new());
-            Result.Submission = Submission;
+
+            // Set up Judge Queue
             Queue<TestCase> JudgeQueue = new(Submission.Problem.TestCases);
+            
+            // Ready to judge, report progress
             Progress.Report(0);
+
             int testCasesCount = Submission.Problem.TestCases.Count;
             while (JudgeQueue.Count > 0)
             {

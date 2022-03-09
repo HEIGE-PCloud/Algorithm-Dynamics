@@ -20,7 +20,8 @@ namespace Algorithm_Dynamics.Core.Models
 
         private List<TestCaseResult> _results { get; set; }
         public ReadOnlyCollection<TestCaseResult> Results { get => _results.AsReadOnly(); }
-        public ResultCode ResultCode { 
+        public ResultCode ResultCode 
+        { 
             get 
             {
                 foreach (var result in Results)
@@ -31,10 +32,35 @@ namespace Algorithm_Dynamics.Core.Models
                 return ResultCode.SUCCESS;
             } 
         }
-
+        public string ResultAsString
+        {
+            get
+            {
+                switch (ResultCode)
+                {
+                    case ResultCode.WRONG_ANSWER:
+                        return "Wrong Answer";
+                    case ResultCode.SUCCESS:
+                        return "Success";
+                    case ResultCode.COMPILE_ERROR:
+                        return "Compile Error";
+                    case ResultCode.TIME_LIMIT_EXCEEDED:
+                        return "Time Limit Exceeded";
+                    case ResultCode.MEMORY_LIMIT_EXCEEDED:
+                        return "Memory Limit Exceeded";
+                    case ResultCode.RUNTIME_ERROR:
+                        return "Runtime Error";
+                    case ResultCode.SYSTEM_ERROR:
+                    default:
+                        return "System Error";
+                }
+            }
+        }
         public long CPUTime { get => _results.Max(r => r.CPUTime); }
+        public string CPUTimeAsString { get => $"{CPUTime} ms"; }
 
         public long MemoryUsage { get => _results.Max(r => r.MemoryUsage); }
+        public string MemoryUsageAsString { get => $"{MemoryUsage / 1024 / 1024} MB"; }
 
         public string StandardError
         {

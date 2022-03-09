@@ -401,9 +401,15 @@ namespace Algorithm_Dynamics.Test
 
             TestCaseResult t1 = TestCaseResult.Create(new("stdout1", "stderr1", 0, 1000, 64 * MB, ResultCode.SUCCESS));
             TestCaseResult t2 = TestCaseResult.Create(new("stdout2", "stderr2", 1, 2000, 16 * MB, ResultCode.TIME_LIMIT_EXCEEDED));
+            TestCaseResult t3 = TestCaseResult.Create(new("stdout2", "stderr2", 1, 2000, 16 * MB, ResultCode.MEMORY_LIMIT_EXCEEDED));
+            TestCaseResult t4 = TestCaseResult.Create(new("stdout2", "stderr2", 1, 2000, 16 * MB, ResultCode.WRONG_ANSWER));
+            TestCaseResult t5 = TestCaseResult.Create(new("stdout2", "stderr2", 1, 2000, 16 * MB, ResultCode.COMPILE_ERROR));
             SubmissionResult result = SubmissionResult.Create(submission, new());
             result.AddTestCaseResult(t1);
             result.AddTestCaseResult(t2);
+            result.AddTestCaseResult(t3);
+            result.AddTestCaseResult(t4);
+            result.AddTestCaseResult(t5);
 
             Assert.AreEqual(result, DataAccess.GetSubmissionResult(result.Id));
             CollectionAssert.AreEqual(result.Results, DataAccess.GetSubmissionResult(result.Id).Results);
