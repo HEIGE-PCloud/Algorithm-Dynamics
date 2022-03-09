@@ -35,7 +35,7 @@
                         x:Name="ProblemMarkdownTextBlock"
                         Margin="8"
                         Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-                        Text="{x:Bind _currentProblem.Markdown, Mode=OneWay}"/>
+                        Text="{x:Bind ProblemMarkdown, Mode=OneWay}"/>
                 </ScrollViewer>
             </PivotItem>
             <PivotItem Header="Submissions">
@@ -188,7 +188,7 @@
                         <ListView 
                             x:Name="ProblemListView"
                             ItemsSource="{x:Bind _currentProblemList, Mode=OneTime}"
-                            SelectedIndex="{x:Bind _currentProblemIndex, Mode=OneWay}"
+                            SelectedIndex="{x:Bind CurrentProblemIndex, Mode=OneWay}"
                             SelectionChanged="ProblemListView_SelectionChanged">
                             <ListView.ItemTemplate>
                                 <DataTemplate x:DataType="models:Problem">

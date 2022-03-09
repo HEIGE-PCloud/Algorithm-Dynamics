@@ -6,25 +6,86 @@ using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Windows.Foundation;
 
 namespace Algorithm_Dynamics.Pages
 {
-    public sealed partial class CreateNewProblemPage : Page
+    public sealed partial class CreateNewProblemPage : Page, INotifyPropertyChanged
     {
         public CreateNewProblemPage()
         {
             InitializeComponent();
+            //https://stackoverflow.com/questions/901921/observablecollection-and-item-propertychanged
+            TestCases.CollectionChanged += (object sender, NotifyCollectionChangedEventArgs e) =>
+            {
+                if (e.OldItems != null)
+                {
+                    foreach (INotifyPropertyChanged item in e.OldItems)
+                        item.PropertyChanged -= PrimitiveTestCase_PropertyChanged;
+                }
+                if (e.NewItems != null)
+                {
+                    foreach (INotifyPropertyChanged item in e.NewItems)
+                        item.PropertyChanged += PrimitiveTestCase_PropertyChanged;
+                }
+            };
         }
-        public ObservableCollection<PrimitiveTestCase> TestCases = new();
+
+        /// <summary>
+        /// Update the <see cref="DescriptionMarkdown"/> when any <see cref="PrimitiveTestCase"/> has been changed.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void PrimitiveTestCase_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            OnPropertyChanged(nameof(DescriptionMarkdown));
+        }
+
+        /// <summary>
+        /// Set the value for a property and invoke <see cref="PropertyChanged"/> event.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="field"></param>
+        /// <param name="newValue"></param>
+        /// <param name="propertyName"></param>
+        /// <returns></returns>
+        private bool Set<T>(ref T field, T newValue, [CallerMemberName] string propertyName = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, newValue))
+            {
+                return false;
+            }
+
+            field = newValue;
+            OnPropertyChanged(propertyName);
+            return true;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        /// Invoke a new <see cref="PropertyChanged"/> event.
+        /// </summary>
+        /// <param name="propertyName">Use <see cref="nameof"/> to get the name of the property.</param>
+        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            // Raise the PropertyChanged event, passing the name of the property whose value has changed.
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DescriptionMarkdown)));
+        }
+
         public enum Mode
         {
             Create,
             Edit
         }
+
         private Mode _pageMode = Mode.Create;
-        private string _title
+        private string Title
         {
             get
             {
@@ -37,10 +98,57 @@ namespace Algorithm_Dynamics.Pages
         private Problem _problem;
         private string _name = "";
         private string _tags = "";
-        private string _description = "";
+        private string _description = @"## Description
+
+A detailed description of the problem.
+
+(Calculate A + B for two integers.)
+
+## Input
+
+The format and the range of the input.
+
+(Two integers A and B, separated by a space. 0 <= A, B <= 10000.)
+
+## Output
+
+The format and the range of the output
+
+(A single integer, the sum of A and B.)
+
+";
         private int _timeLimit = 1000;
         private int _memoryLimit = 64;
-        private int _difficulty = (int)Difficulty.Easy;
+
+        public ObservableCollection<PrimitiveTestCase> TestCases = new();
+        public string ProblemName { get => _name; set => Set(ref _name, value); }
+        public string Tags { get => _tags; set => Set(ref _tags, value); }
+        public string Description { get => _description; set => Set(ref _description, value); }
+        public int TimeLimit { get => _timeLimit; set => Set(ref _timeLimit, value); }
+        public int MemoryLimit { get => _memoryLimit; set => Set(ref _memoryLimit, value); }
+        public int Difficulty { get => _difficulty; set => Set(ref _difficulty, value); }
+        private int _difficulty = (int)Core.Models.Difficulty.Easy;
+
+        public string DescriptionMarkdown
+        {
+            get
+            {
+                string timeLimit = $"\n## Time Limit\n\n{_timeLimit} ms";
+                string memoryLimit = $"\n## Memory Limit\n\n{_memoryLimit} MB";
+                string example = "\n## Example";
+                int testCaseCnt = 1;
+                TestCases.Where(testCase => testCase.IsExample == true).ToList().ForEach(testCase => 
+                {
+                    example += $"\n### Example Input {testCaseCnt}\n";
+                    example += "```\n" + testCase.Input.Replace("\n", "\n\n") + "\n```\n";
+                    example += $"\n### Example Output {testCaseCnt}\n";
+                    example += "```\n" + testCase.Output.Replace("\n", "\n\n") + "\n```\n";
+                    testCaseCnt ++;
+                });
+                return _description + timeLimit + memoryLimit + example;
+            }
+        }
+
         /// <summary>
         /// Handle the Navigation Arguments
         /// Set the <see cref="_pageMode"/> if the Parameter is not <see cref="null"/>.
@@ -79,6 +187,7 @@ namespace Algorithm_Dynamics.Pages
             }
             base.OnNavigatedTo(e);
         }
+
         /// <summary>
         /// Add a new <see cref="PrimitiveTestCase"/> to the list.
         /// Scroll the <see cref="scrollViewer"/> to the new position.
@@ -177,16 +286,59 @@ namespace Algorithm_Dynamics.Pages
             App.NavigateTo(typeof(ProblemsPage));
         }
     }
-    public class PrimitiveTestCase
+
+    public class PrimitiveTestCase : INotifyPropertyChanged
     {
-        public string Input { get; set; }
-        public string Output { get; set; }
-        public bool IsExample { get; set; }
+        private string _input;
+        private string _output;
+        private bool _isExample;
+        public string Input 
+        { 
+            get => _input;
+            set 
+            {
+                if (_input != value)
+                {
+                    _input = value;
+                    OnPropertyChanged(nameof(Input));
+                }
+            }
+        }
+        public string Output
+        {
+            get => _output;
+            set
+            {
+                if (_output != value)
+                {
+                    _output = value;
+                    OnPropertyChanged(nameof(Output));
+                }
+            }
+        }
+        public bool IsExample
+        {
+            get => _isExample;
+            set
+            {
+                if (_isExample != value)
+                {
+                    _isExample = value;
+                    OnPropertyChanged(nameof(IsExample));
+                }
+            }
+        }
         public PrimitiveTestCase(string input, string output, bool isExample)
         {
             Input = input;
             Output = output;
             IsExample = isExample;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

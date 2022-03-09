@@ -31,12 +31,10 @@
             <TextBox
                 Margin="0 22 0 0"
                 Header="Description"
-                HorizontalAlignment="Left"
+                HorizontalAlignment="Stretch"
                 TextWrapping="Wrap" 
-                AcceptsReturn="True" 
-                IsSpellCheckEnabled="True"
+                AcceptsReturn="True"
                 Text="{x:Bind _description, Mode=TwoWay}"
-                MinWidth="400"
                 MinHeight="200"
                 MaxHeight="840"/>
             <AutoSuggestBox

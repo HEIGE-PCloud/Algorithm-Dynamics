@@ -162,23 +162,6 @@ namespace Algorithm_Dynamics.Core.Models
                 return str;
             }
         }
-
-        public string Markdown
-        {
-            get
-            {
-                string markdown = "";
-                markdown += "# " + Name;
-                markdown += "\n\n";
-                markdown += Description;
-                markdown += "\n\n";
-                markdown += "## Time Limit" + "\n";
-                markdown += $"{TimeLimit} ms" + "\n\n";
-                markdown += "## Memory Limit" + "\n";
-                markdown += $"{MemoryLimit / 1024 / 1024} MB" + "\n\n";
-                return markdown;
-            }
-        }
         public static List<Problem> All
         {
             get

@@ -121,7 +121,7 @@ namespace Algorithm_Dynamics.Controls
             WebView.CoreWebView2?.PostWebMessageAsJson(JsonSerializer.Serialize(editorConfig));
         }
 
-        private string _code;
+        private string _code = "";
         public string Code
         {
             get => _code; 

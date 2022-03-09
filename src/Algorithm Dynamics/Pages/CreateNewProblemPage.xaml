@@ -14,29 +14,29 @@
             Margin="32"
             x:Name="FormStackPanel">
             <TextBlock
-                Text="{x:Bind _title, Mode=OneTime}"
+                Text="{x:Bind Title, Mode=OneTime}"
                 Style="{ThemeResource TitleTextBlockStyle}"/>
             <TextBox
                 Margin="0 22 0 0"
                 Header="Title"
                 MaxLength="64"
                 Width="400"
-                Text="{x:Bind _name, Mode=TwoWay}"
+                Text="{x:Bind ProblemName, Mode=TwoWay}"
                 HorizontalAlignment="Left"/>
             <TextBox
                 Header="Tags"
                 Margin="0 22 0 0"
                 MaxLength="64"
                 Width="400"
-                Text="{x:Bind _tags, Mode=TwoWay}"
+                Text="{x:Bind Tags, Mode=TwoWay}"
                 PlaceholderText="Add Tags"
                 HorizontalAlignment="Left"/>
             <ComboBox
                 Header="Difficulty"
-                SelectedIndex="{x:Bind _difficulty, Mode=TwoWay}"
+                SelectedIndex="{x:Bind Difficulty, Mode=TwoWay}"
                 Margin="0 22 0 0"
                 Width="400"
-                Text="{x:Bind _difficulty, Mode=TwoWay}"
+                Text="{x:Bind Difficulty, Mode=TwoWay}"
                 HorizontalAlignment="Left">
                 <x:String>Easy</x:String>
                 <x:String>Medium</x:String>
@@ -44,7 +44,7 @@
             </ComboBox>
             <NumberBox
                 Header="Time Limit (ms)"
-                Value="{x:Bind _timeLimit, Mode=TwoWay}"
+                Value="{x:Bind TimeLimit, Mode=TwoWay}"
                 Width="400"
                 Minimum="100"
                 Margin="0 22 0 0"
@@ -54,7 +54,7 @@
                 LargeChange="500"/>
             <NumberBox
                 Header="Memory Limit (MB)"
-                Value="{x:Bind _memoryLimit, Mode=TwoWay}"
+                Value="{x:Bind MemoryLimit, Mode=TwoWay}"
                 Width="400"
                 Margin="0 22 0 0"
                 Minimum="16"
@@ -75,7 +75,7 @@
                         IsSpellCheckEnabled="True"
                         MinHeight="200"
                         MaxHeight="840"
-                        Text="{x:Bind _description, Mode=TwoWay}"/>
+                        Text="{x:Bind Description, Mode=TwoWay}"/>
                 </PivotItem>
                 <PivotItem
                     Header="Preview">
@@ -83,7 +83,7 @@
                         x:Name="ProblemMarkdownTextBlock"
                         Margin="8"
                         Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-                        Text="{x:Bind DescriptionTextBox.Text, Mode=OneWay}"/>
+                        Text="{x:Bind DescriptionMarkdown, Mode=OneWay}"/>
                 </PivotItem>
             </Pivot>
             <ListView
@@ -109,7 +109,7 @@
                                 MaxHeight="100"
                                 VerticalAlignment="Center"
                                 PlaceholderText="Input Data"
-                                Text="{x:Bind Input, Mode=TwoWay}"/>
+                                Text="{x:Bind Input, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                             <TextBox
                                 Grid.Column="1"
                                 Margin="4"
@@ -117,7 +117,7 @@
                                 MaxHeight="100"
                                 VerticalAlignment="Center"
                                 PlaceholderText="Output Data"
-                                Text="{x:Bind Output, Mode=TwoWay}"/>
+                                Text="{x:Bind Output, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                             <CheckBox
                                 Grid.Column="2"
                                 Margin="40 0 0 0"

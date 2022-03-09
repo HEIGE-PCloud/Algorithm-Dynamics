@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace Algorithm_Dynamics.Pages
@@ -24,22 +25,40 @@ namespace Algorithm_Dynamics.Pages
                     _currentProblem = value;
                     OnPropertyChanged(nameof(CurrentProblem));
                     OnPropertyChanged(nameof(_currentProblem));
-                    OnPropertyChanged(nameof(_currentProblemIndex));
+                    OnPropertyChanged(nameof(CurrentProblemIndex));
                 }
             }
         }
         private List<Problem> _currentProblemList;
         private readonly ObservableCollection<Language> Languages = new();
 
-        private int _currentProblemIndex
+        public int CurrentProblemIndex { get => _currentProblemList.IndexOf(_currentProblem); }
+
+        public string Code { get; set; }
+        public string ProblemMarkdown
         {
             get
             {
-                return _currentProblemList.IndexOf(_currentProblem);
+                if (_currentProblem != null)
+                {
+                    string title = $"# {_currentProblem.Name}\n\n";
+                    string timeLimit = $"\n\n## Time Limit\n\n{_currentProblem.TimeLimit} ms";
+                    string memoryLimit = $"\n## Memory Limit\n\n{_currentProblem.MemoryLimit} MB";
+                    string example = "\n## Example";
+                    int testCaseCnt = 1;
+                    _currentProblem.TestCases.Where(testCase => testCase.IsExample == true).ToList().ForEach(testCase =>
+                    {
+                        example += $"\n### Example Input {testCaseCnt}\n";
+                        example += "```\n" + testCase.Input.Replace("\n", "\n\n") + "\n```\n";
+                        example += $"\n### Example Output {testCaseCnt}\n";
+                        example += "```\n" + testCase.Output.Replace("\n", "\n\n") + "\n```\n";
+                        testCaseCnt++;
+                    });
+                    return title + _currentProblem.Description + timeLimit + memoryLimit + example;
+                }
+                return "";
             }
         }
-
-        public string Code { get; set; }
         public CodingPage()
         {
             InitializeComponent();

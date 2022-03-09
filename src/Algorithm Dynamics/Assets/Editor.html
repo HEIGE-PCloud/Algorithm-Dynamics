@@ -44,9 +44,9 @@
             // Receive and set theme/language/code
             window.chrome.webview.addEventListener('message', (e) => {
                 let data = e.data
-                if (data.Theme) monaco.editor.setTheme(data.Theme)
-                if (data.Language) monaco.editor.setModelLanguage(window.editor.getModel(), data.Language)
-                if (data.Code) window.editor.getModel().setValue(data.Code)
+                if (data.Theme !== null) monaco.editor.setTheme(data.Theme)
+                if (data.Language !== null) monaco.editor.setModelLanguage(window.editor.getModel(), data.Language)
+                if (data.Code !== null) window.editor.getModel().setValue(data.Code)
             })
             // Ready
             window.chrome.webview.postMessage('[Status] Ready')
