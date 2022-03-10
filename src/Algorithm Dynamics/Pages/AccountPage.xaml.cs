@@ -2,6 +2,7 @@
 using Algorithm_Dynamics.Models;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -17,10 +18,13 @@ namespace Algorithm_Dynamics.Pages
         public AccountPage()
         {
             InitializeComponent();
-            StatsItems.Add(new StatisticsItem("Problem Solved", Problem.All.Count(problem => problem.Status == ProblemStatus.Solved).ToString()));
-            StatsItems.Add(new StatisticsItem("Problem Attempted", Problem.All.Count(problem => problem.Status == ProblemStatus.Attempted).ToString()));
-            StatsItems.Add(new StatisticsItem("Problem Todo", Problem.All.Count(problem => problem.Status == ProblemStatus.Todo).ToString()));
-            StatsItems.Add(new StatisticsItem("Correct Rate", $"{(SubmissionResult.All.Count(result => result.ResultCode == ResultCode.SUCCESS) * 100 / Submission.All.Count)}%"));
+            StatsItems.Add(new("Problem Solved", Problem.All.Count(problem => problem.Status == ProblemStatus.Solved).ToString()));
+            StatsItems.Add(new("Problem Attempted", Problem.All.Count(problem => problem.Status == ProblemStatus.Attempted).ToString()));
+            StatsItems.Add(new("Problem Todo", Problem.All.Count(problem => problem.Status == ProblemStatus.Todo).ToString()));
+            if (Submission.All.Count > 0)
+                StatsItems.Add(new("Correct Rate", $"{(SubmissionResult.All.Count(result => result.ResultCode == ResultCode.SUCCESS) * 100 / Submission.All.Count)}%"));
+            else
+                StatsItems.Add(new("Correct Rate", "0%"));
             string favTag = "";
             int maxTag = 0;
             foreach (var tag in Core.Models.Tag.All)
@@ -32,7 +36,7 @@ namespace Algorithm_Dynamics.Pages
                     favTag = tag.Name;
                 }
             }
-            StatsItems.Add(new StatisticsItem("Favourite Topic", favTag));
+            StatsItems.Add(new("Favourite Topic", favTag));
             string favLang = "";
             int maxLang = 0;
             foreach (var lang in Core.Models.Language.All)
@@ -44,7 +48,7 @@ namespace Algorithm_Dynamics.Pages
                     favLang = lang.DisplayName;
                 }
             }
-            StatsItems.Add(new StatisticsItem("Favourite Language", favLang));
+            StatsItems.Add(new("Favourite Language", favLang));
             ApplicationDataContainer roamingSettings = ApplicationData.Current.RoamingSettings;
             var CurrentUserValue = roamingSettings.Values["CurrentUser"];
             if (CurrentUserValue != null)
@@ -61,8 +65,7 @@ namespace Algorithm_Dynamics.Pages
             Email = _user.Email;
             Role = _user.Role;
         }
-        private ObservableCollection<StatisticsItem> StatsItems { get; } = new ObservableCollection<StatisticsItem>();
-
+        private ObservableCollection<StatisticsItem> StatsItems { get; } = new();
         private bool _isEditMode = false;
         public bool IsEditMode
         {
@@ -96,9 +99,9 @@ namespace Algorithm_Dynamics.Pages
         public void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             // Raise the PropertyChanged event, passing the name of the property whose value has changed.
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsValidInput)));
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ErrorMessage)));
+            PropertyChanged?.Invoke(this, new(propertyName));
+            PropertyChanged?.Invoke(this, new(nameof(IsValidInput)));
+            PropertyChanged?.Invoke(this, new(nameof(ErrorMessage)));
         }
 
         private void EditButton_Click(object sender, RoutedEventArgs e)

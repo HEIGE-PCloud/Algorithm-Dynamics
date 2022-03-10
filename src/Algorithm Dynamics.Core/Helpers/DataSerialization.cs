@@ -15,7 +15,7 @@ namespace Algorithm_Dynamics.Core.Helpers
                 Data = data;
             }
 
-            public string FileType { get; } = "Algorithm Dynamics Exported Data";
+            public string FileType { get; set; } = "Algorithm Dynamics Exported Data";
             public string DataType { get; set; }
             public object Data { get; set; }
         }
@@ -65,7 +65,7 @@ namespace Algorithm_Dynamics.Core.Helpers
             if (@base.FileType != "Algorithm Dynamics Exported Data")
                 throw new FormatException($"The FileType {@base.FileType} is invalid.");
 
-            if (@base.DataType != "Problem" || @base.DataType != "ProblemList")
+            if (@base.DataType != "Problem" && @base.DataType != "ProblemList")
                 throw new FormatException($"The DataType {@base.DataType} is invalid.");
             return @base.DataType;
         }

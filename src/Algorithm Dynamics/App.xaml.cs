@@ -40,10 +40,14 @@ namespace Algorithm_Dynamics
             StorageFolder LocalFolder = ApplicationData.Current.LocalFolder;
             DataAccess.InitializeDatabase(Path.Combine(LocalFolder.Path, "Data.db"));
 
+            // Create main window
             m_window = new MainWindow();
 
+            // Load theme
             ApplicationDataContainer roamingSettings = ApplicationData.Current.RoamingSettings;
             var CurrentThemeValue = roamingSettings.Values["Theme"];
+            // if there exists a theme setting, use the theme setting
+            // otherwise set the default theme and save it to the setting
             ElementTheme theme;
             if (CurrentThemeValue != null)
             {
@@ -52,29 +56,16 @@ namespace Algorithm_Dynamics
             else
             {
                 theme = ElementTheme.Default;
-                roamingSettings.Values["Theme"] = (int)ElementTheme.Default;
+                roamingSettings.Values["Theme"] = (int)theme;
             }
             if (m_window.Content is FrameworkElement rootElement)
             {
                 rootElement.RequestedTheme = theme;
             }
 
-            if (DataAccess.GetAllUsers().Count == 0)
-            {
-                User user = User.Create("User", "user@example.com", Role.Student);
-                roamingSettings.Values["CurrentUser"] = user.Uid;
-            }
+            if (Language.All.Count == 0) InitializeLanguageConfiguration();
 
-            if (Language.All.Count == 0)
-            {
-                Language.Create("python", "Python", false, "", "", "python", "{SourceCodeFilePath}", ".py");
-                Language.Create("c", "C", true, "gcc", "-x c {SourceCodeFilePath} -o {ExecutableFilePath}", "{ExecutableFilePath}", "", ".c");
-                Language.Create("cpp", "C++", true, "g++", "-x c++ {SourceCodeFilePath} -o {ExecutableFilePath}", "{ExecutableFilePath}", "", ".cpp");
-                Language.Create("rust", "Rust", true, "rustc", "{SourceCodeFilePath} -o {ExecutableFilePath}", "{ExecutableFilePath}", "", ".rs");
-                Language.Create("javascript", "JavaScript", false, "", "", "node", "{SourceCodeFilePath}", ".js");
-                Language.Create("java", "Java", false, "", "", "{SourceCodeFilePath}", "", ".java");
-                Language.Create("go", "Go", false, "", "", "run {SourceCodeFIlePath}", "", ".go");
-            }
+
             m_window.Activate();
         }
 
@@ -122,5 +113,16 @@ namespace Algorithm_Dynamics
                 return User.Get(uid);
             }
         }
+        private static void InitializeLanguageConfiguration()
+        {
+            Language.Create("python", "Python", false, "", "", "python", "{SourceCodeFilePath}", ".py");
+            Language.Create("c", "C", true, "gcc", "-x c {SourceCodeFilePath} -o {ExecutableFilePath}", "{ExecutableFilePath}", "", ".c");
+            Language.Create("cpp", "C++", true, "g++", "-x c++ {SourceCodeFilePath} -o {ExecutableFilePath}", "{ExecutableFilePath}", "", ".cpp");
+            Language.Create("rust", "Rust", true, "rustc", "{SourceCodeFilePath} -o {ExecutableFilePath}", "{ExecutableFilePath}", "", ".rs");
+            Language.Create("javascript", "JavaScript", false, "", "", "node", "{SourceCodeFilePath}", ".js");
+            Language.Create("java", "Java", false, "", "", "{SourceCodeFilePath}", "", ".java");
+            Language.Create("go", "Go", false, "", "", "run {SourceCodeFIlePath}", "", ".go");
+        }
+
     }
 }

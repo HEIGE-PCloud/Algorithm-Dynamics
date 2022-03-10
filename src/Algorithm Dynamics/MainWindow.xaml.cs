@@ -1,15 +1,23 @@
-﻿using Algorithm_Dynamics.Helpers;
+﻿using Algorithm_Dynamics.Core.Helpers;
+using Algorithm_Dynamics.Core.Models;
+using Algorithm_Dynamics.Helpers;
+using Algorithm_Dynamics.Pages;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media.Animation;
 using System;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Runtime.CompilerServices;
+using Windows.Storage;
 
 namespace Algorithm_Dynamics
 {
     /// <summary>
     /// The main window object that is used to display all other elements
     /// </summary>
-    public sealed partial class MainWindow : Window
+    public sealed partial class MainWindow : Window, INotifyPropertyChanged
     {
         public static AppWindow AppWindow;
         public MainWindow()
@@ -17,10 +25,102 @@ namespace Algorithm_Dynamics
             InitializeComponent();
             AppWindow = AppWindowExtensions.GetAppWindow(this);
             Title = "Algorithm Dynamics";
-            // Select HomePage when first loaded
-            MainNavView.SelectedItem = MainNavView.MenuItems[0];
+
+            if (DataAccess.GetAllUsers().Count == 0)
+            {
+                User user = User.Create("", "", Role.Student);
+                ApplicationDataContainer roamingSettings = ApplicationData.Current.RoamingSettings;
+                roamingSettings.Values["CurrentUser"] = user.Uid;
+                WelcomeGrid.Visibility = Visibility.Visible;
+                UserName = user.Name;
+                Email = user.Email;
+                Role = user.Role;
+            }
+            else
+            {
+                MainNavView.SelectedItem = MainNavView.MenuItems[0];
+            }
         }
 
+        private string _name;
+        private string _email;
+        private Role _role;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            // Raise the PropertyChanged event, passing the name of the property whose value has changed.
+            PropertyChanged?.Invoke(this, new(propertyName));
+            PropertyChanged?.Invoke(this, new(nameof(IsValidInput)));
+            PropertyChanged?.Invoke(this, new(nameof(ErrorMessage)));
+        }
+        public bool IsValidEmail(string source)
+        {
+            return new EmailAddressAttribute().IsValid(source);
+        }
+        public bool IsValidInput
+        {
+            get
+            {
+                ErrorMessage = "";
+                if (string.IsNullOrEmpty(UserName) && string.IsNullOrEmpty(Email)) 
+                    return false;
+                bool isValid = true;
+                if (string.IsNullOrEmpty(UserName))
+                {
+                    isValid = false;
+                    ErrorMessage += "A user name is required.\n";
+                }
+                if (IsValidEmail(Email) == false)
+                {
+                    isValid = false;
+                    ErrorMessage += "The email address is not valid.\n";
+                }
+                return isValid;
+            }
+        }
+        public string ErrorMessage { get; set; }
+        public string UserName
+        {
+            get => _name;
+            set
+            {
+                if (_name != value)
+                {
+                    _name = value;
+                    OnPropertyChanged(nameof(UserName));
+                }
+            }
+        }
+        public string Email
+        {
+            get => _email;
+            set
+            {
+                if (value != _email)
+                {
+                    _email = value;
+                    OnPropertyChanged(nameof(Email));
+                }
+            }
+        }
+        public Role Role
+        {
+            get => _role;
+            set
+            {
+                if (value != _role)
+                {
+                    _role = value;
+                    OnPropertyChanged(nameof(Role));
+                }
+            }
+        }
+        public int RoleIndex
+        {
+            get => (int)Role;
+            set => Role = (Role)value;
+        }
         /// <summary>
         /// Handle the SelectionChanged event of the MainNavView
         /// Navigate to the corresponding page when the selection is changed
@@ -48,14 +148,19 @@ namespace Algorithm_Dynamics
                 }
             }
         }
-        public void NavigateTo()
-        {
-
-        }
 
         private void MainNavView_BackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args)
         {
             if (ContentFrame.CanGoBack) ContentFrame.GoBack();
+        }
+
+        private void CreateUserButton_Click(object sender, RoutedEventArgs e)
+        {
+            App.CurrentUser.Name = UserName;
+            App.CurrentUser.Email = Email;
+            App.CurrentUser.Role = Role;
+            WelcomeGrid.Visibility = Visibility.Collapsed;
+            MainNavView.SelectedItem = MainNavView.MenuItems[0];
         }
     }
 }

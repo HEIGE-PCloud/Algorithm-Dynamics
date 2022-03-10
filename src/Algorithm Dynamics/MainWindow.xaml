@@ -7,8 +7,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <NavigationView 
+  <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <NavigationView 
             x:Name="MainNavView"
             x:FieldModifier="public"
             IsBackButtonVisible="Visible"
@@ -50,5 +50,54 @@
                 Padding="0"
                 Visibility="Visible"/>
         </NavigationView>
+    <Grid
+      x:Name="WelcomeGrid"
+      Visibility="Collapsed"
+      Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+      <StackPanel
+        VerticalAlignment="Center"
+        HorizontalAlignment="Center">
+        <TextBlock 
+          Margin="32"
+          Style="{ThemeResource TitleTextBlockStyle}"
+          Text="Welcome to Algorithm Dynamics"/>
+        <TextBox
+          Header="Your Name"
+          Margin="8"
+          MaxWidth="200"
+          PlaceholderText="Name"
+          Text="{x:Bind UserName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBox
+          Header="Your Email"
+          Margin="8"
+          MaxWidth="200"
+          PlaceholderText="Email"
+          Text="{x:Bind Email, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        <ComboBox
+          Header="Role"
+          Margin="8"
+          MaxWidth="200"
+          HorizontalAlignment="Stretch"
+          SelectedIndex="{x:Bind RoleIndex, Mode=TwoWay}">
+          <x:String>Student</x:String>
+          <x:String>Teacher</x:String>
+        </ComboBox>
+        <Button 
+          x:Name="CreateUserButton"
+          Margin="16"
+          Content="Go"
+          MaxWidth="200"
+          HorizontalAlignment="Stretch"
+          IsEnabled="{x:Bind IsValidInput, Mode=OneWay}"
+          Click="CreateUserButton_Click"/>
+        <TextBlock
+          Margin="4"
+          Text="{x:Bind ErrorMessage, Mode=OneWay}"
+          RelativePanel.Below="InputPanel"
+          MaxWidth="200"
+          RelativePanel.AlignLeftWith="InputPanel"
+          Foreground="Red"/>
+      </StackPanel>
     </Grid>
+  </Grid>
 </Window>
