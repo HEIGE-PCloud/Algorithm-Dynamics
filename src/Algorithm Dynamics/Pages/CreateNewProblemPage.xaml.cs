@@ -139,13 +139,13 @@ The format and the range of the output
                 string memoryLimit = $"\n## Memory Limit\n\n{_memoryLimit} MB";
                 string example = "\n## Example";
                 int testCaseCnt = 1;
-                TestCases.Where(testCase => testCase.IsExample == true).ToList().ForEach(testCase => 
+                TestCases.Where(testCase => testCase.IsExample == true).ToList().ForEach(testCase =>
                 {
                     example += $"\n### Example Input {testCaseCnt}\n";
                     example += "```\n" + testCase.Input.Replace("\n", "\n\n") + "\n```\n";
                     example += $"\n### Example Output {testCaseCnt}\n";
                     example += "```\n" + testCase.Output.Replace("\n", "\n\n") + "\n```\n";
-                    testCaseCnt ++;
+                    testCaseCnt++;
                 });
                 return _description + timeLimit + memoryLimit + example;
             }
@@ -318,10 +318,10 @@ The format and the range of the output
         private string _input;
         private string _output;
         private bool _isExample;
-        public string Input 
-        { 
+        public string Input
+        {
             get => _input;
-            set 
+            set
             {
                 if (_input != value)
                 {

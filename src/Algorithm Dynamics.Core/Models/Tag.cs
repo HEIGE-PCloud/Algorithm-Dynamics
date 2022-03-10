@@ -1,10 +1,7 @@
 ﻿using Algorithm_Dynamics.Core.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace Algorithm_Dynamics.Core.Models
 {

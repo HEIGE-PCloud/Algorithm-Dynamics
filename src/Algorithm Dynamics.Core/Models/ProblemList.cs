@@ -23,13 +23,13 @@ namespace Algorithm_Dynamics.Core.Models
         private string _name;
         private string _description;
         [JsonIgnore]
-        public int Id 
-        { 
+        public int Id
+        {
             get => _id;
             private set => _id = value;
         }
-        public string Name 
-        { 
+        public string Name
+        {
             get => _name;
             set
             {
@@ -40,7 +40,7 @@ namespace Algorithm_Dynamics.Core.Models
                 }
             }
         }
-        public string Description 
+        public string Description
         {
             get => _description;
             set
@@ -64,9 +64,9 @@ namespace Algorithm_Dynamics.Core.Models
             ProblemList problemList = obj as ProblemList;
             if (problemList == null)
                 return false;
-            if (problemList.Id != Id || problemList.Description != Description || problemList.Name != Name) 
+            if (problemList.Id != Id || problemList.Description != Description || problemList.Name != Name)
                 return false;
-            if (problemList.Problems.Count != Problems.Count) 
+            if (problemList.Problems.Count != Problems.Count)
                 return false;
             for (int i = 0; i < _problems.Count; i++)
             {
@@ -87,7 +87,7 @@ namespace Algorithm_Dynamics.Core.Models
             var problemList = DataAccess.AddProblemList(name, description, problems);
             if (problems != null)
             {
-                foreach(var problem in problems)
+                foreach (var problem in problems)
                 {
                     problem.AttachTo(problemList.Id);
                 }

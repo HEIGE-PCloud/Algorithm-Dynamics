@@ -42,13 +42,13 @@ namespace Algorithm_Dynamics.Core.Models
         private string _output;
         private bool _isExample;
         [JsonIgnore]
-        public int Id 
+        public int Id
         {
             get => _id;
             private set => _id = value;
         }
-        public string Input 
-        { 
+        public string Input
+        {
             get => _input;
             set
             {
@@ -59,7 +59,7 @@ namespace Algorithm_Dynamics.Core.Models
                 }
             }
         }
-        public string Output 
+        public string Output
         {
             get => _output;
             set
@@ -71,8 +71,8 @@ namespace Algorithm_Dynamics.Core.Models
                 }
             }
         }
-        public bool IsExample 
-        { 
+        public bool IsExample
+        {
             get => _isExample;
             set
             {

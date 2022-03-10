@@ -21,21 +21,21 @@ namespace Algorithm_Dynamics.Core.Models
             DataAccess.EditProblem(_id, _name, _description, _timeLimit, _memoryLimit, _status, _difficulty);
         }
         [JsonIgnore]
-        public int Id 
-        { 
-            get => _id; 
+        public int Id
+        {
+            get => _id;
             private set => _id = value;
         }
 
-        public Guid Uid 
-        { 
+        public Guid Uid
+        {
             get => _uid;
             private set => _uid = value;
         }
 
-        public string Name 
-        { 
-            get => _name; 
+        public string Name
+        {
+            get => _name;
             set
             {
                 if (_name != value)
@@ -59,10 +59,10 @@ namespace Algorithm_Dynamics.Core.Models
             }
         }
 
-        public int TimeLimit 
-        { 
+        public int TimeLimit
+        {
             get => _timeLimit;
-            set 
+            set
             {
                 if (_timeLimit != value)
                 {
@@ -72,8 +72,8 @@ namespace Algorithm_Dynamics.Core.Models
             }
         }
 
-        public long MemoryLimit 
-        { 
+        public long MemoryLimit
+        {
             get => _memoryLimit;
             set
             {
@@ -86,11 +86,11 @@ namespace Algorithm_Dynamics.Core.Models
         }
 
         [JsonIgnore]
-        public ProblemStatus Status 
-        { 
+        public ProblemStatus Status
+        {
             get => _status;
             set
-            { 
+            {
                 if (_status != value)
                 {
                     _status = value;
@@ -99,7 +99,7 @@ namespace Algorithm_Dynamics.Core.Models
             }
         }
 
-        public Difficulty Difficulty 
+        public Difficulty Difficulty
         {
             get => _difficulty;
             set
@@ -170,7 +170,7 @@ namespace Algorithm_Dynamics.Core.Models
             {
                 string str = "";
                 if (_tags.Count > 0)
-                { 
+                {
                     str = _tags[0].Name;
                 }
                 return str;
@@ -241,7 +241,7 @@ namespace Algorithm_Dynamics.Core.Models
         {
             // Create record for Problem
             var problem = DataAccess.AddProblem(uid, name, description, timeLimit, memoryLimit, ProblemStatus.Todo, difficulty, testCases, tags);
-            
+
             // Add testcases to problem
             if (testCases != null)
             {

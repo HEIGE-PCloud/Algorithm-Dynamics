@@ -1,262 +1,262 @@
 ﻿<Page
-    x:Class="Algorithm_Dynamics.Pages.CodingPage"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Algorithm_Dynamics.Controls"
-    xmlns:models="using:Algorithm_Dynamics.Core.Models"
-    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="2*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="auto"/>
-        </Grid.RowDefinitions>
+  x:Class="Algorithm_Dynamics.Pages.CodingPage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:local="using:Algorithm_Dynamics.Controls"
+  xmlns:models="using:Algorithm_Dynamics.Core.Models"
+  xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  mc:Ignorable="d"
+  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="auto"/>
+      <RowDefinition Height="2*"/>
+      <RowDefinition Height="*"/>
+      <RowDefinition Height="auto"/>
+    </Grid.RowDefinitions>
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="*"/>
+      <ColumnDefinition Width="*"/>
+    </Grid.ColumnDefinitions>
 
-        <Pivot
-            Grid.Row="0"
-            Grid.RowSpan="3"
-            Grid.Column="0"
-            Margin="0 0 8 0">
-            <PivotItem Header="Problem">
-                <ScrollViewer
-                    HorizontalScrollBarVisibility="Disabled"
-                    VerticalScrollBarVisibility="Auto">
-                    <controls:MarkdownTextBlock
-                        x:Name="ProblemMarkdownTextBlock"
-                        Margin="8"
-                        Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-                        Text="{x:Bind ProblemMarkdown, Mode=OneWay}"/>
-                </ScrollViewer>
-            </PivotItem>
-            <PivotItem Header="Submissions">
-                <controls:DataGrid
-                    x:Name="SubmissionsDataGrid"
-                    AutoGenerateColumns="False"
-                    IsReadOnly="True"
-                    SelectionMode="Single"
-                    CanUserReorderColumns="False"
-                    MinColumnWidth="100"
-                    SelectionChanged="SubmissionsDataGrid_SelectionChanged"
-                    ItemsSource="{x:Bind ReverseSubmissions, Mode=OneWay}">
-                    <controls:DataGrid.Columns>
-                        <controls:DataGridTextColumn
-                            Header="Submit Time"
-                            Width="SizeToCells"
-                            Binding="{Binding Submission.SubmittedTime}"/>
-                        <controls:DataGridComboBoxColumn
-                            Header="Status"
-                            Width="SizeToCells"
-                            Binding="{Binding ResultAsString}"/>
-                        <controls:DataGridComboBoxColumn
-                            Header="Runtime"
-                            Width="SizeToCells"
-                            Binding="{Binding CPUTimeAsString}"/>
-                        <controls:DataGridComboBoxColumn
-                            Header="Memory"
-                            Width="SizeToCells"
-                            Binding="{Binding MemoryUsageAsString}"/>
-                        <controls:DataGridComboBoxColumn
-                            Header="Language"
-                            Width="SizeToCells"
-                            Binding="{Binding Submission.Language.DisplayName}"/>
-                    </controls:DataGrid.Columns>
-                </controls:DataGrid>
-            </PivotItem>
-        </Pivot>
+    <Pivot
+      Grid.Row="0"
+      Grid.RowSpan="3"
+      Grid.Column="0"
+      Margin="0 0 8 0">
+      <PivotItem Header="Problem">
+        <ScrollViewer
+          HorizontalScrollBarVisibility="Disabled"
+          VerticalScrollBarVisibility="Auto">
+          <controls:MarkdownTextBlock
+            x:Name="ProblemMarkdownTextBlock"
+            Margin="8"
+            Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+            Text="{x:Bind ProblemMarkdown, Mode=OneWay}"/>
+        </ScrollViewer>
+      </PivotItem>
+      <PivotItem Header="Submissions">
+        <controls:DataGrid
+          x:Name="SubmissionsDataGrid"
+          AutoGenerateColumns="False"
+          IsReadOnly="True"
+          SelectionMode="Single"
+          CanUserReorderColumns="False"
+          MinColumnWidth="100"
+          SelectionChanged="SubmissionsDataGrid_SelectionChanged"
+          ItemsSource="{x:Bind ReverseSubmissions, Mode=OneWay}">
+          <controls:DataGrid.Columns>
+            <controls:DataGridTextColumn
+              Header="Submit Time"
+              Width="SizeToCells"
+              Binding="{Binding Submission.SubmittedTime}"/>
+            <controls:DataGridComboBoxColumn
+              Header="Status"
+              Width="SizeToCells"
+              Binding="{Binding ResultAsString}"/>
+            <controls:DataGridComboBoxColumn
+              Header="Runtime"
+              Width="SizeToCells"
+              Binding="{Binding CPUTimeAsString}"/>
+            <controls:DataGridComboBoxColumn
+              Header="Memory"
+              Width="SizeToCells"
+              Binding="{Binding MemoryUsageAsString}"/>
+            <controls:DataGridComboBoxColumn
+              Header="Language"
+              Width="SizeToCells"
+              Binding="{Binding Submission.Language.DisplayName}"/>
+          </controls:DataGrid.Columns>
+        </controls:DataGrid>
+      </PivotItem>
+    </Pivot>
 
-        <local:CodeEditor
-            x:Name="CodeEditor"
-            Grid.Column="1"
-            Grid.Row="1"
-            Margin="8 0 0 8"/>
+    <local:CodeEditor
+      x:Name="CodeEditor"
+      Grid.Column="1"
+      Grid.Row="1"
+      Margin="8 0 0 8"/>
 
-        <Grid
-            Grid.Row="0"
-            Grid.Column="1"
-            Margin="8">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <ComboBox
-                Grid.Column="0"
-                x:Name="LanguageComboBox"
-                SelectedIndex="0"
-                VerticalAlignment="Stretch"
-                SelectionChanged="LanguageComboBox_SelectionChanged"
-                ItemsSource="{x:Bind Languages, Mode=OneWay}"
-                DisplayMemberPath="DisplayName">
-            </ComboBox>
-            <Button
-                x:Name="FullScreenButton"
-                Grid.Column="1"
-                HorizontalAlignment="Right"
-                Click="FullScreenButton_Click"
-                ToolTipService.ToolTip="Fullscreen (F11)">
-                <FontIcon
-                    x:Name="FullScreenIcon"
-                    FontFamily="Segoe Fluent Icons"
-                    Glyph="&#xE740;"/>
-                <Button.KeyboardAccelerators>
-                    <KeyboardAccelerator Key="F11"/>
-                </Button.KeyboardAccelerators>
-            </Button>
-        </Grid>
-
-        <Pivot
-            x:Name="IOPivot"
-            Grid.Row="2"
-            Grid.Column="1"
-            Margin="8 8 0 0">
-            <PivotItem Header="Input">
-                <TextBox
-                    x:Name="InputTextBox"
-                    x:FieldModifier="public"
-                    PlaceholderText="Input Panel"
-                    IsSpellCheckEnabled="False"
-                    AcceptsReturn="True"/>
-            </PivotItem>
-            <PivotItem Header="Output">
-                <TextBox
-                    x:Name="OutputTextBox"
-                    x:FieldModifier="public"
-                    PlaceholderText="Output Panel"
-                    IsSpellCheckEnabled="False"
-                    AcceptsReturn="True"/>
-            </PivotItem>
-            <PivotItem Header="Error">
-                <TextBox
-                    x:Name="ErrorTextBox"
-                    x:FieldModifier="public"
-                    PlaceholderText="Error Panel"
-                    IsSpellCheckEnabled="False"
-                    AcceptsReturn="True"/>
-            </PivotItem>
-        </Pivot>
-
-        <Grid
-            Grid.Row="3"
-            Grid.Column="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="auto"/>
-            </Grid.ColumnDefinitions>
-
-            <ProgressBar
-                x:Name="RunCodeProgressBar"
-                Grid.Row="0"
-                Grid.Column="0"
-                Grid.ColumnSpan="3"
-                IsIndeterminate="False"
-                ShowPaused="False"
-                ShowError="False"/>
-            <TextBlock
-                x:Name="StatusTextBlock"
-                Grid.Row="1"
-                Grid.Column="0"
-                Text="Status"
-                VerticalAlignment="Center"/>
-            <Button
-                Grid.Row="1"
-                Grid.Column="2"
-                x:Name="SubmitCodeButton"
-                Content="Submit"
-                Click="SubmitCodeButton_Click"
-                Style="{StaticResource AccentButtonStyle}"/>
-            <Button
-                x:Name="RunCodeButton"
-                Grid.Row="1"
-                Grid.Column="1"
-                Content="Run Code"
-                Click="RunCodeButton_Click"/>
-        </Grid>
-
-        <Grid
-            Grid.Row="3"
-            Grid.Column="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="auto"/>
-            </Grid.ColumnDefinitions>
-            <Button
-                Grid.Column="0"
-                VerticalAlignment="Stretch"
-                Click="PreviousProblem">
-                <Button.Content>
-                    <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE76B;"/>
-                </Button.Content>
-            </Button>
-            <DropDownButton
-                Grid.Column="1"
-                Content="{x:Bind CurrentProblem.Name, Mode=OneWay}"
-                VerticalAlignment="Stretch"
-                MinWidth="200">
-                <DropDownButton.Flyout>
-                    <Flyout 
-                        FlyoutPresenterStyle="{ThemeResource FlyoutPresenterStyle}"
-                        Placement="Top">
-                        <ListView 
-                            x:Name="ProblemListView"
-                            ItemsSource="{x:Bind _currentProblemList, Mode=OneTime}"
-                            SelectedIndex="{x:Bind CurrentProblemIndex, Mode=OneWay}"
-                            SelectionChanged="ProblemListView_SelectionChanged">
-                            <ListView.ItemTemplate>
-                                <DataTemplate x:DataType="models:Problem">
-                                    <TextBlock Text="{x:Bind Name}"></TextBlock>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
-                    </Flyout>
-                </DropDownButton.Flyout>
-            </DropDownButton>
-            <Button
-                Grid.Column="2"
-                VerticalAlignment="Stretch"
-                Click="NextProblem">
-                <Button.Content>
-                    <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE76C;"/>
-                </Button.Content>
-            </Button>
-        </Grid>
-
-        <controls:GridSplitter
-            HorizontalAlignment="Left"
-            Grid.Column="1"
-            Grid.Row="1"
-            Grid.RowSpan="2"
-            Width="16">
-            <controls:GridSplitter.RenderTransform>
-                <TranslateTransform X="-8" />
-            </controls:GridSplitter.RenderTransform>
-        </controls:GridSplitter>
-
-        <controls:GridSplitter
-            VerticalAlignment="Top"
-            Grid.Row="2"
-            Grid.Column="1"
-            Grid.ColumnSpan="1"
-            Margin="8 0 0 0"
-            Height="16">
-            <controls:GridSplitter.RenderTransform>
-                <TranslateTransform Y="-8"/>
-            </controls:GridSplitter.RenderTransform>
-        </controls:GridSplitter>
+    <Grid
+      Grid.Row="0"
+      Grid.Column="1"
+      Margin="8">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="*"/>
+      </Grid.ColumnDefinitions>
+      <ComboBox
+        Grid.Column="0"
+        x:Name="LanguageComboBox"
+        SelectedIndex="0"
+        VerticalAlignment="Stretch"
+        SelectionChanged="LanguageComboBox_SelectionChanged"
+        ItemsSource="{x:Bind Languages, Mode=OneWay}"
+        DisplayMemberPath="DisplayName">
+      </ComboBox>
+      <Button
+        x:Name="FullScreenButton"
+        Grid.Column="1"
+        HorizontalAlignment="Right"
+        Click="FullScreenButton_Click"
+        ToolTipService.ToolTip="Fullscreen (F11)">
+        <FontIcon
+          x:Name="FullScreenIcon"
+          FontFamily="Segoe Fluent Icons"
+          Glyph="&#xE740;"/>
+        <Button.KeyboardAccelerators>
+          <KeyboardAccelerator Key="F11"/>
+        </Button.KeyboardAccelerators>
+      </Button>
     </Grid>
+
+    <Pivot
+      x:Name="IOPivot"
+      Grid.Row="2"
+      Grid.Column="1"
+      Margin="8 8 0 0">
+      <PivotItem Header="Input">
+        <TextBox
+          x:Name="InputTextBox"
+          x:FieldModifier="public"
+          PlaceholderText="Input Panel"
+          IsSpellCheckEnabled="False"
+          AcceptsReturn="True"/>
+      </PivotItem>
+      <PivotItem Header="Output">
+        <TextBox
+          x:Name="OutputTextBox"
+          x:FieldModifier="public"
+          PlaceholderText="Output Panel"
+          IsSpellCheckEnabled="False"
+          AcceptsReturn="True"/>
+      </PivotItem>
+      <PivotItem Header="Error">
+        <TextBox
+          x:Name="ErrorTextBox"
+          x:FieldModifier="public"
+          PlaceholderText="Error Panel"
+          IsSpellCheckEnabled="False"
+          AcceptsReturn="True"/>
+      </PivotItem>
+    </Pivot>
+
+    <Grid
+      Grid.Row="3"
+      Grid.Column="1">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="auto"/>
+        <RowDefinition Height="*"/>
+      </Grid.RowDefinitions>
+      
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="auto"/>
+        <ColumnDefinition Width="auto"/>
+      </Grid.ColumnDefinitions>
+
+      <ProgressBar
+        x:Name="RunCodeProgressBar"
+        Grid.Row="0"
+        Grid.Column="0"
+        Grid.ColumnSpan="3"
+        IsIndeterminate="False"
+        ShowPaused="False"
+        ShowError="False"/>
+      <TextBlock
+        x:Name="StatusTextBlock"
+        Grid.Row="1"
+        Grid.Column="0"
+        Text="Status"
+        VerticalAlignment="Center"/>
+      <Button
+        Grid.Row="1"
+        Grid.Column="2"
+        x:Name="SubmitCodeButton"
+        Content="Submit"
+        Click="SubmitCodeButton_Click"
+        Style="{StaticResource AccentButtonStyle}"/>
+      <Button
+        x:Name="RunCodeButton"
+        Grid.Row="1"
+        Grid.Column="1"
+        Content="Run Code"
+        Click="RunCodeButton_Click"/>
+    </Grid>
+
+    <Grid
+      Grid.Row="3"
+      Grid.Column="0">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="auto"/>
+        <ColumnDefinition Width="auto"/>
+        <ColumnDefinition Width="auto"/>
+      </Grid.ColumnDefinitions>
+      <Button
+        Grid.Column="0"
+        VerticalAlignment="Stretch"
+        Click="PreviousProblem">
+        <Button.Content>
+          <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE76B;"/>
+        </Button.Content>
+      </Button>
+      <DropDownButton
+        Grid.Column="1"
+        Content="{x:Bind CurrentProblem.Name, Mode=OneWay}"
+        VerticalAlignment="Stretch"
+        MinWidth="200">
+        <DropDownButton.Flyout>
+          <Flyout 
+            FlyoutPresenterStyle="{ThemeResource FlyoutPresenterStyle}"
+            Placement="Top">
+            <ListView 
+              x:Name="ProblemListView"
+              ItemsSource="{x:Bind _currentProblemList, Mode=OneTime}"
+              SelectedIndex="{x:Bind CurrentProblemIndex, Mode=OneWay}"
+              SelectionChanged="ProblemListView_SelectionChanged">
+              <ListView.ItemTemplate>
+                <DataTemplate x:DataType="models:Problem">
+                  <TextBlock Text="{x:Bind Name}"></TextBlock>
+                </DataTemplate>
+              </ListView.ItemTemplate>
+            </ListView>
+          </Flyout>
+        </DropDownButton.Flyout>
+      </DropDownButton>
+      <Button
+        Grid.Column="2"
+        VerticalAlignment="Stretch"
+        Click="NextProblem">
+        <Button.Content>
+          <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE76C;"/>
+        </Button.Content>
+      </Button>
+    </Grid>
+
+    <controls:GridSplitter
+      HorizontalAlignment="Left"
+      Grid.Column="1"
+      Grid.Row="1"
+      Grid.RowSpan="2"
+      Width="16">
+      <controls:GridSplitter.RenderTransform>
+        <TranslateTransform X="-8" />
+      </controls:GridSplitter.RenderTransform>
+    </controls:GridSplitter>
+
+    <controls:GridSplitter
+      VerticalAlignment="Top"
+      Grid.Row="2"
+      Grid.Column="1"
+      Grid.ColumnSpan="1"
+      Margin="8 0 0 0"
+      Height="16">
+      <controls:GridSplitter.RenderTransform>
+        <TranslateTransform Y="-8"/>
+      </controls:GridSplitter.RenderTransform>
+    </controls:GridSplitter>
+  </Grid>
 </Page>

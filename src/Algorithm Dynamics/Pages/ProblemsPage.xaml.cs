@@ -1,14 +1,14 @@
-﻿using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml;
-using System.Collections.ObjectModel;
-using System;
-using Algorithm_Dynamics.Helpers;
-using Windows.Storage;
-using Algorithm_Dynamics.Core.Helpers;
+﻿using Algorithm_Dynamics.Core.Helpers;
 using Algorithm_Dynamics.Core.Models;
+using Algorithm_Dynamics.Helpers;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using Windows.Storage;
 
 namespace Algorithm_Dynamics.Pages
 {
@@ -232,7 +232,7 @@ namespace Algorithm_Dynamics.Pages
 
         private async void Import(object sender, RoutedEventArgs e)
         {
-            IReadOnlyList <StorageFile> files = await FileHelper.FileOpenPicker(".json");
+            IReadOnlyList<StorageFile> files = await FileHelper.FileOpenPicker(".json");
             if (files.Count > 0)
             {
                 foreach (StorageFile file in files)
@@ -339,9 +339,9 @@ namespace Algorithm_Dynamics.Pages
                 var resultList = new List<Problem>();
                 var sourceList = Problem.All;
                 var splitKeyword = keyword.ToLower().Split(' ');
-                for (int i = 0; i < sourceList.Count; i ++)
+                for (int i = 0; i < sourceList.Count; i++)
                 {
-                    for (int j = 0; j < splitKeyword.Length; j ++)
+                    for (int j = 0; j < splitKeyword.Length; j++)
                     {
                         var sourceKey = sourceList[i].Name.ToLower();
                         if (sourceKey.Contains(splitKeyword[j]))

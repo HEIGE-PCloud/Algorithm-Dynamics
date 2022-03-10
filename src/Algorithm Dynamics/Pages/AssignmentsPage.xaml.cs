@@ -2,9 +2,9 @@
 using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.ObjectModel;
-using WinRT.Interop;
 using Windows.Storage;
 using Windows.Storage.Pickers;
+using WinRT.Interop;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -70,7 +70,7 @@ namespace Algorithm_Dynamics.Pages
             var assignment = e.ClickedItem as Assignment;
             if (assignment.Description == "Created Assignment")
             {
-               App.NavigateTo(typeof(AssignmentDetailsPage), Tuple.Create(AssignmentDetailsPage.Mode.Teacher));
+                App.NavigateTo(typeof(AssignmentDetailsPage), Tuple.Create(AssignmentDetailsPage.Mode.Teacher));
             }
             else
             {

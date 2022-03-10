@@ -23,7 +23,7 @@ namespace Algorithm_Dynamics.Core.Helpers
                 insertCommand.Parameters.AddWithValue("@LanguageId", language.Id);
                 insertCommand.Parameters.AddWithValue("@UserUid", user.Uid.ToString());
                 insertCommand.Parameters.AddWithValue("@ProblemId", problem.Id);
- 
+
                 insertCommand.ExecuteNonQuery();
 
                 SqliteCommand selectIdCommand = new("SELECT last_insert_rowid();", conn);
@@ -81,7 +81,7 @@ namespace Algorithm_Dynamics.Core.Helpers
                     Language lang = GetLanguage(query.GetInt32(3));
                     User user = GetUser(query.GetGuid(4));
                     Problem problem = GetProblem(query.GetInt32(5));
-                    submissions.Add(new(id, code ,time, lang, user, problem));
+                    submissions.Add(new(id, code, time, lang, user, problem));
                 }
             }
             return submissions;

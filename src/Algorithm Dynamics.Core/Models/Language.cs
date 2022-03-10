@@ -16,9 +16,9 @@ namespace Algorithm_Dynamics.Core.Models
         private string _runArguments;
         private string _fileExtension;
         public int Id { get => _id; private set => _id = value; }
-        public string Name 
-        { 
-            get => _name; 
+        public string Name
+        {
+            get => _name;
             set
             {
                 if (value != _name)

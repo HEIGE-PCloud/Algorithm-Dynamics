@@ -20,9 +20,9 @@ namespace Algorithm_Dynamics.Core.Models
 
         private List<TestCaseResult> _results { get; set; }
         public ReadOnlyCollection<TestCaseResult> Results { get => _results.AsReadOnly(); }
-        public ResultCode ResultCode 
-        { 
-            get 
+        public ResultCode ResultCode
+        {
+            get
             {
                 foreach (var result in Results)
                 {
@@ -30,7 +30,7 @@ namespace Algorithm_Dynamics.Core.Models
                         return result.ResultCode;
                 }
                 return ResultCode.SUCCESS;
-            } 
+            }
         }
         public string ResultAsString
         {

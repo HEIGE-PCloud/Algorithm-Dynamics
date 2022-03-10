@@ -1,15 +1,14 @@
-﻿using Algorithm_Dynamics.Core.Helpers;
-using Algorithm_Dynamics.Core.Models;
+﻿using Algorithm_Dynamics.Core.Models;
 using Algorithm_Dynamics.Models;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Windows.Storage;
-using System.ComponentModel.DataAnnotations;
 
 namespace Algorithm_Dynamics.Pages
 {
@@ -44,7 +43,7 @@ namespace Algorithm_Dynamics.Pages
                     maxLang = langCnt;
                     favLang = lang.DisplayName;
                 }
-            }            
+            }
             StatsItems.Add(new StatisticsItem("Favourite Language", favLang));
             ApplicationDataContainer roamingSettings = ApplicationData.Current.RoamingSettings;
             var CurrentUserValue = roamingSettings.Values["CurrentUser"];
@@ -188,5 +187,4 @@ namespace Algorithm_Dynamics.Pages
         }
 
     }
-
 }

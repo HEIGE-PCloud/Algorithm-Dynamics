@@ -1,10 +1,7 @@
 ﻿using Algorithm_Dynamics.Core.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Algorithm_Dynamics.Core.Helpers
 {
@@ -78,22 +75,22 @@ namespace Algorithm_Dynamics.Core.Helpers
             var baseProblem = JsonSerializer.Deserialize<BaseProblem>(@base.Data.ToString());
             List<TestCase> testCases = new();
             List<Tag> tags = new();
-            foreach(BaseTestCase t in baseProblem.TestCases)
+            foreach (BaseTestCase t in baseProblem.TestCases)
             {
                 testCases.Add(TestCase.Create(t.Input, t.Output, t.IsExample));
             }
-            foreach(BaseTag t in baseProblem.Tags)
+            foreach (BaseTag t in baseProblem.Tags)
             {
                 tags.Add(Tag.Create(t.Name));
             }
             return Problem.Create(
-                Guid.Parse(baseProblem.Uid), 
-                baseProblem.Name, 
-                baseProblem.Description, 
-                baseProblem.TimeLimit, 
-                baseProblem.MemoryLimit, 
-                (Difficulty)baseProblem.Difficulty, 
-                testCases, 
+                Guid.Parse(baseProblem.Uid),
+                baseProblem.Name,
+                baseProblem.Description,
+                baseProblem.TimeLimit,
+                baseProblem.MemoryLimit,
+                (Difficulty)baseProblem.Difficulty,
+                testCases,
                 tags);
         }
 
@@ -102,7 +99,7 @@ namespace Algorithm_Dynamics.Core.Helpers
             var @base = JsonSerializer.Deserialize<ExportObject>(str);
             var baseProblemList = JsonSerializer.Deserialize<BaseProblemList>(@base.Data.ToString());
             List<Problem> problems = new();
-            foreach(BaseProblem p in baseProblemList.Problems)
+            foreach (BaseProblem p in baseProblemList.Problems)
             {
                 List<TestCase> testCases = new();
                 List<Tag> tags = new();

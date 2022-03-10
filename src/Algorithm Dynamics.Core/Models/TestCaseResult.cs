@@ -6,12 +6,12 @@ namespace Algorithm_Dynamics.Core.Models
     {
         public int Id { get; set; }
         internal TestCaseResult(
-            int id, 
-            string standardOutput, 
-            string standardError, 
-            int exitCode, 
-            long cPUTime, 
-            long memoryUsage, 
+            int id,
+            string standardOutput,
+            string standardError,
+            int exitCode,
+            long cPUTime,
+            long memoryUsage,
             ResultCode resultCode
         )
         {
@@ -39,7 +39,7 @@ namespace Algorithm_Dynamics.Core.Models
         {
             if (obj is not TestCaseResult result)
                 return false;
-            return 
+            return
                 Id == result.Id &&
                 StandardOutput == result.StandardOutput &&
                 StandardError == result.StandardError &&

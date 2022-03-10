@@ -1,11 +1,11 @@
-﻿using Algorithm_Dynamics.Core.Models;
+﻿using Algorithm_Dynamics.Core.Helpers;
+using Algorithm_Dynamics.Core.Models;
+using Algorithm_Dynamics.Pages;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
-using Windows.Storage;
-using Algorithm_Dynamics.Pages;
-using Algorithm_Dynamics.Core.Helpers;
 using System.IO;
+using Windows.Storage;
 
 namespace Algorithm_Dynamics
 {
@@ -113,7 +113,8 @@ namespace Algorithm_Dynamics
         }
         public static bool CanGoBack { get => ContentFrame.CanGoBack; }
 
-        public static User CurrentUser { 
+        public static User CurrentUser
+        {
             get
             {
                 ApplicationDataContainer roamingSettings = ApplicationData.Current.RoamingSettings;

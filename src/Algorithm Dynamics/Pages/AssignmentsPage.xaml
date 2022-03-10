@@ -1,78 +1,78 @@
 ﻿<Page
-    x:Class="Algorithm_Dynamics.Pages.AssignmentsPage"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Algorithm_Dynamics.Pages"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+  x:Class="Algorithm_Dynamics.Pages.AssignmentsPage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:local="using:Algorithm_Dynamics.Pages"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  mc:Ignorable="d"
+  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="auto"/>
+      <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
 
-        <NavigationView 
-            x:Name="AssignmentsNavView"
-            IsSettingsVisible="False"
-            IsBackButtonVisible="Collapsed"
-            IsBackEnabled="False"
-            SelectionChanged="AssignmentsNavView_SelectionChanged"
-            Header="Header"
-            AlwaysShowHeader="False"
-            PaneDisplayMode="Top"
-            ExpandedModeThresholdWidth="500"
-            SelectionFollowsFocus="Disabled"
-            IsTabStop="False">
-            <NavigationView.MenuItems>
-                <NavigationViewItem Content="Assigned" x:Name="AssignedItem"/>
-                <NavigationViewItem Content="Completed" x:Name="CompletedItem"/>
-                <NavigationViewItem Content="Created" x:Name="CreatedItem"/>
-            </NavigationView.MenuItems>
+    <NavigationView 
+      x:Name="AssignmentsNavView"
+      IsSettingsVisible="False"
+      IsBackButtonVisible="Collapsed"
+      IsBackEnabled="False"
+      SelectionChanged="AssignmentsNavView_SelectionChanged"
+      Header="Header"
+      AlwaysShowHeader="False"
+      PaneDisplayMode="Top"
+      ExpandedModeThresholdWidth="500"
+      SelectionFollowsFocus="Disabled"
+      IsTabStop="False">
+      <NavigationView.MenuItems>
+        <NavigationViewItem Content="Assigned" x:Name="AssignedItem"/>
+        <NavigationViewItem Content="Completed" x:Name="CompletedItem"/>
+        <NavigationViewItem Content="Created" x:Name="CreatedItem"/>
+      </NavigationView.MenuItems>
 
-            <NavigationView.PaneFooter>
-                <DropDownButton Content="Add">
-                    <DropDownButton.Flyout>
-                        <MenuFlyout Placement="Bottom">
-                            <MenuFlyoutItem 
-                                Text="Create"
-                                Click="CreateAssignment"/>
-                            <MenuFlyoutItem 
-                                Text="Import"
-                                Click="ImportAssignment"/>
-                        </MenuFlyout>
-                    </DropDownButton.Flyout>
-                </DropDownButton>
-            </NavigationView.PaneFooter>
-        </NavigationView>
+      <NavigationView.PaneFooter>
+        <DropDownButton Content="Add">
+          <DropDownButton.Flyout>
+            <MenuFlyout Placement="Bottom">
+              <MenuFlyoutItem 
+                Text="Create"
+                Click="CreateAssignment"/>
+              <MenuFlyoutItem 
+                Text="Import"
+                Click="ImportAssignment"/>
+            </MenuFlyout>
+          </DropDownButton.Flyout>
+        </DropDownButton>
+      </NavigationView.PaneFooter>
+    </NavigationView>
 
-        <ListView
-            Grid.Row="1"
-            SelectionMode="Single"
-            IsItemClickEnabled="True"
-            ItemClick="ListView_ItemClick"
-            ItemsSource="{x:Bind Assignments, Mode=OneWay}">
-            <ListView.ItemTemplate>
-                <DataTemplate x:DataType="local:Assignment">
-                    <Grid
-                        Height="50">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock 
-                            Grid.Column="0"
-                            VerticalAlignment="Center"
-                            Text="{x:Bind Name}"/>
-                        <TextBlock
-                            Grid.Column="1"
-                            VerticalAlignment="Center"
-                            Text="{x:Bind DueDate}"/>
-                    </Grid>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-    </Grid>
+    <ListView
+      Grid.Row="1"
+      SelectionMode="Single"
+      IsItemClickEnabled="True"
+      ItemClick="ListView_ItemClick"
+      ItemsSource="{x:Bind Assignments, Mode=OneWay}">
+      <ListView.ItemTemplate>
+        <DataTemplate x:DataType="local:Assignment">
+          <Grid
+            Height="50">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*"/>
+              <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock 
+              Grid.Column="0"
+              VerticalAlignment="Center"
+              Text="{x:Bind Name}"/>
+            <TextBlock
+              Grid.Column="1"
+              VerticalAlignment="Center"
+              Text="{x:Bind DueDate}"/>
+          </Grid>
+        </DataTemplate>
+      </ListView.ItemTemplate>
+    </ListView>
+  </Grid>
 </Page>

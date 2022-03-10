@@ -1,12 +1,8 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Algorithm_Dynamics.Core.Helpers;
-using System.IO;
-using System.Collections.Generic;
+﻿using Algorithm_Dynamics.Core.Helpers;
 using Algorithm_Dynamics.Core.Models;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Diagnostics;
-using System.Text.Json;
-using System.Threading.Tasks;
+using System.IO;
 
 namespace Algorithm_Dynamics.Test
 {
@@ -25,7 +21,7 @@ namespace Algorithm_Dynamics.Test
         {
             Problem problem = DatabaseHelper.CreateFullProblem();
             string str = DataSerialization.SerializeProblem(problem);
-            
+
             Assert.AreEqual("Problem", DataSerialization.GetDataType(str));
 
             Problem result = DataSerialization.DeserializeProblem(str);

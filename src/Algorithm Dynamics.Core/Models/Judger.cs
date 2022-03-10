@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Threading.Tasks;
 using System.Threading;
+using System.Threading.Tasks;
 namespace Algorithm_Dynamics.Core.Models
 {
     public static class Judger
@@ -107,7 +107,8 @@ namespace Algorithm_Dynamics.Core.Models
             _StatusCode = StatusCode.RUNNING;
 
             // Start the time monitor
-            Timer timer = new((e) => {
+            Timer timer = new((e) =>
+            {
                 if (_StatusCode == StatusCode.RUNNING && ExecuteProcess.HasExited == false)
                 {
                     ExecuteProcess.Kill();
@@ -116,7 +117,8 @@ namespace Algorithm_Dynamics.Core.Models
             }, null, TimeLimit, Timeout.Infinite);
 
             // Create the memory monitor
-            Thread MemoryMonitor = new(() => {
+            Thread MemoryMonitor = new(() =>
+            {
                 while (ExecuteProcess.HasExited == false)
                 {
                     ExecuteProcess.Refresh();
@@ -204,7 +206,7 @@ namespace Algorithm_Dynamics.Core.Models
                     runCodeResult.ResultCode = ResultCode.WRONG_ANSWER;
                 }
             }
-            
+
             // Not implemented edit result so must create it at the end
             TestCaseResult result = TestCaseResult.Create(runCodeResult);
             return result;
@@ -216,7 +218,7 @@ namespace Algorithm_Dynamics.Core.Models
 
             // Set up Judge Queue
             Queue<TestCase> JudgeQueue = new(Submission.Problem.TestCases);
-            
+
             // Ready to judge, report progress
             Progress.Report(0);
 
@@ -226,7 +228,7 @@ namespace Algorithm_Dynamics.Core.Models
                 var result = await JudgeTestCase(Submission.Code, JudgeQueue.Dequeue(), Submission.Language, Submission.Problem.TimeLimit, Submission.Problem.MemoryLimit);
                 Result.AddTestCaseResult(result);
                 Progress.Report(100 * (testCasesCount - JudgeQueue.Count) / testCasesCount);
-             }
+            }
             Progress.Report(100);
             if (Result.ResultCode == ResultCode.SUCCESS)
             {

@@ -1,11 +1,11 @@
-﻿using Microsoft.UI.Xaml;
+﻿using CommunityToolkit.WinUI.UI.Helpers;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Web.WebView2.Core;
 using System;
+using System.Text.Json;
 using Windows.ApplicationModel;
 using Windows.Storage;
-using System.Text.Json;
-using CommunityToolkit.WinUI.UI.Helpers;
 
 namespace Algorithm_Dynamics.Controls
 {
@@ -67,7 +67,7 @@ namespace Algorithm_Dynamics.Controls
             string data = args.TryGetWebMessageAsString();
             if (data == "[Status] Request Configuration")
             {
-                EditorConfig editorConfig = new (GetTheme(RequestedTheme), Lang, Code);
+                EditorConfig editorConfig = new(GetTheme(RequestedTheme), Lang, Code);
                 await WebView.ExecuteScriptAsync($"window.config={JsonSerializer.Serialize(editorConfig)}");
                 WebView.CoreWebView2.PostWebMessageAsString("Configuration Sent");
             }
@@ -75,7 +75,7 @@ namespace Algorithm_Dynamics.Controls
             {
                 ProgressRing.Visibility = Visibility.Collapsed;
                 WebView.Visibility = Visibility.Visible;
-            } 
+            }
             else
             {
                 // [Data] actual code
@@ -124,7 +124,7 @@ namespace Algorithm_Dynamics.Controls
         private string _code = "";
         public string Code
         {
-            get => _code; 
+            get => _code;
             set
             {
                 if (value != _code)
@@ -135,7 +135,7 @@ namespace Algorithm_Dynamics.Controls
                 }
             }
         }
-        
+
         public static readonly DependencyProperty CodeProperty =
             DependencyProperty.Register(
                 "Code",
@@ -147,7 +147,7 @@ namespace Algorithm_Dynamics.Controls
         public string Lang
         {
             get { return (string)GetValue(LangProperty); }
-            set 
+            set
             {
                 UpdateEditorConfig(new EditorConfig(null, value, null));
                 SetValue(LangProperty, value);

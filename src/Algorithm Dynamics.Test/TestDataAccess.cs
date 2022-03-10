@@ -1,9 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Algorithm_Dynamics.Core.Helpers;
-using System.IO;
-using System.Collections.Generic;
+﻿using Algorithm_Dynamics.Core.Helpers;
 using Algorithm_Dynamics.Core.Models;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace Algorithm_Dynamics.Test
 {
@@ -244,7 +244,7 @@ namespace Algorithm_Dynamics.Test
             ProblemList problemList = ProblemList.Create("Problem List", "Description", new() { problem1, problem2 });
             Assert.AreEqual(problemList, DataAccess.GetAllProblemLists()[0]);
         }
-        
+
         [TestMethod]
         public void TestEditProblemList()
         {

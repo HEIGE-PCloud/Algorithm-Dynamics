@@ -1,6 +1,6 @@
-﻿using Microsoft.UI.Xaml;
+﻿using Algorithm_Dynamics.Core.Models;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Algorithm_Dynamics.Core.Models;
 using System;
 using System.Collections.ObjectModel;
 using Windows.Storage;
@@ -48,13 +48,13 @@ namespace Algorithm_Dynamics.Pages
             }
 
             var progress = new Progress<int>(percent => { RunCodeProgressBar.Value = percent; });
-            
+
             RunCodeButton.IsEnabled = false;
 
             RunCodeResult result = await Judger.RunCode(CodeEditor.Code, Input, Languages[LanguageComboBox.SelectedIndex], _timeLimit, _memoryLimit, progress);
-            
+
             RunCodeButton.IsEnabled = true;
-            
+
             StatusTextBlock.Text = $"{result.ResultCode} Time: {result.CPUTime} ms Memory: {result.MemoryUsage / 1024 / 1024} MB";
             OutputBox.Text = result.StandardOutput + result.StandardError;
 

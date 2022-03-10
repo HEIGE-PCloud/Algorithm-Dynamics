@@ -91,7 +91,7 @@ namespace Algorithm_Dynamics.Pages
             QAItems.Add(new QuickAccessItem("Random Problem", Symbol.Shuffle, () =>
             {
                 // Get all problems from the database
-                List<Problem> problems= Problem.All;
+                List<Problem> problems = Problem.All;
 
                 // Generate a random index
                 var random = new Random();
@@ -153,7 +153,7 @@ namespace Algorithm_Dynamics.Pages
             RecItems.Clear();
             // Create Problem
             var problems = Problem.All;
-            for (int i = 0; i < problems.Count && i < 4; i ++)
+            for (int i = 0; i < problems.Count && i < 4; i++)
             {
                 var problem = problems[i];
                 RecItems.Add(new RecommendItem(problem.Name, $"{problem.DifficultyAsString} | {problem.TagAsString}", () => { App.NavigateTo(typeof(CodingPage), Tuple.Create(problem, Problem.All)); }));

@@ -1,9 +1,5 @@
 using Algorithm_Dynamics.Core.Helpers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Algorithm_Dynamics.Core.Models
 {
@@ -15,10 +11,10 @@ namespace Algorithm_Dynamics.Core.Models
         private Role _role;
 
         public Guid Uid { get => _uid; private set => _uid = value; }
-        public string Name 
-        { 
+        public string Name
+        {
             get => _name;
-            set 
+            set
             {
                 if (value != _name)
                 {
@@ -27,8 +23,8 @@ namespace Algorithm_Dynamics.Core.Models
                 }
             }
         }
-        public string Email 
-        { 
+        public string Email
+        {
             get => _email;
             set
             {
@@ -39,7 +35,7 @@ namespace Algorithm_Dynamics.Core.Models
                 }
             }
         }
-        public Role Role 
+        public Role Role
         {
             get => _role;
             set
