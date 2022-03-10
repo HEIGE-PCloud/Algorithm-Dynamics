@@ -1,4 +1,5 @@
-﻿using Algorithm_Dynamics.Core.Models;
+﻿using Algorithm_Dynamics.Core.Helpers;
+using Algorithm_Dynamics.Core.Models;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
@@ -201,6 +202,12 @@ namespace Algorithm_Dynamics.Pages
                 if (Languages.Count > 0)
                     LanguageComboBox.SelectedIndex = 0;
             }
+        }
+
+        private void ClearAllData(object sender, RoutedEventArgs e)
+        {
+            DataAccess.DropDatabase();
+            App.Current.Exit();
         }
     }
 }

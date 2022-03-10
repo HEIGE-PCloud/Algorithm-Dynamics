@@ -28,13 +28,10 @@ namespace Algorithm_Dynamics
 
             if (DataAccess.GetAllUsers().Count == 0)
             {
-                User user = User.Create("", "", Role.Student);
-                ApplicationDataContainer roamingSettings = ApplicationData.Current.RoamingSettings;
-                roamingSettings.Values["CurrentUser"] = user.Uid;
                 WelcomeGrid.Visibility = Visibility.Visible;
-                UserName = user.Name;
-                Email = user.Email;
-                Role = user.Role;
+                UserName = "";
+                Email = "";
+                Role = 0;
             }
             else
             {
@@ -63,7 +60,7 @@ namespace Algorithm_Dynamics
             get
             {
                 ErrorMessage = "";
-                if (string.IsNullOrEmpty(UserName) && string.IsNullOrEmpty(Email)) 
+                if (string.IsNullOrEmpty(UserName) || string.IsNullOrEmpty(Email)) 
                     return false;
                 bool isValid = true;
                 if (string.IsNullOrEmpty(UserName))
@@ -156,9 +153,9 @@ namespace Algorithm_Dynamics
 
         private void CreateUserButton_Click(object sender, RoutedEventArgs e)
         {
-            App.CurrentUser.Name = UserName;
-            App.CurrentUser.Email = Email;
-            App.CurrentUser.Role = Role;
+            User user = User.Create(UserName, Email, Role);
+            ApplicationDataContainer roamingSettings = ApplicationData.Current.RoamingSettings;
+            roamingSettings.Values["CurrentUser"] = user.Uid;
             WelcomeGrid.Visibility = Visibility.Collapsed;
             MainNavView.SelectedItem = MainNavView.MenuItems[0];
         }

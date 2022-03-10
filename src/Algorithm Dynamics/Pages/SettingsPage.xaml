@@ -197,6 +197,70 @@
             </StackPanel>
           </Expander.Content>
         </Expander>
+
+        <TextBlock
+          Style="{ThemeResource SubtitleTextBlockStyle}"
+          Margin="0 20 0 0"
+          FontWeight="Normal"
+          Text="Advance Settings" />
+        <StackPanel 
+          Margin="0 10 0 0"
+          Orientation="Vertical">
+          <Button
+            Margin="0 4 0 0"
+            Content="Clear Submission History">
+            <Button.Flyout>
+              <Flyout>
+                <StackPanel>
+                  <TextBlock 
+                    Style="{ThemeResource BaseTextBlockStyle}" 
+                    Text="All submission history will be deleted. Do you want to continue?" 
+                    Margin="0,0,0,12"/>
+                  <Button 
+                    HorizontalAlignment="Right" 
+                    Content="Yes" />
+                </StackPanel>
+              </Flyout>
+            </Button.Flyout>
+          </Button>
+          <Button
+            Margin="0 4 0 0"
+            Content="Clear All Problems">
+            <Button.Flyout>
+              <Flyout>
+                <StackPanel>
+                  <TextBlock 
+                    Style="{ThemeResource BaseTextBlockStyle}" 
+                    Text="All problems will be deleted. Do you want to continue?" 
+                    Margin="0,0,0,12"/>
+                  <Button 
+                    HorizontalAlignment="Right" 
+                    Content="Yes" />
+                </StackPanel>
+              </Flyout>
+            </Button.Flyout>
+          </Button>
+          <Button
+            Margin="0 4 0 0"
+            Content="Clear All Data">
+            <Button.Flyout>
+              <Flyout x:Name="ClearAllDataFlyout">
+                <StackPanel>
+                  <TextBlock 
+                    Style="{ThemeResource BaseTextBlockStyle}" 
+                    Text="All data will be deleted. Do you want to continue?" 
+                    Margin="0,0,0,12"/>
+                  <TextBlock 
+                    Text="Restart is required."/>
+                  <Button 
+                    HorizontalAlignment="Right" 
+                    Content="Yes"
+                    Click="ClearAllData"/>
+                </StackPanel>
+              </Flyout>
+            </Button.Flyout>
+          </Button>
+        </StackPanel>
         <TextBlock
           Style="{ThemeResource SubtitleTextBlockStyle}"
           Margin="0 20 0 0"

@@ -66,13 +66,15 @@
           Margin="8"
           MaxWidth="200"
           PlaceholderText="Name"
-          Text="{x:Bind UserName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+          IsSpellCheckEnabled="False"
+          Text="{x:Bind UserName, Mode=TwoWay}"/>
         <TextBox
           Header="Your Email"
           Margin="8"
           MaxWidth="200"
           PlaceholderText="Email"
-          Text="{x:Bind Email, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+          IsSpellCheckEnabled="False"
+          Text="{x:Bind Email, Mode=TwoWay}"/>
         <ComboBox
           Header="Role"
           Margin="8"

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.Sqlite;
+using System;
 using System.IO;
 
 namespace Algorithm_Dynamics.Core.Helpers
@@ -165,7 +166,74 @@ namespace Algorithm_Dynamics.Core.Helpers
 
                 SqliteCommand createTable = new(tableCommand, db);
 
-                createTable.ExecuteReader();
+                createTable.ExecuteNonQuery();
+            }
+        }
+
+        public static void DropDatabase()
+        {
+            using (SqliteConnection db = new($"Filename={DbPath}"))
+            {
+                db.Open();
+
+                string tableCommand =
+                    @"DROP TABLE IF EXISTS MyTable;";
+
+                // Drop TestCaseResult table
+                tableCommand +=
+                    @"DROP TABLE IF EXISTS TestCaseResult;";
+
+                // Drop SubmissionResult table
+                tableCommand +=
+                    @"DROP TABLE IF EXISTS SubmissionResult;";
+
+                // Drop Submission table
+                tableCommand +=
+                    @"DROP TABLE IF EXISTS Submission;";
+
+                // Drop Language table
+                tableCommand +=
+                    @"DROP TABLE IF EXISTS Language;";
+
+                // Drop TestCase table
+                tableCommand +=
+                    @"DROP TABLE IF EXISTS TestCase;";
+
+                // Drop TagRecord table
+                tableCommand +=
+                    @"DROP TABLE IF EXISTS TagRecord;";
+
+                // Drop Tag table
+                tableCommand +=
+                    @"DROP TABLE IF EXISTS Tag;";
+
+                // Drop Problem table
+                tableCommand +=
+                    @"DROP TABLE IF EXISTS Problem;";
+
+                // Drop User table
+                tableCommand +=
+                    @"DROP TABLE IF EXISTS User;";
+
+                // Drop ProblemList table
+                tableCommand +=
+                    @"DROP TABLE IF EXISTS ProblemList;";
+
+                // Drop ProblemListRecord table
+                tableCommand +=
+                    @"DROP TABLE IF EXISTS ProblemListRecord;";
+
+
+
+
+
+
+
+
+
+                SqliteCommand createTable = new(tableCommand, db);
+
+                createTable.ExecuteNonQuery();
             }
         }
     }
