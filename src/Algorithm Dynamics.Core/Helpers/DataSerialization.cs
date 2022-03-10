@@ -10,6 +10,18 @@ namespace Algorithm_Dynamics.Core.Helpers
 {
     public static class DataSerialization
     {
+        public class ExportObject
+        {
+            public ExportObject(string dataType, object data)
+            {
+                DataType = dataType;
+                Data = data;
+            }
+
+            public string FileType { get; } = "Algorithm Dynamics Exported Data";
+            public string DataType { get; set; }
+            public object Data { get; set; }
+        }
         public class BaseTestCase
         {
             public string Input { get; set; }
@@ -36,12 +48,17 @@ namespace Algorithm_Dynamics.Core.Helpers
 
         public static string SerializeProblem(Problem problem)
         {
-            return JsonSerializer.Serialize(problem);
+            return JsonSerializer.Serialize(new ExportObject("Problem", problem));
         }
-
+        public static string GetDataType(string str)
+        {
+            var @base = JsonSerializer.Deserialize<ExportObject>(str);
+            return @base.DataType;
+        }
         public static Problem DeserializeProblem(string str)
         {
-            var baseProblem = JsonSerializer.Deserialize<BaseProblem>(str);
+            var @base = JsonSerializer.Deserialize<ExportObject>(str);
+            var baseProblem = JsonSerializer.Deserialize<BaseProblem>(@base.Data.ToString());
             List<TestCase> testCases = new();
             List<Tag> tags = new();
             foreach(BaseTestCase t in baseProblem.TestCases)

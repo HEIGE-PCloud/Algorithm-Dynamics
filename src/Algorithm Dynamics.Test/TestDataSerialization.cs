@@ -13,11 +13,6 @@ namespace Algorithm_Dynamics.Test
     [TestClass]
     public class TestDataSerialization
     {
-
-        // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
-
-
-
         [TestInitialize]
         public void InitDb()
         {

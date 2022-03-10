@@ -260,7 +260,7 @@ The format and the range of the output
                 }
 
                 // Create Problem
-                Problem.Create(_name, _description, _timeLimit, _memoryLimit * 1024 * 1024, (Difficulty)_difficulty, testCases, tags);
+                Problem.Create(Guid.NewGuid(), _name, _description, _timeLimit, _memoryLimit * 1024 * 1024, (Difficulty)_difficulty, testCases, tags);
             }
             else
             {

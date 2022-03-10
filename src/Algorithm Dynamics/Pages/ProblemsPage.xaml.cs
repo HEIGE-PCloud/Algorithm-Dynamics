@@ -233,6 +233,17 @@ namespace Algorithm_Dynamics.Pages
         private async void Import(object sender, RoutedEventArgs e)
         {
             StorageFile file = await FileHelper.FileOpenPicker("*");
+            string data = await FileIO.ReadTextAsync(file);
+            string dataType = DataSerialization.GetDataType(data);
+            if (dataType == null)
+            {
+                // error handle
+            }
+            else if (dataType == "Problem")
+            {
+                DataSerialization.DeserializeProblem(data);
+                RefreshDatabase();
+            }
         }
 
         private void CreateNewProblemList(object sender, RoutedEventArgs e)
@@ -326,8 +337,9 @@ namespace Algorithm_Dynamics.Pages
         private async void ExportProblem(object sender, RoutedEventArgs e)
         {
             Problem problem = ProblemsListView.SelectedItem as Problem;
-            string fileName = "";
-            await FileHelper.FileSavePicker("Algorithm Dynamics Export File", new() { ".json" }, fileName, "");
+            string fileName = $"{problem.Name} Export File";
+            string serializedProblem = DataSerialization.SerializeProblem(problem);
+            await FileHelper.FileSavePicker("Algorithm Dynamics Export File", new() { ".json" }, fileName, serializedProblem);
         }
     }
 }

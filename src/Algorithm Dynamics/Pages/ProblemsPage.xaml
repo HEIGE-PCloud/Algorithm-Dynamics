@@ -185,7 +185,6 @@
                             Click="EditProblem"/>
                         <MenuFlyoutItem
                             Text="Export"
-                            Icon="Export"
                             Click="ExportProblem"/>
                         <MenuFlyoutItem 
                             Text="Delete"
