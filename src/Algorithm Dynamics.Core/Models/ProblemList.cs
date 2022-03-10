@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text.Json.Serialization;
 
 namespace Algorithm_Dynamics.Core.Models
 {
@@ -21,6 +22,7 @@ namespace Algorithm_Dynamics.Core.Models
         private int _id;
         private string _name;
         private string _description;
+        [JsonIgnore]
         public int Id 
         { 
             get => _id;

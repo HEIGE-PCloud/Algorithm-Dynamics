@@ -46,9 +46,21 @@ namespace Algorithm_Dynamics.Core.Helpers
             public List<BaseTag> Tags { get; set; }
         }
 
+        public class BaseProblemList
+        {
+            public string Name { get; set; }
+            public string Description { get; set; }
+            public List<BaseProblem> Problems { get; set; }
+        }
+
         public static string SerializeProblem(Problem problem)
         {
             return JsonSerializer.Serialize(new ExportObject("Problem", problem));
+        }
+
+        public static string SerializeProblemList(ProblemList problemList)
+        {
+            return JsonSerializer.Serialize(new ExportObject("ProblemList", problemList));
         }
         public static string GetDataType(string str)
         {
@@ -78,6 +90,39 @@ namespace Algorithm_Dynamics.Core.Helpers
                 (Difficulty)baseProblem.Difficulty, 
                 testCases, 
                 tags);
+        }
+
+        public static ProblemList DeserializeProblemList(string str)
+        {
+            var @base = JsonSerializer.Deserialize<ExportObject>(str);
+            var baseProblemList = JsonSerializer.Deserialize<BaseProblemList>(@base.Data.ToString());
+            List<Problem> problems = new();
+            foreach(BaseProblem p in baseProblemList.Problems)
+            {
+                List<TestCase> testCases = new();
+                List<Tag> tags = new();
+                foreach (BaseTestCase t in p.TestCases)
+                {
+                    testCases.Add(TestCase.Create(t.Input, t.Output, t.IsExample));
+                }
+                foreach (BaseTag t in p.Tags)
+                {
+                    tags.Add(Tag.Create(t.Name));
+                }
+                problems.Add(
+                    Problem.Create(
+                        Guid.Parse(p.Uid),
+                        p.Name,
+                        p.Description,
+                        p.TimeLimit,
+                        p.MemoryLimit,
+                        (Difficulty)p.Difficulty,
+                        testCases,
+                        tags
+                    )
+                );
+            }
+            return ProblemList.Create(baseProblemList.Name, baseProblemList.Description, problems);
         }
     }
 }

@@ -87,6 +87,13 @@
                                 Icon="Edit"
                                 Click="EditProblemList"/>
                             <MenuFlyoutItem
+                                Text="Export"
+                                Click="ExportProblemList">
+                                <MenuFlyoutItem.Icon>
+                                    <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xede1;"/>
+                                </MenuFlyoutItem.Icon>
+                            </MenuFlyoutItem>
+                            <MenuFlyoutItem
                                 Text="Delete"
                                 Icon="Delete"
                                 Click="DeleteProblemList"/>
@@ -185,7 +192,11 @@
                             Click="EditProblem"/>
                         <MenuFlyoutItem
                             Text="Export"
-                            Click="ExportProblem"/>
+                            Click="ExportProblem">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xede1;"/>
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
                         <MenuFlyoutItem 
                             Text="Delete"
                             Icon="Delete"

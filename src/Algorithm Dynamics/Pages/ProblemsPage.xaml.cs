@@ -242,8 +242,12 @@ namespace Algorithm_Dynamics.Pages
             else if (dataType == "Problem")
             {
                 DataSerialization.DeserializeProblem(data);
-                RefreshDatabase();
             }
+            else if (dataType == "ProblemList")
+            {
+                DataSerialization.DeserializeProblemList(data);
+            }
+            RefreshDatabase();
         }
 
         private void CreateNewProblemList(object sender, RoutedEventArgs e)
@@ -337,8 +341,16 @@ namespace Algorithm_Dynamics.Pages
         private async void ExportProblem(object sender, RoutedEventArgs e)
         {
             Problem problem = ProblemsListView.SelectedItem as Problem;
-            string fileName = $"{problem.Name} Export File";
+            string fileName = $"{problem.Name} Export";
             string serializedProblem = DataSerialization.SerializeProblem(problem);
+            await FileHelper.FileSavePicker("Algorithm Dynamics Export File", new() { ".json" }, fileName, serializedProblem);
+        }
+
+        private async void ExportProblemList(object sender, RoutedEventArgs e)
+        {
+            ProblemList problemList = ListComboBox.SelectedItem as ProblemList;
+            string fileName = $"{problemList.Name} Export";
+            string serializedProblem = DataSerialization.SerializeProblemList(problemList);
             await FileHelper.FileSavePicker("Algorithm Dynamics Export File", new() { ".json" }, fileName, serializedProblem);
         }
     }
