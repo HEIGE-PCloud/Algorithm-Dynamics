@@ -158,6 +158,15 @@ namespace Algorithm_Dynamics.Core.Models
             await File.WriteAllTextAsync(_SourceCodeFilePath, UserCode);
             if (language.NeedCompile)
             {
+                // Check if the compiler exists before compiling
+                if (!ExistsOnPath(language.CompileCommand.Replace("{SourceCodeFilePath}", _SourceCodeFilePath).Replace("{ExecutableFilePath}", _ExecutableFilePath)))
+                {
+                    Progress.Report(100);
+                    result.StandardError = $"The CompileCommand {language.CompileCommand} cannot be found.\nPlease check the programming language configuration.";
+                    result.ResultCode = ResultCode.SYSTEM_ERROR;
+                    return result;
+                }
+
                 if (await Compile(language) != 0)
                 {
                     Progress.Report(100);
@@ -168,6 +177,14 @@ namespace Algorithm_Dynamics.Core.Models
                 }
             }
             Progress.Report(10);
+
+            if (!ExistsOnPath(language.RunCommand.Replace("{SourceCodeFilePath}", _SourceCodeFilePath).Replace("{ExecutableFilePath}", _ExecutableFilePath)))
+            {
+                Progress.Report(100);
+                result.StandardError = $"The RunCommand {language.RunCommand} cannot be found.\nPlease check the programming language configuration.";
+                result.ResultCode = ResultCode.SYSTEM_ERROR;
+                return result;
+            }
             var watch = new Stopwatch();
             watch.Start();
             result.ExitCode = await Execute(Input, language, TimeLimit, MemoryLimit);
@@ -290,6 +307,27 @@ namespace Algorithm_Dynamics.Core.Models
                 _StandardError += e.Data + '\n';
             }
         }
+
+        private static bool ExistsOnPath(string fileName)
+        {
+            return GetFullPath(fileName) != null;
+        }
+
+        private static string GetFullPath(string fileName)
+        {
+            if (File.Exists(fileName))
+                return Path.GetFullPath(fileName);
+
+            var values = Environment.GetEnvironmentVariable("PATH");
+            foreach (var path in values.Split(Path.PathSeparator))
+            {
+                var fullPath = Path.Combine(path, fileName);
+                if (File.Exists(fullPath))
+                    return fullPath;
+            }
+            return null;
+        }
+
     }
     public enum StatusCode
     {

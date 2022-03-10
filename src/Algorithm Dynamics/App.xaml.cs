@@ -115,13 +115,13 @@ namespace Algorithm_Dynamics
         }
         private static void InitializeLanguageConfiguration()
         {
-            Language.Create("python", "Python", false, "", "", "python", "{SourceCodeFilePath}", ".py");
-            Language.Create("c", "C", true, "gcc", "-x c {SourceCodeFilePath} -o {ExecutableFilePath}", "{ExecutableFilePath}", "", ".c");
-            Language.Create("cpp", "C++", true, "g++", "-x c++ {SourceCodeFilePath} -o {ExecutableFilePath}", "{ExecutableFilePath}", "", ".cpp");
-            Language.Create("rust", "Rust", true, "rustc", "{SourceCodeFilePath} -o {ExecutableFilePath}", "{ExecutableFilePath}", "", ".rs");
-            Language.Create("javascript", "JavaScript", false, "", "", "node", "{SourceCodeFilePath}", ".js");
+            Language.Create("python", "Python", false, "", "", "python.exe", "{SourceCodeFilePath}", ".py");
+            Language.Create("c", "C", true, "gcc.exe", "-x c {SourceCodeFilePath} -o {ExecutableFilePath}", "{ExecutableFilePath}", "", ".c");
+            Language.Create("cpp", "C++", true, "g++.exe", "-x c++ {SourceCodeFilePath} -o {ExecutableFilePath}", "{ExecutableFilePath}", "", ".cpp");
+            Language.Create("rust", "Rust", true, "rustc.exe", "{SourceCodeFilePath} -o {ExecutableFilePath}", "{ExecutableFilePath}", "", ".rs");
+            Language.Create("javascript", "JavaScript", false, "", "", "node.exe", "{SourceCodeFilePath}", ".js");
             Language.Create("java", "Java", false, "", "", "{SourceCodeFilePath}", "", ".java");
-            Language.Create("go", "Go", false, "", "", "run {SourceCodeFIlePath}", "", ".go");
+            Language.Create("go", "Go", false, "", "", "go.exe run {SourceCodeFilePath}", "", ".go");
         }
 
     }
