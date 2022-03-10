@@ -87,6 +87,7 @@
                     Click="EditButton_Click"/>
                 <Button
                     Margin="2"
+                    Visibility="Collapsed"
                     HorizontalAlignment="Stretch"
                     Content="Login"/>
             </StackPanel>
