@@ -26,6 +26,7 @@
                 RelativePanel.AlignVerticalCenterWithPanel="True"
                 DisplayName="{x:Bind EditNameTextBox.Text , Mode=OneWay}"/>
             <StackPanel
+                x:Name="InputPanel"
                 RelativePanel.RightOf="AvatarPicture"
                 RelativePanel.AlignVerticalCenterWithPanel="True">
                 <TextBlock
@@ -39,7 +40,7 @@
                     PlaceholderText="Name"
                     Margin="2"
                     MaxLength="32"
-                    Text="{x:Bind _user.Name, Mode=TwoWay}"
+                    Text="{x:Bind UserName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                     HorizontalAlignment="Stretch"
                     Visibility="{x:Bind IsEditMode, Mode=OneWay}"/>
                 <TextBlock
@@ -52,7 +53,7 @@
                     x:Name="EditEmailTextBox"
                     PlaceholderText="Email"
                     MaxLength="32"
-                    Text="{x:Bind _user.Email, Mode=TwoWay}"
+                    Text="{x:Bind Email, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                     Margin="2"
                     HorizontalAlignment="Stretch"
                     Visibility="{x:Bind IsEditMode, Mode=OneWay}"/>
@@ -75,6 +76,12 @@
                     <x:String>Teacher</x:String>
                 </ComboBox>
             </StackPanel>
+            <TextBlock
+                Margin="4"
+                Text="{x:Bind ErrorMessage, Mode=OneWay}"
+                RelativePanel.Below="InputPanel"
+                RelativePanel.AlignLeftWith="InputPanel"
+                Foreground="Red"/>
             <StackPanel
                 Margin="32"
                 RelativePanel.AlignRightWithPanel="True"
@@ -84,6 +91,7 @@
                     Margin="2"
                     HorizontalAlignment="Stretch"
                     Content="Edit"
+                    IsEnabled="{x:Bind IsValidInput, Mode=OneWay}"
                     Click="EditButton_Click"/>
                 <Button
                     Margin="2"

@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Windows.Storage;
+using System.ComponentModel.DataAnnotations;
 
 namespace Algorithm_Dynamics.Pages
 {
@@ -57,8 +58,9 @@ namespace Algorithm_Dynamics.Pages
                 _user = User.Create("PCloud", "heige.pcloud@outlook.com", Role.Student);
                 roamingSettings.Values["CurrentUser"] = _user.Uid;
             }
-
-
+            UserName = _user.Name;
+            Email = _user.Email;
+            Role = _user.Role;
         }
         private ObservableCollection<StatisticsItem> StatsItems { get; } = new ObservableCollection<StatisticsItem>();
 
@@ -79,14 +81,14 @@ namespace Algorithm_Dynamics.Pages
         }
         public int RoleIndex
         {
-            get => (int)_user.Role;
-            set => _user.Role = (Role)value;
+            get => (int)Role;
+            set => Role = (Role)value;
         }
 
         /// <summary>
         /// Invoke when the property is changed.
         /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged = delegate { };
+        public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
         /// Invoke a new <see cref="PropertyChanged"/> event.
@@ -96,6 +98,8 @@ namespace Algorithm_Dynamics.Pages
         {
             // Raise the PropertyChanged event, passing the name of the property whose value has changed.
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsValidInput)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ErrorMessage)));
         }
 
         private void EditButton_Click(object sender, RoutedEventArgs e)
@@ -109,10 +113,80 @@ namespace Algorithm_Dynamics.Pages
             {
                 IsEditMode = false;
                 EditButton.Content = "Edit";
+                _user.Name = UserName;
+                _user.Email = Email;
+                _user.Role = Role;
             }
         }
 
         private User _user;
+        private string _name;
+        private string _email;
+        private Role _role;
+        public string UserName
+        {
+            get => _name;
+            set
+            {
+                if (value != _name)
+                {
+                    _name = value;
+                    OnPropertyChanged(nameof(UserName));
+                }
+            }
+        }
+        public string Email
+        {
+            get => _email;
+            set
+            {
+                if (value != _email)
+                {
+                    _email = value;
+                    OnPropertyChanged(nameof(Email));
+                }
+            }
+        }
+        public Role Role
+        {
+            get => _role;
+            set
+            {
+                if (value != _role)
+                {
+                    _role = value;
+                    OnPropertyChanged(nameof(Role));
+                }
+            }
+        }
+
+        public bool IsValidInput
+        {
+            get
+            {
+                ErrorMessage = "";
+                if (IsEditMode == false)
+                    return true;
+                bool isValid = true;
+                if (string.IsNullOrEmpty(UserName))
+                {
+                    isValid = false;
+                    ErrorMessage += "A user name is required.\n";
+                }
+                if (IsValidEmail(Email) == false)
+                {
+                    isValid = false;
+                    ErrorMessage += "The email address is not valid.\n";
+                }
+                return isValid;
+            }
+        }
+        public string ErrorMessage { get; set; }
+        public bool IsValidEmail(string source)
+        {
+            return new EmailAddressAttribute().IsValid(source);
+        }
+
     }
 
 }

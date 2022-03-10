@@ -76,6 +76,8 @@ namespace Algorithm_Dynamics.Pages
             // Raise the PropertyChanged event, passing the name of the property whose value has changed.
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DescriptionMarkdown)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsValidInput)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ErrorMessage)));
         }
 
         public enum Mode
@@ -148,7 +150,31 @@ The format and the range of the output
                 return _description + timeLimit + memoryLimit + example;
             }
         }
-
+        public bool IsValidInput
+        {
+            get
+            {
+                ErrorMessage = "";
+                bool isValid = true;
+                if (string.IsNullOrEmpty(_name))
+                {
+                    isValid = false;
+                    ErrorMessage += "A name is required.\n";
+                }
+                if (!TestCases.Any(testCase => testCase.IsExample == true))
+                {
+                    isValid = false;
+                    ErrorMessage += "At least one example test case is required.\n";
+                }
+                if (!TestCases.Any(testCase => testCase.IsExample == false))
+                {
+                    isValid = false;
+                    ErrorMessage += "At least one non-example test case is required.\n";
+                }
+                return isValid;
+            }
+        }
+        public string ErrorMessage { get; set; }
         /// <summary>
         /// Handle the Navigation Arguments
         /// Set the <see cref="_pageMode"/> if the Parameter is not <see cref="null"/>.

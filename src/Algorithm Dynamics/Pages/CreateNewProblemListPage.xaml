@@ -19,7 +19,7 @@
             <TextBox
                 Margin="0 22 0 0"
                 Header="Name"
-                Text="{x:Bind _name, Mode=TwoWay}"
+                Text="{x:Bind ListName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 MaxLength="64"
                 Width="400"
                 HorizontalAlignment="Left"/>
@@ -34,7 +34,7 @@
                 HorizontalAlignment="Stretch"
                 TextWrapping="Wrap" 
                 AcceptsReturn="True"
-                Text="{x:Bind _description, Mode=TwoWay}"
+                Text="{x:Bind Description, Mode=TwoWay}"
                 MinHeight="200"
                 MaxHeight="840"/>
             <AutoSuggestBox
@@ -101,6 +101,7 @@
                     Width="100"
                     Margin="0 0 4 0"
                     Click="SaveButton_Click"
+                    IsEnabled="{x:Bind IsValidInput, Mode=OneWay}"
                     Style="{ThemeResource AccentButtonStyle}">
                     <Button.Flyout>
                         <Flyout
@@ -147,6 +148,10 @@
                     </Button.Flyout>
                 </Button>
             </StackPanel>
+            <TextBlock
+                Margin="4"
+                Text="{x:Bind ErrorMessage, Mode=OneWay}"
+                Foreground="Red"/>
         </StackPanel>
     </ScrollViewer>
 </Page>

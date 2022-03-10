@@ -21,7 +21,7 @@
                 Header="Title"
                 MaxLength="64"
                 Width="400"
-                Text="{x:Bind ProblemName, Mode=TwoWay}"
+                Text="{x:Bind ProblemName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 HorizontalAlignment="Left"/>
             <TextBox
                 Header="Tags"
@@ -176,6 +176,7 @@
                     Margin="0 0 4 0"
                     Content="Save"
                     Width="100"
+                    IsEnabled="{x:Bind IsValidInput, Mode=OneWay}"
                     Click="CreateProblem"
                     Style="{ThemeResource AccentButtonStyle}"/>
                 <Button 
@@ -196,6 +197,10 @@
                     </Button.Flyout>
                 </Button>
             </StackPanel>
+            <TextBlock
+                Margin="4"
+                Text="{x:Bind ErrorMessage, Mode=OneWay}"
+                Foreground="Red"/>
         </StackPanel>
     </ScrollViewer>
 </Page>

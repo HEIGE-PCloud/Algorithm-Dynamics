@@ -7,7 +7,10 @@ using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Storage.Provider;
@@ -15,11 +18,15 @@ using WinRT.Interop;
 
 namespace Algorithm_Dynamics.Pages
 {
-    public sealed partial class CreateNewProblemListPage : Page
+    public sealed partial class CreateNewProblemListPage : Page, INotifyPropertyChanged
     {
         public CreateNewProblemListPage()
         {
             InitializeComponent();
+            Problems.CollectionChanged += (object sender, NotifyCollectionChangedEventArgs e) =>
+            {
+                OnPropertyChanged(nameof(Problems));
+            };
         }
         public enum Mode
         {
@@ -48,6 +55,50 @@ namespace Algorithm_Dynamics.Pages
         private ProblemList _problemList;
         private string _name = "";
         private string _description = "";
+        public string ListName 
+        { 
+            get => _name;
+            set
+            {
+                if (_name != value)
+                {
+                    _name = value;
+                    OnPropertyChanged(nameof(ListName));
+                }
+            }
+        }
+        public string Description
+        {
+            get => _description;
+            set
+            {
+                if (_description != value)
+                {
+                    _description = value;
+                    OnPropertyChanged(nameof(Description));
+                }
+            }
+        }
+        public bool IsValidInput
+        {
+            get
+            {
+                ErrorMessage = "";
+                bool isValid = true;
+                if (string.IsNullOrEmpty(_name))
+                {
+                    isValid = false;
+                    ErrorMessage += "A name is required.\n";
+                }
+                if (Problems.Count < 1)
+                {
+                    isValid = false;
+                    ErrorMessage += "At least one problem is required.\n";
+                }
+                return isValid;
+            }
+        }
+        public string ErrorMessage { get; set; }
 
         /// <summary>
         /// Handle the Navigation Arguments
@@ -77,6 +128,16 @@ namespace Algorithm_Dynamics.Pages
         }
 
         private ObservableCollection<Problem> Problems = new() {  };
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            // Raise the PropertyChanged event, passing the name of the property whose value has changed.
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsValidInput)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ErrorMessage)));
+        }
 
         /// <summary>
         /// When the text is changed in the search box, search in the database and create suggestion items. 
