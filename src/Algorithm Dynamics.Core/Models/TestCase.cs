@@ -1,5 +1,6 @@
 ﻿using Algorithm_Dynamics.Core.Helpers;
 using System;
+using System.Text.Json.Serialization;
 
 namespace Algorithm_Dynamics.Core.Models
 {
@@ -40,6 +41,7 @@ namespace Algorithm_Dynamics.Core.Models
         private string _input;
         private string _output;
         private bool _isExample;
+        [JsonIgnore]
         public int Id 
         {
             get => _id;
@@ -87,6 +89,12 @@ namespace Algorithm_Dynamics.Core.Models
             {
                 DataAccess.EditTestCase(_id, _input, _output, _isExample, value);
             }
+        }
+
+        [JsonConstructor]
+        public TestCase(string Input, string Output, bool IsExample)
+        {
+            Create(Input, Output, IsExample);
         }
     }
 }

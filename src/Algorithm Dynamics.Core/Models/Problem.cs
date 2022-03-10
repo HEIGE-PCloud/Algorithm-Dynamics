@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text.Json.Serialization;
 
 namespace Algorithm_Dynamics.Core.Models
 {
@@ -19,16 +20,19 @@ namespace Algorithm_Dynamics.Core.Models
         {
             DataAccess.EditProblem(_id, _name, _description, _timeLimit, _memoryLimit, _status, _difficulty);
         }
+        [JsonIgnore]
         public int Id 
         { 
             get => _id; 
             private set => _id = value;
         }
+
         public Guid Uid 
         { 
             get => _uid;
             private set => _uid = value;
         }
+
         public string Name 
         { 
             get => _name; 
@@ -41,6 +45,7 @@ namespace Algorithm_Dynamics.Core.Models
                 }
             }
         }
+
         public string Description
         {
             get => _description;
@@ -53,6 +58,7 @@ namespace Algorithm_Dynamics.Core.Models
                 }
             }
         }
+
         public int TimeLimit 
         { 
             get => _timeLimit;
@@ -65,6 +71,7 @@ namespace Algorithm_Dynamics.Core.Models
                 }
             }
         }
+
         public long MemoryLimit 
         { 
             get => _memoryLimit;
@@ -77,6 +84,8 @@ namespace Algorithm_Dynamics.Core.Models
                 }
             }
         }
+
+        [JsonIgnore]
         public ProblemStatus Status 
         { 
             get => _status;
@@ -89,6 +98,7 @@ namespace Algorithm_Dynamics.Core.Models
                 }
             }
         }
+
         public Difficulty Difficulty 
         {
             get => _difficulty;
@@ -101,6 +111,7 @@ namespace Algorithm_Dynamics.Core.Models
                 }
             }
         }
+        [JsonIgnore]
         public string DifficultyAsString
         {
             get
@@ -113,6 +124,7 @@ namespace Algorithm_Dynamics.Core.Models
                     return "Hard";
             }
         }
+        [JsonIgnore]
         public string StatusAsString
         {
             get
@@ -129,6 +141,7 @@ namespace Algorithm_Dynamics.Core.Models
         /// <summary>
         /// Return all tags as a string in the format "Tag1, Tag2, Tag3"
         /// </summary>
+        [JsonIgnore]
         public string TagsAsString
         {
             get
@@ -150,6 +163,7 @@ namespace Algorithm_Dynamics.Core.Models
         /// Return the first tag as string if there exists any
         /// Or an empty string if there is no tag
         /// </summary>
+        [JsonIgnore]
         public string TagAsString
         {
             get
@@ -170,11 +184,13 @@ namespace Algorithm_Dynamics.Core.Models
             }
         }
         private List<TestCase> _testCases;
+
         public ReadOnlyCollection<TestCase> TestCases
         {
             get => _testCases.AsReadOnly();
         }
         private List<Tag> _tags;
+
         public ReadOnlyCollection<Tag> Tags
         {
             get => _tags.AsReadOnly();
@@ -221,10 +237,10 @@ namespace Algorithm_Dynamics.Core.Models
             _tags = tags;
         }
 
-        public static Problem Create(string name, string description, int timeLimit, long memoryLimit, Difficulty difficulty, List<TestCase> testCases = null, List<Tag> tags = null)
+        public static Problem Create(Guid uid, string name, string description, int timeLimit, long memoryLimit, Difficulty difficulty, List<TestCase> testCases = null, List<Tag> tags = null)
         {
             // Create record for Problem
-            var problem = DataAccess.AddProblem(Guid.NewGuid(), name, description, timeLimit, memoryLimit, ProblemStatus.Todo, difficulty, testCases, tags);
+            var problem = DataAccess.AddProblem(uid, name, description, timeLimit, memoryLimit, ProblemStatus.Todo, difficulty, testCases, tags);
             
             // Add testcases to problem
             if (testCases != null)
@@ -293,6 +309,16 @@ namespace Algorithm_Dynamics.Core.Models
         public override string ToString()
         {
             return Name;
+        }
+
+        //[JsonConstructor]
+        //public Problem(Guid Uid, string Name, string Description, int TimeLimit, long MemoryLimit, int Difficulty, List<TestCase> TestCases, List<Tag> Tags)
+        //{
+        //    Create(Uid, Name, Description, TimeLimit, MemoryLimit, (Difficulty)Difficulty, TestCases, Tags);
+        //}
+        public Problem()
+        {
+
         }
     }
 

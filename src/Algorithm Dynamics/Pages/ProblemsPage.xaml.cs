@@ -322,5 +322,12 @@ namespace Algorithm_Dynamics.Pages
                 sender.ItemsSource = resultList.Select(p => p.Name).ToList();
             }
         }
+
+        private async void ExportProblem(object sender, RoutedEventArgs e)
+        {
+            Problem problem = ProblemsListView.SelectedItem as Problem;
+            string fileName = "";
+            await FileHelper.FileSavePicker("Algorithm Dynamics Export File", new() { ".json" }, fileName, "");
+        }
     }
 }

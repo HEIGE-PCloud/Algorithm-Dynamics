@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Algorithm_Dynamics.Core.Models
@@ -14,6 +15,7 @@ namespace Algorithm_Dynamics.Core.Models
             Id = id;
             Name = name;
         }
+        [JsonIgnore]
         public int Id { get; }
         public string Name { get; set; }
         public static List<Tag> All { get => DataAccess.GetAllTags(); }
@@ -69,6 +71,12 @@ namespace Algorithm_Dynamics.Core.Models
         public override string ToString()
         {
             return Name;
+        }
+
+        [JsonConstructor]
+        public Tag(string Name)
+        {
+            Create(Name);
         }
     }
 }

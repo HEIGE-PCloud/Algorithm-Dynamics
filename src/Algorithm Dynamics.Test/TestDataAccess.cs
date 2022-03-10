@@ -11,7 +11,7 @@ namespace Algorithm_Dynamics.Test
     public class TestDataAccess
     {
         const int MB = 1024 * 1024;
-        int counter = 1;
+
         [TestInitialize]
         public void InitDb()
         {
@@ -27,50 +27,6 @@ namespace Algorithm_Dynamics.Test
             {
                 File.Delete(path);
             }
-        }
-
-        /// <summary>
-        /// Create a random new <see cref="Problem"/> without any testcase or tag and save it into the database.
-        /// </summary>
-        /// <returns></returns>
-        private Problem CreateNewProblem()
-        {
-            Problem problem = Problem.Create($"Test Problem {counter}", $"Description {counter}", 1000 * counter, 16 * MB * counter, Difficulty.Easy);
-            counter++;
-            return problem;
-        }
-
-        private Tag CreateNewTag()
-        {
-            Tag tag = Tag.Create($"Tag {counter++}");
-            return tag;
-        }
-
-        private TestCase CreateNewTestCase()
-        {
-            TestCase testCase = TestCase.Create($"Input {counter}", $"Output {counter}", true);
-            counter++;
-            return testCase;
-        }
-
-        private ProblemList CreateNewProblemList()
-        {
-            ProblemList problemList = ProblemList.Create($"Problem List {counter}", $"Description {counter}", new());
-            counter++;
-            return problemList;
-        }
-
-        private User CreateNewUser()
-        {
-            User user = User.Create($"User {counter}", $"user{counter}@example.com", Role.Student);
-            counter++;
-            return user;
-        }
-
-        private Language CreateNewLanguage()
-        {
-            Language lang = Language.Create($"lang {counter++}", "Lang", false, "", "", "RunCmd", "RunArgs", ".example");
-            return lang;
         }
 
         [TestMethod]
@@ -136,14 +92,14 @@ namespace Algorithm_Dynamics.Test
             Tag tag2 = Tag.Create("tag2");
             var testCases = new List<TestCase>() { testCase1, testCase2 };
             var tags = new List<Tag>() { tag1, tag2 };
-            Problem problem = Problem.Create("Test Problem", "Description", 1000, 64 * MB, Difficulty.Easy, testCases, tags);
+            Problem problem = Problem.Create(Guid.NewGuid(), "Test Problem", "Description", 1000, 64 * MB, Difficulty.Easy, testCases, tags);
             Assert.AreEqual(problem, DataAccess.GetProblem(problem.Id));
         }
 
         [TestMethod]
         public void TestEditProblem()
         {
-            Problem problem = Problem.Create("Test Problem", "Description", 1000, 64 * MB, Difficulty.Easy);
+            Problem problem = Problem.Create(Guid.NewGuid(), "Test Problem", "Description", 1000, 64 * MB, Difficulty.Easy);
             problem.Name = "New name";
             problem.Description = "New description";
             problem.TimeLimit = 2000;
@@ -164,8 +120,8 @@ namespace Algorithm_Dynamics.Test
             var testCases1 = new List<TestCase>() { testCase1 };
             var testCases2 = new List<TestCase>() { testCase2 };
             var tags = new List<Tag>() { tag1, tag2 };
-            Problem problem = Problem.Create("Test Problem", "Description", 1000, 64 * MB, Difficulty.Easy, testCases1, tags);
-            Problem problem2 = Problem.Create("Test Problem2", "Description2", 2000, 6 * MB, Difficulty.Hard, testCases2, tags);
+            Problem problem = Problem.Create(Guid.NewGuid(), "Test Problem", "Description", 1000, 64 * MB, Difficulty.Easy, testCases1, tags);
+            Problem problem2 = Problem.Create(Guid.NewGuid(), "Test Problem2", "Description2", 2000, 6 * MB, Difficulty.Hard, testCases2, tags);
             CollectionAssert.AreEqual(new List<Problem>() { problem, problem2 }, DataAccess.GetAllProblems());
         }
 
@@ -224,7 +180,7 @@ namespace Algorithm_Dynamics.Test
         {
             Tag tag1 = Tag.Create("tag1");
             Tag tag2 = Tag.Create("tag2");
-            Problem problem = Problem.Create("Test Problem", "Description", 1000, 64 * MB, Difficulty.Easy);
+            Problem problem = Problem.Create(Guid.NewGuid(), "Test Problem", "Description", 1000, 64 * MB, Difficulty.Easy);
             problem.AddTag(tag1);
             problem.AddTag(tag2);
             problem.RemoveTag(tag1);
@@ -235,7 +191,7 @@ namespace Algorithm_Dynamics.Test
         {
             Tag tag1 = Tag.Create("tag1");
             Tag tag2 = Tag.Create("tag2");
-            Problem problem = CreateNewProblem();
+            Problem problem = DatabaseHelper.CreateNewProblem();
             problem.AddTag(tag1);
             Assert.AreEqual(true, DataAccess.TagRecordExists(tag1.Id));
             Assert.AreEqual(false, DataAccess.TagRecordExists(tag2.Id));
@@ -250,7 +206,7 @@ namespace Algorithm_Dynamics.Test
             Tag tag2 = Tag.Create("tag2");
             TestCase testCase1 = TestCase.Create("input1", "output1", true);
             TestCase testCase2 = TestCase.Create("input2", "output2", false);
-            Problem problem = CreateNewProblem();
+            Problem problem = DatabaseHelper.CreateNewProblem();
             problem.AddTestCase(testCase1);
             problem.AddTestCase(testCase2);
             problem.AddTag(tag1);
@@ -275,15 +231,15 @@ namespace Algorithm_Dynamics.Test
         [TestMethod]
         public void TestCreateProblemList()
         {
-            TestCase testCase1 = CreateNewTestCase();
-            TestCase testCase2 = CreateNewTestCase();
-            Tag tag1 = CreateNewTag();
-            Tag tag2 = CreateNewTag();
-            Problem problem1 = CreateNewProblem();
+            TestCase testCase1 = DatabaseHelper.CreateNewTestCase();
+            TestCase testCase2 = DatabaseHelper.CreateNewTestCase();
+            Tag tag1 = DatabaseHelper.CreateNewTag();
+            Tag tag2 = DatabaseHelper.CreateNewTag();
+            Problem problem1 = DatabaseHelper.CreateNewProblem();
             problem1.AddTestCase(testCase1);
             problem1.AddTag(tag1);
             problem1.AddTag(tag2);
-            Problem problem2 = CreateNewProblem();
+            Problem problem2 = DatabaseHelper.CreateNewProblem();
             problem2.AddTestCase(testCase2);
             ProblemList problemList = ProblemList.Create("Problem List", "Description", new() { problem1, problem2 });
             Assert.AreEqual(problemList, DataAccess.GetAllProblemLists()[0]);
@@ -317,9 +273,9 @@ namespace Algorithm_Dynamics.Test
         [TestMethod]
         public void TestAddDeleteProblemListRecord()
         {
-            var problemList = CreateNewProblemList();
-            var problem1 = CreateNewProblem();
-            var problem2 = CreateNewProblem();
+            var problemList = DatabaseHelper.CreateNewProblemList();
+            var problem1 = DatabaseHelper.CreateNewProblem();
+            var problem2 = DatabaseHelper.CreateNewProblem();
             problemList.AddProblem(problem1);
             problemList.AddProblem(problem2);
             problemList.RemoveProblem(problem1);
@@ -359,9 +315,9 @@ namespace Algorithm_Dynamics.Test
         [TestMethod]
         public void TestAddSubmission()
         {
-            var problem = CreateNewProblem();
-            var user = CreateNewUser();
-            var lang = CreateNewLanguage();
+            var problem = DatabaseHelper.CreateNewProblem();
+            var user = DatabaseHelper.CreateNewUser();
+            var lang = DatabaseHelper.CreateNewLanguage();
             var sub = Submission.Create("code", lang, user, problem);
 
             Assert.AreEqual(sub, DataAccess.GetSubmission(sub.Id));
@@ -370,9 +326,9 @@ namespace Algorithm_Dynamics.Test
         [TestMethod]
         public void TestGetAllSubmissions()
         {
-            var problem = CreateNewProblem();
-            var user = CreateNewUser();
-            var lang = CreateNewLanguage();
+            var problem = DatabaseHelper.CreateNewProblem();
+            var user = DatabaseHelper.CreateNewUser();
+            var lang = DatabaseHelper.CreateNewLanguage();
             var sub1 = Submission.Create("code", lang, user, problem);
             var sub2 = Submission.Create("code", lang, user, problem);
             Assert.AreEqual(2, DataAccess.GetAllSubmissions().Count);
@@ -382,9 +338,9 @@ namespace Algorithm_Dynamics.Test
         [TestMethod]
         public void TestAddSubmissionResult()
         {
-            var problem = CreateNewProblem();
-            var user = CreateNewUser();
-            var lang = CreateNewLanguage();
+            var problem = DatabaseHelper.CreateNewProblem();
+            var user = DatabaseHelper.CreateNewUser();
+            var lang = DatabaseHelper.CreateNewLanguage();
             var submission = Submission.Create("code", lang, user, problem);
 
             SubmissionResult submissionResult = SubmissionResult.Create(submission, new());
@@ -394,9 +350,9 @@ namespace Algorithm_Dynamics.Test
         [TestMethod]
         public void TestTestCaseResult()
         {
-            var problem = CreateNewProblem();
-            var user = CreateNewUser();
-            var lang = CreateNewLanguage();
+            var problem = DatabaseHelper.CreateNewProblem();
+            var user = DatabaseHelper.CreateNewUser();
+            var lang = DatabaseHelper.CreateNewLanguage();
             var submission = Submission.Create("code", lang, user, problem);
 
             TestCaseResult t1 = TestCaseResult.Create(new("stdout1", "stderr1", 0, 1000, 64 * MB, ResultCode.SUCCESS));
