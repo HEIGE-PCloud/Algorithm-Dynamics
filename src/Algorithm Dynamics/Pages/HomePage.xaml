@@ -69,6 +69,7 @@
           </GridView.ItemTemplate>
         </controls:AdaptiveGridView>
         <TextBlock 
+          x:Name="RecommendTextBlock"
           Text="Recommended"
           Grid.Row="2"
           Style="{ThemeResource SubtitleTextBlockStyle}"/>

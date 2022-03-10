@@ -3,6 +3,7 @@ using Algorithm_Dynamics.Core.Models;
 using Algorithm_Dynamics.Helpers;
 using Algorithm_Dynamics.Models;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -20,10 +21,10 @@ namespace Algorithm_Dynamics.Pages
         public ObservableCollection<RecommendItem> RecItems { get; } = new ObservableCollection<RecommendItem>();
         public HomePage()
         {
+            InitializeComponent();
             SetWelcomeMessage();
             InitializeQAItems();
             InitializeRecItems();
-            InitializeComponent();
         }
 
         /// <summary>
@@ -157,6 +158,14 @@ namespace Algorithm_Dynamics.Pages
             {
                 var problem = problems[i];
                 RecItems.Add(new RecommendItem(problem.Name, $"{problem.DifficultyAsString} | {problem.TagAsString}", () => { App.NavigateTo(typeof(CodingPage), Tuple.Create(problem, Problem.All)); }));
+            }
+            if (RecItems.Count == 0)
+            {
+                RecommendTextBlock.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                RecommendTextBlock.Visibility = Visibility.Visible;
             }
         }
     }
