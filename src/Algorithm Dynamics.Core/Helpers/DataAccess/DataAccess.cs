@@ -135,8 +135,7 @@ namespace Algorithm_Dynamics.Core.Helpers
                         UserUid TEXT NOT NULL,
                         ProblemId INTEGER NOT NULL,
                         FOREIGN KEY (LanguageId) REFERENCES Language(Id),
-                        FOREIGN KEY (UserUid) REFERENCES User(Uid),
-                        FOREIGN KEY (ProblemId) REFERENCES Problem(Id)
+                        FOREIGN KEY (UserUid) REFERENCES User(Uid)
                     );";
 
                 // Create SubmissionResult table

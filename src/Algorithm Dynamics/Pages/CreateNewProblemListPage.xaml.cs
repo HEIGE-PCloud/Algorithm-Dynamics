@@ -1,4 +1,6 @@
-﻿using Algorithm_Dynamics.Core.Models;
+﻿using Algorithm_Dynamics.Core.Helpers;
+using Algorithm_Dynamics.Core.Models;
+using Algorithm_Dynamics.Helpers;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
@@ -129,7 +131,7 @@ namespace Algorithm_Dynamics.Pages
         {
             if (_pageMode == Mode.CreateProblemList)
             {
-                ProblemList.Create(_name, _description, Problems.ToList());
+                _problemList = ProblemList.Create(_name, _description, Problems.ToList());
             }
             else if (_pageMode == Mode.EditProblemList)
             {
@@ -187,42 +189,10 @@ namespace Algorithm_Dynamics.Pages
         /// <param name="e"></param>
         private async void ExportAndFinish(object sender, RoutedEventArgs e)
         {
-            var savePicker = new FileSavePicker();
-            IntPtr hwnd = WindowNative.GetWindowHandle(App.m_window);
-            InitializeWithWindow.Initialize(savePicker, hwnd);
-            savePicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
-            savePicker.FileTypeChoices.Add("JSON file", new List<string>() { ".json" });
-            savePicker.SuggestedFileName = "Assignment Name";
-            StorageFile file = await savePicker.PickSaveFileAsync();
-
-            if (file != null)
-            {
-                // Prevent updates to the remote version of the file until
-                // we finish making changes and call CompleteUpdatesAsync.
-                CachedFileManager.DeferUpdates(file);
-                // write to file
-                await FileIO.WriteTextAsync(file, "TODO: export the Problem List/Assignment");
-                // Let Windows know that we're finished changing the file so
-                // the other app can update the remote version of the file.
-                // Completing updates may require Windows to ask for user input.
-                FileUpdateStatus status = await CachedFileManager.CompleteUpdatesAsync(file);
-                if (status == FileUpdateStatus.Complete)
-                {
-                    SaveFlyout.Hide();
-                    if (_pageMode == Mode.CreateProblemList || _pageMode == Mode.EditProblemList)
-                        App.NavigateTo(typeof(ProblemsPage));
-                    else
-                        App.NavigateTo(typeof(AssignmentsPage));
-                }
-                else
-                {
-                    // TODO: handle saved failed
-                }
-            }
-            else
-            {
-                // TODO: handle cancelled
-            }
+            string fileName = $"{_problemList.Name} Export";
+            string serializedProblem = DataSerialization.SerializeProblemList(_problemList);
+            bool success = await FileHelper.FileSavePicker("Algorithm Dynamics Export File", new() { ".json" }, fileName, serializedProblem);
+            if (success) Finish(null, null);
         }
 
     }
