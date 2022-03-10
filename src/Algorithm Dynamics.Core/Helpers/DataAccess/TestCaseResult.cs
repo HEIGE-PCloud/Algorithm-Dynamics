@@ -36,11 +36,6 @@ namespace Algorithm_Dynamics.Core.Helpers
             }
         }
 
-        //internal static TestCaseResult GetTestCaseResult(int id)
-        //{
-
-        //}
-
         internal static List<TestCaseResult> GetTestCaseResults(int submissionResultId)
         {
             List<TestCaseResult> results = new();
@@ -85,9 +80,6 @@ namespace Algorithm_Dynamics.Core.Helpers
                 updateCommand.ExecuteNonQuery();
             }
         }
-        //internal static List<TestCaseResult> GetAllTestCaseResults()
-        //{
 
-        //}
     }
 }

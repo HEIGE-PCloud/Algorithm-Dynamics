@@ -134,6 +134,7 @@ namespace Algorithm_Dynamics.Core.Helpers
                         LanguageId INTEGER,
                         UserUid TEXT NOT NULL,
                         ProblemId INTEGER NOT NULL,
+                        FOREIGN KEY (ProblemId) REFERENCES Problem(Id),
                         FOREIGN KEY (LanguageId) REFERENCES Language(Id),
                         FOREIGN KEY (UserUid) REFERENCES User(Uid)
                     );";

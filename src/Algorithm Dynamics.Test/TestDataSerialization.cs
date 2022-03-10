@@ -86,5 +86,18 @@ namespace Algorithm_Dynamics.Test
                 }
             }
         }
+
+        [TestMethod]
+        [ExpectedException(typeof(FormatException))]
+        public void TestInvalidFileType()
+        {
+            DataSerialization.GetDataType("{\"FileType\":\"Wrong Data\",\"DataType\":\"Problem\",\"Data\":{}}");
+        }
+        [TestMethod]
+        [ExpectedException(typeof(FormatException))]
+        public void TestInvalidDataType()
+        {
+            DataSerialization.GetDataType("{\"FileType\":\"Algorithm Dynamics Exported Data\",\"DataType\":\"Wrong Data Type\",\"Data\":{}}");
+        }
     }
 }

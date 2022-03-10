@@ -232,22 +232,39 @@ namespace Algorithm_Dynamics.Pages
 
         private async void Import(object sender, RoutedEventArgs e)
         {
-            StorageFile file = await FileHelper.FileOpenPicker("*");
-            string data = await FileIO.ReadTextAsync(file);
-            string dataType = DataSerialization.GetDataType(data);
-            if (dataType == null)
+            IReadOnlyList <StorageFile> files = await FileHelper.FileOpenPicker(".json");
+            if (files.Count > 0)
             {
-                // error handle
+                foreach (StorageFile file in files)
+                {
+                    try
+                    {
+                        string data = await FileIO.ReadTextAsync(file);
+                        string dataType = DataSerialization.GetDataType(data);
+                        if (dataType == "Problem")
+                        {
+                            DataSerialization.DeserializeProblem(data);
+                        }
+                        else if (dataType == "ProblemList")
+                        {
+                            DataSerialization.DeserializeProblemList(data);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ContentDialog dialog = new()
+                        {
+                            Title = $"An error was encountered while importing {file.DisplayName}",
+                            PrimaryButtonText = "Ok",
+                            Content = $"The following error is encountered:\n\n{ex.Message}",
+                            DefaultButton = ContentDialogButton.Primary,
+                            XamlRoot = Content.XamlRoot
+                        };
+                        await dialog.ShowAsync();
+                    }
+                }
+                RefreshDatabase();
             }
-            else if (dataType == "Problem")
-            {
-                DataSerialization.DeserializeProblem(data);
-            }
-            else if (dataType == "ProblemList")
-            {
-                DataSerialization.DeserializeProblemList(data);
-            }
-            RefreshDatabase();
         }
 
         private void CreateNewProblemList(object sender, RoutedEventArgs e)

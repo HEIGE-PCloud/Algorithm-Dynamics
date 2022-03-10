@@ -10,7 +10,7 @@ namespace Algorithm_Dynamics.Helpers
 {
     internal static class FileHelper
     {
-        internal async static Task<StorageFile> FileOpenPicker(string fileTypeFilter = "*")
+        internal async static Task<IReadOnlyList<StorageFile>> FileOpenPicker(string fileTypeFilter = "*")
         {
             // https://github.com/microsoft/WindowsAppSDK/issues/1188
             // https://docs.microsoft.com/en-us/windows/uwp/files/quickstart-using-file-and-folder-pickers
@@ -24,8 +24,8 @@ namespace Algorithm_Dynamics.Helpers
 
             // Use file picker like normal!
             filePicker.FileTypeFilter.Add(fileTypeFilter);
-            StorageFile file = await filePicker.PickSingleFileAsync();
-            return file;
+            IReadOnlyList<StorageFile> files = await filePicker.PickMultipleFilesAsync();
+            return files;
         }
 
         internal async static Task<bool> FileSavePicker(string fileType, List<string> fileTypeChoices, string suggestedFileName, string content)

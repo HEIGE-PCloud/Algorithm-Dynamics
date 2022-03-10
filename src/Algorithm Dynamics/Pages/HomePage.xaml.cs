@@ -110,8 +110,38 @@ namespace Algorithm_Dynamics.Pages
             QAItems.Add(new QuickAccessItem("Account", Symbol.Contact, () => App.NavigateTo(typeof(AccountPage))));
             QAItems.Add(new QuickAccessItem("Import", Symbol.Import, async () =>
             {
-                StorageFile file = await FileHelper.FileOpenPicker("*");
-                // TODO: Import into the database
+                IReadOnlyList<StorageFile> files = await FileHelper.FileOpenPicker(".json");
+                if (files.Count > 0)
+                {
+                    foreach (StorageFile file in files)
+                    {
+                        try
+                        {
+                            string data = await FileIO.ReadTextAsync(file);
+                            string dataType = DataSerialization.GetDataType(data);
+                            if (dataType == "Problem")
+                            {
+                                DataSerialization.DeserializeProblem(data);
+                            }
+                            else if (dataType == "ProblemList")
+                            {
+                                DataSerialization.DeserializeProblemList(data);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            ContentDialog dialog = new()
+                            {
+                                Title = $"An error was encountered while importing {file.DisplayName}",
+                                PrimaryButtonText = "Ok",
+                                Content = $"The following error is encountered:\n\n{e.Message}",
+                                DefaultButton = ContentDialogButton.Primary,
+                                XamlRoot = Content.XamlRoot
+                            };
+                            await dialog.ShowAsync();
+                        }
+                    }
+                }
             }));
         }
 

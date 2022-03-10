@@ -65,6 +65,11 @@ namespace Algorithm_Dynamics.Core.Helpers
         public static string GetDataType(string str)
         {
             var @base = JsonSerializer.Deserialize<ExportObject>(str);
+            if (@base.FileType != "Algorithm Dynamics Exported Data")
+                throw new FormatException($"The FileType {@base.FileType} is invalid.");
+
+            if (@base.DataType != "Problem" || @base.DataType != "ProblemList")
+                throw new FormatException($"The DataType {@base.DataType} is invalid.");
             return @base.DataType;
         }
         public static Problem DeserializeProblem(string str)
