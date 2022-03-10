@@ -173,7 +173,7 @@ namespace Algorithm_Dynamics.Core.Models
             result.ExitCode = await Execute(Input, language, TimeLimit, MemoryLimit);
             watch.Stop();
             result.StandardOutput = _StandardOutput;
-            result.StandardError = _StandardError;
+            result.StandardError = _StandardError.Replace(_SourceCodeFolderPath, "");
             result.CPUTime = watch.ElapsedMilliseconds;
             result.MemoryUsage = _WorkingSet64;
             Progress.Report(100);
