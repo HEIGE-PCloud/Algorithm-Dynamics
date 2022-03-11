@@ -17,6 +17,16 @@ namespace Algorithm_Dynamics.Core.Models
         private static string _CompilationError;
         private static long _WorkingSet64;
         private static StatusCode _StatusCode;
+
+        /// <summary>
+        /// Compile the source code in <see cref="_SourceCodeFilePath"/>.
+        /// </summary>
+        /// <param name="language">
+        /// The <see cref="Language.CompileCommand"/> and 
+        /// <see cref="Language.CompileArguments"/> are used for compilation.
+        /// Note that the <see cref="Language.NeedCompile"/> is not checked.
+        /// </param>
+        /// <returns>The exit code of the compiler is returned.</returns>
         private async static Task<int> Compile(Language language)
         {
             // Clear old output
@@ -24,7 +34,7 @@ namespace Algorithm_Dynamics.Core.Models
             _CompilationError = "";
 
             // Set file extension
-            _SourceCodeFilePath = _SourceCodeFilePath.Replace("{SourceCodeFileExtension}", language.FileExtension);
+            string sourceFilePath = _SourceCodeFilePath.Replace("{SourceCodeFileExtension}", language.FileExtension);
 
             // Create compile process
             Process CompileProcess = new()
@@ -32,10 +42,10 @@ namespace Algorithm_Dynamics.Core.Models
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = language.CompileCommand
-                        .Replace("{SourceCodeFilePath}", _SourceCodeFilePath)
+                        .Replace("{SourceCodeFilePath}", sourceFilePath)
                         .Replace("{ExecutableFilePath}", _ExecutableFilePath),
                     Arguments = language.CompileArguments
-                        .Replace("{SourceCodeFilePath}", _SourceCodeFilePath)
+                        .Replace("{SourceCodeFilePath}", sourceFilePath)
                         .Replace("{ExecutableFilePath}", _ExecutableFilePath),
                     UseShellExecute = false,
                     CreateNoWindow = true,
@@ -60,7 +70,16 @@ namespace Algorithm_Dynamics.Core.Models
             await CompileProcess.WaitForExitAsync();
             return CompileProcess.ExitCode;
         }
-        private async static Task<int> Execute(string Input, Language language, int TimeLimit, long MemoryLimit)
+        
+        /// <summary>
+        /// Execute the executable in <see cref="_ExecutableFilePath"/>.
+        /// </summary>
+        /// <param name="stdin">The standard input gets feeded to the program.</param>
+        /// <param name="language">The language config contains the running config.</param>
+        /// <param name="timeLimit">The time limit for the process.</param>
+        /// <param name="memoryLimit">The memory limit for the process.</param>
+        /// <returns></returns>
+        private async static Task<int> Execute(string stdin, Language language, int timeLimit, long memoryLimit)
         {
             // Clear the old data
             _StandardOutput = "";
@@ -69,7 +88,7 @@ namespace Algorithm_Dynamics.Core.Models
             _WorkingSet64 = 0;
 
             // Set file extension
-            _SourceCodeFilePath = _SourceCodeFilePath.Replace("{SourceCodeFileExtension}", language.FileExtension);
+            string sourceFilePath = _SourceCodeFilePath.Replace("{SourceCodeFileExtension}", language.FileExtension);
 
             // Create the execute process
             Process ExecuteProcess = new()
@@ -77,10 +96,10 @@ namespace Algorithm_Dynamics.Core.Models
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = language.RunCommand
-                        .Replace("{SourceCodeFilePath}", _SourceCodeFilePath)
+                        .Replace("{SourceCodeFilePath}", sourceFilePath)
                         .Replace("{ExecutableFilePath}", _ExecutableFilePath),
                     Arguments = language.RunArguments
-                        .Replace("{SourceCodeFilePath}", _SourceCodeFilePath)
+                        .Replace("{SourceCodeFilePath}", sourceFilePath)
                         .Replace("{ExecutableFilePath}", _ExecutableFilePath),
                     UseShellExecute = false,
                     RedirectStandardInput = true,
@@ -103,7 +122,7 @@ namespace Algorithm_Dynamics.Core.Models
             ExecuteProcess.Start();
             ExecuteProcess.BeginOutputReadLine();
             ExecuteProcess.BeginErrorReadLine();
-            ExecuteProcess.StandardInput.WriteLine(Input);
+            ExecuteProcess.StandardInput.WriteLine(stdin);
             _StatusCode = StatusCode.RUNNING;
 
             // Start the time monitor
@@ -114,7 +133,7 @@ namespace Algorithm_Dynamics.Core.Models
                     ExecuteProcess.Kill();
                     _StatusCode = StatusCode.TIME_LIMIT_EXCEEDED;
                 }
-            }, null, TimeLimit, Timeout.Infinite);
+            }, null, timeLimit, Timeout.Infinite);
 
             // Create the memory monitor
             Thread MemoryMonitor = new(() =>
@@ -127,7 +146,7 @@ namespace Algorithm_Dynamics.Core.Models
                         _WorkingSet64 = ExecuteProcess.PeakWorkingSet64;
                     }
                     catch (InvalidOperationException) { break; }
-                    if (_WorkingSet64 > MemoryLimit)
+                    if (_WorkingSet64 > memoryLimit)
                     {
                         ExecuteProcess.Kill();
                         _StatusCode = StatusCode.MEMORY_LIMIT_EXCEEDED;
@@ -140,26 +159,52 @@ namespace Algorithm_Dynamics.Core.Models
             await ExecuteProcess.WaitForExitAsync();
             return ExecuteProcess.ExitCode;
         }
+        
+        /// <summary>
+        /// Set the SourceCode File with its folder path and its name.
+        /// </summary>
+        /// <param name="FolderPath"></param>
+        /// <param name="FileName"></param>
         public static void SetSourceCodeFilePath(string FolderPath, string FileName)
         {
             _SourceCodeFolderPath = FolderPath;
             _SourceCodeFilePath = Path.Combine(FolderPath, FileName) + "{SourceCodeFileExtension}";
             _ExecutableFilePath = Path.Combine(FolderPath, FileName) + ".exe";
         }
-        public async static Task<RunCodeResult> RunCode(string UserCode, string Input, Language language, int TimeLimit, long MemoryLimit, IProgress<int> Progress)
+
+        /// <summary>
+        /// Run the UserCode with the given data.
+        /// Use the Progress for reporting progress.
+        /// Use skipCompile if multiple data needs to run on the same code.
+        /// </summary>
+        /// <param name="UserCode"></param>
+        /// <param name="Input"></param>
+        /// <param name="language"></param>
+        /// <param name="TimeLimit"></param>
+        /// <param name="MemoryLimit"></param>
+        /// <param name="Progress"></param>
+        /// <param name="skipCompile"></param>
+        /// <returns></returns>
+        public async static Task<RunCodeResult> RunCode(string UserCode, string Input, Language language, int TimeLimit, long MemoryLimit, IProgress<int> Progress, bool skipCompile = false)
         {
             Progress.Report(0);
+
             // Add a \n to the end for the input
             if (string.IsNullOrEmpty(Input) == false && Input[^1] != '\n') Input += '\n';
+
             // Set file extension
-            _SourceCodeFilePath = _SourceCodeFilePath.Replace("{SourceCodeFileExtension}", language.FileExtension);
+            string sourceFilePath = _SourceCodeFilePath.Replace("{SourceCodeFileExtension}", language.FileExtension);
+
+            // Save the code to the disk
             RunCodeResult result = new();
             Directory.CreateDirectory(_SourceCodeFolderPath);
-            await File.WriteAllTextAsync(_SourceCodeFilePath, UserCode);
-            if (language.NeedCompile)
+            await File.WriteAllTextAsync(sourceFilePath, UserCode);
+
+            // Compile if needed
+            if (language.NeedCompile && (!skipCompile))
             {
                 // Check if the compiler exists before compiling
-                if (!ExistsOnPath(language.CompileCommand.Replace("{SourceCodeFilePath}", _SourceCodeFilePath).Replace("{ExecutableFilePath}", _ExecutableFilePath)))
+                if (!ExistsOnPath(language.CompileCommand.Replace("{SourceCodeFilePath}", sourceFilePath).Replace("{ExecutableFilePath}", _ExecutableFilePath)))
                 {
                     Progress.Report(100);
                     result.StandardError = $"The CompileCommand {language.CompileCommand} cannot be found.\nPlease check the programming language configuration.";
@@ -167,55 +212,85 @@ namespace Algorithm_Dynamics.Core.Models
                     return result;
                 }
 
+                // Compile and report any error
                 if (await Compile(language) != 0)
                 {
                     Progress.Report(100);
                     result.StandardOutput = _CompilationOutput;
-                    result.StandardError = _CompilationError;
+                    result.StandardError = FilterErrorMessage(_CompilationError);
                     result.ResultCode = ResultCode.COMPILE_ERROR;
                     return result;
                 }
             }
+            // Finish compilation
             Progress.Report(10);
 
-            if (!ExistsOnPath(language.RunCommand.Replace("{SourceCodeFilePath}", _SourceCodeFilePath).Replace("{ExecutableFilePath}", _ExecutableFilePath)))
+            // Check run command before running
+            if (!ExistsOnPath(language.RunCommand.Replace("{SourceCodeFilePath}", sourceFilePath).Replace("{ExecutableFilePath}", _ExecutableFilePath)))
             {
                 Progress.Report(100);
-                result.StandardError = $"The RunCommand {language.RunCommand} cannot be found.\nPlease check the programming language configuration.";
+                result.StandardError 
+                    = $"The RunCommand {language.RunCommand} cannot be found.\nPlease check the programming language configuration.";
                 result.ResultCode = ResultCode.SYSTEM_ERROR;
                 return result;
             }
+            // Setup watch
             var watch = new Stopwatch();
             watch.Start();
+
+            // Execute the code
             result.ExitCode = await Execute(Input, language, TimeLimit, MemoryLimit);
+            
+            // Save the results
             watch.Stop();
             result.StandardOutput = _StandardOutput;
-            result.StandardError = _StandardError.Replace(_SourceCodeFolderPath, "");
+            result.StandardError = FilterErrorMessage(_StandardError);
             result.CPUTime = watch.ElapsedMilliseconds;
             result.MemoryUsage = _WorkingSet64;
+
+            // Report complete
             Progress.Report(100);
+
+            // Handle TLE
             if (_StatusCode == StatusCode.TIME_LIMIT_EXCEEDED)
             {
                 result.ResultCode = ResultCode.TIME_LIMIT_EXCEEDED;
                 return result;
             }
+
+            // Handle MLE
             if (_StatusCode == StatusCode.MEMORY_LIMIT_EXCEEDED)
             {
                 result.ResultCode = ResultCode.MEMORY_LIMIT_EXCEEDED;
                 return result;
             }
-            if (!string.IsNullOrEmpty(result.StandardError)
-                || result.ExitCode != 0)
+
+            // Handle RE
+            if (!string.IsNullOrEmpty(result.StandardError) || result.ExitCode != 0)
             {
                 result.ResultCode = ResultCode.RUNTIME_ERROR;
                 return result;
             }
+
+            // Success
             result.ResultCode = ResultCode.SUCCESS;
             return result;
         }
-        public async static Task<TestCaseResult> JudgeTestCase(string UserCode, TestCase TestCase, Language Language, int TimeLimit, long MemoryLimit)
+
+        /// <summary>
+        /// Judge a TestCase
+        /// </summary>
+        /// <param name="UserCode"></param>
+        /// <param name="TestCase"></param>
+        /// <param name="Language"></param>
+        /// <param name="TimeLimit"></param>
+        /// <param name="MemoryLimit"></param>
+        /// <returns></returns>
+        public async static Task<TestCaseResult> JudgeTestCase(string UserCode, TestCase TestCase, Language Language, int TimeLimit, long MemoryLimit, bool skipCompile = false)
         {
-            RunCodeResult runCodeResult = await RunCode(UserCode, TestCase.Input, Language, TimeLimit, MemoryLimit, new Progress<int>());
+            RunCodeResult runCodeResult = await RunCode(UserCode, TestCase.Input, Language, TimeLimit, MemoryLimit, new Progress<int>(), skipCompile);
+            
+            // Handle WA
             if (runCodeResult.ResultCode == ResultCode.SUCCESS)
             {
                 if (runCodeResult.StandardOutput.Trim() != TestCase.Output.Trim())
@@ -240,13 +315,31 @@ namespace Algorithm_Dynamics.Core.Models
             Progress.Report(0);
 
             int testCasesCount = Submission.Problem.TestCases.Count;
+            bool skipCompile = false;
             while (JudgeQueue.Count > 0)
             {
-                var result = await JudgeTestCase(Submission.Code, JudgeQueue.Dequeue(), Submission.Language, Submission.Problem.TimeLimit, Submission.Problem.MemoryLimit);
+                TestCaseResult result = await JudgeTestCase(
+                    Submission.Code,
+                    JudgeQueue.Dequeue(),
+                    Submission.Language,
+                    Submission.Problem.TimeLimit,
+                    Submission.Problem.MemoryLimit,
+                    skipCompile);
+
+                // Add result
                 Result.AddTestCaseResult(result);
+
+                // Report progress
                 Progress.Report(100 * (testCasesCount - JudgeQueue.Count) / testCasesCount);
+
+                // Skip compile
+                skipCompile = true;
             }
+
+            //Finish Judging
             Progress.Report(100);
+
+            // Update problem status
             if (Result.ResultCode == ResultCode.SUCCESS)
             {
                 Submission.Problem.Status = ProblemStatus.Solved;
@@ -254,8 +347,11 @@ namespace Algorithm_Dynamics.Core.Models
             else
             {
                 if (Submission.Problem.Status == ProblemStatus.Todo)
+                {
                     Submission.Problem.Status = ProblemStatus.Attempted;
+                }
             }
+
             return Result;
         }
         public async static Task<AssignmentSubmissionResult> JudgeAssignment(AssignmentSubmission AssignmentSubmission)
@@ -326,6 +422,11 @@ namespace Algorithm_Dynamics.Core.Models
                     return fullPath;
             }
             return null;
+        }
+
+        private static string FilterErrorMessage(string error)
+        {
+            return error.Replace(_SourceCodeFolderPath, "").Trim('\\');
         }
 
     }
