@@ -46,23 +46,10 @@ jobs:
       with:
         fetch-depth: 0
 
-    # Install the .NET Core workload
-    - name: Install .NET Core
-      uses: actions/setup-dotnet@v1
+    - uses: actions/cache@v2
       with:
-        dotnet-version: 6.0.x
-
-    # Setup Python for unit test
-    - name: Setup Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.x'
-        architecture: 'x64'
-
-    - name: Check version
-      run: |
-        python --version
-        g++ --version
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('src\Algorithm Dynamics.Core\Algorithm Dynamics.Core.csproj') }}-${{ hashFiles('src\Algorithm Dynamics.Test\Algorithm Dynamics.Test.csproj') }}
 
     # Execute all unit tests in the solution
     - name: Execute unit tests
@@ -75,67 +62,44 @@ jobs:
     env:
       Solution_Name: Algorithm Dynamics.sln
       Project_Directory: src\Algorithm Dynamics
+    outputs:
+      version: ${{ steps.getappmanifest.outputs.version }}
+    strategy:
+      matrix:
+        targetPlatform: [x86, x64, arm64]
     steps:
     - name: Checkout
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
 
+    - uses: actions/cache@v2
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ matrix.targetplatform }}-${{ hashFiles('src\Algorithm Dynamics\Algorithm Dynamics.csproj') }}-${{ hashFiles('src\Algorithm Dynamics.Core\Algorithm Dynamics.Core.csproj') }}
+
     # Add MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v1.1
 
-    # Decode the base 64 encoded pfx and save the Signing_Certificate
-    - name: Decode the pfx
-      id: decodepfx
-      run: |
-        $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.AlgorithmDynamics_TemporaryKey }}")
-        $certificatePath = Join-Path -Path $env:Project_Directory -ChildPath AlgorithmDynamics_TemporaryKey.pfx
-        [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
-        echo "::set-output name=cert_path::$certificatePath"
-
-    - name: Create the x86 app package
+    - name: Create the ${{ matrix.targetplatform }} app package
       working-directory: src
       env:
         Solution_Name: Algorithm Dynamics.sln
         Appx_Bundle_Platforms: x86|x64|arm64
-        Platform: x86
+        Platform: ${{ matrix.targetplatform }}
         Configuration: Release
         Appx_Package_Build_Mode: StoreUpload
         Appx_Bundle: Never
         Appx_Package_Dir: AppPackages\
       run: |
         msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:AppxPackageSigningEnabled=false /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
-        mkdir Bundle
-        Copy-item -Force -Recurse '.\Algorithm Dynamics\AppPackages\**\*.msix' Bundle\.
 
-    - name: Create the x64 app package
-      working-directory: src
-      env:
-        Solution_Name: Algorithm Dynamics.sln
-        Appx_Bundle_Platforms: x86|x64|arm64
-        Platform: x64
-        Configuration: Release
-        Appx_Package_Build_Mode: SideLoadOnly
-        Appx_Bundle: Always
-        Appx_Package_Dir: AppPackages\
-      run: |
-        msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:AppxPackageSigningEnabled=false /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
-        Copy-item -Force -Recurse '.\Algorithm Dynamics\AppPackages\**\*.msix' Bundle\.
-
-    - name: Create the arm64 app package
-      working-directory: src
-      env:
-        Solution_Name: Algorithm Dynamics.sln
-        Appx_Bundle_Platforms: x86|x64|arm64
-        Platform: arm64
-        Configuration: Release
-        Appx_Package_Build_Mode: StoreUpload
-        Appx_Bundle: Never
-        Appx_Package_Dir: AppPackages\
-      run: |
-        msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:AppxPackageSigningEnabled=false /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
-        Copy-item -Force -Recurse '.\Algorithm Dynamics\AppPackages\**\*.msix' Bundle\.
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ matrix.targetplatform }} Package
+        path: src\Algorithm Dynamics\AppPackages\**\Algorithm Dynamics*.msix
 
     - name: Get app manifest
       id: getappmanifest
@@ -146,12 +110,53 @@ jobs:
         echo $version
         echo "::set-output name=version::$version"
 
+  sign-app:
+    name: Sign App
+    runs-on: windows-2022
+    needs: [test-app, build-app]
+    env:
+      Solution_Name: Algorithm Dynamics.sln
+      Project_Directory: src\Algorithm Dynamics
+    steps:
+
+    - name: Create directory
+      run: |
+        mkdir src\Bundle
+        mkdir "src\Algorithm Dynamics"
+
+    # Decode the base 64 encoded pfx and save the Signing_Certificate
+    - name: Decode the pfx
+      id: decodepfx
+      run: |
+        $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.AlgorithmDynamics_TemporaryKey }}")
+        $certificatePath = Join-Path -Path $env:Project_Directory -ChildPath AlgorithmDynamics_TemporaryKey.pfx
+        [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
+        echo "::set-output name=cert_path::$certificatePath"
+
+    - name: Prepare x86 MSIX
+      uses: actions/download-artifact@v2
+      with:
+        name: x86 Package
+        path: src\Bundle
+
+    - name: Prepare x64 MSIX
+      uses: actions/download-artifact@v2
+      with:
+        name: x64 Package
+        path: src\Bundle
+
+    - name: Prepare arm64 MSIX
+      uses: actions/download-artifact@v2
+      with:
+        name: arm64 Package
+        path: src\Bundle
+
     - name: Create MSIX Bundle
       uses: LanceMcCarthy/Action-MsixBundler@v1.0.1
       with:
         msix-folder: src\Bundle
         msixbundle-filepath: src\Bundle\Algorithm Dynamics_x86_x64_arm64.msixbundle
-        msixbundle-version: ${{ steps.getappmanifest.outputs.version }}
+        msixbundle-version: ${{ needs.build-app.outputs.version }}
         enable-bundle-signing: true
         certificate-path: ${{ steps.decodepfx.outputs.cert_path }}
         certificate-private-key: ${{ secrets.Pfx_Key }}
@@ -172,7 +177,7 @@ jobs:
   deploy:
     name: Deploy GitHub Pages
     runs-on: self-hosted
-    needs: [build-report, build-app]
+    needs: [build-report, test-app, sign-app]
     steps:
       - uses: actions/checkout@v2
         if: github.ref == 'refs/heads/main'
@@ -219,7 +224,7 @@ jobs:
     if: startsWith(github.event.ref, 'refs/tags/v')
     name: Distribute App
     runs-on: self-hosted
-    needs: [test-app, build-app]
+    needs: [test-app, sign-app]
     steps:
       - name: Prepare app
         uses: actions/download-artifact@v2
@@ -241,14 +246,23 @@ jobs:
     if: startsWith(github.event.ref, 'refs/tags/v')
     name: Release App
     runs-on: self-hosted
-    needs: [test-app, build-app]
+    needs: [build-report, test-app, sign-app]
     steps:
       - name: Prepare app
         uses: actions/download-artifact@v2
         with:
           name: MSIX Package Release
           path: Release
+
+      - name: Prepare report
+        uses: actions/download-artifact@v2
+        with:
+          name: Report
+          path: Release
+
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          files: Release/*.msixbundle
+          files: | 
+            Release/*.msixbundle
+            report.pdf
