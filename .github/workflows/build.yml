@@ -232,7 +232,7 @@ jobs:
           client-secret: ${{ secrets.AZURE_AD_APPLICATION_SECRET }}
           app-id: ${{ secrets.STORE_APP_ID }}
           package-path: "Release"
-          skip-polling: false
+          skip-polling: 0
 
   release:
     if: startsWith(github.event.ref, 'refs/tags/v')
