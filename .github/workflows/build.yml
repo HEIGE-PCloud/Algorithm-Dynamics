@@ -84,6 +84,13 @@ jobs:
       with:
         fetch-depth: 0
 
+    - uses: actions/cache@v2
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('src\Algorithm Dynamics\Algorithm Dynamics.csproj') }}-${{ hashFiles('src\Algorithm Dynamics\Algorithm Dynamics.Core.csproj') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+
     # Add MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v1.1
@@ -111,6 +118,9 @@ jobs:
     name: Sign App
     runs-on: windows-2022
     needs: [build-app]
+    env:
+      Solution_Name: Algorithm Dynamics.sln
+      Project_Directory: src\Algorithm Dynamics
     steps:
     - name: Checkout
       uses: actions/checkout@v2
