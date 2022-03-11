@@ -115,11 +115,12 @@
                   <SymbolIcon Symbol="Delete"/>
                 </Button.Content>
                 <Button.Flyout>
-                  <Flyout>
+                  <Flyout
+                    x:Name="DeleteLangFlyout">
                     <StackPanel>
                       <TextBlock 
                         Style="{ThemeResource BaseTextBlockStyle}"
-                        Text="The selected language configuration will be deleted. Do you want to continue?" Margin="0 0 0 12" />
+                        Text="The selected language will be deleted. Do you want to continue?" Margin="0 0 0 12" />
                       <Button 
                         x:Name="DeleteLanguageButton"
                         HorizontalAlignment="Right"

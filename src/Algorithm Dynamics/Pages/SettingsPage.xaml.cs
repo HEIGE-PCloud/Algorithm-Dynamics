@@ -202,6 +202,7 @@ namespace Algorithm_Dynamics.Pages
                 if (Languages.Count > 0)
                     LanguageComboBox.SelectedIndex = 0;
             }
+            DeleteLangFlyout.Hide();
         }
 
         private void ClearAllData(object sender, RoutedEventArgs e)
