@@ -173,8 +173,8 @@ jobs:
     - name: Create MSIX Bundle
       uses: LanceMcCarthy/Action-MsixBundler@v1.0.1
       with:
-        msix-folder: src\Bundle
-        msixbundle-filepath: src\Bundle\Algorithm Dynamics_x86_x64_arm64.msixbundle
+        msix-folder: src\bundle
+        msixbundle-filepath: src\bundle\Algorithm Dynamics_x86_x64_arm64.msixbundle
         msixbundle-version: ${{ steps.getappmanifest.outputs.version }}
         enable-bundle-signing: true
         certificate-path: ${{ steps.decodepfx.outputs.cert_path }}
@@ -191,7 +191,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: MSIX Package Release
-        path: src\Bundle\*.msixbundle
+        path: src\bundle\*.msixbundle
 
   deploy:
     name: Deploy GitHub Pages
