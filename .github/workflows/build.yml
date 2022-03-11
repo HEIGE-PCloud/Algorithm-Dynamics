@@ -75,6 +75,9 @@ jobs:
     env:
       Solution_Name: Algorithm Dynamics.sln
       Project_Directory: src\Algorithm Dynamics
+    strategy:
+      matrix:
+        targetPlatform: [x86, x64, arm64]
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -85,6 +88,35 @@ jobs:
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v1.1
 
+    - name: Create the ${{ matrix.targetplatform }} app package
+      working-directory: src
+      env:
+        Solution_Name: Algorithm Dynamics.sln
+        Appx_Bundle_Platforms: x86|x64|arm64
+        Platform: ${{ matrix.targetplatform }}
+        Configuration: Release
+        Appx_Package_Build_Mode: StoreUpload
+        Appx_Bundle: Never
+        Appx_Package_Dir: AppPackages\
+      run: |
+        msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:AppxPackageSigningEnabled=false /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ matrix.targetplatform }} Package
+        path: src\Algorithm Dynamics\AppPackages\**\*.msix
+
+  sign-app:
+    name: Sign App
+    runs-on: windows-2022
+    needs: [build-app]
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
     # Decode the base 64 encoded pfx and save the Signing_Certificate
     - name: Decode the pfx
       id: decodepfx
@@ -94,49 +126,6 @@ jobs:
         [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
         echo "::set-output name=cert_path::$certificatePath"
 
-    - name: Create the x86 app package
-      working-directory: src
-      env:
-        Solution_Name: Algorithm Dynamics.sln
-        Appx_Bundle_Platforms: x86|x64|arm64
-        Platform: x86
-        Configuration: Release
-        Appx_Package_Build_Mode: StoreUpload
-        Appx_Bundle: Never
-        Appx_Package_Dir: AppPackages\
-      run: |
-        msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:AppxPackageSigningEnabled=false /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
-        mkdir Bundle
-        Copy-item -Force -Recurse '.\Algorithm Dynamics\AppPackages\**\*.msix' Bundle\.
-
-    - name: Create the x64 app package
-      working-directory: src
-      env:
-        Solution_Name: Algorithm Dynamics.sln
-        Appx_Bundle_Platforms: x86|x64|arm64
-        Platform: x64
-        Configuration: Release
-        Appx_Package_Build_Mode: SideLoadOnly
-        Appx_Bundle: Always
-        Appx_Package_Dir: AppPackages\
-      run: |
-        msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:AppxPackageSigningEnabled=false /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
-        Copy-item -Force -Recurse '.\Algorithm Dynamics\AppPackages\**\*.msix' Bundle\.
-
-    - name: Create the arm64 app package
-      working-directory: src
-      env:
-        Solution_Name: Algorithm Dynamics.sln
-        Appx_Bundle_Platforms: x86|x64|arm64
-        Platform: arm64
-        Configuration: Release
-        Appx_Package_Build_Mode: StoreUpload
-        Appx_Bundle: Never
-        Appx_Package_Dir: AppPackages\
-      run: |
-        msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:AppxPackageSigningEnabled=false /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
-        Copy-item -Force -Recurse '.\Algorithm Dynamics\AppPackages\**\*.msix' Bundle\.
-
     - name: Get app manifest
       id: getappmanifest
       working-directory: src
@@ -145,6 +134,28 @@ jobs:
         $version = $manifest.Package.Identity.Version
         echo $version
         echo "::set-output name=version::$version"
+
+    - name: Create directory
+      working-directory: src
+      run: mkdir bundle
+
+    - name: Prepare x86 MSIX
+      uses: actions/download-artifact@v2
+      with:
+        name: x86 Package
+        path: src\bundle
+
+    - name: Prepare x64 MSIX
+      uses: actions/download-artifact@v2
+      with:
+        name: x64 Package
+        path: src\bundle
+
+    - name: Prepare arm64 MSIX
+      uses: actions/download-artifact@v2
+      with:
+        name: arm64 Package
+        path: src\bundle
 
     - name: Create MSIX Bundle
       uses: LanceMcCarthy/Action-MsixBundler@v1.0.1
@@ -172,7 +183,7 @@ jobs:
   deploy:
     name: Deploy GitHub Pages
     runs-on: self-hosted
-    needs: [build-report, test-app, build-app]
+    needs: [build-report, test-app, sign-app]
     steps:
       - uses: actions/checkout@v2
         if: github.ref == 'refs/heads/main'
@@ -219,7 +230,7 @@ jobs:
     if: startsWith(github.event.ref, 'refs/tags/v')
     name: Distribute App
     runs-on: self-hosted
-    needs: [build-report, test-app, build-app]
+    needs: [test-app, sign-app]
     steps:
       - name: Prepare app
         uses: actions/download-artifact@v2
@@ -248,7 +259,16 @@ jobs:
         with:
           name: MSIX Package Release
           path: Release
+
+      - name: Prepare report
+        uses: actions/download-artifact@v2
+        with:
+          name: Report
+          path: Release
+
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          files: Release/*.msixbundle
+          files: | 
+            Release/*.msixbundle
+            report.pdf
