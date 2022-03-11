@@ -216,10 +216,12 @@ jobs:
     name: Distribute App
     runs-on: unubtu-latest
     steps:
-      - uses: actions/download-artifact@v2
-        name: Download msixbundle
-        path: "{{ github.workspace}}/Release"
-
+      - name: Prepare app
+        uses: actions/download-artifact@v2
+        with:
+          name: MSIX Package Release
+          path: "{{ github.workspace}}/Release"
+      
       - uses: isaacrlevin/windows-store-action@1.0
         name: Publish to Store
         with:
