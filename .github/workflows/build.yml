@@ -172,7 +172,7 @@ jobs:
   deploy:
     name: Deploy GitHub Pages
     runs-on: self-hosted
-    needs: [build-report, test-app, build-app]
+    needs: [build-report, build-app]
     steps:
       - uses: actions/checkout@v2
         if: github.ref == 'refs/heads/main'
@@ -219,7 +219,7 @@ jobs:
     if: startsWith(github.event.ref, 'refs/tags/v')
     name: Distribute App
     runs-on: self-hosted
-    needs: [build-report, test-app, build-app]
+    needs: [test-app, build-app]
     steps:
       - name: Prepare app
         uses: actions/download-artifact@v2
@@ -241,7 +241,7 @@ jobs:
     if: startsWith(github.event.ref, 'refs/tags/v')
     name: Release App
     runs-on: self-hosted
-    needs: [build-report, test-app, build-app]
+    needs: [test-app, build-app]
     steps:
       - name: Prepare app
         uses: actions/download-artifact@v2
