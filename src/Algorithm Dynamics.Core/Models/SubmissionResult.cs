@@ -32,28 +32,20 @@ namespace Algorithm_Dynamics.Core.Models
                 return ResultCode.SUCCESS;
             }
         }
-        public string ResultAsString
+        public string Result
         {
             get
             {
-                switch (ResultCode)
+                return ResultCode switch
                 {
-                    case ResultCode.WRONG_ANSWER:
-                        return "Wrong Answer";
-                    case ResultCode.SUCCESS:
-                        return "Success";
-                    case ResultCode.COMPILE_ERROR:
-                        return "Compile Error";
-                    case ResultCode.TIME_LIMIT_EXCEEDED:
-                        return "Time Limit Exceeded";
-                    case ResultCode.MEMORY_LIMIT_EXCEEDED:
-                        return "Memory Limit Exceeded";
-                    case ResultCode.RUNTIME_ERROR:
-                        return "Runtime Error";
-                    case ResultCode.SYSTEM_ERROR:
-                    default:
-                        return "System Error";
-                }
+                    ResultCode.WRONG_ANSWER => "Wrong Answer",
+                    ResultCode.SUCCESS => "Success",
+                    ResultCode.COMPILE_ERROR => "Compile Error",
+                    ResultCode.TIME_LIMIT_EXCEEDED => "Time Limit Exceeded",
+                    ResultCode.MEMORY_LIMIT_EXCEEDED => "Memory Limit Exceeded",
+                    ResultCode.RUNTIME_ERROR => "Runtime Error",
+                    _ => "System Error",
+                };
             }
         }
         public long CPUTime { get => _results.Max(r => r.CPUTime); }

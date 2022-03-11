@@ -55,7 +55,7 @@ namespace Algorithm_Dynamics.Pages
 
             RunCodeButton.IsEnabled = true;
 
-            StatusTextBlock.Text = $"{result.ResultCode} Time: {result.CPUTime} ms Memory: {result.MemoryUsage / 1024 / 1024} MB";
+            StatusTextBlock.Text = $"{result.Result} Time: {result.CPUTime} ms Memory: {result.MemoryUsage / 1024 / 1024} MB";
             OutputBox.Text = result.StandardOutput + result.StandardError;
 
         }

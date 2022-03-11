@@ -173,7 +173,7 @@ namespace Algorithm_Dynamics.Pages
 
             RunCodeButton.IsEnabled = true;
 
-            StatusTextBlock.Text = $"{result.ResultCode} Time: {result.CPUTime} ms Memory: {result.MemoryUsage / 1024 / 1024} MB";
+            StatusTextBlock.Text = $"{result.Result} Time: {result.CPUTime} ms Memory: {result.MemoryUsage / 1024 / 1024} MB";
             OutputTextBox.Text = result.StandardOutput;
             ErrorTextBox.Text = result.StandardError;
             if (string.IsNullOrEmpty(result.StandardError))
@@ -199,7 +199,7 @@ namespace Algorithm_Dynamics.Pages
             RunCodeButton.IsEnabled = true;
             SubmitCodeButton.IsEnabled = true;
 
-            StatusTextBlock.Text = $"{result.ResultCode} Time: {result.CPUTime} ms Memory: {result.MemoryUsage / 1024 / 1024} MB";
+            StatusTextBlock.Text = $"{result.Result} Time: {result.CPUTime} ms Memory: {result.MemoryUsage / 1024 / 1024} MB";
             ErrorTextBox.Text = result.StandardError;
             if (!string.IsNullOrWhiteSpace(result.StandardError))
             {
