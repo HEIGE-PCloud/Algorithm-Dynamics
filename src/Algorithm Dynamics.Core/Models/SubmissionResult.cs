@@ -68,7 +68,7 @@ namespace Algorithm_Dynamics.Core.Models
             {
                 foreach (var result in Results)
                 {
-                    if (string.IsNullOrEmpty(result.StandardError))
+                    if (!string.IsNullOrWhiteSpace(result.StandardError))
                         return result.StandardError;
                 }
                 return "";

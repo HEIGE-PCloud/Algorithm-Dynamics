@@ -4,7 +4,7 @@ namespace Algorithm_Dynamics.Core.Models
 {
     public class TestCaseResult : RunCodeResult
     {
-        public int Id { get; set; }
+        public int Id { get; private set; }
         internal TestCaseResult(
             int id,
             string standardOutput,

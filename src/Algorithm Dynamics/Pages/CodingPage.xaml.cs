@@ -201,6 +201,10 @@ namespace Algorithm_Dynamics.Pages
 
             StatusTextBlock.Text = $"{result.ResultCode} Time: {result.CPUTime} ms Memory: {result.MemoryUsage / 1024 / 1024} MB";
             ErrorTextBox.Text = result.StandardError;
+            if (!string.IsNullOrWhiteSpace(result.StandardError))
+            {
+                IOPivot.SelectedIndex = 2;
+            }
             OnPropertyChanged(nameof(Submissions));
             OnPropertyChanged(nameof(ReverseSubmissions));
         }
