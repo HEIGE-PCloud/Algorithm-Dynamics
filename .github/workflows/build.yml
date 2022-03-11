@@ -220,7 +220,7 @@ jobs:
         name: Download msixbundle
         path: "{{ github.workspace}}/Release"
 
-      - uses: isaacrlevin/windows-store-action
+      - uses: isaacrlevin/windows-store-action@1.0
         name: Publish to Store
         with:
           tenant-id: ${{ secrets.AZURE_AD_TENANT_ID }}
