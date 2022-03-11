@@ -9,7 +9,7 @@
   <Identity
     Name="55445HEIGE-PCloud.AlgorithmDynamics"
     Publisher="CN=DAD0953E-64AB-4AA3-8399-0D99A4BBF913"
-    Version="0.1.0.0" />
+    Version="1.0.0.0" />
 
   <Properties>
     <DisplayName>Algorithm Dynamics</DisplayName>

@@ -6,6 +6,9 @@ using Microsoft.UI.Xaml.Controls;
 using System;
 using System.IO;
 using Windows.Storage;
+using Microsoft.AppCenter;
+using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Crashes;
 
 namespace Algorithm_Dynamics
 {
@@ -21,6 +24,7 @@ namespace Algorithm_Dynamics
         public App()
         {
             InitializeComponent();
+            AppCenter.Start("743693e0-2286-4cf0-9a16-a448c1059eed", typeof(Analytics), typeof(Crashes));
         }
 
         /// <summary>
