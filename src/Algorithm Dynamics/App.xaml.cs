@@ -89,9 +89,9 @@ namespace Algorithm_Dynamics
             else if (type == typeof(ProblemsPage))
                 MainNavView.SelectedItem = MainNavView.MenuItems[1];
             else if (type == typeof(AssignmentsPage))
-                MainNavView.SelectedItem = MainNavView.MenuItems[2];
-            else if (type == typeof(PlaygroundPage))
                 MainNavView.SelectedItem = MainNavView.MenuItems[3];
+            else if (type == typeof(PlaygroundPage))
+                MainNavView.SelectedItem = MainNavView.MenuItems[2];
             else if (type == typeof(AccountPage))
                 MainNavView.SelectedItem = MainNavView.FooterMenuItems[0];
             else if (type == typeof(SettingsPage))

@@ -26,16 +26,16 @@
                     Icon="List"
                     Content="Problems"
                     Tag="ProblemsPage" />
-                <!--<NavigationViewItem
-                    x:Name="AssignmentsPageNavViewItem"
-                    Icon="Library"
-                    Content="Assignments"
-                    Tag="AssignmentsPage"/>-->
                 <NavigationViewItem
                     x:Name="PlaygroundPageNavViewItem"
                     Icon="Edit"
                     Content="Playground"
                     Tag="PlaygroundPage"/>
+                <!--<NavigationViewItem
+                    x:Name="AssignmentsPageNavViewItem"
+                    Icon="Library"
+                    Content="Assignments"
+                    Tag="AssignmentsPage"/>-->
             </NavigationView.MenuItems>
             <NavigationView.FooterMenuItems>
                 <NavigationViewItem
