@@ -51,24 +51,6 @@ jobs:
         path: ~/.nuget/packages
         key: ${{ runner.os }}-nuget-${{ hashFiles('src\Algorithm Dynamics.Core\Algorithm Dynamics.Core.csproj') }}-${{ hashFiles('src\Algorithm Dynamics.Test\Algorithm Dynamics.Test.csproj') }}
 
-    # Install the .NET Core workload
-    - name: Install .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 6.0.x
-
-    # Setup Python for unit test
-    - name: Setup Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.x'
-        architecture: 'x64'
-
-    - name: Check version
-      run: |
-        python --version
-        g++ --version
-
     # Execute all unit tests in the solution
     - name: Execute unit tests
       working-directory: src\Algorithm Dynamics.Test
@@ -115,7 +97,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: ${{ matrix.targetplatform }} Package
-        path: src\Algorithm Dynamics\AppPackages\**\*.msix
+        path: src\Algorithm Dynamics\AppPackages\**\Algorithm Dynamics*.msix
 
   sign-app:
     name: Sign App
