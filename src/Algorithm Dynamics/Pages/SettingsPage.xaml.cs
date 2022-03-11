@@ -210,5 +210,18 @@ namespace Algorithm_Dynamics.Pages
             DataAccess.DropDatabase();
             App.Current.Exit();
         }
+
+        private void DeleteAllProblems(object sender, RoutedEventArgs e)
+        {
+            ProblemList.All.ForEach(problemList => problemList.Delete());
+            Problem.All.ForEach(problem => problem.Delete());
+            ClearAllProblemsFlyout.Hide();
+        }
+
+        private void DeleteAllSubmissions(object sender, RoutedEventArgs e)
+        {
+            Submission.All.ForEach(submission => submission.Delete());
+            ClearAllSubmissionsFlyout.Hide();            
+        }
     }
 }
