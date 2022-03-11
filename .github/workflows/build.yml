@@ -135,12 +135,19 @@ jobs:
         msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:AppxPackageSigningEnabled=false /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
         Copy-item -Force -Recurse '.\Algorithm Dynamics\AppPackages\**\*.msix' Bundle\.
 
+    - name: Get app manifest
+      id: getappmanifest
+      working-directory: src
+      run: |
+        [xml]$manifest = get-content "Algorithm Dynamics\Package.appxmanifest"
+        echo "::set-output name=version::$manifest.Package.Identity.Version"
+
     - name: Create MSIX Bundle
       uses: LanceMcCarthy/Action-MsixBundler@v1.0.1
       with:
         msix-folder: src\Bundle
         msixbundle-filepath: src\Bundle\Algorithm Dynamics_x86_x64_arm64.msixbundle
-        msixbundle-version: "0.1.0.0"
+        msixbundle-version: ${{ steps.getappmanifest.outputs.version }}
         enable-bundle-signing: true
         certificate-path: ${{ steps.decodepfx.outputs.cert_path }}
         certificate-private-key: ${{ secrets.Pfx_Key }}
@@ -159,7 +166,7 @@ jobs:
         path: src\Bundle\*.msixbundle
 
   deploy:
-    name: Deploy
+    name: Deploy GitHub Pages
     runs-on: ubuntu-latest
     needs: [build-report, test-app, build-app]
     steps:
@@ -227,7 +234,7 @@ jobs:
 
   release:
     if: startsWith(github.event.ref, 'refs/tags/v')
-    name: Release
+    name: Release App
     runs-on: ubuntu-latest
     needs: [build-report, test-app, build-app]
     steps:
