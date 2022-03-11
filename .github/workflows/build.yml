@@ -120,7 +120,9 @@ jobs:
     steps:
 
     - name: Create directory
-      run: mkdir src\bundle
+      run: |
+        mkdir src\bundle
+        mkdir "src\Algorithm Dynamics"
 
     # Decode the base 64 encoded pfx and save the Signing_Certificate
     - name: Decode the pfx
