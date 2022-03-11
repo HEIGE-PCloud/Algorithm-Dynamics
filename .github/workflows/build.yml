@@ -62,6 +62,8 @@ jobs:
     env:
       Solution_Name: Algorithm Dynamics.sln
       Project_Directory: src\Algorithm Dynamics
+    outputs:
+      version: ${{ steps.getappmanifest.outputs.version }}
     strategy:
       matrix:
         targetPlatform: [x86, x64, arm64]
@@ -99,6 +101,15 @@ jobs:
         name: ${{ matrix.targetplatform }} Package
         path: src\Algorithm Dynamics\AppPackages\**\Algorithm Dynamics*.msix
 
+    - name: Get app manifest
+      id: getappmanifest
+      working-directory: src
+      run: |
+        [xml]$manifest = get-content "Algorithm Dynamics\Package.appxmanifest"
+        $version = $manifest.Package.Identity.Version
+        echo $version
+        echo "::set-output name=version::$version"
+
   sign-app:
     name: Sign App
     runs-on: windows-2022
@@ -120,15 +131,6 @@ jobs:
         $certificatePath = Join-Path -Path $env:Project_Directory -ChildPath AlgorithmDynamics_TemporaryKey.pfx
         [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
         echo "::set-output name=cert_path::$certificatePath"
-
-    - name: Get app manifest
-      id: getappmanifest
-      working-directory: src
-      run: |
-        [xml]$manifest = get-content "Algorithm Dynamics\Package.appxmanifest"
-        $version = $manifest.Package.Identity.Version
-        echo $version
-        echo "::set-output name=version::$version"
 
     - name: Create directory
       working-directory: src
