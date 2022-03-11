@@ -140,7 +140,9 @@ jobs:
       working-directory: src
       run: |
         [xml]$manifest = get-content "Algorithm Dynamics\Package.appxmanifest"
-        echo "::set-output name=version::$manifest.Package.Identity.Version"
+        $version = $manifest.Package.Identity.Version
+        echo $version
+        echo "::set-output name=version::$version"
 
     - name: Create MSIX Bundle
       uses: LanceMcCarthy/Action-MsixBundler@v1.0.1
