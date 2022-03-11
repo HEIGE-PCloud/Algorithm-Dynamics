@@ -51,6 +51,7 @@ namespace Algorithm_Dynamics.Core.Models
                     CreateNoWindow = true,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
+                    WorkingDirectory = _SourceCodeFolderPath
                 },
                 EnableRaisingEvents = true
             };
@@ -106,6 +107,7 @@ namespace Algorithm_Dynamics.Core.Models
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     CreateNoWindow = true,
+                    WorkingDirectory = _SourceCodeFolderPath
                 },
                 EnableRaisingEvents = true
             };

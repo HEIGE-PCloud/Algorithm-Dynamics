@@ -120,8 +120,8 @@ namespace Algorithm_Dynamics
             Language.Create("cpp", "C++", true, "g++.exe", "-x c++ {SourceCodeFilePath} -o {ExecutableFilePath}", "{ExecutableFilePath}", "", ".cpp");
             Language.Create("rust", "Rust", true, "rustc.exe", "{SourceCodeFilePath} -o {ExecutableFilePath}", "{ExecutableFilePath}", "", ".rs");
             Language.Create("javascript", "JavaScript", false, "", "", "node.exe", "{SourceCodeFilePath}", ".js");
-            Language.Create("java", "Java", false, "", "", "{SourceCodeFilePath}", "", ".java");
-            Language.Create("go", "Go", false, "", "", "go.exe run {SourceCodeFilePath}", "", ".go");
+            Language.Create("java", "Java", true, "javac.exe", "{SourceCodeFilePath}", "java.exe", "main", ".java");
+            Language.Create("go", "Go", true, "go.exe", "build {SourceCodeFilePath}", "{ExecutableFilePath}", "", ".go");
         }
 
     }
