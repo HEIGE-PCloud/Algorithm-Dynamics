@@ -19,8 +19,6 @@ namespace Algorithm_Dynamics.Pages
             InitializeComponent();
             RefreshDatabase();
         }
-        private readonly ObservableCollection<string> Difficulties = new() { "Easy", "Medium", "Hard" };
-        private readonly ObservableCollection<string> Statuses = new() { "Todo", "Attempted", "Done" };
         public ObservableCollection<ProblemList> ProblemLists = new();
         public ObservableCollection<Tag> Tags = new();
         public ObservableCollection<Problem> Problems = new();

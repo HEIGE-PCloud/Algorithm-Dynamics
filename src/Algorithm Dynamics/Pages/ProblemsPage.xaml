@@ -37,19 +37,25 @@
         PlaceholderText="Difficulty"
         Grid.Column="1"
         Margin="4"
-        ItemsSource="{x:Bind Difficulties}"
         HorizontalAlignment="Stretch"
         SelectionChanged="Search"
-        RightTapped="ClearComboBox"/>
+        RightTapped="ClearComboBox">
+        <x:String>Easy</x:String>
+        <x:String>Medium</x:String>
+        <x:String>Hard</x:String>
+      </ComboBox>
       <ComboBox
         x:Name="StatusComboBox"
         PlaceholderText="Status"
         Grid.Column="2"
         Margin="4"
-        ItemsSource="{x:Bind Statuses}"
         HorizontalAlignment="Stretch"
         SelectionChanged="Search"
-        RightTapped="ClearComboBox"/>
+        RightTapped="ClearComboBox">
+        <x:String>Todo</x:String>
+        <x:String>Done</x:String>
+        <x:String>Attempted</x:String>
+      </ComboBox>
       <ComboBox
         x:Name="TagComboBox"
         PlaceholderText="Tag"
