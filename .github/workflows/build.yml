@@ -118,6 +118,10 @@ jobs:
       Solution_Name: Algorithm Dynamics.sln
       Project_Directory: src\Algorithm Dynamics
     steps:
+
+    - name: Create directory
+      run: mkdir src\bundle
+
     # Decode the base 64 encoded pfx and save the Signing_Certificate
     - name: Decode the pfx
       id: decodepfx
@@ -126,10 +130,6 @@ jobs:
         $certificatePath = Join-Path -Path $env:Project_Directory -ChildPath AlgorithmDynamics_TemporaryKey.pfx
         [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
         echo "::set-output name=cert_path::$certificatePath"
-
-    - name: Create directory
-      working-directory: src
-      run: mkdir bundle
 
     - name: Prepare x86 MSIX
       uses: actions/download-artifact@v2
