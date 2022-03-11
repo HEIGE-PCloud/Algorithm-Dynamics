@@ -271,11 +271,15 @@ The format and the range of the output
         {
             if (_pageMode == Mode.Create)
             {
-                // Create tag
-                List<Tag> tags = new();
-                foreach (var t in _tags.Split(',').ToList())
+                // Create tag only when there is input
+                List<Tag> tags = null;
+                if (string.IsNullOrWhiteSpace(_tags) == false)
                 {
-                    tags.Add(Core.Models.Tag.Create(t.Trim()));
+                    tags = new();
+                    foreach (var t in _tags.Split(',').ToList())
+                    {
+                        tags.Add(Core.Models.Tag.Create(t.Trim()));
+                    }
                 }
 
                 // Create test cases
