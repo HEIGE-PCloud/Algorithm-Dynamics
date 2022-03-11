@@ -61,7 +61,7 @@ namespace Algorithm_Dynamics.Core.Helpers
             return results;
         }
 
-        internal static void EditTestCaseResult(int id, int? submissionResultId)
+        internal static void EditTestCaseResult(int id, int? submissionResultId = null)
         {
             using (SqliteConnection conn = new($"Filename={DbPath}"))
             {
@@ -75,6 +75,20 @@ namespace Algorithm_Dynamics.Core.Helpers
                 updateCommand.Parameters.AddWithValue("@Id", id);
 
                 updateCommand.ExecuteNonQuery();
+            }
+        }
+
+        internal static void DeleteTestCaseResult(int id)
+        {
+            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            {
+                conn.Open();
+
+                SqliteCommand deleteCommand = new();
+                deleteCommand.Connection = conn;
+                deleteCommand.CommandText = "DELETE FROM TestCaseResult WHERE Id = @Id";
+                deleteCommand.Parameters.AddWithValue("@Id", id);
+                deleteCommand.ExecuteNonQuery();
             }
         }
 

@@ -103,10 +103,25 @@ namespace Algorithm_Dynamics.Core.Models
             return submissionResult;
         }
 
+        public void Delete()
+        {
+            while (Results.Count > 0)
+            {
+                RemoveTestCaseResult(Results.First());
+            }
+            DataAccess.DeleteSubmissionResult(Id);
+        }
+
         public void AddTestCaseResult(TestCaseResult testCaseResult)
         {
             testCaseResult.SubmissionResultId = Id;
             _results.Add(testCaseResult);
+        }
+
+        public void RemoveTestCaseResult(TestCaseResult testCaseResult)
+        {
+            _results.Remove(testCaseResult);
+            testCaseResult.Delete();
         }
     }
 }

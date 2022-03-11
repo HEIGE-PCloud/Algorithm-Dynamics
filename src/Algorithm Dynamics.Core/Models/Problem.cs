@@ -219,8 +219,15 @@ namespace Algorithm_Dynamics.Core.Models
         }
         public void Delete()
         {
+            // Delete all testcases
             while (_testCases.Count != 0) RemoveTestCase(_testCases[0]);
+            // Delete all tags
             while (_tags.Count != 0) RemoveTag(_tags[0]);
+            // Delete all existence in problem lists
+            ProblemList.All.FindAll(list => list.Problems.Contains(this)).ForEach(list => list.RemoveProblem(this));
+            // Delete all related submissions
+            Submission.All.FindAll(submission => submission.Problem.Id == Id).ForEach(submission => submission.Delete());
+            // Self destory at the end
             DataAccess.DeleteProblem(_id);
         }
         internal Problem(int id, Guid uid, string name, string description, int timeLimit, long memoryLimit, ProblemStatus status, Difficulty difficulty, List<TestCase> testCases, List<Tag> tags)
@@ -311,11 +318,6 @@ namespace Algorithm_Dynamics.Core.Models
             return Name;
         }
 
-        //[JsonConstructor]
-        //public Problem(Guid Uid, string Name, string Description, int TimeLimit, long MemoryLimit, int Difficulty, List<TestCase> TestCases, List<Tag> Tags)
-        //{
-        //    Create(Uid, Name, Description, TimeLimit, MemoryLimit, (Difficulty)Difficulty, TestCases, Tags);
-        //}
         public Problem()
         {
 

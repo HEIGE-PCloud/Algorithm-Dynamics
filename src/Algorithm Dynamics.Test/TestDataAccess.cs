@@ -371,5 +371,50 @@ namespace Algorithm_Dynamics.Test
             CollectionAssert.AreEqual(result.Results, DataAccess.GetSubmissionResult(result.Id).Results);
             CollectionAssert.AreEqual(result.Results, DataAccess.GetTestCaseResults(result.Id));
         }
+
+        [TestMethod]
+        public void TestDeleteTestCaseResult()
+        {
+            SubmissionResult result = DatabaseHelper.CreateNewSubmissionResult();
+            var testCaseResult = DatabaseHelper.CreateNewTestCaseResult();
+            result.AddTestCaseResult(testCaseResult);
+            result.RemoveTestCaseResult(testCaseResult);
+            Assert.AreEqual(0, DataAccess.GetAllSubmissionResults()[0].Results.Count);
+        }
+
+        [TestMethod]
+        public void TestDeleteSubmissionResult()
+        {
+            SubmissionResult result = DatabaseHelper.CreateNewSubmissionResult();
+            var t1 = DatabaseHelper.CreateNewTestCaseResult();
+            var t2 = DatabaseHelper.CreateNewTestCaseResult();
+            var t3 = DatabaseHelper.CreateNewTestCaseResult();
+            var t4 = DatabaseHelper.CreateNewTestCaseResult();
+            var t5 = DatabaseHelper.CreateNewTestCaseResult();
+            result.AddTestCaseResult(t1);
+            result.AddTestCaseResult(t2);
+            result.AddTestCaseResult(t3);
+            result.AddTestCaseResult(t4);
+            result.AddTestCaseResult(t5);
+            result.Delete();
+            Assert.AreEqual(0, DataAccess.GetAllSubmissionResults().Count);
+        }
+
+        [TestMethod]
+        public void TestDeleteSubmission()
+        {
+            Submission submission = DatabaseHelper.CreateNewSubmission();
+            SubmissionResult result = SubmissionResult.Create(submission, new());
+            result.AddTestCaseResult(DatabaseHelper.CreateNewTestCaseResult());
+            result.AddTestCaseResult(DatabaseHelper.CreateNewTestCaseResult());
+            result.AddTestCaseResult(DatabaseHelper.CreateNewTestCaseResult());
+            result.AddTestCaseResult(DatabaseHelper.CreateNewTestCaseResult());
+            result.AddTestCaseResult(DatabaseHelper.CreateNewTestCaseResult());
+            Assert.AreEqual(1, DataAccess.GetAllSubmissions().Count);
+            Assert.AreEqual(1, DataAccess.GetAllSubmissionResults().Count);
+            submission.Delete();
+            Assert.AreEqual(0, DataAccess.GetAllSubmissions().Count);
+            Assert.AreEqual(0, DataAccess.GetAllSubmissionResults().Count);
+        }
     }
 }

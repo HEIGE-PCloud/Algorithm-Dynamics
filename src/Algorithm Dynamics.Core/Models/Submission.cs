@@ -28,6 +28,13 @@ namespace Algorithm_Dynamics.Core.Models
         {
             return DataAccess.AddSubmission(code, DateTime.Now, language, user, problem);
         }
+        public void Delete()
+        {
+            // Delete All SubmissionResult
+            SubmissionResult.All.FindAll(result => result.Submission.Id == Id).ForEach(result => result.Delete());
+            // Then self destroy
+            DataAccess.DeleteSubmission(Id);
+        }
         public override bool Equals(object obj)
         {
             if (obj is not Submission sub)

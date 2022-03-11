@@ -155,6 +155,9 @@ namespace Algorithm_Dynamics.Core.Models
 
         public void Delete()
         {
+            // Delete all submissions related to this lang
+            Submission.All.FindAll(submission => submission.Language.Id == Id).ForEach(submission => submission.Delete());
+            // Then self destory
             DataAccess.DeleteLanguage(Id);
         }
         private void UpdateDatabase()

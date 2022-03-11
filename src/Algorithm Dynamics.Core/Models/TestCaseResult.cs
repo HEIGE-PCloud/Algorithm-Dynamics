@@ -35,6 +35,10 @@ namespace Algorithm_Dynamics.Core.Models
                 r.ResultCode,
                 null);
         }
+        public void Delete()
+        {
+            DataAccess.DeleteTestCaseResult(Id);
+        }
         public override bool Equals(object obj)
         {
             if (obj is not TestCaseResult result)

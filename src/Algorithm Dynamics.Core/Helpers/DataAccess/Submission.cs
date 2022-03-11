@@ -86,5 +86,19 @@ namespace Algorithm_Dynamics.Core.Helpers
             }
             return submissions;
         }
+
+        internal static void DeleteSubmission(int id)
+        {
+            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            {
+                conn.Open();
+
+                SqliteCommand deleteCommand = new();
+                deleteCommand.Connection = conn;
+                deleteCommand.CommandText = "DELETE FROM Submission WHERE Id = @Id";
+                deleteCommand.Parameters.AddWithValue("@Id", id);
+                deleteCommand.ExecuteNonQuery();
+            }
+        }
     }
 }

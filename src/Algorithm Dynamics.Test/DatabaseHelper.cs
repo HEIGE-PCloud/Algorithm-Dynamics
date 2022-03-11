@@ -72,5 +72,27 @@ namespace Algorithm_Dynamics.Test
             Language lang = Language.Create($"lang {counter++}", "Lang", false, "", "", "RunCmd", "RunArgs", ".example");
             return lang;
         }
+
+        internal static Submission CreateNewSubmission()
+        {
+            var problem = CreateNewProblem();
+            var user = CreateNewUser();
+            var lang = CreateNewLanguage();
+            var submission = Submission.Create("code", lang, user, problem);
+            return submission;
+        }
+        
+        internal static SubmissionResult CreateNewSubmissionResult()
+        {
+            var submission = CreateNewSubmission();
+            var result = SubmissionResult.Create(submission, new());
+            return result;
+        }
+
+        internal static TestCaseResult CreateNewTestCaseResult()
+        {
+            var result = TestCaseResult.Create(new($"stdout{counter}", $"stderr{counter++}", 0, 1000, 64 * MB, ResultCode.SUCCESS));
+            return result;
+        }
     }
 }
