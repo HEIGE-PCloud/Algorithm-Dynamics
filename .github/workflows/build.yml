@@ -156,7 +156,7 @@ jobs:
       with:
         msix-folder: src\Bundle
         msixbundle-filepath: src\Bundle\Algorithm Dynamics_x86_x64_arm64.msixbundle
-        msixbundle-version: ${{ steps.getappmanifest.outputs.version }}
+        msixbundle-version: ${{ needs.build-app.outputs.version }}
         enable-bundle-signing: true
         certificate-path: ${{ steps.decodepfx.outputs.cert_path }}
         certificate-private-key: ${{ secrets.Pfx_Key }}
