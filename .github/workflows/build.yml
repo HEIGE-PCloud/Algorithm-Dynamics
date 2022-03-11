@@ -223,3 +223,20 @@ jobs:
           client-secret: ${{ secrets.AZURE_AD_APPLICATION_SECRET }}
           app-id: ${{ secrets.STORE_APP_ID }}
           package-path: "Release"
+          skip-polling: false
+
+  release:
+    if: startsWith(github.event.ref, 'refs/tags/v')
+    name: Release
+    runs-on: ubuntu-latest
+    needs: [build-report, test-app, build-app]
+    steps:
+      - name: Prepare app
+        uses: actions/download-artifact@v2
+        with:
+          name: MSIX Package Release
+          path: Release
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: Release/*.msixbundle
