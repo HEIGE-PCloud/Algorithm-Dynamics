@@ -102,7 +102,7 @@ jobs:
   sign-app:
     name: Sign App
     runs-on: windows-2022
-    needs: [build-app]
+    needs: [test-app, build-app]
     env:
       Solution_Name: Algorithm Dynamics.sln
       Project_Directory: src\Algorithm Dynamics
