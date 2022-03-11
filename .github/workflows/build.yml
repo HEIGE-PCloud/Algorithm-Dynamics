@@ -213,7 +213,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: MSIX Package Release
-          path: "{{ github.workspace }}/Release"
+          path: Release
       
       - uses: isaacrlevin/windows-store-action@1.0
         name: Publish to Store
