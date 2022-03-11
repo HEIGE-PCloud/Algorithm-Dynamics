@@ -213,7 +213,7 @@ jobs:
           publish_dir: website/public
 
   distribute:
-    # if: startsWith(github.event.ref, 'refs/tags/v')
+    if: startsWith(github.event.ref, 'refs/tags/v')
     name: Distribute App
     runs-on: self-hosted
     needs: [build-report, test-app, build-app]
