@@ -118,7 +118,6 @@ jobs:
       Solution_Name: Algorithm Dynamics.sln
       Project_Directory: src\Algorithm Dynamics
     steps:
-
     # Decode the base 64 encoded pfx and save the Signing_Certificate
     - name: Decode the pfx
       id: decodepfx
