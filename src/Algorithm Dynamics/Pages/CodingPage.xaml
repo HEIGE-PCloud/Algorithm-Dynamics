@@ -56,7 +56,7 @@
             <controls:DataGridComboBoxColumn
               Header="Status"
               Width="SizeToCells"
-              Binding="{Binding ResultAsString}"/>
+              Binding="{Binding Result}"/>
             <controls:DataGridComboBoxColumn
               Header="Runtime"
               Width="SizeToCells"
