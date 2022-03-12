@@ -2,18 +2,18 @@ name: Build
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
     tags:
       - '*'
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
   workflow_dispatch:
 
 jobs:
   build-report:
     name: Build Report
-    runs-on: [ self-hosted, Vultr ]
+    runs-on: [self-hosted, Vultr]
     steps:
       - uses: actions/checkout@v2
         with:
@@ -176,41 +176,46 @@ jobs:
         name: MSIX Package Release
         path: src\Bundle\*.msixbundle
 
+    - name: Delete Artifact
+      uses: GeekyEggo/delete-artifact@v1.0.0
+      with:
+        name: |
+          x86 Package
+          x64 Package
+          arm64 Package
+        failOnError: false
+
   deploy:
     name: Deploy GitHub Pages
-    runs-on: [ self-hosted ]
+    if: github.ref == 'refs/heads/main' || startsWith(github.event.ref, 'refs/tags/v')
+    runs-on: [self-hosted]
     needs: [build-report]
     steps:
       - uses: actions/checkout@v2
-        if: github.ref == 'refs/heads/main'
         with:
           submodules: true
           fetch-depth: 0
           clean: false
 
       - name: Setup Hugo
-        if: github.ref == 'refs/heads/main'
         uses: peaceiris/actions-hugo@v2
         with:
           hugo-version: 'latest'
           extended: true
 
       - name: Prepare report
-        if: github.ref == 'refs/heads/main'
         uses: actions/download-artifact@v2
         with:
           name: Report
           path: website/static
 
       - name: Build website
-        if: github.ref == 'refs/heads/main'
         run: | 
           sudo npm i -g postcss postcss-cli autoprefixer
           cd website
           hugo --minify
 
       - name: Deploy to GitHub Pages
-        if: github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -219,7 +224,7 @@ jobs:
   distribute:
     if: startsWith(github.event.ref, 'refs/tags/v')
     name: Distribute App
-    runs-on: [ self-hosted ]
+    runs-on: [self-hosted]
     needs: [test-app, sign-app]
     steps:
       - name: Prepare app
@@ -241,7 +246,7 @@ jobs:
   release:
     if: startsWith(github.event.ref, 'refs/tags/v')
     name: Release App
-    runs-on: [ self-hosted ]
+    runs-on: [self-hosted]
     needs: [build-report, test-app, sign-app]
     steps:
       - name: Prepare app
@@ -261,4 +266,4 @@ jobs:
         with:
           files: | 
             Release/*.msixbundle
-            report.pdf
+            Release/report.pdf
