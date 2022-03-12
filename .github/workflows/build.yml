@@ -195,11 +195,12 @@ jobs:
           hugo-version: 'latest'
           extended: true
 
-      - name: Prepare app
+      - name: Prepare report
+        if: github.ref == 'refs/heads/main'
         uses: actions/download-artifact@v2
         with:
-          name: MSIX Package Release
-          path: website/static/install
+          name: Report
+          path: website/static
 
       - name: Build website
         if: github.ref == 'refs/heads/main'
