@@ -179,7 +179,7 @@ jobs:
   deploy:
     name: Deploy GitHub Pages
     runs-on: [ self-hosted ]
-    needs: [build-report, test-app, sign-app]
+    needs: [build-report]
     steps:
       - uses: actions/checkout@v2
         if: github.ref == 'refs/heads/main'
@@ -194,13 +194,6 @@ jobs:
         with:
           hugo-version: 'latest'
           extended: true
-
-      - name: Prepare report
-        if: github.ref == 'refs/heads/main'
-        uses: actions/download-artifact@v2
-        with:
-          name: Report
-          path: website/static
 
       - name: Prepare app
         uses: actions/download-artifact@v2

@@ -3,4 +3,6 @@ title: "Install"
 weight: 1
 ---
 
-<p><a href="/install/Algorithm Dynamics_x86_x64_arm64.msixbundle">MSIX Bundle</a></p>
+[GitHub Release](https://github.com/HEIGE-PCloud/Algorithm-Dynamics/releases)
+
+[Microsoft Store](https://www.microsoft.com/store/apps/9PCR18BFKCJH)
