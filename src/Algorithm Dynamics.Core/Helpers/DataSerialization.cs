@@ -7,7 +7,7 @@ namespace Algorithm_Dynamics.Core.Helpers
 {
     public static class DataSerialization
     {
-        public class ExportObject
+        internal class ExportObject
         {
             public ExportObject(string dataType, object data)
             {
@@ -19,19 +19,19 @@ namespace Algorithm_Dynamics.Core.Helpers
             public string DataType { get; set; }
             public object Data { get; set; }
         }
-        public class BaseTestCase
+        internal class BaseTestCase
         {
             public string Input { get; set; }
             public string Output { get; set; }
             public bool IsExample { get; set; }
         }
 
-        public class BaseTag
+        internal class BaseTag
         {
             public string Name { get; set; }
         }
 
-        public class BaseProblem
+        internal class BaseProblem
         {
             public string Uid { get; set; }
             public string Name { get; set; }
@@ -43,7 +43,7 @@ namespace Algorithm_Dynamics.Core.Helpers
             public List<BaseTag> Tags { get; set; }
         }
 
-        public class BaseProblemList
+        internal class BaseProblemList
         {
             public string Name { get; set; }
             public string Description { get; set; }

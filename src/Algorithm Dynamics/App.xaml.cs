@@ -9,6 +9,7 @@ using Windows.Storage;
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
+using Windows.ApplicationModel;
 
 namespace Algorithm_Dynamics
 {
@@ -32,7 +33,7 @@ namespace Algorithm_Dynamics
         /// will be used such as when the application is launched to open a specific file.
         /// </summary>
         /// <param name="args">Details about the launch request and process.</param>
-        protected override void OnLaunched(LaunchActivatedEventArgs args)
+        protected override async void OnLaunched(LaunchActivatedEventArgs args)
         {
             // Init Judger
             StorageFolder TemporaryFolder = ApplicationData.Current.TemporaryFolder;
@@ -67,7 +68,18 @@ namespace Algorithm_Dynamics
                 rootElement.RequestedTheme = theme;
             }
 
+            // Init lang config
             if (Language.All.Count == 0) InitializeLanguageConfiguration();
+
+            // Init default problem
+            if (Problem.All.Count == 0)
+            {
+                StorageFolder AssetsDirectory = await Package.Current.InstalledLocation.GetFolderAsync(@"Assets");
+                string helloWorld = await File.ReadAllTextAsync(Path.Combine(AssetsDirectory.Path, "Problems\\Hello World Export.json"));
+                DataSerialization.DeserializeProblem(helloWorld);
+                string APlusB = await File.ReadAllTextAsync(Path.Combine(AssetsDirectory.Path, "Problems\\A + B Problem Export.json"));
+                DataSerialization.DeserializeProblem(APlusB);
+            }
 
 
             m_window.Activate();

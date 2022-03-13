@@ -23,6 +23,8 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Assets\HomePageBackgroundImage.jpg" />
+    <None Remove="Assets\Problems\A + B Problem Export.json" />
+    <None Remove="Assets\Problems\Hello World Export.json" />
     <None Remove="Controls\CodeEditor.xaml" />
     <None Remove="Pages\AccountPage.xaml" />
     <None Remove="Pages\AssignmentDetailsPage.xaml" />
