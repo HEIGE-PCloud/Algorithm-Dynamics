@@ -135,19 +135,20 @@ The format and the range of the output
         {
             get
             {
-                string timeLimit = $"\n## Time Limit\n\n{_timeLimit} ms";
-                string memoryLimit = $"\n## Memory Limit\n\n{_memoryLimit} MB";
-                string example = "\n## Example";
+                string timeLimit = $"\r## Time Limit\r\r{_timeLimit} ms";
+                string memoryLimit = $"\r## Memory Limit\r\r{_memoryLimit} MB";
+                string example = "\r## Example";
                 int testCaseCnt = 1;
                 TestCases.Where(testCase => testCase.IsExample == true).ToList().ForEach(testCase =>
                 {
-                    example += $"\n### Example Input {testCaseCnt}\n";
-                    example += "```\n" + testCase.Input.Replace("\n", "\n\n") + "\n```\n";
-                    example += $"\n### Example Output {testCaseCnt}\n";
-                    example += "```\n" + testCase.Output.Replace("\n", "\n\n") + "\n```\n";
+                    example += $"\r### Example Input {testCaseCnt}\r";
+                    example += "```\r" + testCase.Input.Replace("\r", "\r\r") + "\r```\r";
+                    example += $"\r### Example Output {testCaseCnt}\r";
+                    example += "```\r" + testCase.Output.Replace("\r", "\r\r") + "\r```\r";
                     testCaseCnt++;
                 });
-                return _description + timeLimit + memoryLimit + example;
+                string result = _description + timeLimit + memoryLimit + example;
+                return result;
             }
         }
         public bool IsValidInput

@@ -45,17 +45,17 @@ namespace Algorithm_Dynamics.Pages
                 if (_currentProblem != null)
                 {
                     const int MB = 1024 * 1024;
-                    string title = $"# {_currentProblem.Name}\n\n";
-                    string timeLimit = $"\n\n## Time Limit\n\n{_currentProblem.TimeLimit} ms";
-                    string memoryLimit = $"\n## Memory Limit\n\n{_currentProblem.MemoryLimit / MB} MB";
-                    string example = "\n## Example";
+                    string title = $"# {_currentProblem.Name}\r\r";
+                    string timeLimit = $"\r\r## Time Limit\r\r{_currentProblem.TimeLimit} ms";
+                    string memoryLimit = $"\r## Memory Limit\r\r{_currentProblem.MemoryLimit / MB} MB";
+                    string example = "\r## Example";
                     int testCaseCnt = 1;
                     _currentProblem.TestCases.Where(testCase => testCase.IsExample == true).ToList().ForEach(testCase =>
                     {
-                        example += $"\n### Example Input {testCaseCnt}\n";
-                        example += "```\n" + testCase.Input.Replace("\n", "\n\n") + "\n```\n";
-                        example += $"\n### Example Output {testCaseCnt}\n";
-                        example += "```\n" + testCase.Output.Replace("\n", "\n\n") + "\n```\n";
+                        example += $"\r### Example Input {testCaseCnt}\r";
+                        example += "```\r" + testCase.Input.Replace("\r", "\r\r") + "\r```\r";
+                        example += $"\r### Example Output {testCaseCnt}\r";
+                        example += "```\r" + testCase.Output.Replace("\r", "\r\r") + "\r```\r";
                         testCaseCnt++;
                     });
                     return title + _currentProblem.Description + timeLimit + memoryLimit + example;
