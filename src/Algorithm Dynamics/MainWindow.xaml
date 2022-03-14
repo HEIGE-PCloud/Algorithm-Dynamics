@@ -2,55 +2,64 @@
     x:Class="Algorithm_Dynamics.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Algorithm_Dynamics"
+    xmlns:local="using:Algorithm_Dynamics.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+  mc:Ignorable="d">
 
   <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="auto"/>
+      <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+    <local:TitleBar
+      x:Name="AppTitleBar"
+      BackButtonClick="OnBackButtonClick"
+      IsShowBackButton="{x:Bind ContentFrame.CanGoBack, Mode=OneWay}" />
     <NavigationView 
-            x:Name="MainNavView"
-            x:FieldModifier="public"
-            IsBackButtonVisible="Visible"
-            IsBackEnabled="True"
-            BackRequested="MainNavView_BackRequested"
-            SelectionChanged="MainNavView_SelectionChanged">
-            <NavigationView.MenuItems>
-                <NavigationViewItem
-                    x:Name="HomePageNavViewItem"
-                    Icon="Home"
-                    Content="Home"
-                    Tag="HomePage" />
-                <NavigationViewItem
-                    x:Name="ProblemsPageNavViewItem"
-                    Icon="List"
-                    Content="Problems"
-                    Tag="ProblemsPage" />
-                <NavigationViewItem
-                    x:Name="PlaygroundPageNavViewItem"
-                    Icon="Edit"
-                    Content="Playground"
-                    Tag="PlaygroundPage"/>
-                <!--<NavigationViewItem
-                    x:Name="AssignmentsPageNavViewItem"
-                    Icon="Library"
-                    Content="Assignments"
-                    Tag="AssignmentsPage"/>-->
-            </NavigationView.MenuItems>
-            <NavigationView.FooterMenuItems>
-                <NavigationViewItem
-                    x:Name="UserAccountNavItem"
-                    Icon="Contact"
-                    Content="Account"
-                    Tag="AccountPage"/>
-            </NavigationView.FooterMenuItems>
-            <Frame
-                x:Name="ContentFrame"
-                x:FieldModifier="public"
-                Padding="0"
-                Visibility="Visible"/>
-        </NavigationView>
+      Grid.Row="1"
+      x:Name="MainNavView"
+      x:FieldModifier="public"
+      IsBackButtonVisible="Collapsed"
+      IsBackEnabled="False"
+      SelectionChanged="MainNavView_SelectionChanged">
+      <NavigationView.MenuItems>
+        <NavigationViewItem
+          x:Name="HomePageNavViewItem"
+          Icon="Home"
+          Content="Home"
+          Tag="HomePage" />
+        <NavigationViewItem
+          x:Name="ProblemsPageNavViewItem"
+          Icon="List"
+          Content="Problems"
+          Tag="ProblemsPage" />
+        <NavigationViewItem
+          x:Name="PlaygroundPageNavViewItem"
+          Icon="Edit"
+          Content="Playground"
+          Tag="PlaygroundPage"/>
+          <!--<NavigationViewItem
+            x:Name="AssignmentsPageNavViewItem"
+            Icon="Library"
+            Content="Assignments"
+            Tag="AssignmentsPage"/>-->
+      </NavigationView.MenuItems>
+      <NavigationView.FooterMenuItems>
+        <NavigationViewItem
+          x:Name="UserAccountNavItem"
+          Icon="Contact"
+          Content="Account"
+          Tag="AccountPage"/>
+      </NavigationView.FooterMenuItems>
+      <Frame
+        x:Name="ContentFrame"
+        x:FieldModifier="public"
+        Padding="0"
+        Visibility="Visible"/>
+    </NavigationView>
     <Grid
+      Grid.Row="1"
       x:Name="WelcomeGrid"
       Visibility="Collapsed"
       Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">

@@ -10,6 +10,11 @@ using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
 using Windows.ApplicationModel;
+using WinRT.Interop;
+using Microsoft.UI;
+using Microsoft.UI.Windowing;
+using Windows.Graphics;
+using Algorithm_Dynamics.Helpers;
 
 namespace Algorithm_Dynamics
 {
@@ -82,9 +87,29 @@ namespace Algorithm_Dynamics
             }
 
 
+            // Init TitleBar
+            _windowHandle = WindowNative.GetWindowHandle(m_window);
+            WindowId windowId = Win32Interop.GetWindowIdFromWindow(_windowHandle);
+            _appWindow = AppWindow.GetFromWindowId(windowId);
+            _appWindow.Title = "Algorithm Dynamics";
+
+            if (_appWindow.TitleBar != null)
+            {
+                AppWindowExtensions.InitializeTitleBar(_appWindow.TitleBar);
+                InitializeDragArea();
+            }
+
             m_window.Activate();
         }
 
+        private void InitializeDragArea()
+        {
+            var rect = new RectInt32(40, 0, AppWindowExtensions.GetScalePixel(_appWindow.Size.Width, _windowHandle), AppWindowExtensions.GetScalePixel(36, _windowHandle));
+            _appWindow.TitleBar.SetDragRectangles(new RectInt32[] { rect });
+        }
+
+        private AppWindow _appWindow;
+        private IntPtr _windowHandle;
         public static MainWindow m_window;
         public static NavigationView MainNavView { get => m_window.MainNavView; }
         public static Frame ContentFrame { get => m_window.ContentFrame; }

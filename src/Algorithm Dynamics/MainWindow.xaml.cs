@@ -5,11 +5,11 @@ using Algorithm_Dynamics.Pages;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media.Animation;
 using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using Windows.Storage;
 
 namespace Algorithm_Dynamics
@@ -129,7 +129,7 @@ namespace Algorithm_Dynamics
             if (args.IsSettingsSelected)
             {
                 // If the settings is selected, navigate to the settings page
-                ContentFrame.Navigate(typeof(Pages.SettingsPage));
+                ContentFrame.Navigate(typeof(SettingsPage));
             }
             else
             {
@@ -146,9 +146,12 @@ namespace Algorithm_Dynamics
             }
         }
 
-        private void MainNavView_BackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args)
+        private void OnBackButtonClick(object sender, EventArgs e)
         {
-            if (ContentFrame.CanGoBack) ContentFrame.GoBack();
+            if (ContentFrame.CanGoBack)
+            {
+                ContentFrame.GoBack();
+            }
         }
 
         private void CreateUserButton_Click(object sender, RoutedEventArgs e)

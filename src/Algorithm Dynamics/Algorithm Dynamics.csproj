@@ -74,6 +74,7 @@
     <None Remove="Assets\Problems\A + B Problem Export.json" />
     <None Remove="Assets\Problems\Hello World Export.json" />
     <None Remove="Controls\CodeEditor.xaml" />
+    <None Remove="Controls\TitleBar.xaml" />
     <None Remove="Pages\AccountPage.xaml" />
     <None Remove="Pages\AssignmentDetailsPage.xaml" />
     <None Remove="Pages\AssignmentsPage.xaml" />
@@ -103,6 +104,7 @@
     <PackageReference Include="Microsoft.AppCenter.Crashes" Version="4.5.0" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.0.0" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22000.197" />
+    <PackageReference Include="PInvoke.User32" Version="0.7.104" />
     <Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>
 
@@ -159,6 +161,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Algorithm Dynamics.Core\Algorithm Dynamics.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Controls\TitleBar.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Themes\Pivot.xaml">
