@@ -17,7 +17,7 @@ namespace Algorithm_Dynamics.Test
         {
             Judger.SetSourceCodeFilePath(".", "sol");
         }
-        [TestMethod]
+        [TestMethod, TestCategory("TestRunCode")]
         public async Task TestRunCodePython()
         {
             string code = helloWorldPy;
@@ -29,7 +29,7 @@ namespace Algorithm_Dynamics.Test
             Assert.AreEqual(expected, result.StandardOutput);
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("TestRunCode")]
         public async Task TestRunCodeCpp()
         {
             string code = helloWorldCpp;
