@@ -190,7 +190,7 @@ namespace Algorithm_Dynamics.Core.Models
             "Python",
             "python",
             ".py",
-            "python",
+            "python.exe",
             "{SourceCodeFilePath}"
         );
         public readonly static Language C = new(
@@ -198,7 +198,7 @@ namespace Algorithm_Dynamics.Core.Models
             "c",
             ".c",
             true,
-            "gcc",
+            "gcc.exe",
             "-x c {SourceCodeFilePath} -o {ExecutableFilePath}",
             "{ExecutableFilePath}",
             ""
@@ -208,7 +208,7 @@ namespace Algorithm_Dynamics.Core.Models
             "cpp",
             ".cpp",
             true,
-            "g++",
+            "g++.exe",
             "-x c++ {SourceCodeFilePath} -o {ExecutableFilePath}",
             "{ExecutableFilePath}",
             ""
@@ -218,7 +218,7 @@ namespace Algorithm_Dynamics.Core.Models
             "rust",
             ".rs",
             true,
-            "rustc",
+            "rustc.exe",
             "{SourceCodeFilePath} -o {ExecutableFilePath}",
             "{ExecutableFilePath}",
             ""
@@ -227,21 +227,21 @@ namespace Algorithm_Dynamics.Core.Models
             "JavaScript",
             "javascript",
             ".js",
-            "node",
+            "node.exe",
             "{SourceCodeFilePath}"
         );
         public readonly static Language Java = new(
             "Java",
             "java",
             ".java",
-            "java",
+            "java.exe",
             "{SourceCodeFilePath}"
         );
         public readonly static Language Go = new(
             "Go",
             "go",
             ".go",
-            "go",
+            "go.exe",
             "run {SourceCodeFilePath}"
         );
     }

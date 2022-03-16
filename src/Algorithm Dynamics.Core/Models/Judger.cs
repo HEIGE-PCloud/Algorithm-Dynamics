@@ -231,11 +231,11 @@ namespace Algorithm_Dynamics.Core.Models
             if (!ExistsOnPath(language.RunCommand.Replace("{SourceCodeFilePath}", sourceFilePath).Replace("{ExecutableFilePath}", _ExecutableFilePath)))
             {
                 Progress.Report(100);
-                result.StandardError 
-                    = $"The RunCommand {language.RunCommand} cannot be found.\nPlease check the programming language configuration.";
+                result.StandardError = $"The RunCommand {language.RunCommand} cannot be found.\nPlease check the programming language configuration.";
                 result.ResultCode = ResultCode.SYSTEM_ERROR;
                 return result;
             }
+
             // Setup watch
             var watch = new Stopwatch();
             watch.Start();
@@ -396,16 +396,29 @@ namespace Algorithm_Dynamics.Core.Models
             }
         }
 
+        /// <summary>
+        /// Check whether a file exist in the local folder or in the environment variable path.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
         private static bool ExistsOnPath(string fileName)
         {
             return GetFullPath(fileName) != null;
         }
 
+        /// <summary>
+        /// Search local and environment variable to get the full path of a file.
+        /// Return <see cref="null"/> if the file does not exist.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
         private static string GetFullPath(string fileName)
         {
+            // Check whether the file exists in the local folder
             if (File.Exists(fileName))
                 return Path.GetFullPath(fileName);
 
+            // Check the environment variable
             var values = Environment.GetEnvironmentVariable("PATH");
             foreach (var path in values.Split(Path.PathSeparator))
             {

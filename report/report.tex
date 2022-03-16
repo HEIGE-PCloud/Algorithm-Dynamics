@@ -6677,9 +6677,174 @@ All the data should be immediately saved to the disk after the user changes a va
 
 \section{Milestone 2: Implement the data structures}
 
+
+
 \section{Milestone 3: Implement the Judger}
 
-\section{Milestone 4: Create the database}
+\subsubsection{Stakeholder feedback}
+
+PCloud reported that the Judger will panic when the language config is not correct. This is a very serious issue, the Judger should not crash in any circumstances. I am able to reproduce it in my environment.
+
+\begin{minted}{text}
+Message:
+Test method Algorithm_Dynamics.Test.TestJudger.TestRunCodeCpp threw exception:
+System.ComponentModel.Win32Exception: An error occurred trying to start process 'g--' with working directory '.'. The system cannot find the file specified.
+
+Stack Trace:
+Process.StartWithCreateProcess(ProcessStartInfo startInfo)
+Process.Start()
+Judger.Compile(Language language) line 66
+Judger.RunCode(String UserCode, String Input, Language language, Int32 TimeLimit, Int64 MemoryLimit, IProgress`1 Progress, Boolean skipCompile) line 218
+TestJudger.TestRunCodeCpp() line 34
+ThreadOperations.ExecuteWithAbortSafety(Action action)
+\end{minted}
+
+If the compiler does not exist on the path, the Judger will panic directly. This should be handled more gracefully and a proper error should be reported. I can add a check for the compiler existence before running.
+
+I set up a function \verb|GetFullPath| to search the local folder and environment variable path for a given file. It returns null if the file is not found.
+
+\begin{minted}{csharp}
+/// <summary>
+/// Search local and environment variable to get the full path of a file.
+/// Return <see cref="null"/> if the file does not exist.
+/// </summary>
+/// <param name="fileName"></param>
+/// <returns></returns>
+private static string GetFullPath(string fileName)
+{
+    // Check whether the file exists in the local folder
+    if (File.Exists(fileName))
+        return Path.GetFullPath(fileName);
+
+    // Check the environment variable
+    var values = Environment.GetEnvironmentVariable("PATH");
+    foreach (var path in values.Split(Path.PathSeparator))
+    {
+        var fullPath = Path.Combine(path, fileName);
+        if (File.Exists(fullPath))
+            return fullPath;
+    }
+    return null;
+}
+\end{minted}
+
+Then I set up another function \verb|ExistsOnPath| which returns a boolean value to check whether the compiler exists.
+
+\begin{minted}{csharp}
+/// <summary>
+/// Check whether a file exist in the local folder or in the environment variable path.
+/// </summary>
+/// <param name="fileName"></param>
+/// <returns></returns>
+private static bool ExistsOnPath(string fileName)
+{
+    return GetFullPath(fileName) != null;
+}
+\end{minted}
+
+Both method are set to private as they are only intended to be used inside the \verb|Judger| class.
+
+Now, I can check whether the compile exists before compiling. A system error will be reported if it encounters error.
+
+\begin{minted}{csharp}
+// Compile if needed
+if (language.NeedCompile && (!skipCompile))
+{
+    // Check if the compiler exists before compiling
+    if (!ExistsOnPath(language.CompileCommand.Replace("{SourceCodeFilePath}", sourceFilePath).Replace("{ExecutableFilePath}", _ExecutableFilePath)))
+    {
+        Progress.Report(100);
+        result.StandardError = $"The CompileCommand {language.CompileCommand} cannot be found.\nPlease check the programming language configuration.";
+        result.ResultCode = ResultCode.SYSTEM_ERROR;
+        return result;
+    }
+
+    // Compile and report any error
+    if (await Compile(language) != 0)
+    {
+        Progress.Report(100);
+        result.StandardOutput = _CompilationOutput;
+        result.StandardError = FilterErrorMessage(_CompilationError);
+        result.ResultCode = ResultCode.COMPILE_ERROR;
+        return result;
+    }
+}
+\end{minted}
+
+I also add a unit test to verify this error is fixed. It sets up an invalid compiler command and checks whether the Judger will report the correct error message.
+
+\begin{minted}{csharp}
+[TestMethod, TestCategory("TestSystemError")]
+public async Task TestCompileSystemError()
+{
+    // Set up a non-exsiting compiler g--
+    RunCodeResult result = await Judger.RunCode(
+        helloWorldCpp,
+        "",
+        new("C++", "cpp", ".cpp", true, "g--", "-x c++ {SourceCodeFilePath} -o {ExecutableFilePath}", "{ExecutableFilePath}", ""),
+        1 * ms,
+        64 * MB,
+        new Progress<int>()
+    );
+    // Check the result code and error message
+    Assert.AreEqual(result.ResultCode, ResultCode.SYSTEM_ERROR);
+    Assert.AreEqual(result.StandardError, $"The CompileCommand g-- cannot be found.\nPlease check the programming language configuration.");
+}
+\end{minted}
+
+I noticed another issue, the Judger can encounter the same issue when executing as well. For interrupting language like Python, the interruper is called during execution, so its path must be check before executing as well. Since I have written the function for \verb|ExistsOnPath| it is easy to set up another check before executing.
+
+\begin{minted}{csharp}
+// Check run command before running
+if (!ExistsOnPath(language.RunCommand.Replace("{SourceCodeFilePath}", sourceFilePath).Replace("{ExecutableFilePath}", _ExecutableFilePath)))
+{
+    Progress.Report(100);
+    result.StandardError = $"The RunCommand {language.RunCommand} cannot be found.\nPlease check the programming language configuration.";
+    result.ResultCode = ResultCode.SYSTEM_ERROR;
+    return result;
+}
+\end{minted}
+
+I also add the unit test for the execution case.
+
+\begin{minted}{csharp}
+[TestMethod, TestCategory("TestSystemError")]
+public async Task TestExecuteSystemError()
+{
+    // Set up a non-exsiting interpreter p
+    RunCodeResult result = await Judger.RunCode(
+        helloWorldCpp,
+        "",
+        new("Python", "python", ".py", "p", "{SourceCodeFilePath}"),
+        1 * ms,
+        64 * MB,
+        new Progress<int>()
+    );
+    // Check the result code and error message
+    Assert.AreEqual(result.ResultCode, ResultCode.SYSTEM_ERROR);
+    Assert.AreEqual(result.StandardError, $"The RunCommand p cannot be found.\nPlease check the programming language configuration.");
+}
+\end{minted}
+
+Both tests passed successfully.
+
+\begin{minted}{text}
+> dotnet test --filter TestCategory=TestSystemError
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Algorithm Dynamics.Core -> C:\Algorithm-Dynamics\src\Algorithm Dynamics.Core\bin\Debug\net6.0\Algorithm Dynamics.Core.dll
+  Algorithm Dynamics.Test -> C:\Algorithm-Dynamics\src\Algorithm Dynamics.Test\bin\Debug\net6.0\Algorithm Dynamics.Test.dll
+Test run for C:\Algorithm-Dynamics\src\Algorithm Dynamics.Test\bin\Debug\net6.0\Algorithm Dynamics.Test.dll (.NETCoreApp,Version=v6.0)
+Microsoft (R) Test Execution Command Line Tool Version 17.0.0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:     2, Skipped:     0, Total:     2, Duration: 49 ms - Algorithm Dynamics.Test.dll (net6.0)
+\end{minted}
+
+I show this result back to the stakeholder, and he is happy with how I handle this error.
 
 \section{Milestone 5: Handle data import/export}
 
@@ -6688,6 +6853,59 @@ All the data should be immediately saved to the disk after the user changes a va
 \section{Milestone 7: Handle API calls}
 
 \chapter{Evaluation}
+
+
+
+\section{Success criteria}
+
+\begin{tabulary}{\linewidth}{|L|l|L|}
+    \hline
+    Criteria & Success & Evaluation \\
+    \hline
+    Users can use different links, menus, and buttons to navigate around the software easily. & Fully met. & \\
+    \hline
+    Users can use different drop-down menus and the search box to find a problem from the problem database. & Fully met. & \\
+    \hline
+    Users can add new questions to the database. & Fully met. & \\
+    \hline
+    Correctly validate the new questions before adding them to the database. & Fully met. & \\
+    \hline
+    Users can create lists of questions. & Fully met. & \\
+    \hline
+    Users can create assignments. & Not met. & \\
+    \hline
+    Users can export/import questions, lists, and assignments from/to their problem database. & Partially met. & \\
+    \hline
+    Users can work on a problem and their submissions can be automatically marked by the judger. & Fully met & \\
+    \hline
+    Users can create submissions for assignments and export them into a file. & Not met & \\
+    \hline
+    Correctly access and interact with the Microsoft Teams API & Not met & \\
+    \hline
+    The software can mark the assignments automatically. & Not met & \\
+    \hline
+    The software can perform simple data analysis to the assignments data. & Not met & \\
+    \hline
+    Users can export the assignment data to CSV files. & Not met & \\
+    \hline
+    Users can use the playground to test any code. & Fully met & \\
+    \hline
+\end{tabulary}
+
+\begin{tabulary}{\linewidth}{|L|l|L|}
+    \hline
+    Users can customize the software. & Fully met & \\
+    \hline
+    Split the core functions and class into a core library. & Fully met & \\
+    \hline
+    Use sensible variable names and add comments to each function. & Fully met & \\
+    \hline
+    Create CI/CD pipelines to build and deploy the application automatically. & Fully met. & \\
+    \hline
+    Unit tests with coverage higher than 90\%. & Fully met & \\
+    \hline
+\end{tabulary}
+
 
 \chapter{Source Code}
 
