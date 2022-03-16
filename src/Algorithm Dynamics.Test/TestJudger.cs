@@ -45,7 +45,7 @@ namespace Algorithm_Dynamics.Test
                 helloWorldCpp,
                 "",
                 new("C++", "cpp", ".cpp", true, "g--", "-x c++ {SourceCodeFilePath} -o {ExecutableFilePath}", "{ExecutableFilePath}", ""),
-                1000,
+                1 * ms,
                 64 * MB,
                 new Progress<int>()
             );
@@ -62,7 +62,7 @@ namespace Algorithm_Dynamics.Test
                 helloWorldCpp,
                 "",
                 new("Python", "python", ".py", "p", "{SourceCodeFilePath}"),
-                1000,
+                1 * ms,
                 64 * MB,
                 new Progress<int>()
             );

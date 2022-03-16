@@ -8,8 +8,8 @@ namespace Algorithm_Dynamics.Core.Models
 {
     public static class Judger
     {
-        private static string _SourceCodeFilePath;
         private static string _SourceCodeFolderPath;
+        private static string _SourceCodeFilePath;
         private static string _ExecutableFilePath;
         private static string _StandardOutput;
         private static string _StandardError;
@@ -167,7 +167,7 @@ namespace Algorithm_Dynamics.Core.Models
         /// </summary>
         /// <param name="FolderPath"></param>
         /// <param name="FileName"></param>
-        public static void SetSourceCodeFilePath(string FolderPath, string FileName)
+        public static void SetSourceCodeFilePath(string FolderPath, string FileName = "main")
         {
             _SourceCodeFolderPath = FolderPath;
             _SourceCodeFilePath = Path.Combine(FolderPath, FileName) + "{SourceCodeFileExtension}";
