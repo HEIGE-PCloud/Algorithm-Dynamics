@@ -356,17 +356,7 @@ namespace Algorithm_Dynamics.Core.Models
 
             return Result;
         }
-        public async static Task<AssignmentSubmissionResult> JudgeAssignment(AssignmentSubmission AssignmentSubmission)
-        {
-            AssignmentSubmissionResult Result = new();
-            Result.AssignmentSubmission = AssignmentSubmission;
-            Queue<Submission> SubmissionQueue = new(AssignmentSubmission.Submissions);
-            while (SubmissionQueue.Count > 0)
-            {
-                Result.Add(await JudgeProblem(SubmissionQueue.Dequeue(), new Progress<int>()));
-            }
-            return Result;
-        }
+
         private static void CompileProcess_ErrorDataReceived(object sender, DataReceivedEventArgs e)
         {
             if (!string.IsNullOrEmpty(e.Data))
