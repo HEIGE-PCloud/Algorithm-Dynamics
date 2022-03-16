@@ -1,8 +1,6 @@
 \documentclass[a4paper]{report}
-\usepackage{ulem}
 \usepackage{minted}
 \usepackage{hyperref}
-\usepackage{url}
 \usepackage{fontspec}
 \usepackage{tabulary}
 \usepackage{pdfpages}
@@ -23,6 +21,7 @@
     breaklines=true,
     breakbytokenanywhere=true
 }
+\newcommand{\code}{\mintinline{text}}
 \graphicspath{ {./images/} {./graphs/} }
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{1em}
@@ -331,7 +330,7 @@ The judger can only accept limited programming languages and the user may requir
 
 Unlike LeetCode, there are no Discussion pages for users to discuss questions because it is a desktop program instead of a web one. But this is not a big problem, students and teachers should use an existing product such as Microsoft Teams which has very good support in sharing code snippets. It is unnecessary to rebuild the wheel.
 
-Distributing the questions and assignments is still inconvenient. Currently, distributing questions and assignments requires the teacher to first export the questions and assignments, then send them to the students through email or file-sharing platforms. When the students finish working, they need to send their results back through email or other apps. I have attempted to integrate the file-sharing function with the existing platform - the Microsoft Teams Assignment function. \sout{But unfortunately, the Graph API required for this operation is still in beta version, which means it can only be tested in the development environment and cannot be used in production. So for now, the users still have to use this inconvenient way to share questions and submissions. But in the future, the integration with some existing platforms may improve the experience.} (Update: the Microsoft Teams API is out of beta, now it is possible to integrate with it)
+Distributing the questions and assignments is still inconvenient. Currently, distributing questions and assignments requires the teacher to first export the questions and assignments, then send them to the students through email or file-sharing platforms. When the students finish working, they need to send their results back through email or other apps. I have attempted to integrate the file-sharing function with the existing platform - the Microsoft Teams Assignment function. But unfortunately, the Graph API required for this operation is still in beta version, which means it can only be tested in the development environment and cannot be used in production. So for now, the users still have to use this inconvenient way to share questions and submissions. But in the future, the integration with some existing platforms may improve the experience. (Update: the Microsoft Teams API is out of beta, now it is possible to integrate with it)
 
 There are no good ways to maintain and distribute a large question database. Computer Science teachers are required to maintain a database for their students. But this is difficult work. Creating good test cases is much time consuming than writing a mark scheme, it is very likely for a wrong solution to pass the judging if the test cases are not good enough. It relies on the teacher who creates the questions to consider everything clearly to minimize its impact.
 
@@ -652,11 +651,11 @@ The DateTime picker will prevent invalid dates from being input, the name field 
 
 \subsection{Judger module}
 
-The Judger module will handle all the judging and marking tasks. It takes in a \verb|Submission|, compile and execute the user's code, judges whether it gives the correct output.
+The Judger module will handle all the judging and marking tasks. It takes in a \code{Submission}, compile and execute the user's code, judges whether it gives the correct output.
 
-The Judger will take a few seconds to judge each \verb|Submission|, while it is judging, the other parts of the software need to keep working on their tasks. So I use concurrent processing to let the Judger run parallel with the main program.
+The Judger will take a few seconds to judge each \code{Submission}, while it is judging, the other parts of the software need to keep working on their tasks. So I use concurrent processing to let the Judger run parallel with the main program.
 
-When judging a single \verb|TestCase|, the Judger will first start the compiler in a new process to compile the user's code. The Judger redirects the output of the compiler to an internal string variable to store all outputs. When the compiler finishes compiling, an interrupt is triggered and the Judger will be notified that the compilation has been done. It will check the compiler's exit code and its output, if there are any compilation errors, they will be reported back. Otherwise, the Judger will run the compiled executable, and feed the input to its \verb|stdin| and redirects all \verb|stdout| and \verb|stderr| to internal string variables. On top of that, the Judger will start a countdown timer in a different process to track the time. When the countdown reaches zero, an interrupt will be sent to the Judger and it will terminate the user's code and report a time limit exceed error, or if the user's code finishes first, then its output will be compared with the expected output, the result and all statistics will then be reported.
+When judging a single \code{TestCase}, the Judger will first start the compiler in a new process to compile the user's code. The Judger redirects the output of the compiler to an internal string variable to store all outputs. When the compiler finishes compiling, an interrupt is triggered and the Judger will be notified that the compilation has been done. It will check the compiler's exit code and its output, if there are any compilation errors, they will be reported back. Otherwise, the Judger will run the compiled executable, and feed the input to its \code{stdin} and redirects all \code{stdout} and \code{stderr} to internal string variables. On top of that, the Judger will start a countdown timer in a different process to track the time. When the countdown reaches zero, an interrupt will be sent to the Judger and it will terminate the user's code and report a time limit exceed error, or if the user's code finishes first, then its output will be compared with the expected output, the result and all statistics will then be reported.
 
 A problem may contain multiple test cases, so all test cases will be first pushed into a judging queue, and the judger will judge them one by one.
 
@@ -671,7 +670,7 @@ Because this software will store many complex relational data, a relational data
 
 I choose to use SQLite to power this software. It is a small, self-contained, high-reliability, full-featured SQL Database engine, which will be enough to handle all the data storing and querying requests.
 
-The SQLite database has some limitations. It only supports five data types. \verb|TEXT|, \verb|INTEGER|, \verb|NULL|, \verb|REAL| and \verb|BLOB|. So other data types such as \verb|DateTime| and \verb|Guid| will need to be converted before storing.
+The SQLite database has some limitations. It only supports five data types. \code{TEXT}, \code{INTEGER}, \code{NULL}, \code{REAL} and \code{BLOB}. So other data types such as \code{DateTime} and \code{Guid} will need to be converted before storing.
 
 I choose to use Microsoft.Data.SQLite for the database interface, which allows me to send SQL requests to the database, handle errors and provide safety features to prevent SQL injection. Details about the design of the database and queries will be described in the \hyperref[subsec:database design]{Database design section}.
 
@@ -719,9 +718,9 @@ function search(sourceList, keyword)
 endfunction
 \end{minted}
 
-In this algorithm, I first create an empty list to store the result. Then I split the keyword into a list by space. So the keyword ``A Long Problem Name'' will be splitted into \verb|["A", "Long", "Problem", "Name"]|.
+In this algorithm, I first create an empty list to store the result. Then I split the keyword into a list by space. So the keyword ``A Long Problem Name'' will be splitted into \code{["A", "Long", "Problem", "Name"]}.
 
-Next, I use two nested loops to perform a linear search on each keyword. I choose to use the linear search here because the list is not sorted, so only it will work. The overall time complexity here is $O(nm)$ where $n$ is the length of the \verb|sourceList| and $m$ is the length of \verb|splitKeyword|. This is not very fast, but in real-world use cases, both $n$ and $m$ will be very small (less than 1000), so this algorithm will be fast enough to handle most of the cases. The increase in complexity brings a better searching experience. In this way, the algorithm will be able to match keywords like ``prob'' to result in ``A Long Problem List'', while normal linear search will not be able to do this.
+Next, I use two nested loops to perform a linear search on each keyword. I choose to use the linear search here because the list is not sorted, so only it will work. The overall time complexity here is $O(nm)$ where $n$ is the length of the \code{sourceList} and $m$ is the length of \code{splitKeyword}. This is not very fast, but in real-world use cases, both $n$ and $m$ will be very small (less than 1000), so this algorithm will be fast enough to handle most of the cases. The increase in complexity brings a better searching experience. In this way, the algorithm will be able to match keywords like ``prob'' to result in ``A Long Problem List'', while normal linear search will not be able to do this.
 
 In the end, if no item is found, a not found notice is added to the list, which will be displayed to the user.
 
@@ -729,7 +728,7 @@ In the end, if no item is found, a not found notice is added to the list, which 
 
 This algorithm is designed for the Judger to run a piece of code, pass input to the code and receive all the output and error. This is the basic function of the Judger and further judging will all base on this algorithm.
 
-Before anything can run, the Judger will need to first write the user's code to a source code file. And before it can do that, it needs to know where it should write to. I will create three private variables \verb|_SourceCodeFilePath|, \verb|_SourceCodeFolderPath| and \verb|_ExecutableFilePath| to store the file paths for the source code file and the executable file. I use the idea of encapsulation here so these variables can only be set by the public method \verb|SetSourceCodeFilePath|, so they will not be modified unexpectedly.
+Before anything can run, the Judger will need to first write the user's code to a source code file. And before it can do that, it needs to know where it should write to. I will create three private variables \code{_SourceCodeFilePath}, \code{_SourceCodeFolderPath} and \code{_ExecutableFilePath} to store the file paths for the source code file and the executable file. I use the idea of encapsulation here so these variables can only be set by the public method \code{SetSourceCodeFilePath}, so they will not be modified unexpectedly.
 
 \begin{minted}{text}
 partial class Judger
@@ -745,7 +744,7 @@ partial class Judger
 endclass
 \end{minted}
 
-For compiling programming languages such as C, C++ and Java, the source code needs to be compiled before running. So I need to add a \verb|Compile| function to support these programming languages. The compile task needs to be run concurrently in a different process so the main UI can stay responsive. So instead of monitoring the compiler all the time, I will bind two event handlers to the compile process, to process its output data and error data. Those data will then be stored in two private string variables for later use.
+For compiling programming languages such as C, C++ and Java, the source code needs to be compiled before running. So I need to add a \code{Compile} function to support these programming languages. The compile task needs to be run concurrently in a different process so the main UI can stay responsive. So instead of monitoring the compiler all the time, I will bind two event handlers to the compile process, to process its output data and error data. Those data will then be stored in two private string variables for later use.
 
 \begin{minted}{text}
 partial class Judger
@@ -811,9 +810,9 @@ partial class Judger
 endclass
 \end{minted}
 
-In the end, an integer exit code will be returned. If the exit code is zero, the Judger will know that the compilation is successful. If it is something else, then the Judger will need to report a compile error with detailed data from \verb|_CompilationError|. 
+In the end, an integer exit code will be returned. If the exit code is zero, the Judger will know that the compilation is successful. If it is something else, then the Judger will need to report a compile error with detailed data from \code{_CompilationError}. 
 
-If the user's code is compiled successfully or it does not need to be compiled, the \verb|Execute| function is called to run the code or the executable, pass the input to the process and get its output. The \verb|Execute| function will also need to kill the running process if it runs too long. So I will use a custom enumeration type \verb|StatusCode| to manage the process' status.
+If the user's code is compiled successfully or it does not need to be compiled, the \code{Execute} function is called to run the code or the executable, pass the input to the process and get its output. The \code{Execute} function will also need to kill the running process if it runs too long. So I will use a custom enumeration type \code{StatusCode} to manage the process' status.
 
 \begin{minted}{text}
 enum StatusCode
@@ -829,9 +828,9 @@ partial class Judger
 endclass
 \end{minted}
 
-\verb|StatusCode| has five possible values, \verb|PENDING| is set when the code is waiting to be run. When it starts executing, the status code will be set to \verb|RUNNING|. If it finishes in time, its status will be set to \verb|FINISHED|. If it exceeds the time limit, the process will be killed by the Judger and a \verb|TLE| will be recorded. If it exceeds the memory limit, the process will be killed by the Judger and a \verb|MLE| will be recorded.
+\code{StatusCode} has five possible values, \code{PENDING} is set when the code is waiting to be run. When it starts executing, the status code will be set to \code{RUNNING}. If it finishes in time, its status will be set to \code{FINISHED}. If it exceeds the time limit, the process will be killed by the Judger and a \code{TLE} will be recorded. If it exceeds the memory limit, the process will be killed by the Judger and a \code{MLE} will be recorded.
 
-Similarly, I will use event handlers to record all the outputs from the user's code. I add a third handler to process the exit event, which will determine the \verb|_StatusCode| mentioned above.
+Similarly, I will use event handlers to record all the outputs from the user's code. I add a third handler to process the exit event, which will determine the \code{_StatusCode} mentioned above.
 
 \begin{minted}{text}
 partial class Judger
@@ -861,7 +860,7 @@ partial class Judger
 endclass
 \end{minted}
 
-The \verb|Execute| function has a similar design with the \verb|Compile| function. It configures all the running information and event handlers as usual. However, this time I add two extra processes running concurrently with the execution process. The first one is a timer, which countdown the time limit. When the timer counts to zero, it checks whether the execute process is still running, if it does, then the execution process will be killed and a \verb|TLE| will be reported. The second one is a memory monitor, which checks the peak memory usage of the execution process every 10 milliseconds. If the memory usage is larger than the memory limit, then the execution process will be killed and a \verb|MLE| will be reported.
+The \code{Execute} function has a similar design with the \code{Compile} function. It configures all the running information and event handlers as usual. However, this time I add two extra processes running concurrently with the execution process. The first one is a timer, which countdown the time limit. When the timer counts to zero, it checks whether the execute process is still running, if it does, then the execution process will be killed and a \code{TLE} will be reported. The second one is a memory monitor, which checks the peak memory usage of the execution process every 10 milliseconds. If the memory usage is larger than the memory limit, then the execution process will be killed and a \code{MLE} will be reported.
 
 \begin{minted}{text}
 partial class Judger
@@ -943,7 +942,7 @@ partial class Judger
 endclass
 \end{minted}
 
-Now I have everything I need to build the \verb|RunCode| function. It takes in the user's code, input data, language configuration, time limit and memory limit, outputs a \verb|RunCodeResult| containing all the running information. I also need to set up a stopwatch to measure how long the code has been executed, unlike the timer before, this stopwatch only provides data for statistics records. In the end, the \verb|RunCode| function will handle some basic errors, it will judge whether the user's code run, but it will not judge whether the user's code provides the correct output. The \verb|RunCode| algorithm only runs the code and further judging will be handed over to other algorithms.
+Now I have everything I need to build the \code{RunCode} function. It takes in the user's code, input data, language configuration, time limit and memory limit, outputs a \code{RunCodeResult} containing all the running information. I also need to set up a stopwatch to measure how long the code has been executed, unlike the timer before, this stopwatch only provides data for statistics records. In the end, the \code{RunCode} function will handle some basic errors, it will judge whether the user's code run, but it will not judge whether the user's code provides the correct output. The \code{RunCode} algorithm only runs the code and further judging will be handed over to other algorithms.
 
 \begin{minted}{text}
 partial class Judger
@@ -1012,7 +1011,7 @@ endclass
 
 \subsection{Judger Judge TestCase algorithm}
 
-This algorithm is designed to allow the Judger to judge a test case. On top of the \verb|RunCode| function, this algorithm compare the user's output with the expected output, so it can judge whether the user's code works correctly. The \verb|JudgeTestCase| function returns a \verb|TestCaseResult| containing more information.
+This algorithm is designed to allow the Judger to judge a test case. On top of the \code{RunCode} function, this algorithm compare the user's output with the expected output, so it can judge whether the user's code works correctly. The \code{JudgeTestCase} function returns a \code{TestCaseResult} containing more information.
 
 \begin{minted}{text}
 partial class Judger
@@ -1104,67 +1103,67 @@ I am taking an object-oriented approach to the design of the software. This is t
 
 \subsubsection{User}
 
-\verb|User| is an object used to represent the current user. Its data will be attached to each \verb|Submission|, \verb|Assignment| and \verb|AssignmentSubmission|, so the user can track identities and manage the data easily. Users will be asked to enter this information when they first open the software, an instance of \verb|User| will be created and stored in the database.
+\code{User} is an object used to represent the current user. Its data will be attached to each \code{Submission}, \code{Assignment} and \code{AssignmentSubmission}, so the user can track identities and manage the data easily. Users will be asked to enter this information when they first open the software, an instance of \code{User} will be created and stored in the database.
 
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
     Variable & Data type & Justification \\
     \hline
-    \verb|Uid| & \verb|Guid| & The \verb|User| uses a \verb|Guid| value for its \verb|Uid| instead of a normal \verb|int| value to ensure the \verb|Uid| is unique globally. Every user will have a unique \verb|Uid|. \\
+    \code{Uid} & \code{Guid} & The \code{User} uses a \code{Guid} value for its \code{Uid} instead of a normal \code{int} value to ensure the \code{Uid} is unique globally. Every user will have a unique \code{Uid}. \\
     \hline
-    \verb|Name| & \verb|string| & \verb|Name| stores the user's name. \\
+    \code{Name} & \code{string} & \code{Name} stores the user's name. \\
     \hline
-    \verb|Email| & \verb|string| & \verb|Email| stores the user's Email address. \\
+    \code{Email} & \code{string} & \code{Email} stores the user's Email address. \\
     \hline
-    \verb|Role| & \verb|enum Role| & \verb|Role| is a custom enumeration type which has two possible values, \verb|Student| or \verb|Teacher|. It is used to determine the role of the current user, and the user interface will be adjusted accordingly. I choose to use a custom enumeration type instead of some magic numbers to make the code more readable and easier to maintain. \\
+    \code{Role} & \code{enum Role} & \code{Role} is a custom enumeration type which has two possible values, \code{Student} or \code{Teacher}. It is used to determine the role of the current user, and the user interface will be adjusted accordingly. I choose to use a custom enumeration type instead of some magic numbers to make the code more readable and easier to maintain. \\
     \hline
 \end{tabulary}
 
 \subsubsection{Tag}
 
-A \verb|Tag| is a label used to categorize a \verb|Problem|.
+A \code{Tag} is a label used to categorize a \code{Problem}.
 
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
     Variable & Data type & Justification \\
     \hline
-    \verb|Id| & \verb|int| & The \verb|Id| is the local unique identifier for a \verb|Tag|. It is used to uniquely determine a \verb|Tag| in the local database. \\
+    \code{Id} & \code{int} & The \code{Id} is the local unique identifier for a \code{Tag}. It is used to uniquely determine a \code{Tag} in the local database. \\
     \hline
-    \verb|Name| & \verb|string| & \verb|Name| stores the name of the \verb|Tag|. A \verb|Name| must be unique, so data needs to be validated and two \verb|Tags| with the same \verb|Name| is not allowed. \\
+    \code{Name} & \code{string} & \code{Name} stores the name of the \code{Tag}. A \code{Name} must be unique, so data needs to be validated and two \code{Tags} with the same \code{Name} is not allowed. \\
     \hline
 \end{tabulary}
 
 \subsubsection{TestCase}
 
-A \verb|TestCase| is one set of test input and output, which will be used by the \verb|Judger| to judge the user's submission.
+A \code{TestCase} is one set of test input and output, which will be used by the \code{Judger} to judge the user's submission.
 
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
     Variable & Data type & Justification \\
     \hline
-    \verb|Id| & \verb|int| & The \verb|Id| is the local unique identifier for a \verb|TestCase|. It is used to uniquely determine a \verb|TestCase| in the database. \\
+    \code{Id} & \code{int} & The \code{Id} is the local unique identifier for a \code{TestCase}. It is used to uniquely determine a \code{TestCase} in the database. \\
     \hline
-    \verb|Input| & \verb|string| & The \verb|Input| will be feed to the user's submission code by the \verb|Judger|. \\
+    \code{Input} & \code{string} & The \code{Input} will be feed to the user's submission code by the \code{Judger}. \\
     \hline
-    \verb|Output| & \verb|string| & \verb|Output| stores the expected \verb|Output| of the corresponding \verb|Input|. The \verb|Judger| will compare user's output with the \verb|Output| to judge whether the user's code is correct. \\
+    \code{Output} & \code{string} & \code{Output} stores the expected \code{Output} of the corresponding \code{Input}. The \code{Judger} will compare user's output with the \code{Output} to judge whether the user's code is correct. \\
     \hline
-    \verb|IsExample| & \verb|bool| & Define whether this \verb|TestCase| is an example. An example \verb|TestCase| will be displayed to the user for debugging, and distribute with an \verb|Assignment|. A non-example \verb|TestCase| will be used to judge the solution and will not be displayed to the user or distribute with an \verb|Assignment|. A boolean value is suitable to store the two-state data. \\
+    \code{IsExample} & \code{bool} & Define whether this \code{TestCase} is an example. An example \code{TestCase} will be displayed to the user for debugging, and distribute with an \code{Assignment}. A non-example \code{TestCase} will be used to judge the solution and will not be displayed to the user or distribute with an \code{Assignment}. A boolean value is suitable to store the two-state data. \\
     \hline
 \end{tabulary}
 
 \subsubsection{Problem}
 
-The \verb|Problem| is used to store and organize the data for each programming question.
+The \code{Problem} is used to store and organize the data for each programming question.
 
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
     Variable & Data type & Justification \\
     \hline
-    \verb|Id| & \verb|int| & The \verb|Id| is the local unique identifier for a \verb|Problem|. It is used to uniquely determine a \verb|Problem| in the database. When a \verb|Problem| is imported in to the database, a new \verb|Id| is given. \\
+    \code{Id} & \code{int} & The \code{Id} is the local unique identifier for a \code{Problem}. It is used to uniquely determine a \code{Problem} in the database. When a \code{Problem} is imported in to the database, a new \code{Id} is given. \\
     \hline
-    \verb|Name| & \verb|string| & The \verb|Name| is a string contains the name of a \verb|Problem|. \\
+    \code{Name} & \code{string} & The \code{Name} is a string contains the name of a \code{Problem}. \\
     \hline
-    \verb|SourceHash| & \verb|string| & This field is \verb|null| for all normal \verb|Problem|. It is only set for \verb|Problem| which comes with an \verb|Assignment|, and it is set to the hash value of the original \verb|Problem|. This value will be recorded for \verb|Submission|. \\
+    \code{SourceHash} & \code{string} & This field is \code{null} for all normal \code{Problem}. It is only set for \code{Problem} which comes with an \code{Assignment}, and it is set to the hash value of the original \code{Problem}. This value will be recorded for \code{Submission}. \\
     \hline
 \end{tabulary}
 
@@ -1172,197 +1171,197 @@ The \verb|Problem| is used to store and organize the data for each programming q
     \hline
     Variable & Data type & Justification \\
     \hline
-    \verb|Description| & \verb|string| & The \verb|Description| is a string storing the detailed description of a \verb|Problem|. Markdown syntax is supported for a better user experience. \\
+    \code{Description} & \code{string} & The \code{Description} is a string storing the detailed description of a \code{Problem}. Markdown syntax is supported for a better user experience. \\
     \hline
-    \verb|Status| & \verb|enum Status| & \verb|Status| is an enumeration type containing 3 possible status: \verb|Todo|, \verb|Solved| and \verb|Attempted|. This is used to collect user statistics data. I choose to use a custom enumeration type instead of some magic numbers to make the code more readable and easier to maintain. \\
+    \code{Status} & \code{enum Status} & \code{Status} is an enumeration type containing 3 possible status: \code{Todo}, \code{Solved} and \code{Attempted}. This is used to collect user statistics data. I choose to use a custom enumeration type instead of some magic numbers to make the code more readable and easier to maintain. \\
     \hline
-    \verb|Difficulty| & \verb|enum Difficulty| & \verb|Difficulty| is an enumeration type containing 3 possible difficulties: \verb|Easy|, \verb|Medium| and \verb|Hard|. This provdes a way for the user to search and select problems by their difficulties. \\
+    \code{Difficulty} & \code{enum Difficulty} & \code{Difficulty} is an enumeration type containing 3 possible difficulties: \code{Easy}, \code{Medium} and \code{Hard}. This provdes a way for the user to search and select problems by their difficulties. \\
     \hline
-    \verb|TimeLimit| & \verb|int| & \verb|TimeLimit| sets the max time allowed for the user code to run in millisecond. When the running time exceed the \verb|TimeLimit|, the running code will be killed and a Time Limit Exceed error will be recorded. This prevents infinite loop from using up all computing resources and rejects inefficient algorithms. \\
+    \code{TimeLimit} & \code{int} & \code{TimeLimit} sets the max time allowed for the user code to run in millisecond. When the running time exceed the \code{TimeLimit}, the running code will be killed and a Time Limit Exceed error will be recorded. This prevents infinite loop from using up all computing resources and rejects inefficient algorithms. \\
     \hline
-    \verb|MemoryLimit| & \verb|int| & \verb|MemoryLimit| sets the max memory allowed for the user's code to consume in bytes. When the memory usage exceed the memory limit, the running code will be killed and a Memory Limit Exceed Error will be recorded. This prevents incorrect code from using up all memory space and rejects inefficient algorithms. \\
+    \code{MemoryLimit} & \code{int} & \code{MemoryLimit} sets the max memory allowed for the user's code to consume in bytes. When the memory usage exceed the memory limit, the running code will be killed and a Memory Limit Exceed Error will be recorded. This prevents incorrect code from using up all memory space and rejects inefficient algorithms. \\
     \hline
-    \verb|TestCases| & \verb|List<TestCase>| & \verb|TestCases| is a list containing all \verb|TestCase| for the problem. A list is more appropriate than an array because it allows new \verb|TestCase| to be added or remove existing ones during runtime. \\
+    \code{TestCases} & \code{List<TestCase>} & \code{TestCases} is a list containing all \code{TestCase} for the problem. A list is more appropriate than an array because it allows new \code{TestCase} to be added or remove existing ones during runtime. \\
     \hline
-    \verb|Tags| & \verb|List<Tags>| & \verb|Tags| is a list containing all \verb|Tags| for a \verb|Problem|. Similarly, I use a list for \verb|Tags| so it can be added or removed during runtime. \\
+    \code{Tags} & \code{List<Tags>} & \code{Tags} is a list containing all \code{Tags} for a \code{Problem}. Similarly, I use a list for \code{Tags} so it can be added or removed during runtime. \\
     \hline
 \end{tabulary}
 
 \subsubsection{Language}
 
-\verb|Language| defines the compiling and running configurations for different programming languages. Language configurations are not stored in the database, instead, they are stored in the settings file, so users can add their custom configurations easily.
+\code{Language} defines the compiling and running configurations for different programming languages. Language configurations are not stored in the database, instead, they are stored in the settings file, so users can add their custom configurations easily.
 
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
     Variable & Data type & Justification \\
     \hline
-    \verb|Name| & \verb|string| & \verb|Name| stores the name of each programming language. The \verb|Name| will be displayed in the drop down menu for the user to select their preferred programming language. \\
+    \code{Name} & \code{string} & \code{Name} stores the name of each programming language. The \code{Name} will be displayed in the drop down menu for the user to select their preferred programming language. \\
     \hline
-    \verb|NeedCompile| & \verb|bool| & Some programming languages need to be compiled before running, such as C, C++ and Java. This attribute is used to tell the \verb|Judger| to compile the code before executing. \\
+    \code{NeedCompile} & \code{bool} & Some programming languages need to be compiled before running, such as C, C++ and Java. This attribute is used to tell the \code{Judger} to compile the code before executing. \\
     \hline
-    \verb|CompileCommand| & \verb|string| & If a programming language requires compilation, this command is executed to call the compiler. \\
+    \code{CompileCommand} & \code{string} & If a programming language requires compilation, this command is executed to call the compiler. \\
     \hline
-    \verb|CompileArguments| & \verb|string| & If a programming language requires compilation, this arguments is passed to the compiler to specify file path and related compile arguments. \\
+    \code{CompileArguments} & \code{string} & If a programming language requires compilation, this arguments is passed to the compiler to specify file path and related compile arguments. \\
     \hline
-    \verb|RunCommand| & \verb|string| & The \verb|Judger| uses this command to run the executable or call the intrepreter. \\
+    \code{RunCommand} & \code{string} & The \code{Judger} uses this command to run the executable or call the intrepreter. \\
     \hline
-    \verb|RunArguments| & \verb|string| & This \verb|Judger| pass this arguments to the executable or the intrepreter. \\
+    \code{RunArguments} & \code{string} & This \code{Judger} pass this arguments to the executable or the intrepreter. \\
     \hline
 \end{tabulary}
 
 \subsubsection{Submission}
 
-A \verb|Submission| is created when the user submits a code solution to the \verb|Judger|. The \verb|Submission| will contain all the information including the time, the source code, the programming language selected and the corresponding \verb|Problem| for the \verb|Judger| to judge.
+A \code{Submission} is created when the user submits a code solution to the \code{Judger}. The \code{Submission} will contain all the information including the time, the source code, the programming language selected and the corresponding \code{Problem} for the \code{Judger} to judge.
 
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
     Variable & Data type & Justification \\
     \hline
-    \verb|Id| & \verb|int| & The \verb|Id| is the local unique identifier for a \verb|Submission|. It is used to uniquely determine a \verb|Submission| in the database. \\
+    \code{Id} & \code{int} & The \code{Id} is the local unique identifier for a \code{Submission}. It is used to uniquely determine a \code{Submission} in the database. \\
     \hline
-    \verb|Problem| & \verb|Problem| & The \verb|Problem| contains the corresponding \verb|Problem| of this \verb|Submission|, which also contains the \verb|TestCases| for the \verb|Judger| to judge the \verb|Submission|. Before storing a \verb|Submission| into the database, this value needs to be normalized to the \verb|Id| of that \verb|Problem|. \\
+    \code{Problem} & \code{Problem} & The \code{Problem} contains the corresponding \code{Problem} of this \code{Submission}, which also contains the \code{TestCases} for the \code{Judger} to judge the \code{Submission}. Before storing a \code{Submission} into the database, this value needs to be normalized to the \code{Id} of that \code{Problem}. \\
     \hline
-    \verb|Code| & \verb|string| & \verb|Code| stores the submitted code, which will be executed and judged by the \verb|Judger|. \\
+    \code{Code} & \code{string} & \code{Code} stores the submitted code, which will be executed and judged by the \code{Judger}. \\
     \hline
-    \verb|SubmittedTime| & \verb|DateTime| & \verb|SubmittedTime| stores the time the \verb|Submission| is created. Instead of using a \verb|string| or an \verb|int| value, I decide to use the native data type \verb|DateTime| provided by C\#, which makes it easier to process date time, and prevent any formating issues. \\
+    \code{SubmittedTime} & \code{DateTime} & \code{SubmittedTime} stores the time the \code{Submission} is created. Instead of using a \code{string} or an \code{int} value, I decide to use the native data type \code{DateTime} provided by C\#, which makes it easier to process date time, and prevent any formating issues. \\
     \hline
-    \verb|Language| & \verb|Language| & \verb|Language| stores the programming language selected by the user, so the \verb|Judger| knows how to run the code.\\
+    \code{Language} & \code{Language} & \code{Language} stores the programming language selected by the user, so the \code{Judger} knows how to run the code.\\
     \hline
-    \verb|Submitter| & \verb|User| & \verb|Submitter| stores the \verb|User| who submits this \verb|Submission|. This field will be normalized to the \verb|User.Uid| before storing into the database. \\
+    \code{Submitter} & \code{User} & \code{Submitter} stores the \code{User} who submits this \code{Submission}. This field will be normalized to the \code{User.Uid} before storing into the database. \\
     \hline
 \end{tabulary}
 
 \subsubsection{ProblemList}
 
-A \verb|ProblemList| is a list of \verb|Problem|, which allows the user to share multiple \verb|Problem| easily. It is also the parent of \verb|Assignment| and provides basic functions for it. The \verb|ProblemList| contains a \verb|List<Problem>| variable, which provides all basic functions for a list, such as add, remove, sort and find, so I don't need to reinvent the wheel. I choose a list instead of an array because the number of \verb|Problem| inside the list will be changed during runtime, so a list is more appropriate for my use case.
+A \code{ProblemList} is a list of \code{Problem}, which allows the user to share multiple \code{Problem} easily. It is also the parent of \code{Assignment} and provides basic functions for it. The \code{ProblemList} contains a \code{List<Problem>} variable, which provides all basic functions for a list, such as add, remove, sort and find, so I don't need to reinvent the wheel. I choose a list instead of an array because the number of \code{Problem} inside the list will be changed during runtime, so a list is more appropriate for my use case.
 
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
     Variable & Data type & Justification \\
     \hline
-    \verb|Id| & \verb|int| & The \verb|Id| is the local unique identifier for a \verb|ProblemList|. It is used to uniquely determine a \verb|ProblemList| in the database. \\
+    \code{Id} & \code{int} & The \code{Id} is the local unique identifier for a \code{ProblemList}. It is used to uniquely determine a \code{ProblemList} in the database. \\
     \hline
-    \verb|Name| & \verb|string| & \verb|Name| stores the name of the \verb|Problem List|. \\
+    \code{Name} & \code{string} & \code{Name} stores the name of the \code{Problem List}. \\
     \hline
-    \verb|Description| & \verb|string| & \verb|Description| stores the description of the \verb|ProblemList|. \\
+    \code{Description} & \code{string} & \code{Description} stores the description of the \code{ProblemList}. \\
     \hline
-    \verb|Problems| & \verb|List<Problem>| & \verb|Problems| is a list of \verb|Problem|, which supports basic functions to manipulate a list of data. \\
+    \code{Problems} & \code{List<Problem>} & \code{Problems} is a list of \code{Problem}, which supports basic functions to manipulate a list of data. \\
     \hline
 \end{tabulary}
 
 \subsubsection{Assignment}
 
-An \verb|Assignment| is a \verb|ProblemList| which gets distributed to students. When an \verb|Assignment| is distributed, a copy of that \verb|Assignment| is created. All \verb|TestCases| with \verb|IsExample| set to \verb|false| will be removed to prevent students from cheating. The \verb|Type| of the \verb|Assignment| will be set to \verb|Copy| to indicate it is a distributed copy. The \verb|Judger| will reject to judge a distributed \verb|Assignment| and the \verb|AssignmentsPage| will show the \verb|Assignment| under the Assigned tab instead of the Created tab.
+An \code{Assignment} is a \code{ProblemList} which gets distributed to students. When an \code{Assignment} is distributed, a copy of that \code{Assignment} is created. All \code{TestCases} with \code{IsExample} set to \code{false} will be removed to prevent students from cheating. The \code{Type} of the \code{Assignment} will be set to \code{Copy} to indicate it is a distributed copy. The \code{Judger} will reject to judge a distributed \code{Assignment} and the \code{AssignmentsPage} will show the \code{Assignment} under the Assigned tab instead of the Created tab.
 
-\verb|Assignment| is inheriate from the \verb|ProblemList|, so it can reuse the \verb|Name| and \verb|Description| attributes and all methods to manage a list of \verb|Problem|. Upon that, new attributes and methods are added to make it functional.
+\code{Assignment} is inheriate from the \code{ProblemList}, so it can reuse the \code{Name} and \code{Description} attributes and all methods to manage a list of \code{Problem}. Upon that, new attributes and methods are added to make it functional.
 
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
     Variable & Data type & Justification \\
     \hline
-    \verb|Uid| & \verb|Guid| & The \verb|Assignment| uses a \verb|Guid| value for its \verb|Uid| instead of a normal \verb|int| value to ensure the \verb|Uid| is unique globally. So when the user import an \verb|Assignment| into their database, the \verb|Uid| will not conflict with any existing values, and it will not be changed (Unlike a \verb|ProblemList|, for which will be assigned a new \verb|Id| when importing). The \verb|Uid| will be referenced by the \verb|AssignmentSubmission| so the \verb|Judger| will be able to know which \verb|Assignment| it is judging. \\
+    \code{Uid} & \code{Guid} & The \code{Assignment} uses a \code{Guid} value for its \code{Uid} instead of a normal \code{int} value to ensure the \code{Uid} is unique globally. So when the user import an \code{Assignment} into their database, the \code{Uid} will not conflict with any existing values, and it will not be changed (Unlike a \code{ProblemList}, for which will be assigned a new \code{Id} when importing). The \code{Uid} will be referenced by the \code{AssignmentSubmission} so the \code{Judger} will be able to know which \code{Assignment} it is judging. \\
     \hline
-    \verb|DueDate| & \verb|DateTime| & The \verb|DueDate| stores the time for the due date of the \verb|Assignment|. Instead of using a \verb|string| or an \verb|int| value, I decide to use the native data type \verb|DateTime| provided by C\#, which makes it easier to process date time, and prevent all formating issues. \\
+    \code{DueDate} & \code{DateTime} & The \code{DueDate} stores the time for the due date of the \code{Assignment}. Instead of using a \code{string} or an \code{int} value, I decide to use the native data type \code{DateTime} provided by C\#, which makes it easier to process date time, and prevent all formating issues. \\
     \hline
-    \verb|Status| & \verb|enum Status| & \verb|Status| is an enumeration type containing 4 possible status for a source \verb|Assignment|: \verb|Draft|, \verb|Scheduled|, \verb|Published| and \verb|Assigned| for the teacher to manage the lifecycle of an \verb|Assignment|. For a distributed \verb|Assignment|, there are 4 possible \verb|Status|, \verb|NotStarted|, \verb|InProgress|, \verb|Completed| and \verb|OverDue|, which helps the student to manage the lifecycle of an \verb|Assignment|. I choose to use a custom enumeration type instead of some magic numbers to make the code more readable and easier to maintain.\\
+    \code{Status} & \code{enum Status} & \code{Status} is an enumeration type containing 4 possible status for a source \code{Assignment}: \code{Draft}, \code{Scheduled}, \code{Published} and \code{Assigned} for the teacher to manage the lifecycle of an \code{Assignment}. For a distributed \code{Assignment}, there are 4 possible \code{Status}, \code{NotStarted}, \code{InProgress}, \code{Completed} and \code{OverDue}, which helps the student to manage the lifecycle of an \code{Assignment}. I choose to use a custom enumeration type instead of some magic numbers to make the code more readable and easier to maintain.\\
     \hline
-    \verb|Type| & \verb|enum Type| & \verb|Type| is an enumeration type containing 2 possible types, \verb|Source| or \verb|Copy|. It is used to manage the distribution of an \verb|Assignment| as described above. \\
+    \code{Type} & \code{enum Type} & \code{Type} is an enumeration type containing 2 possible types, \code{Source} or \code{Copy}. It is used to manage the distribution of an \code{Assignment} as described above. \\
     \hline
-    \verb|Assigner| & \verb|User| & \verb|Assigner| stores the \verb|User| who assigns the \verb|Assignment|. This field will be normalized into the \verb|User.Uid| before storing into the database. \\
+    \code{Assigner} & \code{User} & \code{Assigner} stores the \code{User} who assigns the \code{Assignment}. This field will be normalized into the \code{User.Uid} before storing into the database. \\
     \hline
 \end{tabulary}
 
 \subsubsection{AssignmentSubmission}
 
-When a student finishes an \verb|Assignment|, an \verb|AssignmentSubmission| is created for the \verb|Judger| to judge. The \verb|AssignmentSubmission| can either be exported to file and sent to the teacher, or it can be uploaded using API. The teacher imports the \verb|AssignmentSubmission| or uses API to load it, and the \verb|Judger| will be able to mark it and return the result.
+When a student finishes an \code{Assignment}, an \code{AssignmentSubmission} is created for the \code{Judger} to judge. The \code{AssignmentSubmission} can either be exported to file and sent to the teacher, or it can be uploaded using API. The teacher imports the \code{AssignmentSubmission} or uses API to load it, and the \code{Judger} will be able to mark it and return the result.
 
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
     Variable & Data type & Justification \\
     \hline
-    \verb|Uid| & \verb|Guid| & The \verb|AssignmentSubmission| uses a \verb|Guid| value for its \verb|Uid| instead of a normal \verb|int| value to ensure the \verb|Uid| is unique globally. So when teachers import an \verb|AssignmentSubmission| into their database, the \verb|Uid| will not conflict with any existing values, and it will not be changed. \\
+    \code{Uid} & \code{Guid} & The \code{AssignmentSubmission} uses a \code{Guid} value for its \code{Uid} instead of a normal \code{int} value to ensure the \code{Uid} is unique globally. So when teachers import an \code{AssignmentSubmission} into their database, the \code{Uid} will not conflict with any existing values, and it will not be changed. \\
     \hline
-    \verb|Submitter| & \verb|User| & The user information is collected when exporting an \verb|AssignmentSubmission|, so the teacher will be able to know who is the \verb|Submitter|. This field needs to be normalized into \verb|User.Uid| before storing into the database. \\
+    \code{Submitter} & \code{User} & The user information is collected when exporting an \code{AssignmentSubmission}, so the teacher will be able to know who is the \code{Submitter}. This field needs to be normalized into \code{User.Uid} before storing into the database. \\
     \hline
-    \verb|Assignment| & \verb|Assignment| & The \verb|Assignment| corresponding to this \verb|AssignmentSubmission| is recorded, so the \verb|Judger| knows how to judge it. This field needs to be normalized into \verb|Assignment.Uid| before storing into the database. \\
+    \code{Assignment} & \code{Assignment} & The \code{Assignment} corresponding to this \code{AssignmentSubmission} is recorded, so the \code{Judger} knows how to judge it. This field needs to be normalized into \code{Assignment.Uid} before storing into the database. \\
     \hline
-    \verb|Submissions| & \verb|List<Submission>| & \verb|Submissions| stores a list of \verb|Submission|, which contains the user's \verb|Submission| for each \verb|Problem| assigned. \\
+    \code{Submissions} & \code{List<Submission>} & \code{Submissions} stores a list of \code{Submission}, which contains the user's \code{Submission} for each \code{Problem} assigned. \\
     \hline
-    \verb|Status| & \verb|enum Status| & \verb|Status| is an enumeration type containing 3 possible types, \verb|NotJudged|, \verb|Judged| and \verb|Returned| for the teacher to keep track of each submission. \\
+    \code{Status} & \code{enum Status} & \code{Status} is an enumeration type containing 3 possible types, \code{NotJudged}, \code{Judged} and \code{Returned} for the teacher to keep track of each submission. \\
     \hline
 \end{tabulary}
 
 \subsubsection{Judger}
 
-The \verb|Judger| is a static class, only eposes 5 functions to run and judge user's code. The \verb|Judger| takes a \verb|Submission| as an input, and outputs a \verb|SubmissionResult|. No variable is exposed. The private attributes and methods are discussed in the \hyperref[sec:algorithm design]{algorithm design section}.
+The \code{Judger} is a static class, only eposes 5 functions to run and judge user's code. The \code{Judger} takes a \code{Submission} as an input, and outputs a \code{SubmissionResult}. No variable is exposed. The private attributes and methods are discussed in the \hyperref[sec:algorithm design]{algorithm design section}.
 
 \subsubsection{RunCodeResult}
 
-\verb|RunCodeResult| stores the judging result for a piece of code. It does not store the information about whether the output is correct, it only stores the runtime statistics and whether the code has been compiled and executed correctly. This result will not be stored in the database, so there is no \verb|Id| attribute.
+\code{RunCodeResult} stores the judging result for a piece of code. It does not store the information about whether the output is correct, it only stores the runtime statistics and whether the code has been compiled and executed correctly. This result will not be stored in the database, so there is no \code{Id} attribute.
 
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
     Variable & Data type & Justification \\
     \hline
-    \verb|StandardOutput| & \verb|string| & \verb|StandardOutput| stores the content output by the user's code. \\
+    \code{StandardOutput} & \code{string} & \code{StandardOutput} stores the content output by the user's code. \\
     \hline
-    \verb|StandardError| & \verb|string| & \verb|StandardError| stores the error messages received (if any) when executing the user's code. \\
+    \code{StandardError} & \code{string} & \code{StandardError} stores the error messages received (if any) when executing the user's code. \\
     \hline
-    \verb|ExitCode| & \verb|int| & \verb|ExitCode| stores the exit code of the user's code. \\
+    \code{ExitCode} & \code{int} & \code{ExitCode} stores the exit code of the user's code. \\
     \hline
-    \verb|CPUTime| & \verb|int| & \verb|CPUTime| stores the time it takes for the user's code to execute. \\
+    \code{CPUTime} & \code{int} & \code{CPUTime} stores the time it takes for the user's code to execute. \\
     \hline
-    \verb|MemoryUsage| & \verb|int| & \verb|MemoryUsage| stores the memory usage record for the user's code. \\
+    \code{MemoryUsage} & \code{int} & \code{MemoryUsage} stores the memory usage record for the user's code. \\
     \hline
-    \verb|ResultCode| & \verb|enum ResultCode| & \verb|ResultCode| is a custom enumeration type storing the judging result. It has 7 possible values, \verb|WRONG_ANSWER|, \verb|SUCCESS|, \verb|COMPILE_ERROR|, \verb|TIME_LIMIT_EXCEEDED|, \verb|MEMORY_LIMIT_EXCEEDED|, \verb|RUNTIME_ERROR| or \verb|SYSTEM_ERROR|. \\
+    \code{ResultCode} & \code{enum ResultCode} & \code{ResultCode} is a custom enumeration type storing the judging result. It has 7 possible values, \code{WRONG_ANSWER}, \code{SUCCESS}, \code{COMPILE_ERROR}, \code{TIME_LIMIT_EXCEEDED}, \code{MEMORY_LIMIT_EXCEEDED}, \code{RUNTIME_ERROR} or \code{SYSTEM_ERROR}. \\
     \hline
 \end{tabulary}
 
 \subsubsection{TestCaseResult}
 
-\verb|TestCaseResult| stores the judging result for each individual \verb|TestCase|. It is inheriated from the \verb|RunCodeResult| to inheriate all the statistics.
+\code{TestCaseResult} stores the judging result for each individual \code{TestCase}. It is inheriated from the \code{RunCodeResult} to inheriate all the statistics.
 
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
     Variable & Data type & Justification \\
     \hline
-    \verb|Id| & \verb|int| & The \verb|Id| is the local unique identifier for a \verb|TestCaseResult|. It is used to uniquely determine a \verb|TestCaseResult| in the database. \\
+    \code{Id} & \code{int} & The \code{Id} is the local unique identifier for a \code{TestCaseResult}. It is used to uniquely determine a \code{TestCaseResult} in the database. \\
     \hline
-    \verb|TestCase| & \verb|TestCase| & \verb|TestCase| stores the corresponding \verb|TestCase| that produces this result. This field will be normalized into \verb|TestCase.Id| before storing into the database. \\
+    \code{TestCase} & \code{TestCase} & \code{TestCase} stores the corresponding \code{TestCase} that produces this result. This field will be normalized into \code{TestCase.Id} before storing into the database. \\
     \hline
 \end{tabulary}
 
 \subsubsection{SubmissionResult}
 
-When the \verb|Judger| finishes judging a \verb|Submission|, a \verb|SubmissionResult| is created and stored. It includes the result and statistics about the \verb|Submission|.
+When the \code{Judger} finishes judging a \code{Submission}, a \code{SubmissionResult} is created and stored. It includes the result and statistics about the \code{Submission}.
 
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
     Variable & Data type & Justification \\
     \hline
-    \verb|Id| & \verb|int| & The \verb|Id| is the local unique identifier for a \verb|SubmissionResult|. It is used to uniquely determine a \verb|Submission| in the database.\\
+    \code{Id} & \code{int} & The \code{Id} is the local unique identifier for a \code{SubmissionResult}. It is used to uniquely determine a \code{Submission} in the database.\\
     \hline
-    \verb|Submission| & \verb|Submission| & \verb|Submission| stores the corresponding \verb|Submission| of this result. It needs to be normalized into the \verb|Submission.Id| before storing into the database. \\
+    \code{Submission} & \code{Submission} & \code{Submission} stores the corresponding \code{Submission} of this result. It needs to be normalized into the \code{Submission.Id} before storing into the database. \\
     \hline
-    \verb|TestCaseResults| & \verb|List<TestCaseResult>| & \verb|TestCaseResults| is a list of \verb|TestCaseResult|, storing result of each individual \verb|TestCase|. \\
+    \code{TestCaseResults} & \code{List<TestCaseResult>} & \code{TestCaseResults} is a list of \code{TestCaseResult}, storing result of each individual \code{TestCase}. \\
     \hline
  \end{tabulary}
 
 \subsubsection{AssignmentSubmissionResult}
 
-When the \verb|Judger| finishes judging, a \verb|AssignmentSubmissionResult| is created and stored.
+When the \code{Judger} finishes judging, a \code{AssignmentSubmissionResult} is created and stored.
 
-It includes the result and statistics about the \verb|AssignmentSubmission|.
+It includes the result and statistics about the \code{AssignmentSubmission}.
 
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
     Variable & Data type & Justification \\
     \hline
-    \verb|Uid| & \verb|Guid| & It uses a \verb|Guid| value for its \verb|Uid| instead of a normal \verb|int| value to ensure the \verb|Uid| is unique globally. \\
+    \code{Uid} & \code{Guid} & It uses a \code{Guid} value for its \code{Uid} instead of a normal \code{int} value to ensure the \code{Uid} is unique globally. \\
     \hline
-    \verb|AssignmentSubmission| & \verb|AssignmentSubmission| & It stores the corresponding submission of this result. It needs to be normalized into the \verb|Id| before storing into the database. \\
+    \code{AssignmentSubmission} & \code{AssignmentSubmission} & It stores the corresponding submission of this result. It needs to be normalized into the \code{Id} before storing into the database. \\
     \hline
-    \verb|SubmisionResults| & \verb|List<SubmissionResult>| & It is a list of \verb|SubmissionResult|, storing result of each individual \verb|Submission|. \\
+    \code{SubmisionResults} & \code{List<SubmissionResult>} & It is a list of \code{SubmissionResult}, storing result of each individual \code{Submission}. \\
     \hline
 \end{tabulary}
 
@@ -1399,17 +1398,17 @@ The settings will be stored in a JSON file.
 }
 \end{minted}
 
-The \verb|Theme| field stores the current color theme. There are three possible values, \verb|Light|, \verb|Dark| or \verb|Default|. The data will be validated before applying, if it is empty or invalid, the \verb|Default| theme will be applyed and write back to this field.
+The \code{Theme} field stores the current color theme. There are three possible values, \code{Light}, \code{Dark} or \code{Default}. The data will be validated before applying, if it is empty or invalid, the \code{Default} theme will be applyed and write back to this field.
 
-The \verb|RunCodeTimeLimit| field stores the max time allowed for the run code function. The data will be validated before applying, if it is not a positive integer, then a default 1000 will be applied and written back to this field. 
+The \code{RunCodeTimeLimit} field stores the max time allowed for the run code function. The data will be validated before applying, if it is not a positive integer, then a default 1000 will be applied and written back to this field. 
 
-The \verb|RunCodeMemoryLimit| field stores the max memory allowed for the run code function. The data will be validated before applying, if it is not a positive integer, then a default 67108864, which is 64MB will be applied and written back to this field.
+The \code{RunCodeMemoryLimit} field stores the max memory allowed for the run code function. The data will be validated before applying, if it is not a positive integer, then a default 67108864, which is 64MB will be applied and written back to this field.
 
-The \verb|SelectedLanguage| field stores the default programming language selected by the user. The value will be validated before applying, if it is empty or invalid, the internal default Python programming language configuration will be applied and written back to this field.
+The \code{SelectedLanguage} field stores the default programming language selected by the user. The value will be validated before applying, if it is empty or invalid, the internal default Python programming language configuration will be applied and written back to this field.
 
-The \verb|LanguageConfiguration| is a list of dictionaries allowing the user to configure custom programming languages. The data will be validated before applying, if a configuration is invalid, it will be ignored.
+The \code{LanguageConfiguration} is a list of dictionaries allowing the user to configure custom programming languages. The data will be validated before applying, if a configuration is invalid, it will be ignored.
 
-The \verb|CurrentUser| field stores the \verb|Uid| of the \verb|User|. The data will be validated. If the \verb|Uid| is not found in the database or the field is empty, the user will be asked to log in and a new value will be generated and written back to this field.
+The \code{CurrentUser} field stores the \code{Uid} of the \code{User}. The data will be validated. If the \code{Uid} is not found in the database or the field is empty, the user will be asked to log in and a new value will be generated and written back to this field.
 
 The entire JSON file will be validated before any data is fetched. If the file does not exist, a default template will be created. If the format or the encoding is wrong, a default template will override the incorrect file.
 
@@ -1418,17 +1417,17 @@ The entire JSON file will be validated before any data is fetched. If the file d
 
 \subsubsection{User table}
 
-The User table will have \verb|Uid| as its primary key. Since SQLite does not support \verb|Guid| data type natively, it will be converted into a string for storage. The same reason why the Role is stored in integer, and because the enumeration type is implemented in integer under the hood, there is no data conversion issue.
+The User table will have \code{Uid} as its primary key. Since SQLite does not support \code{Guid} data type natively, it will be converted into a string for storage. The same reason why the Role is stored in integer, and because the enumeration type is implemented in integer under the hood, there is no data conversion issue.
 
 All fields will be validated and no empty field is allowed.
 
-The \verb|GUID| will look like this: \verb|149f3e41-dcdb-43d5-8964-75249489f6cf|. It is a long random unique string of characters. Because it is too long, in this section, a placeholder \verb|<GUID>| will be used to represent a string of \verb|GUID|.
+The \code{GUID} will look like this: \code{149f3e41-dcdb-43d5-8964-75249489f6cf}. It is a long random unique string of characters. Because it is too long, in this section, a placeholder \code{<GUID>} will be used to represent a string of \code{GUID}.
 
 \begin{tabulary}{\textwidth}{|L|L|L|L|L|}
     \hline
     Uid & Name & Email & Role \\
     \hline
-    \verb|<GUID>| & ``UserName'' & ``UserName@test.com'' & 0 \\
+    \code{<GUID>} & ``UserName'' & ``UserName@test.com'' & 0 \\
     \hline
 \end{tabulary}
 
@@ -1444,15 +1443,15 @@ CREATE TABLE User
 
 \subsubsection{Problem table}
 
-The Problem table will have \verb|Id| as its primary key. Both \verb|Status| and \verb|Difficulty| will be stored in integer for the same reason before.
+The Problem table will have \code{Id} as its primary key. Both \code{Status} and \code{Difficulty} will be stored in integer for the same reason before.
 
-All fields will be validated and only the \verb|SourceHash| is allowed to be null as explained in the data structure design section.
+All fields will be validated and only the \code{SourceHash} is allowed to be null as explained in the data structure design section.
 
 \begin{tabulary}{\textwidth}{|L|L|L|L|}
     \hline
     Uid & Name & Description & Status  \\
     \hline
-    \verb|<GUID>| & ``name'' & ``Problem description'' & 0 \\
+    \code{<GUID>} & ``name'' & ``Problem description'' & 0 \\
     \hline
 \end{tabulary}
 
@@ -1480,7 +1479,7 @@ CREATE TABLE Problem
 
 \subsubsection{Tag table}
 
-The Tag table will have an auto-increment integer \verb|Id| as its primary key.
+The Tag table will have an auto-increment integer \code{Id} as its primary key.
 
 All fields will be validated and no empty field is allowed.
 
@@ -1502,7 +1501,7 @@ CREATE TABLE Tag
 
 \subsubsection{TagRecord table}
 
-The \verb|Tag| has a many-to-many relation with the \verb|Problem|. A \verb|Problem| can have multiple \verb|Tags| and a \verb|Tag| can be assigned to multiple \verb|Problems|. So a link table is required to normalize the data.
+The \code{Tag} has a many-to-many relation with the \code{Problem}. A \code{Problem} can have multiple \code{Tags} and a \code{Tag} can be assigned to multiple \code{Problems}. So a link table is required to normalize the data.
 
 \begin{tabulary}{\textwidth}{|L|L|L|}
     \hline
@@ -1525,9 +1524,9 @@ CREATE TABLE TagRecord
 
 \subsubsection{TestCase table}
 
-The TestCase table will have an auto-increment integer \verb|Id| as its primary key. Since SQLite does not support boolean data type, an integer will be used to store the data of \verb|IsExample|, 0 will represent false and 1 will represent true.
+The TestCase table will have an auto-increment integer \code{Id} as its primary key. Since SQLite does not support boolean data type, an integer will be used to store the data of \code{IsExample}, 0 will represent false and 1 will represent true.
 
-The \verb|TestCase| has a many-to-one relation to the \verb|Problem|, one \verb|Problem| can have multiple \verb|TestCase| while one \verb|TestCase| can only belong to one \verb|Problem|. So, a foreign key \verb|ProblemId| is enabled for the \verb|TestCase| to store its corresponding \verb|Problem|.
+The \code{TestCase} has a many-to-one relation to the \code{Problem}, one \code{Problem} can have multiple \code{TestCase} while one \code{TestCase} can only belong to one \code{Problem}. So, a foreign key \code{ProblemId} is enabled for the \code{TestCase} to store its corresponding \code{Problem}.
 
 All fields will be validated and no empty field is allowed.
 
@@ -1552,11 +1551,11 @@ CREATE TABLE TestCase
 
 \subsubsection{Submission table}
 
-The Submission table will have an auto-increment integer \verb|Id| as its primary key. Since SQLite does not support the \verb|DateTime| data type, the time will be converted to a string before storing. Similarly, the conversion will be done for Language and UserUid.
+The Submission table will have an auto-increment integer \code{Id} as its primary key. Since SQLite does not support the \code{DateTime} data type, the time will be converted to a string before storing. Similarly, the conversion will be done for Language and UserUid.
 
-A \verb|Submission| has a one-to-many relationship with a \verb|Problem|, a \verb|Problem| can have multiple \verb|Submission| while a \verb|Submission| can only be submitted to one \verb|Problem|. It also has a many-to-one relationship with a \verb|User|. A \verb|User| can create multiple \verb|Submission| while a \verb|Submission| can only be created by one \verb|User|. It also has a many-to-one relationship with a \verb|AssignmentSubmission|. So it will have three foreign keys to establish such relationships.
+A \code{Submission} has a one-to-many relationship with a \code{Problem}, a \code{Problem} can have multiple \code{Submission} while a \code{Submission} can only be submitted to one \code{Problem}. It also has a many-to-one relationship with a \code{User}. A \code{User} can create multiple \code{Submission} while a \code{Submission} can only be created by one \code{User}. It also has a many-to-one relationship with a \code{AssignmentSubmission}. So it will have three foreign keys to establish such relationships.
 
-All fields will be validated and no empty field is allowed, except for the Code, empty \verb|Submission| is allowed and for the AssignmentSubmissionResultUid, if the \verb|Submission| does not belong to an \verb|Assignment|, a null value is allowed.
+All fields will be validated and no empty field is allowed, except for the Code, empty \code{Submission} is allowed and for the AssignmentSubmissionResultUid, if the \code{Submission} does not belong to an \code{Assignment}, a null value is allowed.
 
 \begin{tabulary}{\textwidth}{|L|L|L|L|}
     \hline
@@ -1570,7 +1569,7 @@ All fields will be validated and no empty field is allowed, except for the Code,
     \hline
     Language & UserUid & AssignmentSubmissionUid \\
     \hline
-    ``Python'' & \verb|<GUID>| & \verb|<GUID>| \\
+    ``Python'' & \code{<GUID>} & \code{<GUID>} \\
     \hline
 \end{tabulary}
 
@@ -1589,7 +1588,7 @@ CREATE TABLE Submission
 
 \subsubsection{ProblemList table}
 
-The ProblemList table will have an auto-increment \verb|Id| as its primary key.
+The ProblemList table will have an auto-increment \code{Id} as its primary key.
 
 All fields will be validated and no null field is allowed.
 
@@ -1612,7 +1611,7 @@ CREATE TABLE Submission
 
 \subsubsection{ProblemListRecord table}
 
-The \verb|ProblemList| and \verb|Problem| has a many-to-many relationship, so a ProblemListRecord table is used to normalize the data.
+The \code{ProblemList} and \code{Problem} has a many-to-many relationship, so a ProblemListRecord table is used to normalize the data.
 
 \begin{tabulary}{\textwidth}{|L|L|L|}
     \hline
@@ -1633,7 +1632,7 @@ CREATE TABLE ProblemListRecord
 
 \subsubsection{Assignment table}
 
-The Assignment table will have \verb|Uid| as its primary key. It has a one-to-many relationship with a User, so a \verb|UserUid| field is used to record this relationship.
+The Assignment table will have \code{Uid} as its primary key. It has a one-to-many relationship with a User, so a \code{UserUid} field is used to record this relationship.
 
 All fields will be validated and no null field is allowed.
 
@@ -1641,7 +1640,7 @@ All fields will be validated and no null field is allowed.
     \hline
     Uid & DueDate & Status & Type & UserUid \\
     \hline
-    \verb|<GUID>| & ``11/11/2021 14:20:04`` & 1 & 0 & \verb|<GUID>| \\
+    \code{<GUID>} & ``11/11/2021 14:20:04`` & 1 & 0 & \code{<GUID>} \\
     \hline
 \end{tabulary}
 
@@ -1658,13 +1657,13 @@ CREATE TABLE Assignment
 
 \subsubsection{AssignmentRecord table}
 
-\verb|Assignment| has a many-to-many relationship with the \verb|Problem| so an AssignmentRecord table is used to normalize the data.
+\code{Assignment} has a many-to-many relationship with the \code{Problem} so an AssignmentRecord table is used to normalize the data.
 
 \begin{tabulary}{\textwidth}{|L|L|L|L|}
     \hline
     Id & AssignmentUid & ProblemId & SourceHash \\
     \hline
-    1 & \verb|<GUID>| & 1 & \verb|<Hash>| \\
+    1 & \code{<GUID>} & 1 & \code{<Hash>} \\
     \hline
 \end{tabulary}
 
@@ -1680,13 +1679,13 @@ CREATE TABLE AssignmentRecord
 
 \subsubsection{AssignmentSubmission table}
 
-The AssignmentSubmission table will have \verb|Uid| as its primary key. It has a many-to-one relationship with an Assignment, so a \verb|AssignmentUid| field is used to record this relationship. It has a many-to-one relationship with a User, so a \verb|UserUid| field is used to record this relationship.
+The AssignmentSubmission table will have \code{Uid} as its primary key. It has a many-to-one relationship with an Assignment, so a \code{AssignmentUid} field is used to record this relationship. It has a many-to-one relationship with a User, so a \code{UserUid} field is used to record this relationship.
 
 \begin{tabulary}{\textwidth}{|L|L|L|L|}
     \hline
     Uid & AssignmentUid & UserUid & Status \\
     \hline
-    \verb|<GUID>| & \verb|<GUID>| & \verb|<GUID>| & 0 \\
+    \code{<GUID>} & \code{<GUID>} & \code{<GUID>} & 0 \\
     \hline
 \end{tabulary}
 
@@ -1702,9 +1701,9 @@ CREATE TABLE AssignmentSubmission
 
 \subsubsection{TestCaseResult table}
 
-The TestCaseResult table will have an auto-increment \verb|Id| as its primary key.
+The TestCaseResult table will have an auto-increment \code{Id} as its primary key.
 
-It has a many-to-one relationship with a TestCase, so a \verb|TestCaseId| field is used to record this relationship. It has a many-to-one relationship with a SubmissionResult, so a \verb|SubmissionResultId| field is used to record this relationship.
+It has a many-to-one relationship with a TestCase, so a \code{TestCaseId} field is used to record this relationship. It has a many-to-one relationship with a SubmissionResult, so a \code{SubmissionResultId} field is used to record this relationship.
 
 All fields will be validated and no null field is allowed.
 
@@ -1742,9 +1741,9 @@ CREATE TABLE TestCaseResult
 
 \subsubsection{SubmissionResult table}
 
-The SubmissionResult table will have an auto-increment \verb|Id| as its primary key.
+The SubmissionResult table will have an auto-increment \code{Id} as its primary key.
 
-It has a one-to-one relationship with a Submission, so a \verb|SubmissionId| field is used to record this relationship. It may have a many-to-one relationship with an AssignmentSubmissionResult, so an AssignmentSubmissionResultUid field is used to record this relationship. 
+It has a one-to-one relationship with a Submission, so a \code{SubmissionId} field is used to record this relationship. It may have a many-to-one relationship with an AssignmentSubmissionResult, so an AssignmentSubmissionResultUid field is used to record this relationship. 
 
 \begin{tabulary}{\textwidth}{|L|L|L|}
     \hline
@@ -1763,13 +1762,13 @@ CREATE TABLE SubmissionResult
 
 \subsubsection{AssignmentSubmissionResult table}
 
-The AssignmentSubmission table will have \verb|Uid| as its primary key. It has a one-to-one relationship with a AssignmentSubmission, so a \verb|Id| field is used to record this relationship.
+The AssignmentSubmission table will have \code{Uid} as its primary key. It has a one-to-one relationship with a AssignmentSubmission, so a \code{Id} field is used to record this relationship.
 
 \begin{tabulary}{\textwidth}{|L|L|}
     \hline
     Uid & AssignmentSubmissionUid \\
     \hline
-    \verb|<GUID>| & \verb|<GUID>| \\
+    \code{<GUID>} & \code{<GUID>} \\
     \hline
 \end{tabulary}
 
@@ -1793,7 +1792,7 @@ All data will be exported into JSON files.
 }
 \end{minted}
 
-Apart from the raw data, two extra fields are added to help validate the JSON file. The \verb|FileType| will always be ``Algorithm Dynamics Exported Data''. This field will be validated first to make sure the correct file is imported. The \verb|DataType| determines the type of the \verb|Data| and helps the module to deserialize the data.
+Apart from the raw data, two extra fields are added to help validate the JSON file. The \code{FileType} will always be ``Algorithm Dynamics Exported Data''. This field will be validated first to make sure the correct file is imported. The \code{DataType} determines the type of the \code{Data} and helps the module to deserialize the data.
 
 \subsubsection{Import/Export a Problem}
 
@@ -2609,7 +2608,7 @@ During this milestone, a basic prototype with user interface will be created. Th
 
 I will create a prototype with a minimal user interface to test run the development environment and building tools.\cite{microsoft:docs:create-your-first-winui3-app}
 
-I create the \verb|App.xaml| file, which will include all application resources. Right now, the only resources imported is the \verb|XamlControlsResource|, which provides the resources for the all controls. Later on, I will create and import new resources in this file.
+I create the \code{App.xaml} file, which will include all application resources. Right now, the only resources imported is the \code{XamlControlsResource}, which provides the resources for the all controls. Later on, I will create and import new resources in this file.
 
 \begin{minted}{xml}
 <Application
@@ -2629,7 +2628,7 @@ I create the \verb|App.xaml| file, which will include all application resources.
 </Application>
 \end{minted}
 
-I then create the \verb|App.xaml.cs| file, which will include the main entry point of the application. It inheriates from the \verb|Application| class, and create a \verb|Window| object to show the main window. The \verb|App| class will activate the main window when it is launched.
+I then create the \code{App.xaml.cs} file, which will include the main entry point of the application. It inheriates from the \code{Application} class, and create a \code{Window} object to show the main window. The \code{App} class will activate the main window when it is launched.
 
 \begin{minted}{csharp}
 using Microsoft.UI.Xaml;
@@ -2666,7 +2665,7 @@ namespace Algorithm_Dynamics
 }
 \end{minted}
 
-Next, I create the \verb|MainWindow.xaml| file, which includes the layout of the main window. Right now, it only has a stack panel and a button inside to test everything is working.
+Next, I create the \code{MainWindow.xaml} file, which includes the layout of the main window. Right now, it only has a stack panel and a button inside to test everything is working.
 
 \begin{minted}{xml}
 <Window
@@ -2690,7 +2689,7 @@ Next, I create the \verb|MainWindow.xaml| file, which includes the layout of the
 </Window>
 \end{minted}
 
-Finally, I create the \verb|MainWindow.xaml.cs| file. It contains all the UI logic. In this prototype, when the button in the UI is clicked, its text will be changed to ``Clicked''.
+Finally, I create the \code{MainWindow.xaml.cs} file. It contains all the UI logic. In this prototype, when the button in the UI is clicked, its text will be changed to ``Clicked''.
 
 \begin{minted}{csharp}
 using Microsoft.UI.Xaml;
@@ -2754,7 +2753,7 @@ First, I will implement the NavigationView as \hyperref[sec:NavigationViewDesign
 </NavigationView>
 \end{minted}
 
-I assign a name \verb|MainNavView| to the control so I can call it later in the code behind. I decide to hide the back button, which prevent the user to navigate the page in an unintended way. I also assign a \verb|SelectionChanged| event handler to the control, which will be used to handle the navigation.
+I assign a name \code{MainNavView} to the control so I can call it later in the code behind. I decide to hide the back button, which prevent the user to navigate the page in an unintended way. I also assign a \code{SelectionChanged} event handler to the control, which will be used to handle the navigation.
 
 I then need to add different options to the navigation menu.
 
@@ -2820,7 +2819,7 @@ public MainWindow()
 }
 \end{minted}
 
-Next, I need to handle the \verb|SelectionChanged| event, this event gets triggered when the user clicks on a navigation item, and it will update the content frame to display the corresponding page.
+Next, I need to handle the \code{SelectionChanged} event, this event gets triggered when the user clicks on a navigation item, and it will update the content frame to display the corresponding page.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -2853,7 +2852,7 @@ private void MainNavView_SelectionChanged(NavigationView sender, NavigationViewS
 \end{minted}
 
 
-Now, if I build and run the application, I should see the \verb|NavigationView| works correctly. However, I get a runtime exception.
+Now, if I build and run the application, I should see the \code{NavigationView} works correctly. However, I get a runtime exception.
 
 \begin{minted}{text}
 System.NullReferenceException
@@ -2869,9 +2868,9 @@ System.NullReferenceException
 \end{minted}
 
 
-It says object reference not set to an instance of an object when executing \verb|ContentFrame.Navigate(pageType);|. This means the \verb|pageType| does not exist. This is because I forget to create an actual HomePage, so it attempts to load a null object, failed, and throws the exception.  
+It says object reference not set to an instance of an object when executing \code{ContentFrame.Navigate(pageType);}. This means the \code{pageType} does not exist. This is because I forget to create an actual HomePage, so it attempts to load a null object, failed, and throws the exception.  
 
-I create all pages under the \verb|Algorithm_Dynamics.Pages| namespace. For now, all of them will only contain a text block showing their name. Here is an example of the HomePage.
+I create all pages under the \code{Algorithm_Dynamics.Pages} namespace. For now, all of them will only contain a text block showing their name. Here is an example of the HomePage.
 
 \begin{minted}{xml}
 <Page
@@ -2934,7 +2933,7 @@ Now the NavigationView is built and tested. I will continue to build other compo
 
 \subsubsection{Implementation}
 
-The HomePage is made of three components, the background image, the quick access tools and the recommendations. They are wrapped by a scroller so they can be accessed on any size screen. I place a grid with two rows inside the \verb|ScrollViewer|, the first row contains the background image, the second row contains the remaining tools. 
+The HomePage is made of three components, the background image, the quick access tools and the recommendations. They are wrapped by a scroller so they can be accessed on any size screen. I place a grid with two rows inside the \code{ScrollViewer}, the first row contains the background image, the second row contains the remaining tools. 
 
 \begin{minted}{xml}
 <Page
@@ -2967,7 +2966,7 @@ The HomePage is made of three components, the background image, the quick access
 </Page>
 \end{minted}
 
-Inside the background image grid, I place a \verb|Image| control with the source of the background image. It is stretched to fill the entire grid so \verb|Strecth| is set to \verb|UniformToFill|.
+Inside the background image grid, I place a \code{Image} control with the source of the background image. It is stretched to fill the entire grid so \code{Strecth} is set to \code{UniformToFill}.
 
 \begin{minted}{xml}
 <Image 
@@ -2983,7 +2982,7 @@ Inside the background image grid, I place a \verb|Image| control with the source
     Style="{ThemeResource TitleTextBlockStyle}"/>
 \end{minted}
 
-The \verb|TextBlock| is used to display a greeting message. It is placed on the bottom right. Because its content needs to be adjusted by the current time and the current user, it is binded to the a variable \verb|WelcomeMessage| so I can change its value programmatically.
+The \code{TextBlock} is used to display a greeting message. It is placed on the bottom right. Because its content needs to be adjusted by the current time and the current user, it is binded to the a variable \code{WelcomeMessage} so I can change its value programmatically.
 
 \begin{minted}{csharp}
 namespace Algorithm_Dynamics.Pages
@@ -3010,7 +3009,7 @@ The welcome message is adjusted by different time in the day. It should also dis
 /// Morning: 00:00-12:00
 /// Afternoon: 12:00-17:00
 /// Evening 17:00-0:00
-/// TODO: Add the username after it is implemented
+/// TODO Add the username after it is implemented
 /// </summary>
 private void SetWelcomeMessage()
 {
@@ -3044,7 +3043,7 @@ public HomePage()
 
 The image and the greeting message show up correctly, and because I am writing this in the morning, the correct greeting message is displayed.
 
-For the quick access toolbar, I choose to use the \verb|AdaptiveGridView| control for its \verb|OneRowMode| function, which allows the toolbar to scroll horizontally on small screens. The controls in the quick access toolbar should be loaded dynamically, so they can be changed easily in the future. So I create a \verb|QuickAccessItem| helper class. Each object will contain a name, an icon and an action. The name and the icon will be displayed to the user, and the action will be invoked when the user clicks on the control.
+For the quick access toolbar, I choose to use the \code{AdaptiveGridView} control for its \code{OneRowMode} function, which allows the toolbar to scroll horizontally on small screens. The controls in the quick access toolbar should be loaded dynamically, so they can be changed easily in the future. So I create a \code{QuickAccessItem} helper class. Each object will contain a name, an icon and an action. The name and the icon will be displayed to the user, and the action will be invoked when the user clicks on the control.
 
 \begin{minted}{csharp}
 using Microsoft.UI.Xaml.Controls;
@@ -3067,7 +3066,7 @@ namespace Algorithm_Dynamics.Models
 }
 \end{minted}
 
-Then I create a \verb|ObserableCollection| of \verb|QAItems| that binds to the grid.
+Then I create a \code{ObserableCollection} of \code{QAItems} that binds to the grid.
 
 \begin{minted}{csharp}
 public ObservableCollection<QuickAccessItem> QAItems { get; } = new ObservableCollection<QuickAccessItem>();
@@ -3104,7 +3103,7 @@ public ObservableCollection<QuickAccessItem> QAItems { get; } = new ObservableCo
 </controls:AdaptiveGridView>
 \end{minted}
 
-I need to add the items to the collection when the HomePage is loaded. I create a procedure \verb|InitializeQAItems|. Because I have passed the MainWindow object to the function, the MainNavView can be called inside. Because the CodingPage and the import/export logic is not completed yet, the Random Problem and Import function will be implemented later.
+I need to add the items to the collection when the HomePage is loaded. I create a procedure \code{InitializeQAItems}. Because I have passed the MainWindow object to the function, the MainNavView can be called inside. Because the CodingPage and the import/export logic is not completed yet, the Random Problem and Import function will be implemented later.
 
 \begin{minted}{csharp}
 public HomePage()
@@ -3119,7 +3118,7 @@ private void InitializeQAItems()
     QAItems.Add(new QuickAccessItem("Random Problem", Symbol.Shuffle, (m_window) =>
     {
         m_window.MainNavView.SelectedItem = null;
-        // TODO: Navigate the ContentFrame to the Coding page manually
+        // TODO Navigate the ContentFrame to the Coding page manually
         throw new NotImplementedException("[Blocking]: The CodingPage has not been implemented yet.");
     }));
     QAItems.Add(new QuickAccessItem("Playground", Symbol.Edit, (m_window) =>
@@ -3135,13 +3134,13 @@ private void InitializeQAItems()
     QAItems.Add(new QuickAccessItem("Import", Symbol.Import, (m_window) =>
     {
         m_window.MainNavView.SelectedItem = null;
-        // TODO: Handle the import logic
+        // TODO Handle the import logic
         throw new NotImplementedException("[Blocking]: The import logic has not been implemented yet.");
     }));
 }
 \end{minted}
 
-I need to handle the click event of the quick access toolbar. I create a procedure \verb|QAGridView_ItemClick|, which will invoke the action of the item.
+I need to handle the click event of the quick access toolbar. I create a procedure \code{QAGridView_ItemClick}, which will invoke the action of the item.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -3176,7 +3175,7 @@ System.NotImplementedException
    at ABI.Microsoft.UI.Xaml.Controls.ItemClickEventHandler.Do_Abi_Invoke(IntPtr thisPtr, IntPtr sender, IntPtr e)
 \end{minted}
 
-The recommendation control is similar. I create the \verb|RecommendItem| class and add the items to the collection.
+The recommendation control is similar. I create the \code{RecommendItem} class and add the items to the collection.
 
 \begin{minted}{csharp}
 namespace Algorithm_Dynamics.Models
@@ -3246,7 +3245,7 @@ public HomePage()
     InitializeComponent();
 }
 /// <summary>
-/// TODO: Generate Recommendation from database.
+/// TODO Generate Recommendation from database.
 /// </summary>
 private void InitializeRecItems()
 {
@@ -3273,7 +3272,7 @@ I need to handle the click event as well. And because neither the AssignmentsPag
 /// <param name="e"></param>
 private void RecGridView_ItemClick(object sender, ItemClickEventArgs e)
 {
-    // TODO: Handle the navigation.
+    // TODO Handle the navigation.
     throw new NotImplementedException("[Blocking]: The CodingPage or the AssignmentsPage has not been implemented yet.");
 }
 \end{minted}
@@ -3428,7 +3427,7 @@ namespace Algorithm_Dynamics.Pages
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{ProblemsPage-Toolbar}
 
-The toolbar shows up with all data loaded correctly. I can select an item correctly, but I cannot clear the selection. I need to empty the ComboBox when the user right clicks it. For the list ComboBox, I also need to allow the user to edit and delete an existing list, so when the user right click the list ComboBox, a menu flyout needs to show up with all options. I create a \verb|ClearComboBox| procedure to handle the right click event.
+The toolbar shows up with all data loaded correctly. I can select an item correctly, but I cannot clear the selection. I need to empty the ComboBox when the user right clicks it. For the list ComboBox, I also need to allow the user to edit and delete an existing list, so when the user right click the list ComboBox, a menu flyout needs to show up with all options. I create a \code{ClearComboBox} procedure to handle the right click event.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -3479,7 +3478,7 @@ For the list ComboBox, I need to create the layout for the menu flyout first.
 </ComboBox.Resources>
 \end{minted}
 
-There are three items in the menu, edit, delete, and clear. The edit and delete function has not been implemented yet, so they will not be handled for now. Because the clear event is sent by the menu button instead of the ComboBox, I overload the \verb|ClearComboBox| procedure to handle the clear event.
+There are three items in the menu, edit, delete, and clear. The edit and delete function has not been implemented yet, so they will not be handled for now. Because the clear event is sent by the menu button instead of the ComboBox, I overload the \code{ClearComboBox} procedure to handle the clear event.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -3544,7 +3543,7 @@ Next, I need to handle the delete and edit event for the list ComboBox. Because 
 /// <exception cref="NotImplementedException"></exception>
 private void EditProblemList(object sender, RoutedEventArgs e)
 {
-    // TODO: Navigate to edit page
+    // TODO Navigate to edit page
     throw new NotImplementedException();
 }
 
@@ -3566,7 +3565,7 @@ private async void DeleteProblemList(object sender, RoutedEventArgs e)
     var result = await dialog.ShowAsync();
     if (result == ContentDialogResult.Primary)
     {
-        // TODO: Delete the selected problem list
+        // TODO Delete the selected problem list
         throw new NotImplementedException();
     }
 }
@@ -3576,7 +3575,7 @@ Now, when I click the delete button, a popup shows up correctly to confirm delet
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{ProblemsPage-ContentDialog}
 
-I then implement the problem list below the toolbar. I use a \verb|ListView| to display the problem list. Similarly, I bind the data source to a variable Problems which contains a list of Problem. For each problem, its name, difficulty, status and tags are displayed.
+I then implement the problem list below the toolbar. I use a \code{ListView} to display the problem list. Similarly, I bind the data source to a variable Problems which contains a list of Problem. For each problem, its name, difficulty, status and tags are displayed.
 
 \begin{minted}{xml}
 <ListView x:Name="ProblemsListView"
@@ -3746,7 +3745,7 @@ Similarly, I can add the delete content dialog for these flyouts and leave the e
 /// <param name="e"></param>
 private void EditProblem(object sender, RoutedEventArgs e)
 {
-    // TODO: Navigate to the EditProblemPage
+    // TODO Navigate to the EditProblemPage
     throw new NotImplementedException();
 }
 
@@ -3768,7 +3767,7 @@ private async void DeleteProblem(object sender, RoutedEventArgs e)
     var result = await dialog.ShowAsync();
     if (result == ContentDialogResult.Primary)
     {
-        // TODO: Delete the selected problem
+        // TODO Delete the selected problem
         throw new NotImplementedException();
     }
 }
@@ -3782,7 +3781,7 @@ private async void DeleteProblem(object sender, RoutedEventArgs e)
 /// <exception cref="NotImplementedException"></exception>
 private void CreateProblemList(object sender, RoutedEventArgs e)
 {
-    // TODO: Navigate to the CreateProblemList
+    // TODO Navigate to the CreateProblemList
     throw new NotImplementedException();
 }
 
@@ -3804,13 +3803,13 @@ private async void DeleteProblems(object sender, RoutedEventArgs e)
     var result = await dialog.ShowAsync();
     if (result == ContentDialogResult.Primary)
     {
-        // TODO: Delete the selected problems
+        // TODO Delete the selected problems
         throw new NotImplementedException();
     }
 }
 \end{minted}
 
-Finally, for the ProblemsPage, I need to handle the searh query. The ProblemListView needs to be updated when different search queries are entered in the toolbar. I create a \verb|Search| procedure to handle the searc event. When the user select an option in the ComboBoxes, or enter the search box, the \verb|Search| procedure will be called. All data will be passed to a \verb|Query| function that returns searching result. For now, because the database is not implemented, I will just return the query. The \verb|Query| function will be implemented in the future.
+Finally, for the ProblemsPage, I need to handle the searh query. The ProblemListView needs to be updated when different search queries are entered in the toolbar. I create a \code{Search} procedure to handle the searc event. When the user select an option in the ComboBoxes, or enter the search box, the \code{Search} procedure will be called. All data will be passed to a \code{Query} function that returns searching result. For now, because the database is not implemented, I will just return the query. The \code{Query} function will be implemented in the future.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -3825,7 +3824,7 @@ private void Search(object sender, object args)
     var status = StatusComboBox.SelectedValue?.ToString();
     var tag = TagComboBox.SelectedValue?.ToString();
     var list = ListComboBox.SelectedValue?.ToString();
-    // TODO: Query(keywords, difficulty, status, tag, list);
+    // TODO Query(keywords, difficulty, status, tag, list);
     Problems.Clear();
     Problems.Add(new Problem(keywords, difficulty, status, tag));
 }
@@ -4010,7 +4009,7 @@ I add some CSS code to set the height and width of the editor to 100\%.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{PlaygroundPage-WebView2-ResizeFailed}
 
-Now, the scroll bars are gone. But when I resize the window, the editor still does not follow the window size. After reading the documentation of the Monaco Editor, I find out that I need to manually call the \verb|editor.layout()| function to recalculate the editor size.
+Now, the scroll bars are gone. But when I resize the window, the editor still does not follow the window size. After reading the documentation of the Monaco Editor, I find out that I need to manually call the \code{editor.layout()} function to recalculate the editor size.
 
 \begin{minted}{html}
 <script>
@@ -4162,7 +4161,7 @@ To allow different sections to be resizeable, I add two grid splitters to the gr
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{PlaygroundPage-Layout}
 
-All controls work correctly and they can be resized by the grid splitter. Now I need to interact with the code editer. I need to be able to get the code inside, set its programming language and color theme. To pass the config data to the editor, I will need to serialize the data into a JSON string and send it through web message. To avoid hand crafting the JSON string, I create a new class \verb|EditorConfig| and use the \verb|System.Text.Json| library to serialize the data.
+All controls work correctly and they can be resized by the grid splitter. Now I need to interact with the code editer. I need to be able to get the code inside, set its programming language and color theme. To pass the config data to the editor, I will need to serialize the data into a JSON string and send it through web message. To avoid hand crafting the JSON string, I create a new class \code{EditorConfig} and use the \code{System.Text.Json} library to serialize the data.
 
 \begin{minted}{csharp}
 public class EditorConfig
@@ -4216,7 +4215,7 @@ Now, when I open the PlaygroundPage, a code editor with dark theme and syntax hi
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{PlaygroundPage-EditorConfig-NotLoading}
 
-However, it is clearly not loading. Neither the theme, the syntax highlighting nor the code is set. It is clear that the config has not been passed correctly. When I open the devtool, nothing is in the output, which means that \verb|console.log(e)| has not been called.
+However, it is clearly not loading. Neither the theme, the syntax highlighting nor the code is set. It is clear that the config has not been passed correctly. When I open the devtool, nothing is in the output, which means that \code{console.log(e)} has not been called.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{PlaygroundPage-EditorConfig-NotLoading-Devtool}
 
@@ -4302,7 +4301,7 @@ public new ElementTheme RequestedTheme
 }
 \end{minted}
 
-Note that \verb|UpdateEditorConfig| is called when the language or the requested theme is changed to update the settings. To convert the theme code used in my app into the format of the Monaco Editor, I create a custom helper \verb|GetTheme| to do the conversion. And I update the initializing process to use the value from these variables.
+Note that \code{UpdateEditorConfig} is called when the language or the requested theme is changed to update the settings. To convert the theme code used in my app into the format of the Monaco Editor, I create a custom helper \code{GetTheme} to do the conversion. And I update the initializing process to use the value from these variables.
 
 \begin{minted}{csharp}
 async void InitializeWebViewAsync()
@@ -4338,7 +4337,7 @@ System.NullReferenceException
    at Algorithm_Dynamics.Controls.CodeEditor.UpdateEditorConfig(EditorConfig editorConfig) in C:\Algorithm-Dynamics\src\Algorithm Dynamics\Controls\CodeEditor.xaml.cs:line 74
 \end{minted}
 
-The exception is caused by the \verb|UpdateEditorConfig|. And after searching the documentation of the WebView2, the \verb|WebView.CoreWebView2| object will be null before it is fully initialized. I can not use the \verb|EnsureCoreWebView2Async| method before to ensure it is loaded because it is an async function while \verb|UpdateEditorConfig| needs to be called in the setter. So I decide to ignore the null object because it only exists in the initializing stage, and I have passed the config through the global window object anyway.
+The exception is caused by the \code{UpdateEditorConfig}. And after searching the documentation of the WebView2, the \code{WebView.CoreWebView2} object will be null before it is fully initialized. I can not use the \code{EnsureCoreWebView2Async} method before to ensure it is loaded because it is an async function while \code{UpdateEditorConfig} needs to be called in the setter. So I decide to ignore the null object because it only exists in the initializing stage, and I have passed the config through the global window object anyway.
 
 \begin{minted}{csharp}
 private void UpdateEditorConfig(EditorConfig editorConfig)
@@ -4434,7 +4433,7 @@ And it turns out to work perfectly as I expected. I can change the syntax highli
 
 I have finished the PlaygroundPage in this iteration. I will move on to the CodingPage next, which should be relatively simple because I have encapsulated the code editor into a user control and it can be easily reused.
 
-Just before I plan to start the CodingPage, I find another bug with the Editor control. When the user navigate from the PlaygroundPage to another page, and then navigate back, the editor config cannot be loaded correctly. After some more research, it turns out that the WebView2 component is not destroyed after the page is unloaded, so when the next time it is loaded, it initialize much faster and load before \verb|window.config| is set. I decide to design a three-way handshake protocol to solve this problem once and for all.
+Just before I plan to start the CodingPage, I find another bug with the Editor control. When the user navigate from the PlaygroundPage to another page, and then navigate back, the editor config cannot be loaded correctly. After some more research, it turns out that the WebView2 component is not destroyed after the page is unloaded, so when the next time it is loaded, it initialize much faster and load before \code{window.config} is set. I decide to design a three-way handshake protocol to solve this problem once and for all.
 
 \includegraphics[width=\linewidth]{webviewHandshake}
 
@@ -4526,7 +4525,7 @@ After testing the PlaygroundPage for a longer time, I find another issue. The me
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{Process-Explorer-WebView2}
 
-As I expected, the WebView2 process is created not destroyed when I navigate away from the PlaygroundPage. And each time a new instance is create, which is causing the memory leak. After some researching on the lifecycle of the WebView2 component \cite{github:microsoft-ui-xaml:4752}, I found that I can call \verb|WebView2.Close()| to manually dispose it. So I add a new procedure to handle the control unload event.
+As I expected, the WebView2 process is created not destroyed when I navigate away from the PlaygroundPage. And each time a new instance is create, which is causing the memory leak. After some researching on the lifecycle of the WebView2 component \cite{github:microsoft-ui-xaml:4752}, I found that I can call \code{WebView2.Close()} to manually dispose it. So I add a new procedure to handle the control unload event.
 
 \begin{minted}{csharp}
 private void CodeEditor_Unloaded(object sender, RoutedEventArgs e)
@@ -4802,7 +4801,7 @@ When I build and run the app, I encounter a problem - I cannot navigate to the C
 private void StartProblem(object sender, RoutedEventArgs e)
 {
     App app = (App)Application.Current;
-    // TODO: pass the selected problem to the CodingPage
+    // TODO pass the selected problem to the CodingPage
     app.ContentFrame.Navigate(typeof(CodingPage));
     app.MainNavView.SelectedItem = null;
 }
@@ -4858,7 +4857,7 @@ Next I will implement the full screen button. It will be a toggle, when clicking
 </Button>
 \end{minted}
 
-In the \verb|FullScreenButton_Click| function, I implement the logic of the toggle button. It sets the \verb|AppWindowPresent| property\cite{microsoft:docs:windowing-overview} to the opposite value and assign the correct icon\cite{microsoft:docs:segoe-fluent-icons-font}.
+In the \code{FullScreenButton_Click} function, I implement the logic of the toggle button. It sets the \code{AppWindowPresent} property\cite{microsoft:docs:windowing-overview} to the opposite value and assign the correct icon\cite{microsoft:docs:segoe-fluent-icons-font}.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -5013,7 +5012,7 @@ For the AccountPage, I use a grid of two row to divide the two sections for the 
 </Grid>
 \end{minted}
 
-Similar to the HomePage, I create a model \verb|StatisticsItem| for the statistics data and binds it to the grid. For now, I just add some sample data in for display purpose.
+Similar to the HomePage, I create a model \code{StatisticsItem} for the statistics data and binds it to the grid. For now, I just add some sample data in for display purpose.
 
 \begin{minted}{csharp}
 public class StatisticsItem
@@ -5045,7 +5044,7 @@ public ObservableCollection<StatisticsItem> StatsItems { get; } = new Observable
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{AccountPage-Layout}
 
-Next, I want to implement the edit function, which allows the user to change their user name, email address and role. To achieve this, I decide to replace the TextBlocks with TextBoxes for the user to edit the data when the Edit button is clicked. This can be achieved by setting the visibility of the controls. Instead of directly setting the visibility, I decide to bind the visibility property to a public variable named \verb|IsEditMode| to determine whether it should display. In order to notify the binded control, I implement the \verb|PropertyChanged| event\cite{microsoft:docs:data-binding-in-depth}.
+Next, I want to implement the edit function, which allows the user to change their user name, email address and role. To achieve this, I decide to replace the TextBlocks with TextBoxes for the user to edit the data when the Edit button is clicked. This can be achieved by setting the visibility of the controls. Instead of directly setting the visibility, I decide to bind the visibility property to a public variable named \code{IsEditMode} to determine whether it should display. In order to notify the binded control, I implement the \code{PropertyChanged} event\cite{microsoft:docs:data-binding-in-depth}.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -5064,7 +5063,7 @@ public void OnPropertyChanged([CallerMemberName] string propertyName = null)
 }
 \end{minted}
 
-I create a private variable \verb|_isEditMode| to record the current state. A public variable \verb|IsEditMode| to encapsulated the private variable so I can call the \verb|OnPropertyChanged| function I just implemented in the setter. I also create the \verb|IsNotEditMode| attribute to handle the boolean inversion.
+I create a private variable \code{_isEditMode} to record the current state. A public variable \code{IsEditMode} to encapsulated the private variable so I can call the \code{OnPropertyChanged} function I just implemented in the setter. I also create the \code{IsNotEditMode} attribute to handle the boolean inversion.
 
 \begin{minted}{csharp}
 private bool _isEditMode = false;
@@ -5399,7 +5398,7 @@ At the bottom of the page, a StackPanel is used to organize the save and cancel 
 </StackPanel>
 \end{minted}
 
-The CreateNewProblemPage can be navigated to from the ProblemsPage. I connect the add problem in the ProblemsPage to the navigation function. Instead of manually navigate through the ContentFrame, I decide to encapsulate the management of the NavigationView through an App.NavigateTo function. Which enables me to reuse this part of code, and make it less likely for me to get the navigation wrong in the future. I expose the \verb|m_window| and the \verb|MainNavView| as global static variables, so the can be accessed easily in the App level.
+The CreateNewProblemPage can be navigated to from the ProblemsPage. I connect the add problem in the ProblemsPage to the navigation function. Instead of manually navigate through the ContentFrame, I decide to encapsulate the management of the NavigationView through an App.NavigateTo function. Which enables me to reuse this part of code, and make it less likely for me to get the navigation wrong in the future. I expose the \code{m_window} and the \code{MainNavView} as global static variables, so the can be accessed easily in the App level.
 
 \begin{minted}{csharp}
 public static MainWindow m_window;
@@ -5449,7 +5448,7 @@ public static void NavigateTo(Type type, object parameter = null)
 }
 \end{minted}
 
-Now I can easily navigate to the CreateNewProblemPage through App.NavigateTo function.
+Now I can easily navigate to the CreateNewProblemPage with the \code{NavigateTo} function.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -5475,7 +5474,7 @@ Unhandled exception at 0x00007FFCDA3E6328 (Microsoft.ui.xaml.dll) in Algorithm D
 
 It seems to be an internal issue with Microsoft.ui.xaml.dll. After some research, I found that this is caused by an internal bug with the TokenizingTextBox\cite{github:WindowsCommunityToolkit:4437}. I will keep an eye on the issue and update the dependency as soon as it gets fixed. For now, I will just leave it as this and mark this as a known issue.
 
-Next, I implement a series of functions in the code behind to handle the add/delete test case function, and the save/cancel function.
+Next, I implement a series of functions in the code behind to handle the add delete test case function, and the save cancel function.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -5533,14 +5532,14 @@ private void CancelCreation(object sender, RoutedEventArgs e)
 /// <param name="e"></param>
 private void CreateProblem(object sender, RoutedEventArgs e)
 {
-    // TODO: save the Problem to database
+    // TODO save the Problem to database
     App.NavigateTo(typeof(ProblemsPage));
 }
 \end{minted}
 
 For the edit problem page, I find that there is not much difference from the create page. The edit problem page is just a create problem page with a different title, and some pre-loaded problem data. I think I can reuse most of the existing code to implement the edit page.
 
-I add an enumeration of \verb|Mode| to the page to specify whether it is a create page or an edit page.
+I add an enumeration of \code{Mode} to the page to specify whether it is a create page or an edit page.
 
 \begin{minted}{csharp}
 public enum Mode
@@ -5551,7 +5550,7 @@ public enum Mode
 private Mode PageMode = Mode.Create;
 \end{minted}
 
-I use a private readonly variable \verb|_title| to store the string of the title of the page. It determines the correct title for the page based on the page mode.
+I use a private readonly variable \code{_title} to store the string of the title of the page. It determines the correct title for the page based on the page mode.
 
 \begin{minted}{csharp}
 private string _title
@@ -5566,7 +5565,7 @@ private string _title
 }
 \end{minted}
 
-I bind the title TextBox to the \verb|_title| variable. Each time when the page is loaded, its value is recalculated and the correct one will be displayed.
+I bind the title TextBox to the \code{_title} variable. Each time when the page is loaded, its value is recalculated and the correct one will be displayed.
 
 \begin{minted}{xml}
 <TextBlock
@@ -5813,7 +5812,7 @@ private void AddProblemBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxText
     {
         var suitableItems = new List<string>();
         suitableItems.Add(sender.Text);
-        // TODO: search the actual problem from the database
+        // TODO search the actual problem from the database
         if (suitableItems.Count == 0)
         {
             suitableItems.Add("No results found");
@@ -5858,7 +5857,7 @@ When the user click the save button, I use a procedure to save the problem to th
 /// <param name="e"></param>
 private void SaveButton_Click(object sender, RoutedEventArgs e)
 {
-    // TODO: actually save the problem to the database.
+    // TODO actually save the problem to the database.
     TestTextBlock.Text = "The Problem List is saved.";
 }
 \end{minted}
@@ -5905,7 +5904,7 @@ private async void ExportAndFinish(object sender, RoutedEventArgs e)
         // we finish making changes and call CompleteUpdatesAsync.
         CachedFileManager.DeferUpdates(file);
         // write to file
-        await FileIO.WriteTextAsync(file, "TODO: export the Problem List/Assignment");
+        await FileIO.WriteTextAsync(file, "TODO export the Problem List/Assignment");
         // Let Windows know that we're finished changing the file so
         // the other app can update the remote version of the file.
         // Completing updates may require Windows to ask for user input.
@@ -5920,12 +5919,12 @@ private async void ExportAndFinish(object sender, RoutedEventArgs e)
         }
         else
         {
-            // TODO: handle saved failed
+            // TODO handle saved failed
         }
     }
     else
     {
-        // TODO: handle cancelled
+        // TODO handle cancelled
     }
 }
 \end{minted}
@@ -6095,15 +6094,15 @@ private void AssignmentsNavView_SelectionChanged(NavigationView sender, Navigati
 {
     if (AssignmentsNavView.SelectedItem == AssignmentsNavView.MenuItems[0])
     {
-        // TODO: Query the database and retrieve the assigned assignments
+        // TODO Query the database and retrieve the assigned assignments
     }
     else if (AssignmentsNavView.SelectedItem == AssignmentsNavView.MenuItems[1])
     {
-        // TODO: Query the database and retrieve the completed assignments
+        // TODO Query the database and retrieve the completed assignments
     }
     else
     {
-        // TODO: Query the database and retrieve the created assignments
+        // TODO Query the database and retrieve the created assignments
     }
 }
 \end{minted}
@@ -6143,7 +6142,7 @@ private async void ImportAssignment(object sender, RoutedEventArgs e)
     // Use file picker
     filePicker.FileTypeFilter.Add("*");
     StorageFile file = await filePicker.PickSingleFileAsync();
-    // TODO: Import file into the Database.
+    // TODO Import file into the Database.
 }
 \end{minted}
 
@@ -6354,7 +6353,7 @@ I can modify the navigate function in the AssignmentsPage to pass the correct ar
 /// <param name="e"></param>
 private void ListView_ItemClick(object sender, ItemClickEventArgs e)
 {
-    // TODO: use logged in user information to determine which page to display 
+    // TODO use logged in user information to determine which page to display 
     var assignment = e.ClickedItem as Assignment;
     if (assignment.Description == "Created Assignment")
     {
@@ -6645,7 +6644,7 @@ At the bottom, I put up some links about the project and a disclaimer.
     FontWeight="Normal"
     Text="Disclaimer" />
 <RichTextBlock>
-    <Paragraph>THIS CODE AND INFORMATION IS PROVIDED ‘AS IS’ WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.</Paragraph>
+    <Paragraph>THIS CODE AND INFORMATION IS PROVIDED 'AS IS' WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.</Paragraph>
 </RichTextBlock>
 \end{minted}
 
@@ -6675,13 +6674,26 @@ All the data should be immediately saved to the disk after the user changes a va
     \hline
 \end{tabulary}
 
-\section{Milestone 2: Implement the data structures}
-
+\section{Milestone 2: Implement the data structures and database}
 
 
 \section{Milestone 3: Implement the Judger}
 
-\subsubsection{Stakeholder feedback}
+\subsection{Implementation and testing}
+
+The Judger needs to be initialized with a working directory path for it to store all the temporary files. A folder path and the file name of the source code is taken as arguments.
+
+\begin{minted}{csharp}
+public static void SetSourceCodeFilePath(string FolderPath, string FileName)
+{
+    _SourceCodeFolderPath = FolderPath;
+    _SourceCodeFilePath = Path.Combine(FolderPath, FileName) + "{SourceCodeFileExtension}";
+    _ExecutableFilePath = Path.Combine(FolderPath, FileName) + ".exe";
+}
+\end{minted}
+
+
+\subsection{Stakeholder feedback}
 
 PCloud reported that the Judger will panic when the language config is not correct. This is a very serious issue, the Judger should not crash in any circumstances. I am able to reproduce it in my environment.
 
@@ -6701,7 +6713,7 @@ ThreadOperations.ExecuteWithAbortSafety(Action action)
 
 If the compiler does not exist on the path, the Judger will panic directly. This should be handled more gracefully and a proper error should be reported. I can add a check for the compiler existence before running.
 
-I set up a function \verb|GetFullPath| to search the local folder and environment variable path for a given file. It returns null if the file is not found.
+I set up a function \code{GetFullPath} to search the local folder and environment variable path for a given file. It returns null if the file is not found.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -6728,7 +6740,7 @@ private static string GetFullPath(string fileName)
 }
 \end{minted}
 
-Then I set up another function \verb|ExistsOnPath| which returns a boolean value to check whether the compiler exists.
+Then I set up another function \code{ExistsOnPath} which returns a boolean value to check whether the compiler exists.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -6742,7 +6754,7 @@ private static bool ExistsOnPath(string fileName)
 }
 \end{minted}
 
-Both method are set to private as they are only intended to be used inside the \verb|Judger| class.
+Both method are set to private as they are only intended to be used inside the \code{Judger} class.
 
 Now, I can check whether the compile exists before compiling. A system error will be reported if it encounters error.
 
@@ -6792,7 +6804,7 @@ public async Task TestCompileSystemError()
 }
 \end{minted}
 
-I noticed another issue, the Judger can encounter the same issue when executing as well. For interrupting language like Python, the interruper is called during execution, so its path must be check before executing as well. Since I have written the function for \verb|ExistsOnPath| it is easy to set up another check before executing.
+I noticed another issue, the Judger can encounter the same issue when executing as well. For interrupting language like Python, the interruper is called during execution, so its path must be check before executing as well. Since I have written the function for \code{ExistsOnPath} it is easy to set up another check before executing.
 
 \begin{minted}{csharp}
 // Check run command before running
@@ -6928,6 +6940,13 @@ I show this result back to the stakeholder, and he is happy with how I handle th
 \subsubsection{Themes/Pivot.xaml}
 
 \inputminted{xml}{"../src/Algorithm Dynamics/Themes/Pivot.xaml"}
+
+% break on URL numbers
+\setcounter{biburlnumpenalty}{9000}
+% break on URL lower case letters
+\setcounter{biburllcpenalty}{9000}
+% break on URL UPPER CASE letters
+\setcounter{biburlucpenalty}{9000}
 
 \printbibliography[
     heading=bibintoc,
