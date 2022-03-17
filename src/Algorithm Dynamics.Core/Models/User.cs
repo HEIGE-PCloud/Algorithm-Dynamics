@@ -85,9 +85,4 @@ namespace Algorithm_Dynamics.Core.Models
             return HashCode.Combine(Uid, Name, Email, Role);
         }
     }
-    public enum Role
-    {
-        Student,
-        Teacher
-    }
 }

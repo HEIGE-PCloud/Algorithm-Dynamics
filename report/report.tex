@@ -2606,6 +2606,8 @@ During this milestone, a basic prototype with user interface will be created. Th
 
 \subsubsection{Implementation}
 
+TODO: CI
+
 I will create a prototype with a minimal user interface to test run the development environment and building tools.\cite{microsoft:docs:create-your-first-winui3-app}
 
 I create the \code{App.xaml} file, which will include all application resources. Right now, the only resources imported is the \code{XamlControlsResource}, which provides the resources for the all controls. Later on, I will create and import new resources in this file.
@@ -6716,7 +6718,7 @@ I decided to create the model and the database structure at the same time, so th
 
 I decide to use SQLite\cite{sqlite} as the database since it is a small, fast and light weight database suitable for local data storage. In order to access the database, I use the Microsoft.Data.Sqlite\cite{microsoft:docs:sqlite} database to send my query commands to the local database.
 
-First, I create a test table to test the workflow. Under Algorithm_Dynamics.Core.Helpers namespace, I create a class DataAccess. I decide to make it public since it needs to be accessed in order to set the physical location of the database. I decide to make it static since it is essentially a collection of helper functions that depend on each other, but no instance needs to be created in order to call them. I decide to set it to a partial class, since I intend to split functions which handle different data models into different files, so each file only contains a partial of the class.
+First, I create a test table to test the workflow. Under Algorithm\_Dynamics.Core.Helpers namespace, I create a class DataAccess. I decide to make it public since it needs to be accessed in order to set the physical location of the database. I decide to make it static since it is essentially a collection of helper functions that depend on each other, but no instance needs to be created in order to call them. I decide to set it to a partial class, since I intend to split functions which handle different data models into different files, so each file only contains a partial of the class.
 
 \begin{minted}{csharp}
 using Microsoft.Data.Sqlite;
@@ -7077,6 +7079,10 @@ text and messages are useful.
 
 \chapter{Source Code}
 
+\section{Algorithm Dynamics}
+
+\subsection{Main}
+
 \subsubsection{App.xaml}
 
 \inputminted{xml}{"../src/Algorithm Dynamics/App.xaml"}
@@ -7084,6 +7090,16 @@ text and messages are useful.
 \subsubsection{App.xaml.cs}
 
 \inputminted{csharp}{"../src/Algorithm Dynamics/App.xaml.cs"}
+
+\subsubsection{MainWindow.xaml}
+
+\inputminted{xml}{"../src/Algorithm Dynamics/MainWindow.xaml"}
+
+\subsubsection{MainWindow.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics/MainWindow.xaml.cs"}
+
+\subsection{Themes}
 
 \subsubsection{Themes/FlyoutPresenter.xaml}
 
@@ -7096,6 +7112,226 @@ text and messages are useful.
 \subsubsection{Themes/Pivot.xaml}
 
 \inputminted{xml}{"../src/Algorithm Dynamics/Themes/Pivot.xaml"}
+
+\subsection{Controls}
+
+\subsubsection{Controls/CodeEditor.xaml}
+
+\inputminted{xml}{"../src/Algorithm Dynamics/Controls/CodeEditor.xaml"}
+
+\subsubsection{Controls/CodeEditor.xaml.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics/Controls/CodeEditor.xaml.cs"}
+
+\subsubsection{Controls/TitleBar.xaml}
+
+\inputminted{xml}{"../src/Algorithm Dynamics/Controls/TitleBar.xaml"}
+
+\subsubsection{Controls/TitleBar.xaml.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics/Controls/TitleBar.xaml.cs"}
+
+\subsection{Helpers}
+
+\subsubsection{Helpers/AppWindowExtensions.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics/Helpers/AppWindowExtensions.cs"}
+
+\subsubsection{Helpers/BoolToVisibilityConverter.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics/Helpers/BoolToVisibilityConverter.cs"}
+
+\subsubsection{Helpers/FileHelper.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics/Helpers/FileHelper.cs"}
+
+\subsubsection{Helpers/IntToEnumConverter.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics/Helpers/IntToEnumConverter.cs"}
+
+\subsection{Models}
+
+\subsubsection{Models/QuickAccessItem.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics/Models/QuickAccessItem.cs"}
+
+\subsubsection{Models/RecommendItem.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics/Models/RecommendItem.cs"}
+
+\subsubsection{Models/StatisticsItem.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics/Models/StatisticsItem.cs"}
+
+\subsection{Pages}
+
+\subsubsection{Pages/AccountPage.xaml}
+
+\inputminted{xml}{"../src/Algorithm Dynamics/Pages/AccountPage.xaml"}
+
+\subsubsection{Pages/AccountPage.xaml.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics/Pages/AccountPage.xaml.cs"}
+
+\subsubsection{Pages/AssignmentDetailsPage.xaml}
+
+\inputminted{xml}{"../src/Algorithm Dynamics/Pages/AssignmentDetailsPage.xaml"}
+
+\subsubsection{Pages/AssignmentDetailsPage.xaml.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics/Pages/AssignmentDetailsPage.xaml.cs"}
+
+\subsubsection{Pages/AssignmentsPage.xaml}
+
+\inputminted{xml}{"../src/Algorithm Dynamics/Pages/AssignmentsPage.xaml"}
+
+\subsubsection{Pages/AssignmentsPage.xaml.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics/Pages/AssignmentsPage.xaml.cs"}
+
+\subsubsection{Pages/CodingPage.xaml}
+
+\inputminted{xml}{"../src/Algorithm Dynamics/Pages/CodingPage.xaml"}
+
+\subsubsection{Pages/CodingPage.xaml.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics/Pages/CodingPage.xaml.cs"}
+
+\subsubsection{Pages/CreateNewProblemListPage.xaml}
+
+\inputminted{xml}{"../src/Algorithm Dynamics/Pages/CreateNewProblemListPage.xaml"}
+
+\subsubsection{Pages/CreateNewProblemListPage.xaml.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics/Pages/CreateNewProblemListPage.xaml.cs"}
+
+\subsubsection{Pages/CreateNewProblemPage.xaml}
+
+\inputminted{xml}{"../src/Algorithm Dynamics/Pages/CreateNewProblemPage.xaml"}
+
+\subsubsection{Pages/CreateNewProblemPage.xaml.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics/Pages/CreateNewProblemPage.xaml.cs"}
+
+\subsubsection{Pages/HomePage.xaml}
+
+\inputminted{xml}{"../src/Algorithm Dynamics/Pages/HomePage.xaml"}
+
+\subsubsection{Pages/HomePage.xaml.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics/Pages/HomePage.xaml.cs"}
+
+\subsubsection{Pages/PlaygroundPage.xaml}
+
+\inputminted{xml}{"../src/Algorithm Dynamics/Pages/PlaygroundPage.xaml"}
+
+\subsubsection{Pages/PlaygroundPage.xaml.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics/Pages/PlaygroundPage.xaml.cs"}
+
+\subsubsection{Pages/ProblemsPage.xaml}
+
+\inputminted{xml}{"../src/Algorithm Dynamics/Pages/ProblemsPage.xaml"}
+
+\subsubsection{Pages/ProblemsPage.xaml.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics/Pages/ProblemsPage.xaml.cs"}
+
+\subsubsection{Pages/SettingsPage.xaml}
+
+\inputminted{xml}{"../src/Algorithm Dynamics/Pages/SettingsPage.xaml"}
+
+\subsubsection{Pages/SettingsPage.xaml.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics/Pages/SettingsPage.xaml.cs"}
+
+\section{Algorithm Dynamics.Core}
+
+\subsection{Helpers}
+
+\subsection{Models}
+
+\subsubsection{Models/Difficulty.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/Difficulty.cs"}
+
+\subsubsection{Models/Judger.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/Judger.cs"}
+
+\subsubsection{Models/Language.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/Language.cs"}
+
+\subsubsection{Models/Problem.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/Problem.cs"}
+
+\subsubsection{Models/ProblemList.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/ProblemList.cs"}
+
+\subsubsection{Models/ProblemStatus.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/ProblemStatus.cs"}
+
+\subsubsection{Models/ResultCode.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/ResultCode.cs"}
+
+\subsubsection{Models/Role.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/Role.cs"}
+
+\subsubsection{Models/RunCodeResult.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/RunCodeResult.cs"}
+
+\subsubsection{Models/StatusCode.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/StatusCode.cs"}
+
+\subsubsection{Models/Submission.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/Submission.cs"}
+
+\subsubsection{Models/SubmissionResult.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/SubmissionResult.cs"}
+
+\subsubsection{Models/Tag.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/Tag.cs"}
+
+\subsubsection{Models/TestCase.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/TestCase.cs"}
+
+\subsubsection{Models/TestCaseResult.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/TestCaseResult.cs"}
+
+\subsubsection{Models/User.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/User.cs"}
+
+\section{Algorithm Dynamics.Test}
+
+\subsection{DatabaseHelper.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics.Test/DatabaseHelper.cs"}
+
+\subsection{TestDataAccess.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics.Test/TestDataAccess.cs"}
+
+\subsection{TestDataSerialization.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics.Test/TestDataSerialization.cs"}
+
+\subsection{TestJudger.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics.Test/TestJudger.cs"}
 
 % break on URL numbers
 \setcounter{biburlnumpenalty}{9000}

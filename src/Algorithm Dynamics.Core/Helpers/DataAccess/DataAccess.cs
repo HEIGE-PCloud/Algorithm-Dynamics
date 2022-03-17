@@ -24,7 +24,7 @@ namespace Algorithm_Dynamics.Core.Helpers
             // Create a new database if not exist
             if (!File.Exists(dbPath))
             {
-                File.CreateText(dbPath);
+                File.CreateText(dbPath).Dispose();
             }
 
             // Create tables
