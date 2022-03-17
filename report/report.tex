@@ -6414,6 +6414,23 @@ All these buttons are not working right now, since the UI is the only thing that
     \hline
 \end{tabulary}
 
+\subsubsection{Stakeholder feedback}
+
+When I show the assignment pages to Mr Grimwood, he asked me that how the student's submission is graded? Is it send to a server or is it graded locally. I explained that the code submission will be compiled and run locally against test cases. He then expressed concerns of the security of the grading system. Allowing any external code to be run on the teacher's computer may not be a good idea.
+
+He showed this example to me:
+
+\begin{minted}{python}
+import os
+os.system("calc")
+\end{minted}
+
+When executing this Python code, the system calculator will be launched. The \code{calc} command can be replaced with any other commands, such as deleting files or shutting down the computer.
+
+After some research, there is no easy way on Windows to restrictive the priviliges for certain code. Since this security issue is very serious, we both agree that implementing the assignment feature in this way is not ideal.
+
+For now, I will discontinue all the assignment related feature in the prototype. I will continue researching and discuss some potintial solutions in the Evaluation chapter.
+
 \subsection{Create the SettingsPage}
 
 \subsubsection{Implementation}
@@ -6804,7 +6821,7 @@ public async Task TestCompileSystemError()
 }
 \end{minted}
 
-I noticed another issue, the Judger can encounter the same issue when executing as well. For interrupting language like Python, the interruper is called during execution, so its path must be check before executing as well. Since I have written the function for \code{ExistsOnPath} it is easy to set up another check before executing.
+I noticed another issue, the Judger can encounter the same issue when executing as well. For interpreting language like Python, the interpreter is called during execution, so its path must be check before executing as well. Since I have written the function for \code{ExistsOnPath} it is easy to set up another check before executing.
 
 \begin{minted}{csharp}
 // Check run command before running
@@ -6856,15 +6873,19 @@ A total of 1 test files matched the specified pattern.
 Passed!  - Failed:     0, Passed:     2, Skipped:     0, Total:     2, Duration: 49 ms - Algorithm Dynamics.Test.dll (net6.0)
 \end{minted}
 
+I then test it in the integration environment, the error message is displayed correctly and so is the error code.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{SystemErrorReport}
+
 I show this result back to the stakeholder, and he is happy with how I handle this error.
 
-\section{Milestone 5: Handle data import/export}
+\section{Milestone 4: Handle data import/export}
 
-\section{Milestone 6: Handle settings}
+\section{Milestone 5: Handle settings}
 
-\section{Milestone 7: Handle API calls}
+\section{Milestone 6: Handle API calls}
 
-By following the instructions of the Microsoft Graph API documentation\cite{microsoft:docs:education-overview}, I login the Graph Explorer\cite{microsoft:graph-explorer} and run a GET query over the \code{/education/schools} endpoint. However, I received a 400 bad request.
+By following the instructions of the Microsoft Graph API documentation\cite{microsoft:docs:education-overview}, I login the Graph Explorer\cite{microsoft:graph-explorer} and run a \code{GET} query over the \code{/education/schools} endpoint. However, I received a 400 bad request.
 
 \begin{minted}{json}
 {
