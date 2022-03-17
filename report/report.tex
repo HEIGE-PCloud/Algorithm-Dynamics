@@ -6716,6 +6716,70 @@ I decided to create the model and the database structure at the same time, so th
 
 I decide to use SQLite\cite{sqlite} as the database since it is a small, fast and light weight database suitable for local data storage. In order to access the database, I use the Microsoft.Data.Sqlite\cite{microsoft:docs:sqlite} database to send my query commands to the local database.
 
+First, I create a test table to test the workflow. Under Algorithm_Dynamics.Core.Helpers namespace, I create a class DataAccess. I decide to make it public since it needs to be accessed in order to set the physical location of the database. I decide to make it static since it is essentially a collection of helper functions that depend on each other, but no instance needs to be created in order to call them. I decide to set it to a partial class, since I intend to split functions which handle different data models into different files, so each file only contains a partial of the class.
+
+\begin{minted}{csharp}
+using Microsoft.Data.Sqlite;
+using System.IO;
+
+namespace Algorithm_Dynamics.Core.Helpers
+{
+    public static partial class DataAccess
+    {
+    }
+}
+\end{minted}
+
+I set up a private attribute \code{DbPath}, which stores the physical location of the database. And a function \code{InitDatabase}, which takes in a string, and init the database at that location.
+
+\begin{minted}{csharp}
+/// <summary>
+/// Store the physical loaction of the database.
+/// Use <see cref="InitializeDatabase(string)"/> to initialize the value.
+/// </summary>
+private static string DbPath;
+
+/// <summary>
+/// Initialize the database at the <see cref="dbPath"/> given.
+/// Execute CREATE TABLE commands.
+/// </summary>
+/// <param name="dbPath"></param>
+public static void InitializeDatabase(string dbPath)
+{
+}
+\end{minted}
+
+
+
+\begin{minted}{csharp}
+public static void InitializeDatabase(string dbPath)
+{
+    // Save the DbPath
+    DbPath = dbPath;
+
+    // Create a new database if not exist
+    if (!File.Exists(dbPath))
+    {
+        File.CreateText(dbPath).Dispose();
+    }
+
+    // Create tables
+    using (SqliteConnection db = new($"Filename={DbPath}"))
+    {
+        db.Open();
+
+        string tableCommand =
+            @"CREATE TABLE IF NOT EXISTS MyTable 
+            (
+                Primary_Key INTEGER PRIMARY KEY,
+                Text_Entry TEXT
+            );";
+        SqliteCommand createTable = new(tableCommand, db);
+
+        createTable.ExecuteNonQuery();
+    }
+}
+\end{minted}
 
 \section{Milestone 3: Implement the Judger}
 
@@ -6940,7 +7004,24 @@ Even if I can use these API, the Judging security issue which I mentioned before
 
 \chapter{Evaluation}
 
+\section{Alpha testing}
 
+% Run unit test
+% evaluate code coverage
+% run code analysis
+% evaluate whatever index it gives
+% run integration testing
+% go through each function
+
+Function: The program being used with a comprehensive selection of its features.
+• Robustness: Demonstrating that the majority of syntax, logic and run-time errors are handled.
+This includes validation checks and error messages.
+• Usability: That the product can be used with the interfaces designed and that the on-screen
+text and messages are useful.
+
+\section{Beta testing and review from stakeholders}
+
+% feedback from stakeholder
 
 \section{Success criteria}
 
@@ -6992,6 +7073,7 @@ Even if I can use these API, the Judging security issue which I mentioned before
     \hline
 \end{tabulary}
 
+\section{Limitation and further developement}
 
 \chapter{Source Code}
 

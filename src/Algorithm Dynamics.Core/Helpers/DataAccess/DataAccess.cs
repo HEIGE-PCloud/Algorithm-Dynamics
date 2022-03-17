@@ -1,5 +1,4 @@
 ﻿using Microsoft.Data.Sqlite;
-using System;
 using System.IO;
 
 namespace Algorithm_Dynamics.Core.Helpers
@@ -19,11 +18,16 @@ namespace Algorithm_Dynamics.Core.Helpers
         /// <param name="dbPath"></param>
         public static void InitializeDatabase(string dbPath)
         {
+            // Save the DbPath
             DbPath = dbPath;
+
+            // Create a new database if not exist
             if (!File.Exists(dbPath))
             {
-                File.CreateText(dbPath).Dispose();
+                File.CreateText(dbPath);
             }
+
+            // Create tables
             using (SqliteConnection db = new($"Filename={DbPath}"))
             {
                 db.Open();
@@ -223,17 +227,9 @@ namespace Algorithm_Dynamics.Core.Helpers
                 tableCommand +=
                     @"DROP TABLE IF EXISTS ProblemListRecord;";
 
+                SqliteCommand dropTable = new(tableCommand, db);
 
-
-
-
-
-
-
-
-                SqliteCommand createTable = new(tableCommand, db);
-
-                createTable.ExecuteNonQuery();
+                dropTable.ExecuteNonQuery();
             }
         }
     }
