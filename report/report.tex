@@ -3860,6 +3860,10 @@ The correct search result is returned and the search result is updated correctly
 
 The ProblemsPage is partially implemented with many todos left for the future. But in this iteration, it is good to go as all UI elements are ready. I will move on to the PlaygroundPage and CodingPage next.
 
+\subsubsection{Stakeholder feedback}
+
+TODO: Copy problem
+
 \subsection{Create the PlaygroundPage}
 
 \subsubsection{Implementation}
@@ -6002,6 +6006,9 @@ After adding these two lines, the save file picker can work correctly.
     \hline
 \end{tabulary}
 
+\subsubsection{Stakeholder feedback}
+
+TODO: Spell check
 
 \begin{tabulary}{\linewidth}{|L|l|L|}
     \hline
@@ -6691,7 +6698,23 @@ All the data should be immediately saved to the disk after the user changes a va
     \hline
 \end{tabulary}
 
+\subsubsection{Stakeholder feedback}
+
+TODO: Clear data
+
+\subsection{Stakeholder feedback}
+
+
+
 \section{Milestone 2: Implement the data structures and database}
+
+I decide to create a second project called Algorithm Dynamics.Core to separate the UI code and the core code. This allows me to organize the code base in a cleaner way, and allows me to run unit tests on the core code.
+
+When developing the core code, I decide not to integrate it with the UI right away, since it is very inefficient in testing and debugging. Instead, I will write unit tests for each functions, test everything in isolation, and then integrate the core code with the UI when it is ready.
+
+I decided to create the model and the database structure at the same time, so that I can make sure any change to the data model will be saved correctly into the database, preventing any data inconsistency between the runtime and the database.
+
+I decide to use SQLite\cite{sqlite} as the database since it is a small, fast and light weight database suitable for local data storage. In order to access the database, I use the Microsoft.Data.Sqlite\cite{microsoft:docs:sqlite} database to send my query commands to the local database.
 
 
 \section{Milestone 3: Implement the Judger}
