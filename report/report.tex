@@ -6718,7 +6718,7 @@ I decided to create the model and the database structure at the same time, so th
 
 I decide to use SQLite\cite{sqlite} as the database since it is a small, fast and light weight database suitable for local data storage. In order to access the database, I use the Microsoft.Data.Sqlite\cite{microsoft:docs:sqlite} database to send my query commands to the local database.
 
-First, I create a test table to test the workflow. Under Algorithm\_Dynamics.Core.Helpers namespace, I create a class DataAccess. I decide to make it public since it needs to be accessed in order to set the physical location of the database. I decide to make it static since it is essentially a collection of helper functions that depend on each other, but no instance needs to be created in order to call them. I decide to set it to a partial class, since I intend to split functions which handle different data models into different files, so each file only contains a partial of the class.
+First, I create a test table to test the workflow. Under Algorithm Dynamics.Core.Helpers namespace, I create a class DataAccess. I decide to make it public since it needs to be accessed in order to set the physical location of the database. I decide to make it static since it is essentially a collection of helper functions that depend on each other, but no instance needs to be created in order to call them. I decide to set it to a partial class, since I intend to split functions which handle different data models into different files, so each file only contains a partial of the class.
 
 \begin{minted}{csharp}
 using Microsoft.Data.Sqlite;
@@ -7249,71 +7249,119 @@ text and messages are useful.
 
 \subsection{Helpers}
 
+\subsubsection{Helpers/DataSerialization.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/Helpers/DataSerialization.cs"}
+
+\subsubsection{Helpers/DataAccess/DataAccess.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/Helpers/DataAccess/DataAccess.cs"}
+
+\subsubsection{Helpers/DataAccess/Language.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/Helpers/DataAccess/Language.cs"}
+
+\subsubsection{Helpers/DataAccess/Problem.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/Helpers/DataAccess/Problem.cs"}
+
+\subsubsection{Helpers/DataAccess/ProblemList.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/Helpers/DataAccess/ProblemList.cs"}
+
+\subsubsection{Helpers/DataAccess/Submission.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/Helpers/DataAccess/Submission.cs"}
+
+\subsubsection{Helpers/DataAccess/SubmissionResult.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/Helpers/DataAccess/SubmissionResult.cs"}
+
+\subsubsection{Helpers/DataAccess/Tag.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/Helpers/DataAccess/Tag.cs"}
+
+\subsubsection{Helpers/DataAccess/TestCase.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/Helpers/DataAccess/TestCase.cs"}
+
+\subsubsection{Helpers/DataAccess/TestCaseResult.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/Helpers/DataAccess/TestCaseResult.cs"}
+
+\subsubsection{Helpers/DataAccess/TestData.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/Helpers/DataAccess/TestData.cs"}
+
+\subsubsection{Helpers/DataAccess/User.cs}
+
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/Helpers/DataAccess/User.cs"}
+
 \subsection{Models}
 
 \subsubsection{Models/Difficulty.cs}
 
-\inputminted{csharp}{"../src/Algorithm Dynamics.Core/Difficulty.cs"}
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/Models/Difficulty.cs"}
 
 \subsubsection{Models/Judger.cs}
 
-\inputminted{csharp}{"../src/Algorithm Dynamics.Core/Judger.cs"}
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/Models/Judger.cs"}
 
 \subsubsection{Models/Language.cs}
 
-\inputminted{csharp}{"../src/Algorithm Dynamics.Core/Language.cs"}
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/Models/Language.cs"}
 
 \subsubsection{Models/Problem.cs}
 
-\inputminted{csharp}{"../src/Algorithm Dynamics.Core/Problem.cs"}
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/Models/Problem.cs"}
 
 \subsubsection{Models/ProblemList.cs}
 
-\inputminted{csharp}{"../src/Algorithm Dynamics.Core/ProblemList.cs"}
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/Models/ProblemList.cs"}
 
 \subsubsection{Models/ProblemStatus.cs}
 
-\inputminted{csharp}{"../src/Algorithm Dynamics.Core/ProblemStatus.cs"}
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/Models/ProblemStatus.cs"}
 
 \subsubsection{Models/ResultCode.cs}
 
-\inputminted{csharp}{"../src/Algorithm Dynamics.Core/ResultCode.cs"}
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/Models/ResultCode.cs"}
 
 \subsubsection{Models/Role.cs}
 
-\inputminted{csharp}{"../src/Algorithm Dynamics.Core/Role.cs"}
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/Models/Role.cs"}
 
 \subsubsection{Models/RunCodeResult.cs}
 
-\inputminted{csharp}{"../src/Algorithm Dynamics.Core/RunCodeResult.cs"}
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/Models/RunCodeResult.cs"}
 
 \subsubsection{Models/StatusCode.cs}
 
-\inputminted{csharp}{"../src/Algorithm Dynamics.Core/StatusCode.cs"}
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/Models/StatusCode.cs"}
 
 \subsubsection{Models/Submission.cs}
 
-\inputminted{csharp}{"../src/Algorithm Dynamics.Core/Submission.cs"}
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/Models/Submission.cs"}
 
 \subsubsection{Models/SubmissionResult.cs}
 
-\inputminted{csharp}{"../src/Algorithm Dynamics.Core/SubmissionResult.cs"}
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/Models/SubmissionResult.cs"}
 
 \subsubsection{Models/Tag.cs}
 
-\inputminted{csharp}{"../src/Algorithm Dynamics.Core/Tag.cs"}
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/Models/Tag.cs"}
 
 \subsubsection{Models/TestCase.cs}
 
-\inputminted{csharp}{"../src/Algorithm Dynamics.Core/TestCase.cs"}
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/Models/TestCase.cs"}
 
 \subsubsection{Models/TestCaseResult.cs}
 
-\inputminted{csharp}{"../src/Algorithm Dynamics.Core/TestCaseResult.cs"}
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/Models/TestCaseResult.cs"}
 
 \subsubsection{Models/User.cs}
 
-\inputminted{csharp}{"../src/Algorithm Dynamics.Core/User.cs"}
+\inputminted{csharp}{"../src/Algorithm Dynamics.Core/Models/User.cs"}
 
 \section{Algorithm Dynamics.Test}
 
