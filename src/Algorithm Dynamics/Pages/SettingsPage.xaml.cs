@@ -52,7 +52,7 @@ namespace Algorithm_Dynamics.Pages
         /// <summary>
         /// The RunCode TimeLimit value
         /// </summary>
-        public static int TimeLimit
+        public int TimeLimit
         {
             get
             {
@@ -81,7 +81,7 @@ namespace Algorithm_Dynamics.Pages
         /// <summary>
         /// The RunCode MemoryLimit value
         /// </summary>
-        public static int MemoryLimit
+        public int MemoryLimit
         {
             get
             {
@@ -285,7 +285,6 @@ namespace Algorithm_Dynamics.Pages
             Problem.All.ForEach(problem => problem.Delete());
             ClearAllProblemsFlyout.Hide();
         }
-
 
         /// <summary>
         /// Delete all submissions and submission results in the database

@@ -6972,6 +6972,112 @@ I show this result back to the stakeholder, and he is happy with how I handle th
 
 \section{Milestone 5: Handle settings}
 
+I designed a JSON schema to store the settings in a file in the design section, but after looking through some documentation, I found a better way of storing settings on Windows. I can use local app data store\cite{microsoft:docs:store-and-retrieve-app-data} to store the settings. Comparing to store the settings in JSON, this brings several advantages: the lifecycle of the settings files are managed by Windows, so when the app gets uninstalled, there will not be garbage settings file flying around the user's disk; the user also can't mess around the settings file directly, which reduces the risk of invalid settings; the data is stored in binary instead of plain text file, which saves disk space. Consider all these benefits, I decide to use \code{LocalSettings} container to store the settings.
+
+\subsection{Theme settings}
+
+The color theme of the app needs to be loaded when the app starts. So in App.xaml.cs, I added logic to handle this in \code{OnLaunched}.
+
+\begin{minted}{csharp}
+protected override async void OnLaunched(LaunchActivatedEventArgs args)
+{
+    // ...
+    InitializeTheme();
+}
+
+private static void InitializeTheme()
+{
+    // Load theme
+    ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+    var CurrentThemeValue = localSettings.Values["Theme"];
+
+    // if there exists a theme setting, use the theme setting
+    // otherwise set the default theme and save it to the setting
+    ElementTheme theme;
+    if (CurrentThemeValue != null)
+    {
+        theme = (ElementTheme)CurrentThemeValue;
+    }
+    else
+    {
+        theme = ElementTheme.Default;
+        localSettings.Values["Theme"] = (int)theme;
+    }
+
+    // Apply theme to rootElement
+    if (m_window.Content is FrameworkElement rootElement)
+    {
+        rootElement.RequestedTheme = theme;
+    }
+}
+\end{minted}
+
+In SettingsPage, I need to initialize the current theme on load, and save the selected theme to the setting when the check boxes are checked.
+
+\begin{minted}{csharp}
+public SettingsPage()
+{
+    InitializeComponent();
+    // Init theme settings on load
+    GetCurrentTheme();
+    // ...
+}
+
+/// <summary>
+/// Get the current theme and set the check box
+/// </summary>
+private void GetCurrentTheme()
+{
+    if (App.m_window.Content is FrameworkElement rootElement)
+    {
+        string currentTheme = rootElement.RequestedTheme.ToString();
+        ThemePanel
+            .Children
+            .Cast<RadioButton>()
+            .FirstOrDefault(c => c?.Tag?.ToString() == currentTheme)
+            .IsChecked = true;
+    }
+}
+
+/// <summary>
+/// Change the application request theme to the selected theme when the radio button is clicked
+/// Save the theme into settings
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
+private void ThemeRadioButton_Checked(object sender, RoutedEventArgs e)
+{
+    var selectedTheme = ((RadioButton)sender)?.Tag?.ToString();
+
+    if (selectedTheme != null && App.m_window.Content is FrameworkElement rootElement)
+    {
+        rootElement.RequestedTheme = GetEnum<ElementTheme>(selectedTheme);
+        ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+        localSettings.Values["Theme"] = (int)rootElement.RequestedTheme;
+    }
+}
+\end{minted}
+
+When I navigate to the settings page, the check box is checked on the current theme correctly.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{SettingsPage-InitTheme}
+
+After I change the setting and relaunch the app, the setting is saved correctly.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{SettingsPage-SaveTheme}
+
+\subsection{TimeLimit settings}
+
+TODO: add Timelimit settings
+
+\subsection{MemoryLimit settings}
+
+TODO: add memorylimit settings
+
+\subsection{Language configuration settings}
+
+TODO: add language configuration settings
+
 \section{Milestone 6: Handle API calls}
 
 By following the instructions of the Microsoft Graph API documentation\cite{microsoft:docs:education-overview}, I login the Graph Explorer\cite{microsoft:graph-explorer} and run a \code{GET} query over the \code{/education/schools} endpoint. However, I received a 400 bad request.
