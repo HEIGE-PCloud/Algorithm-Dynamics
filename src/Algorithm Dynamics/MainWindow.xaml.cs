@@ -154,11 +154,21 @@ namespace Algorithm_Dynamics
             }
         }
 
+        /// <summary>
+        /// Create a new user and store <see cref="User.Uid"/> into settings
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CreateUserButton_Click(object sender, RoutedEventArgs e)
         {
+            // Create user
             User user = User.Create(UserName, Email, Role);
+
+            // Set current user
             ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
             localSettings.Values["CurrentUser"] = user.Uid;
+
+            // Navigate to HomePage
             WelcomeGrid.Visibility = Visibility.Collapsed;
             MainNavView.SelectedItem = MainNavView.MenuItems[0];
         }

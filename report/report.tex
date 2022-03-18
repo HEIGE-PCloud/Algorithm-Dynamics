@@ -7205,6 +7205,69 @@ The process is killed after exceeding 32 MB memory usage, which means the memory
 
 \subsection{Current User settings}
 
+The settings also store an item that cannot be edited directly, the current user id. All user data is stored in the database, the current user id in the settings determines what gets recorded to the code submissions record and the greeting meesage on HomePage.
+
+In App.xaml.cs, I created a global method to get the current id, so it can be used easily anywhere in the app.
+
+\begin{minted}{csharp}
+/// <summary>
+/// Get the current user.
+/// </summary>
+public static User CurrentUser
+{
+    get
+    {
+        ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+        Guid uid = (Guid)localSettings.Values["CurrentUser"];
+        return User.Get(uid);
+    }
+}
+\end{minted}
+
+In HomePage.xaml.cs, I get the current user name and display it on the screen.
+
+\begin{minted}{csharp}
+private void SetWelcomeMessage()
+{
+    // Get current user name
+    string userName = "User";
+    if (App.CurrentUser != null)
+    {
+        userName = App.CurrentUser.Name;
+    }
+
+    // Set WelcomeMessage
+}
+\end{minted}
+
+The currect user value is only set on the first startup. When creating the user in the welcome page, the user id should also be stored into the settings.
+
+\begin{minted}{csharp}
+/// <summary>
+/// Create a new user and store <see cref="User.Uid"/> into settings
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
+private void CreateUserButton_Click(object sender, RoutedEventArgs e)
+{
+    // Create user
+    User user = User.Create(UserName, Email, Role);
+
+    // Set current user
+    ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+    localSettings.Values["CurrentUser"] = user.Uid;
+
+    // Navigate to HomePage
+    WelcomeGrid.Visibility = Visibility.Collapsed;
+    MainNavView.SelectedItem = MainNavView.MenuItems[0];
+}
+\end{minted}
+
+Hence, all functions related to the local settings are implemented and tested.
+
+\subsection{Stakeholder feedback}
+
+The stakeholders are very satisfied about all the settings options and how they can be changed and loaded seemlessly.
 
 \section{Milestone 6: Handle API calls}
 
@@ -7269,6 +7332,51 @@ TODO: Robustness testing
 % text and messages are useful.
 
 \section{Beta testing and review from stakeholders}
+
+- Animation on the WelcomePage
+- Teachingtip on first use
+- More keyboard shortcuts for navigation
+- Remember selected programming language
+- Global fullscreen shortcut/button
+- More background picture(bing wallpaper)
+- Search for multiple tags
+- Display the description of problem list somehow
+- Export submission result into CSV
+- Slow Code Editor speed
+- Auto generate test case
+- RunCode Run Example Input automatically
+- Submission Grid sort by time/ status/language
+- Export multiple problems at once without creating problem list
+- Allow custom account avatar
+- Heatmap in stats
+- Documentation (how to config language configuration)
+- i18n multi language support
+- Can go back button does not update the navigation bar
+- Better random problem algorithm
+- Better recommended problem algorithm
+- Want assignment
+
++ Nice homepage, looks beautiful
++ Love Quick Access, Random problem especially useful, nice usability
++ NavigationView is very useful for quick navigation between different function
++ Import/export function is useful for sharing data
++ Really quick Import/export, no waiting time
++ Easy to search problem, nice usability, fuzzy search works well
++ Nice validation when creating new problem/problem list, impossible to create invalid data
++ Nice markdown preview, really useful when writing problem description
++ Allow select multiple problem, create problem list from them and delete them is really useful.
++ SubmissionGrid is really useful, especially I can load code from it, good for revision.
++ Fullscreen button works well and immersive experience
++ Nice Markdown problem
++ RunCode being very useful
++ Progressbar suki
++ Really professional code editor, everything I need is inside.
++ Really useful playground page.
++ Interesting stats, feeling myself making progress.
++ The overall experience of data interaction is very great and professional. NumberBox for number, code editor for code. Everything is validate seemlessly.
++ Dark mode!!
++ Cool to add custom programming language.
++ Clear data is very useful.
 
 \subsection{Beta testing feedback from PCloud}
 

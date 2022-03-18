@@ -32,18 +32,17 @@ namespace Algorithm_Dynamics.Pages
         /// Morning: 00:00-12:00
         /// Afternoon: 12:00-17:00
         /// Evening 17:00-0:00
-        /// TODO: Add the username after it is implemented
         /// </summary>
         private void SetWelcomeMessage()
         {
-            ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-            var CurrentUserValue = localSettings.Values["CurrentUser"];
+            // Get current user name
             string userName = "User";
-            if (CurrentUserValue != null)
+            if (App.CurrentUser != null)
             {
-                Guid CurrentUserUid = (Guid)CurrentUserValue;
-                userName = User.Get(CurrentUserUid).Name;
+                userName = App.CurrentUser.Name;
             }
+
+            // Set WelcomeMessage
             TimeSpan now = DateTime.Now.TimeOfDay;
             if (now >= new TimeSpan(00, 00, 00) && now < new TimeSpan(12, 00, 00))
             {

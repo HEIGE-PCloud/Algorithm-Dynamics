@@ -7,15 +7,21 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
   mc:Ignorable="d">
 
+  <!--The Root Grid of the entire window-->
   <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
     <Grid.RowDefinitions>
+      <!--Titlebar-->
       <RowDefinition Height="auto"/>
+      <!--NavigationView and ContentFrame-->
       <RowDefinition Height="*"/>
     </Grid.RowDefinitions>
+
     <local:TitleBar
       x:Name="AppTitleBar"
       BackButtonClick="OnBackButtonClick"
       IsShowBackButton="{x:Bind ContentFrame.CanGoBack, Mode=OneWay}" />
+    
     <NavigationView 
       Grid.Row="1"
       x:Name="MainNavView"
@@ -58,6 +64,8 @@
         Padding="0"
         Visibility="Visible"/>
     </NavigationView>
+
+    <!--WelcomePage for creating new user on first startup-->
     <Grid
       Grid.Row="1"
       x:Name="WelcomeGrid"

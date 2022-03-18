@@ -44,7 +44,7 @@ namespace Algorithm_Dynamics.Core.Helpers
             }
             else
             {
-                user = new(Uid, "", "", Role.Student);
+                user = null;
             }
             db.Close();
             return user;
