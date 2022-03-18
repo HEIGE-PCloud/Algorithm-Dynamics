@@ -15,6 +15,7 @@ using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Windows.Graphics;
 using Algorithm_Dynamics.Helpers;
+using System.Threading.Tasks;
 
 namespace Algorithm_Dynamics
 {
@@ -40,22 +41,54 @@ namespace Algorithm_Dynamics
         /// <param name="args">Details about the launch request and process.</param>
         protected override async void OnLaunched(LaunchActivatedEventArgs args)
         {
-            // Init Judger
+            InitializeJudger();
+            InitializeDatabase();
+            InitializeLanguageConfiguration();
+            await InitializeSampleProblems();
+            InitializeMainWindow();
+            InitializeTheme();
+        }
+
+        /// <summary>
+        /// Initialize the drag area of the title bar
+        /// The left-most 40px is used for the go back button
+        /// </summary>
+        private static void InitializeDragArea()
+        {
+            RectInt32 rect = new(40, 0, AppWindowExtensions.GetScalePixel(_appWindow.Size.Width, _windowHandle), AppWindowExtensions.GetScalePixel(36, _windowHandle));
+            _appWindow.TitleBar.SetDragRectangles(new RectInt32[] { rect });
+        }
+
+        /// <summary>
+        /// Initialize the Judger at temporary folder
+        /// </summary>
+        private static void InitializeJudger()
+        {
             StorageFolder TemporaryFolder = ApplicationData.Current.TemporaryFolder;
             Judger.SetSourceCodeFilePath(TemporaryFolder.Path, "main");
+        }
 
-
+        /// <summary>
+        /// Initialize the database at local folder
+        /// </summary>
+        private static void InitializeDatabase()
+        {
             // Init Database
             // C:\Users\pcloud\AppData\Local\Packages\55445HEIGE-PCloud.AlgorithmDynamics_r55vz1why9y6a\LocalState
             StorageFolder LocalFolder = ApplicationData.Current.LocalFolder;
             DataAccess.InitializeDatabase(Path.Combine(LocalFolder.Path, "Data.db"));
 
-            // Create main window
-            m_window = new MainWindow();
+        }
 
+        /// <summary>
+        /// Initialize the App theme from the local setting
+        /// </summary>
+        private static void InitializeTheme()
+        {
             // Load theme
-            ApplicationDataContainer roamingSettings = ApplicationData.Current.RoamingSettings;
-            var CurrentThemeValue = roamingSettings.Values["Theme"];
+            ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+            var CurrentThemeValue = localSettings.Values["Theme"];
+
             // if there exists a theme setting, use the theme setting
             // otherwise set the default theme and save it to the setting
             ElementTheme theme;
@@ -66,17 +99,40 @@ namespace Algorithm_Dynamics
             else
             {
                 theme = ElementTheme.Default;
-                roamingSettings.Values["Theme"] = (int)theme;
+                localSettings.Values["Theme"] = (int)theme;
             }
+
+            // Apply theme to rootElement
             if (m_window.Content is FrameworkElement rootElement)
             {
                 rootElement.RequestedTheme = theme;
             }
+        }
 
-            // Init lang config
-            if (Language.All.Count == 0) InitializeLanguageConfiguration();
+        /// <summary>
+        /// Add default language config to the database
+        /// when there is no language config in database
+        /// </summary>
+        private static void InitializeLanguageConfiguration()
+        {
+            if (Language.All.Count == 0)
+            {
+                Language.Create("python", "Python", false, "", "", "python.exe", "{SourceCodeFilePath}", ".py");
+                Language.Create("c", "C", true, "gcc.exe", "-x c {SourceCodeFilePath} -o {ExecutableFilePath}", "{ExecutableFilePath}", "", ".c");
+                Language.Create("cpp", "C++", true, "g++.exe", "-x c++ {SourceCodeFilePath} -o {ExecutableFilePath}", "{ExecutableFilePath}", "", ".cpp");
+                Language.Create("rust", "Rust", true, "rustc.exe", "{SourceCodeFilePath} -o {ExecutableFilePath}", "{ExecutableFilePath}", "", ".rs");
+                Language.Create("javascript", "JavaScript", false, "", "", "node.exe", "{SourceCodeFilePath}", ".js");
+                Language.Create("java", "Java", true, "javac.exe", "{SourceCodeFilePath}", "java.exe", "main", ".java");
+                Language.Create("go", "Go", true, "go.exe", "build {SourceCodeFilePath}", "{ExecutableFilePath}", "", ".go");
+            }
+        }
 
-            // Init default problem
+        /// <summary>
+        /// Add sample problems to the database
+        /// when there is no problem in the database
+        /// </summary>
+        private async static Task InitializeSampleProblems()
+        {
             if (Problem.All.Count == 0)
             {
                 StorageFolder AssetsDirectory = await Package.Current.InstalledLocation.GetFolderAsync(@"Assets");
@@ -85,31 +141,35 @@ namespace Algorithm_Dynamics
                 string APlusB = await File.ReadAllTextAsync(Path.Combine(AssetsDirectory.Path, "Problems\\A + B Problem Export.json"));
                 DataSerialization.DeserializeProblem(APlusB);
             }
+        }
 
+        /// <summary>
+        /// Init main window and title bar
+        /// </summary>
+        private static void InitializeMainWindow()
+        {
+            // Create main window
+            m_window = new MainWindow();
 
-            // Init TitleBar
+            // Set App title
             _windowHandle = WindowNative.GetWindowHandle(m_window);
             WindowId windowId = Win32Interop.GetWindowIdFromWindow(_windowHandle);
             _appWindow = AppWindow.GetFromWindowId(windowId);
             _appWindow.Title = "Algorithm Dynamics";
 
+            // Init title bar
             if (_appWindow.TitleBar != null)
             {
                 AppWindowExtensions.InitializeTitleBar(_appWindow.TitleBar);
                 InitializeDragArea();
             }
 
+            // Activate main window
             m_window.Activate();
         }
 
-        private void InitializeDragArea()
-        {
-            var rect = new RectInt32(40, 0, AppWindowExtensions.GetScalePixel(_appWindow.Size.Width, _windowHandle), AppWindowExtensions.GetScalePixel(36, _windowHandle));
-            _appWindow.TitleBar.SetDragRectangles(new RectInt32[] { rect });
-        }
-
-        private AppWindow _appWindow;
-        private IntPtr _windowHandle;
+        private static AppWindow _appWindow;
+        private static IntPtr _windowHandle;
         public static MainWindow m_window;
         public static NavigationView MainNavView { get => m_window.MainNavView; }
         public static Frame ContentFrame { get => m_window.ContentFrame; }
@@ -149,21 +209,10 @@ namespace Algorithm_Dynamics
         {
             get
             {
-                ApplicationDataContainer roamingSettings = ApplicationData.Current.RoamingSettings;
-                Guid uid = (Guid)roamingSettings.Values["CurrentUser"];
+                ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+                Guid uid = (Guid)localSettings.Values["CurrentUser"];
                 return User.Get(uid);
             }
         }
-        private static void InitializeLanguageConfiguration()
-        {
-            Language.Create("python", "Python", false, "", "", "python.exe", "{SourceCodeFilePath}", ".py");
-            Language.Create("c", "C", true, "gcc.exe", "-x c {SourceCodeFilePath} -o {ExecutableFilePath}", "{ExecutableFilePath}", "", ".c");
-            Language.Create("cpp", "C++", true, "g++.exe", "-x c++ {SourceCodeFilePath} -o {ExecutableFilePath}", "{ExecutableFilePath}", "", ".cpp");
-            Language.Create("rust", "Rust", true, "rustc.exe", "{SourceCodeFilePath} -o {ExecutableFilePath}", "{ExecutableFilePath}", "", ".rs");
-            Language.Create("javascript", "JavaScript", false, "", "", "node.exe", "{SourceCodeFilePath}", ".js");
-            Language.Create("java", "Java", true, "javac.exe", "{SourceCodeFilePath}", "java.exe", "main", ".java");
-            Language.Create("go", "Go", true, "go.exe", "build {SourceCodeFilePath}", "{ExecutableFilePath}", "", ".go");
-        }
-
     }
 }
