@@ -170,9 +170,22 @@ namespace Algorithm_Dynamics
 
         private static AppWindow _appWindow;
         private static IntPtr _windowHandle;
+        private static NavigationView MainNavView { get => m_window.MainNavView; }
+        private static Frame ContentFrame { get => m_window.ContentFrame; }
         public static MainWindow m_window;
-        public static NavigationView MainNavView { get => m_window.MainNavView; }
-        public static Frame ContentFrame { get => m_window.ContentFrame; }
+
+        /// <summary>
+        /// Get the current user.
+        /// </summary>
+        public static User CurrentUser
+        {
+            get
+            {
+                ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+                Guid uid = (Guid)localSettings.Values["CurrentUser"];
+                return User.Get(uid);
+            }
+        }
 
         /// <summary>
         /// Handle the navigation of the main <see cref="ContentFrame"/>
@@ -201,17 +214,6 @@ namespace Algorithm_Dynamics
             {
                 ContentFrame.Navigate(type, parameter);
                 MainNavView.SelectedItem = null;
-            }
-        }
-        public static bool CanGoBack { get => ContentFrame.CanGoBack; }
-
-        public static User CurrentUser
-        {
-            get
-            {
-                ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-                Guid uid = (Guid)localSettings.Values["CurrentUser"];
-                return User.Get(uid);
             }
         }
     }
