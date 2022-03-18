@@ -51,22 +51,22 @@ namespace Algorithm_Dynamics.Pages
         {
             get
             {
-                ApplicationDataContainer roamingSettings = ApplicationData.Current.RoamingSettings;
-                var CurrentValue = roamingSettings.Values[TIMELIMIT_KEY];
+                ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+                var CurrentValue = localSettings.Values[TIMELIMIT_KEY];
                 if (CurrentValue != null)
                 {
                     return (int)CurrentValue;
                 }
                 else
                 {
-                    roamingSettings.Values[TIMELIMIT_KEY] = DEFAULT_RUN_CODE_TIMELIMIT;
+                    localSettings.Values[TIMELIMIT_KEY] = DEFAULT_RUN_CODE_TIMELIMIT;
                     return DEFAULT_RUN_CODE_TIMELIMIT;
                 }
             }
             set
             {
-                ApplicationDataContainer roamingSettings = ApplicationData.Current.RoamingSettings;
-                roamingSettings.Values[TIMELIMIT_KEY] = value;
+                ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+                localSettings.Values[TIMELIMIT_KEY] = value;
 
             }
         }
@@ -74,22 +74,22 @@ namespace Algorithm_Dynamics.Pages
         {
             get
             {
-                ApplicationDataContainer roamingSettings = ApplicationData.Current.RoamingSettings;
-                var CurrentValue = roamingSettings.Values[MEMORYLIMIT_KEY];
+                ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+                var CurrentValue = localSettings.Values[MEMORYLIMIT_KEY];
                 if (CurrentValue != null)
                 {
                     return (int)CurrentValue / MB;
                 }
                 else
                 {
-                    roamingSettings.Values[MEMORYLIMIT_KEY] = DEFAULT_RUN_CODE_MEMORYLIMIT;
+                    localSettings.Values[MEMORYLIMIT_KEY] = DEFAULT_RUN_CODE_MEMORYLIMIT;
                     return DEFAULT_RUN_CODE_MEMORYLIMIT / MB;
                 }
             }
             set
             {
-                ApplicationDataContainer roamingSettings = ApplicationData.Current.RoamingSettings;
-                roamingSettings.Values[MEMORYLIMIT_KEY] = value * MB;
+                ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+                localSettings.Values[MEMORYLIMIT_KEY] = value * MB;
             }
         }
         private void AddLangButton_Click(object sender, RoutedEventArgs e)
@@ -118,8 +118,8 @@ namespace Algorithm_Dynamics.Pages
             if (selectedTheme != null && App.m_window.Content is FrameworkElement rootElement)
             {
                 rootElement.RequestedTheme = GetEnum<ElementTheme>(selectedTheme);
-                ApplicationDataContainer roamingSettings = ApplicationData.Current.RoamingSettings;
-                roamingSettings.Values["Theme"] = (int)rootElement.RequestedTheme;
+                ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+                localSettings.Values["Theme"] = (int)rootElement.RequestedTheme;
             }
         }
         private static TEnum GetEnum<TEnum>(string text) where TEnum : struct

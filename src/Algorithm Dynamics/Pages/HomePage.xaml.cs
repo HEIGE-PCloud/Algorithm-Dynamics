@@ -36,8 +36,8 @@ namespace Algorithm_Dynamics.Pages
         /// </summary>
         private void SetWelcomeMessage()
         {
-            ApplicationDataContainer roamingSettings = ApplicationData.Current.RoamingSettings;
-            var CurrentUserValue = roamingSettings.Values["CurrentUser"];
+            ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+            var CurrentUserValue = localSettings.Values["CurrentUser"];
             string userName = "User";
             if (CurrentUserValue != null)
             {

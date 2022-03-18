@@ -27,24 +27,24 @@ namespace Algorithm_Dynamics.Pages
         private async void RunCodeButton_Click(object sender, RoutedEventArgs e)
         {
             // Read Run Code Time Limit and Memory Limit from the Setting
-            ApplicationDataContainer roamingSettings = ApplicationData.Current.RoamingSettings;
-            var CurrentTimeLimit = roamingSettings.Values[TIMELIMIT_KEY];
+            ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+            var CurrentTimeLimit = localSettings.Values[TIMELIMIT_KEY];
             if (CurrentTimeLimit != null)
             {
                 _timeLimit = (int)CurrentTimeLimit;
             }
             else
             {
-                roamingSettings.Values[TIMELIMIT_KEY] = DEFAULT_RUN_CODE_TIMELIMIT;
+                localSettings.Values[TIMELIMIT_KEY] = DEFAULT_RUN_CODE_TIMELIMIT;
             }
-            var CurrentMemoryLimit = roamingSettings.Values[MEMORYLIMIT_KEY];
+            var CurrentMemoryLimit = localSettings.Values[MEMORYLIMIT_KEY];
             if (CurrentMemoryLimit != null)
             {
                 _memoryLimit = (int)CurrentMemoryLimit;
             }
             else
             {
-                roamingSettings.Values[MEMORYLIMIT_KEY] = DEFAULT_RUN_CODE_MEMORYLIMIT;
+                localSettings.Values[MEMORYLIMIT_KEY] = DEFAULT_RUN_CODE_MEMORYLIMIT;
             }
 
             var progress = new Progress<int>(percent => { RunCodeProgressBar.Value = percent; });

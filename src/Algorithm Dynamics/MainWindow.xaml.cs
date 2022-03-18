@@ -157,8 +157,8 @@ namespace Algorithm_Dynamics
         private void CreateUserButton_Click(object sender, RoutedEventArgs e)
         {
             User user = User.Create(UserName, Email, Role);
-            ApplicationDataContainer roamingSettings = ApplicationData.Current.RoamingSettings;
-            roamingSettings.Values["CurrentUser"] = user.Uid;
+            ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+            localSettings.Values["CurrentUser"] = user.Uid;
             WelcomeGrid.Visibility = Visibility.Collapsed;
             MainNavView.SelectedItem = MainNavView.MenuItems[0];
         }

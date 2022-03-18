@@ -49,8 +49,8 @@ namespace Algorithm_Dynamics.Pages
                 }
             }
             StatsItems.Add(new("Favourite Language", favLang));
-            ApplicationDataContainer roamingSettings = ApplicationData.Current.RoamingSettings;
-            var CurrentUserValue = roamingSettings.Values["CurrentUser"];
+            ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+            var CurrentUserValue = localSettings.Values["CurrentUser"];
             if (CurrentUserValue != null)
             {
                 Guid CurrentUserUid = (Guid)CurrentUserValue;
@@ -59,7 +59,7 @@ namespace Algorithm_Dynamics.Pages
             else
             {
                 _user = User.Create("PCloud", "heige.pcloud@outlook.com", Role.Student);
-                roamingSettings.Values["CurrentUser"] = _user.Uid;
+                localSettings.Values["CurrentUser"] = _user.Uid;
             }
             UserName = _user.Name;
             Email = _user.Email;
