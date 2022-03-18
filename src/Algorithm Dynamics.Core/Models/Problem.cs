@@ -120,15 +120,12 @@ namespace Algorithm_Dynamics.Core.Models
         [JsonIgnore]
         public string StatusAsString
         {
-            get
-            {
-                return Status switch
+            get => Status switch
                 {
                     ProblemStatus.Todo => "Todo",
-                    ProblemStatus.Solved => "Todo",
-                    _ => "Todo",
+                    ProblemStatus.Solved => "Solved",
+                    _ => "Attempted",
                 };
-            }
         }
 
         private Difficulty _difficulty;
@@ -147,15 +144,12 @@ namespace Algorithm_Dynamics.Core.Models
         [JsonIgnore]
         public string DifficultyAsString
         {
-            get
-            {
-                return Difficulty switch
+            get => Difficulty switch
                 {
                     Difficulty.Easy => "Easy",
                     Difficulty.Medium => "Medium",
                     _ => "Hard",
                 };
-            }
         }
         
         /// <summary>
@@ -174,40 +168,14 @@ namespace Algorithm_Dynamics.Core.Models
         /// Return all tags as a string in the format "Tag1, Tag2, Tag3"
         /// </summary>
         [JsonIgnore]
-        public string TagsAsString
-        {
-            get
-            {
-                string str = "";
-                if (_tags.Count > 0)
-                {
-                    for (int i = 0; i < _tags.Count - 1; i++)
-                    {
-                        str += _tags[i].Name + ", ";
-                    }
-                    str += _tags[^1].Name;
-                }
-                return str;
-            }
-        }
+        public string TagsAsString { get => string.Join(", ", _tags); }
 
         /// <summary>
         /// Return the first tag as string if there exists any
         /// Or an empty string if there is no tag
         /// </summary>
         [JsonIgnore]
-        public string TagAsString
-        {
-            get
-            {
-                string str = "";
-                if (_tags.Count > 0)
-                {
-                    str = _tags[0].Name;
-                }
-                return str;
-            }
-        }
+        public string TagAsString { get => _tags.Count > 0 ? _tags[0].Name : ""; }
 
         /// <summary>
         /// Return a list of all <see cref="Problem"/> in the database.
@@ -280,7 +248,9 @@ namespace Algorithm_Dynamics.Core.Models
         /// <summary>
         /// Update database, save all the data in attributes into the database.
         /// </summary>
-        private void UpdateDatabase() => DataAccess.EditProblem(
+        private void UpdateDatabase()
+        {
+            DataAccess.EditProblem(
             _id,
             _name,
             _description,
@@ -288,6 +258,7 @@ namespace Algorithm_Dynamics.Core.Models
             _memoryLimit,
             _status,
             _difficulty);
+        }
 
         /// <summary>
         /// Add an existing <see cref="TestCase"/> to the problem
@@ -347,14 +318,18 @@ namespace Algorithm_Dynamics.Core.Models
         {
             // Delete all testcases
             while (_testCases.Count != 0) RemoveTestCase(_testCases[0]);
+
             // Delete all tags
             while (_tags.Count != 0) RemoveTag(_tags[0]);
+
             // Delete all existence in problem lists
             ProblemList.All.FindAll(list => list.Problems.Contains(this))
                 .ForEach(list => list.RemoveProblem(this));
+
             // Delete all related submissions
             Submission.All.FindAll(submission => submission.Problem.Id == Id)
                 .ForEach(submission => submission.Delete());
+
             // Self destory at the end
             DataAccess.DeleteProblem(_id);
         }
