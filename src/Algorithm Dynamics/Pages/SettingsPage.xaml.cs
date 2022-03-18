@@ -17,11 +17,10 @@ namespace Algorithm_Dynamics.Pages
         public SettingsPage()
         {
             InitializeComponent();
-
             GetCurrentTheme();
-
-            Core.Models.Language.All.ForEach(lang => Languages.Add(lang));
+            InitializeLanguage();
         }
+
         const int MB = 1024 * 1024;
         private const int DEFAULT_RUN_CODE_TIMELIMIT = 1000;
         private const int DEFAULT_RUN_CODE_MEMORYLIMIT = 64 * MB;
@@ -37,20 +36,28 @@ namespace Algorithm_Dynamics.Pages
         private string _fileExtension = "";
 
         public event PropertyChangedEventHandler PropertyChanged;
+
         /// <summary>
         /// Invoke a new <see cref="PropertyChanged"/> event.
         /// </summary>
         /// <param name="propertyName">Use <see cref="nameof"/> to get the name of the property.</param>
-        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             // Raise the PropertyChanged event, passing the name of the property whose value has changed.
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-        public ObservableCollection<Language> Languages { get; set; } = new();
-        public int TimeLimit
+
+        private ObservableCollection<Language> Languages { get; set; } = new();
+
+        /// <summary>
+        /// The RunCode TimeLimit value
+        /// </summary>
+        public static int TimeLimit
         {
             get
             {
+                // Read time limit from settings
+                // If does not exist, store the default time limit
                 ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
                 var CurrentValue = localSettings.Values[TIMELIMIT_KEY];
                 if (CurrentValue != null)
@@ -65,15 +72,21 @@ namespace Algorithm_Dynamics.Pages
             }
             set
             {
+                // Update the setting
                 ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
                 localSettings.Values[TIMELIMIT_KEY] = value;
-
             }
         }
-        public int MemoryLimit
+
+        /// <summary>
+        /// The RunCode MemoryLimit value
+        /// </summary>
+        public static int MemoryLimit
         {
             get
             {
+                // Read memory limit from settings
+                // If does not exist, store the default memory limit
                 ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
                 var CurrentValue = localSettings.Values[MEMORYLIMIT_KEY];
                 if (CurrentValue != null)
@@ -88,21 +101,39 @@ namespace Algorithm_Dynamics.Pages
             }
             set
             {
+                // Update the setting
                 ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
                 localSettings.Values[MEMORYLIMIT_KEY] = value * MB;
             }
         }
-        private void AddLangButton_Click(object sender, RoutedEventArgs e)
-        {
-            LanguageComboBox.SelectedIndex = -1;
-        }
+
+        /// <summary>
+        /// Get the current theme and set the check box
+        /// </summary>
         private void GetCurrentTheme()
         {
             if (App.m_window.Content is FrameworkElement rootElement)
             {
                 string currentTheme = rootElement.RequestedTheme.ToString();
-                ThemePanel.Children.Cast<RadioButton>().FirstOrDefault(c => c?.Tag?.ToString() == currentTheme).IsChecked = true;
+                ThemePanel
+                    .Children
+                    .Cast<RadioButton>()
+                    .FirstOrDefault(c => c?.Tag?.ToString() == currentTheme)
+                    .IsChecked = true;
             }
+        }
+
+        /// <summary>
+        /// Initialize all language configs from the database
+        /// </summary>
+        private void InitializeLanguage()
+        {
+            Core.Models.Language.All.ForEach(lang => Languages.Add(lang));
+        }
+
+        private void AddLangButton_Click(object sender, RoutedEventArgs e)
+        {
+            LanguageComboBox.SelectedIndex = -1;
         }
 
         /// <summary>
@@ -122,6 +153,14 @@ namespace Algorithm_Dynamics.Pages
                 localSettings.Values["Theme"] = (int)rootElement.RequestedTheme;
             }
         }
+
+        /// <summary>
+        /// Get Enum item from string
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
         private static TEnum GetEnum<TEnum>(string text) where TEnum : struct
         {
             if (!typeof(TEnum).GetTypeInfo().IsEnum)
@@ -131,18 +170,23 @@ namespace Algorithm_Dynamics.Pages
             return (TEnum)Enum.Parse(typeof(TEnum), text);
         }
 
+        /// <summary>
+        /// Save the edits to the language to the database
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SaveLanguage_Click(object sender, RoutedEventArgs e)
         {
             if (LanguageComboBox.SelectedIndex == -1)
             {
-                // Create a new one
+                // Create a new language
                 var lang = Core.Models.Language.Create(_name, _displayName, _needCompile, _complieCommand, _compileArguments, _runCommand, _runArguments, _fileExtension);
                 Languages.Add(lang);
                 LanguageComboBox.SelectedItem = lang;
             }
             else
             {
-                // Edit an existing one
+                // Edit an existing language
                 var lang = LanguageComboBox.SelectedItem as Language;
                 lang.Name = _name;
                 lang.DisplayName = _displayName;
@@ -156,6 +200,11 @@ namespace Algorithm_Dynamics.Pages
 
         }
 
+        /// <summary>
+        /// Change the language config when the selection is changed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void LanguageComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var lang = LanguageComboBox.SelectedItem as Core.Models.Language;
@@ -192,25 +241,44 @@ namespace Algorithm_Dynamics.Pages
 
         }
 
-        private void DeleteLanguageButton_Click(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Delete the selected language config from the database
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DeleteLanguageConfig(object sender, RoutedEventArgs e)
         {
             if (LanguageComboBox.SelectedItem != null)
             {
+                // Delete the language from database
                 var lang = LanguageComboBox.SelectedItem as Language;
                 Languages.Remove(lang);
                 lang.Delete();
+
+                // Reset the combo box selection to 0
                 if (Languages.Count > 0)
                     LanguageComboBox.SelectedIndex = 0;
             }
             DeleteLangFlyout.Hide();
         }
 
+        /// <summary>
+        /// Delete all data in the database and quit the app
+        /// TODO: https://portal.productboard.com/winappsdk/1-windows-app-sdk/c/54-restart-for-all-desktop-apps
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ClearAllData(object sender, RoutedEventArgs e)
         {
             DataAccess.DropDatabase();
             App.Current.Exit();
         }
 
+        /// <summary>
+        /// Delete all problems, test cases, problem lists and sbmissions in the database
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void DeleteAllProblems(object sender, RoutedEventArgs e)
         {
             ProblemList.All.ForEach(problemList => problemList.Delete());
@@ -218,6 +286,12 @@ namespace Algorithm_Dynamics.Pages
             ClearAllProblemsFlyout.Hide();
         }
 
+
+        /// <summary>
+        /// Delete all submissions and submission results in the database
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void DeleteAllSubmissions(object sender, RoutedEventArgs e)
         {
             Submission.All.ForEach(submission => submission.Delete());

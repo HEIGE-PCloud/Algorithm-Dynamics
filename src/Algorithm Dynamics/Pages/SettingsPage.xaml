@@ -125,7 +125,7 @@
                         x:Name="DeleteLanguageButton"
                         HorizontalAlignment="Right"
                         Content="Yes"
-                        Click="DeleteLanguageButton_Click"/>
+                        Click="DeleteLanguageConfig"/>
                     </StackPanel>
                   </Flyout>
                 </Button.Flyout>
