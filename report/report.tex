@@ -7392,16 +7392,33 @@ TODO: beta test
 
 TODO: Success criteria
 
-\section{Limitation, further maintaince and developement}
+\section{Limitations, further maintaince and developement}
 
 TODO:limitations and further development
 
-- Cross platform
-- Judging safety
-- Assignment function
-- Education integration
-- Better code editor
-- MVVM refactor and unit test for UI
+\subsection{Cross platform}
+
+The current app only runs on Windows by design, so Linux or macOS users will not be able to use it. It is okay for all my stakeholders, but in real life, there are a lof of users who do not work on a Windows device. It will be really useful for the app to support multiple platforms, so it can reach more users and help more students and teachers.
+
+The current code base is heavily depend on the dotnet runtime and the WinUI 3 library and there is no easy way to make it cross platform in one click.
+
+One possible solution is the new .NET MAUI framework\cite{microsoft:docs:what-is-maui}, which is currently in its beta developement phase. It also depends on the dotnet runtime, which means I can reuse most of my existing codebase. But since it is still in beta testing phase, and there are a lot of bugs and unsupported features, currently it is not possible to migrate to this framework.
+
+The other solution is to completely rewrite the app using web technologies, which can run on any browsers, and therefore any devices. I can also use technologies like ElectronJS\cite{electron} to pack the webpages into a desktop app for offline use. I personally do not agree with this approach, since I need to rewrite the entire codebase, and the end result will probably have a much worse performance and more limitations.
+
+In conclusion, it is a very difficult challenge to support mulitple platforms, and it will be a long term task.
+
+\subsection{A more flexible Judger}
+
+The current Judger is not very smart, it only takes in pre-generated test cases and make direct comparasion. There are a lot of ways to make the Judger smarter and provide more useful outputs.
+
+\subsection{A better code editor}
+
+\subsection{Unit test for UI}
+
+\subsection{Respond to stakeholder suggestions}
+
+My stakeholders have given me a lot of feedback in the beta testing. 
 
 \chapter{Source Code}
 
