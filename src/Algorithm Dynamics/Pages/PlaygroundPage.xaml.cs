@@ -15,7 +15,6 @@ namespace Algorithm_Dynamics.Pages
             Core.Models.Language.All.ForEach(lang => Languages.Add(lang));
         }
 
-        private string Code = "";
         private string Input = "";
         private const int ms = 1000;
         private const int MB = 1024 * 1024;
