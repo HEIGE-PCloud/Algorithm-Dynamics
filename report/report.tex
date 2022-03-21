@@ -7388,6 +7388,11 @@ TODO: beta test
 \subsection{Beta testing feedback from Mr Grimwood}
 
 TODO: beta test
+
+\subsection{Reviews of the feedback}
+
+TODO: Review of the feedback
+
 \section{Success criteria}
 
 TODO: Success criteria
@@ -7412,13 +7417,27 @@ In conclusion, it is a very difficult challenge to support mulitple platforms, a
 
 The current Judger is not very smart, it only takes in pre-generated test cases and make direct comparasion. There are a lot of ways to make the Judger smarter and provide more useful outputs.
 
+One simple improvement is to allow the user to set up different scores for each test case. For example, passing a simple and small test case is awarded 1 point, while passing a complex test case is awarded 5 points. At the end, instead of passing or not, a numerical score is presented. This allows the teacher to get more information about students.
+
+Another improvement is to support custom special judge. For some cases, there might be more than one possible solution. For example, when there are multiple answers and the order of them does not matter. Instead of simply compare the outputs, the user can write a custom special judger to determine whether the output is correct.
+
+These tasks are fairly simple to implement, since the underlying architecture is designed to be modular and flexible and easy to maintain.
+
 \subsection{A better code editor}
+
+The current code editor is based on the web view and the Monaco Editor. Comparing to a native editor, it is fairly slow. Some upstream bugs of the web view component also causes many inconvenient issues in the implementation. A native code editor, supporting line number, syntax highlighting, find and replace is desirable.
+
+Implementing a code editor from scratch is very difficult. There is no similar project written in C\#, I can implement is as a standalone library so other people can benefit from it as well. This will be a long term task.
 
 \subsection{Unit test for UI}
 
-\subsection{Respond to stakeholder suggestions}
+I added unit tests for Algorithm Dynamics.Core throughout its developement. And I have clearly seen how useful unit test is to eliminate bugs during developement stage. It will be very helpful if I can add unit tests for the UI code as well.
 
-My stakeholders have given me a lot of feedback in the beta testing. 
+One possible way is to refactor the UI code into the MVVM\cite{microsoft:docs:mvvm-introduction} pattern, which abstracts a view model out of the UI and decouple the UI logic with its markup using data binding\cite{microsoft:docs:data-binding-and-mvvm}. I have heavily used data binding throughout the development and the refactor will take a lot of work but it should be pretty straightforward. After the abstraction of the view model, I can write test cases in the Algorithm Dynamics.Test project to test the behavior of the view models just like testing the DataAccess and Judger class. However, currently it is not possible to connect a MSTest project to a WinUI 3 project due to some upstream limitations\cite{github:microsoft-ui-xaml:6258}. But I can start refactoring, which also makes the code easier to be maintained, and start writting unit test once this feature is supported.
+
+\subsection{Stakeholder suggestions}
+
+On top of everything mentained aboved, my stakeholders have given me a lot of suggestions that I can work on as well. See beta testing review for details.
 
 \chapter{Source Code}
 
