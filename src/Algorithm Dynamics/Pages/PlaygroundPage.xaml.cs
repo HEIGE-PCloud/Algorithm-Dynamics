@@ -16,9 +16,9 @@ namespace Algorithm_Dynamics.Pages
         }
 
         private string Input = "";
-        private const int ms = 1000;
+        private const int S = 1000;
         private const int MB = 1024 * 1024;
-        private const int DEFAULT_RUN_CODE_TIMELIMIT = 1 * ms;
+        private const int DEFAULT_RUN_CODE_TIMELIMIT = 1 * S;
         private const int DEFAULT_RUN_CODE_MEMORYLIMIT = 64 * MB;
         private const string TIMELIMIT_KEY = "RunCodeTimeLimit";
         private const string MEMORYLIMIT_KEY = "RunCodeMemoryLimit";

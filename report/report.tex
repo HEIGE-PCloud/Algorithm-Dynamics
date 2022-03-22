@@ -4842,7 +4842,7 @@ For the Pivot, I reference the design from the Windows Calculator\cite{github:ca
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CodingPage-Theme}
 
-After applying the custom theme, the interfaace looks much more modern and consistent.
+After applying the custom theme, the interface looks much more modern and consistent.
 
 Next I will implement the full screen button. It will be a toggle, when clicking in the window mode, it set the window to full screen. When clicking in the full screen mode, it sets the window back to a window. I also assigned a keyboard accelerator F11 to the button, so the user can toggle it by keyboard.
 
@@ -6785,12 +6785,17 @@ public static void InitializeDatabase(string dbPath)
 
 \section{Milestone 3: Implement the Judger}
 
-\subsection{Implementation and testing}
+\subsection{Implementation}
 
 The Judger needs to be initialized with a working directory path for it to store all the temporary files. A folder path and the file name of the source code is taken as arguments.
 
 \begin{minted}{csharp}
-public static void SetSourceCodeFilePath(string FolderPath, string FileName)
+/// <summary>
+/// Set the SourceCode File with its folder path and its name.
+/// </summary>
+/// <param name="FolderPath"></param>
+/// <param name="FileName"></param>
+public static void SetSourceCodeFilePath(string FolderPath, string FileName = "main")
 {
     _SourceCodeFolderPath = FolderPath;
     _SourceCodeFilePath = Path.Combine(FolderPath, FileName) + "{SourceCodeFileExtension}";
@@ -6798,6 +6803,584 @@ public static void SetSourceCodeFilePath(string FolderPath, string FileName)
 }
 \end{minted}
 
+Next, I started implementing the \code{Compile} function. It is a static function, so it can be called without creating an instance of the class. It is also an async function, so when it is executing, it will not block the main UI thread. This is particularly important as the user interface should stay responsive when the judger is working. It returns a \code{Task<int>} value, which containts the exit code of the compiler.
+
+To allow the user customize the behavior of different compiler, the compile command supports magic variables \code{SourceCodeFileExtension}, \code{SourceCodeFilePath} and \code{ExecutableFilePath}. These variables need to be replaced with the real value before executing.
+
+\begin{minted}{csharp}
+/// <summary>
+/// Compile the source code in <see cref="_SourceCodeFilePath"/>.
+/// </summary>
+/// <param name="language">
+/// The <see cref="Language.CompileCommand"/> and 
+/// <see cref="Language.CompileArguments"/> are used for compilation.
+/// Note that the <see cref="Language.NeedCompile"/> is not checked.
+/// </param>
+/// <returns>The exit code of the compiler is returned.</returns>
+private async static Task<int> Compile(Language language)
+{
+    // Clear old output
+    _CompilationOutput = "";
+    _CompilationError = "";
+
+    // Set file extension
+    string sourceFilePath = _SourceCodeFilePath.Replace("{SourceCodeFileExtension}", language.FileExtension);
+
+    // Create compile process
+    Process CompileProcess = new()
+    {
+        StartInfo = new ProcessStartInfo
+        {
+            FileName = language.CompileCommand
+                .Replace("{SourceCodeFilePath}", sourceFilePath)
+                .Replace("{ExecutableFilePath}", _ExecutableFilePath),
+            Arguments = language.CompileArguments
+                .Replace("{SourceCodeFilePath}", sourceFilePath)
+                .Replace("{ExecutableFilePath}", _ExecutableFilePath),
+            UseShellExecute = false,
+            CreateNoWindow = true,
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            WorkingDirectory = _SourceCodeFolderPath
+        },
+        EnableRaisingEvents = true
+    };
+
+    // Bind event handler
+    CompileProcess.OutputDataReceived +=
+        new DataReceivedEventHandler(CompileProcess_OutputDataReceived);
+    CompileProcess.ErrorDataReceived +=
+        new DataReceivedEventHandler(CompileProcess_ErrorDataReceived);
+
+    // Start the process
+    CompileProcess.Start();
+    CompileProcess.BeginOutputReadLine();
+    CompileProcess.BeginErrorReadLine();
+
+    // Wait for exit
+    await CompileProcess.WaitForExitAsync();
+    return CompileProcess.ExitCode;
+}
+\end{minted}
+
+Two event handlers are bind to the \code{CompileProcess}. They are simply used to receive the output from the compiler. They are bost set to private to encapsulate from the main program.
+
+\begin{minted}{csharp}
+private static void CompileProcess_ErrorDataReceived(object sender, DataReceivedEventArgs e)
+{
+    if (!string.IsNullOrEmpty(e.Data))
+    {
+        _CompilationError += e.Data + '\n';
+    }
+}
+
+private static void CompileProcess_OutputDataReceived(object sender, DataReceivedEventArgs e)
+{
+    if (!string.IsNullOrEmpty(e.Data))
+    {
+        _CompilationOutput += e.Data + '\n';
+    }
+}
+\end{minted}
+
+The \code{Execute} procedure follows the same pattern.
+
+\begin{minted}{csharp}
+/// <summary>
+/// Execute the executable in <see cref="_ExecutableFilePath"/>.
+/// </summary>
+/// <param name="stdin">The standard input gets feeded to the program.</param>
+/// <param name="language">The language config contains the running config.</param>
+/// <param name="timeLimit">The time limit for the process.</param>
+/// <param name="memoryLimit">The memory limit for the process.</param>
+/// <returns></returns>
+private async static Task<int> Execute(string stdin, Language language, int timeLimit, long memoryLimit)
+{
+    // Clear the old data
+    _StandardOutput = "";
+    _StandardError = "";
+    _StatusCode = StatusCode.PENDING;
+    _WorkingSet64 = 0;
+
+    // Set file extension
+    string sourceFilePath = _SourceCodeFilePath.Replace("{SourceCodeFileExtension}", language.FileExtension);
+
+    // Create the execute process
+    Process ExecuteProcess = new()
+    {
+        StartInfo = new ProcessStartInfo
+        {
+            FileName = language.RunCommand
+                .Replace("{SourceCodeFilePath}", sourceFilePath)
+                .Replace("{ExecutableFilePath}", _ExecutableFilePath),
+            Arguments = language.RunArguments
+                .Replace("{SourceCodeFilePath}", sourceFilePath)
+                .Replace("{ExecutableFilePath}", _ExecutableFilePath),
+            UseShellExecute = false,
+            RedirectStandardInput = true,
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            CreateNoWindow = true,
+            WorkingDirectory = _SourceCodeFolderPath
+        },
+        EnableRaisingEvents = true
+    };
+
+    // Bind the event handler
+    ExecuteProcess.OutputDataReceived +=
+        new DataReceivedEventHandler(ExecuteProcess_OutputDataReceived);
+    ExecuteProcess.ErrorDataReceived +=
+        new DataReceivedEventHandler(ExecuteProcess_ErrorDataReceived);
+    ExecuteProcess.Exited +=
+        new EventHandler(ExecuteProcess_Exited);
+
+    // Start running
+    ExecuteProcess.Start();
+    ExecuteProcess.BeginOutputReadLine();
+    ExecuteProcess.BeginErrorReadLine();
+    ExecuteProcess.StandardInput.WriteLine(stdin);
+    _StatusCode = StatusCode.RUNNING;
+
+    // Wait for exit
+    await ExecuteProcess.WaitForExitAsync();
+    return ExecuteProcess.ExitCode;
+}
+\end{minted}
+
+On top of the running procedure, I also need to monitor the memory and time usage, and kill the process when the limit is exceeded.
+
+\begin{minted}{csharp}
+// Start the time monitor
+Timer timer = new((e) =>
+{
+    if (_StatusCode == StatusCode.RUNNING && ExecuteProcess.HasExited == false)
+    {
+        ExecuteProcess.Kill();
+        _StatusCode = StatusCode.TIME_LIMIT_EXCEEDED;
+    }
+}, null, timeLimit, Timeout.Infinite);
+\end{minted}
+
+This is a count down timer, it runs on a separate thread, once the time limit is reached, it executes the kill command and record the time limit exceed error.
+
+\begin{minted}{csharp}
+// Create the memory monitor
+Thread MemoryMonitor = new(() =>
+{
+    while (ExecuteProcess.HasExited == false)
+    {
+        ExecuteProcess.Refresh();
+        _WorkingSet64 = ExecuteProcess.PeakWorkingSet64;
+        if (_WorkingSet64 > memoryLimit)
+        {
+            ExecuteProcess.Kill();
+            _StatusCode = StatusCode.MEMORY_LIMIT_EXCEEDED;
+        }
+    }
+});
+\end{minted}
+
+This is a memory monitor, it runs on a separate thread too. It keeps refreshing the process information, and check the memory usage. If the memory usage exceeds the limit, it kills the process and record the memory limit exceed error.
+
+I use a \code{RunCode} function to combime these two steps together, and returns a \code{RunCodeResult} containing all data.
+
+\begin{minted}{csharp}
+/// <summary>
+/// Run the UserCode with the given data.
+/// Use the Progress for reporting progress.
+/// Use skipCompile if multiple data needs to run on the same code.
+/// </summary>
+/// <param name="UserCode"></param>
+/// <param name="Input"></param>
+/// <param name="language"></param>
+/// <param name="TimeLimit"></param>
+/// <param name="MemoryLimit"></param>
+/// <param name="Progress"></param>
+/// <param name="skipCompile"></param>
+/// <returns></returns>
+public async static Task<RunCodeResult> RunCode(string UserCode, string Input, Language language, int TimeLimit, long MemoryLimit, IProgress<int> Progress)
+{
+    Progress.Report(0);
+
+    // Set file extension
+    string sourceFilePath = _SourceCodeFilePath.Replace("{SourceCodeFileExtension}", language.FileExtension);
+
+    // Save the code to the disk
+    RunCodeResult result = new();
+    Directory.CreateDirectory(_SourceCodeFolderPath);
+    await File.WriteAllTextAsync(sourceFilePath, UserCode);
+
+    // Compile if needed
+    if (language.NeedCompile)
+    {
+        // Compile and report any error
+        if (await Compile(language) != 0)
+        {
+            Progress.Report(100);
+            result.StandardOutput = _CompilationOutput;
+            result.StandardError = FilterErrorMessage(_CompilationError);
+            result.ResultCode = ResultCode.COMPILE_ERROR;
+            return result;
+        }
+    }
+    // Finish compilation
+    Progress.Report(10);
+
+    // Setup watch
+    var watch = new Stopwatch();
+    watch.Start();
+
+    // Execute the code
+    result.ExitCode = await Execute(Input, language, TimeLimit, MemoryLimit);
+    
+    // Save the results
+    watch.Stop();
+    result.StandardOutput = _StandardOutput;
+    result.StandardError = FilterErrorMessage(_StandardError);
+    result.CPUTime = watch.ElapsedMilliseconds;
+    result.MemoryUsage = _WorkingSet64;
+
+    // Report complete
+    Progress.Report(100);
+
+    return result;
+}
+\end{minted}
+
+Before the result is returned, its status needs to be determined. I use a series of branching to convert the internal state to a final status code.
+
+\begin{minted}{csharp}
+// Handle TLE
+if (_StatusCode == StatusCode.TIME_LIMIT_EXCEEDED)
+{
+    result.ResultCode = ResultCode.TIME_LIMIT_EXCEEDED;
+    return result;
+}
+
+// Handle MLE
+if (_StatusCode == StatusCode.MEMORY_LIMIT_EXCEEDED)
+{
+    result.ResultCode = ResultCode.MEMORY_LIMIT_EXCEEDED;
+    return result;
+}
+
+// Handle RE
+if (!string.IsNullOrEmpty(result.StandardError) || result.ExitCode != 0)
+{
+    result.ResultCode = ResultCode.RUNTIME_ERROR;
+    return result;
+}
+
+// Success
+result.ResultCode = ResultCode.SUCCESS;
+\end{minted}
+
+\subsection{Testing}
+
+Now, before I integrate the Judger to the app, I wrote some unit tests to test the code. To test the basic functionality, I set up two test cases, testing. The code simply outputs hello world and the Judger asserts whether the output is correct. I choose to test on two different programming languages, Python and C++, since Python is an interpreting language and C++ is a compiled language, which tests the Judger's full functionality.
+
+
+\begin{minted}{csharp}
+[TestClass]
+public class TestJudger
+{
+    const int MB = 1024 * 1024;
+    const int S = 1000;
+    const string helloWorldPy = "print('hello world')";
+    const string helloWorldCpp = "#include <iostream>\nusing namespace std;\nint main(){cout << \"hello world\" << endl;}";
+    
+    [TestInitialize]
+    public void SetCodeFilePath()
+    {
+        Judger.SetSourceCodeFilePath(".", "main");
+    }
+
+    /// <summary>
+    /// Test running a simple hello world Python program
+    /// </summary>
+    /// <returns></returns>
+    [TestMethod, TestCategory("TestRunCode")]
+    public async Task TestRunCodePython()
+    {
+        RunCodeResult result = await Judger.RunCode(helloWorldPy, "", LanguageConfig.Python, 1 * S, 64 * MB);
+        Assert.AreEqual("hello world\n", result.StandardOutput);
+        Assert.AreEqual("", result.StandardError);
+        Assert.AreEqual(0, result.ExitCode);
+        Assert.IsTrue(result.CPUTime < 2 * ms && result.CPUTime > 0);
+        Assert.IsTrue(result.MemoryUsage < 128 * MB && result.MemoryUsage > 0);
+        Assert.AreEqual(ResultCode.SUCCESS, result.ResultCode);
+    }
+
+    /// <summary>
+    /// Test running a simple hello world C++ program
+    /// </summary>
+    /// <returns></returns>
+    [TestMethod, TestCategory("TestRunCode")]
+    public async Task TestRunCodeCpp()
+    {
+        RunCodeResult result = await Judger.RunCode(helloWorldCpp, "", LanguageConfig.Cpp, 1 * S, 64 * MB);
+        Assert.AreEqual("hello world\n", result.StandardOutput);
+        Assert.AreEqual("", result.StandardError);
+        Assert.AreEqual(0, result.ExitCode);
+        Assert.IsTrue(result.CPUTime < 2 * ms && result.CPUTime > 0);
+        Assert.IsTrue(result.MemoryUsage < 128 * MB && result.MemoryUsage > 0);
+        Assert.AreEqual(ResultCode.SUCCESS, result.ResultCode);
+    }
+}
+\end{minted}
+
+These tests passed without an issue.
+
+\begin{minted}{text}
+> dotnet test --filter TestCategory=TestRunCode
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Algorithm Dynamics.Core -> C:\Algorithm-Dynamics\src\Algorithm Dynamics.Core\bin\Debug\net6.0\Algorithm Dynamics.Core.dll
+  Algorithm Dynamics.Test -> C:\Algorithm-Dynamics\src\Algorithm Dynamics.Test\bin\Debug\net6.0\Algorithm Dynamics.Test.dll
+Test run for C:\Algorithm-Dynamics\src\Algorithm Dynamics.Test\bin\Debug\net6.0\Algorithm Dynamics.Test.dll (.NETCoreApp,Version=v6.0)
+Microsoft (R) Test Execution Command Line Tool Version 17.0.0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:     2, Skipped:     0, Total:     2, Duration: 651 ms - Algorithm Dynamics.Test.dll (net6.0)
+\end{minted}
+
+Next I tested input. I use the simple A + B problem, two integers will be feed to the test code by the judger, and a correct sum should be output.
+
+\begin{minted}{csharp}
+const string APlusBPy = "a=int(input())\nb=int(input())\nprint(a+b)";
+const string APlusBCpp = "#include <iostream>\nusing namespace std;\nint main(){int a,b;cin>>a>>b;cout<<a+b;}";
+
+/// <summary>
+/// Test input processing
+/// </summary>
+/// <returns></returns>
+[TestMethod, TestCategory("TestRunCodeInput")]
+public async Task TestRunCodeInputPy()
+{
+    RunCodeResult result = await Judger.RunCode(APlusBPy, "3\n4", LanguageConfig.Python, 1 * S, 64 * MB);
+    Assert.AreEqual("7\n", result.StandardOutput);
+    Assert.AreEqual("", result.StandardError);
+    Assert.AreEqual(0, result.ExitCode);
+    Assert.IsTrue(result.CPUTime < 2 * ms && result.CPUTime > 0);
+    Assert.IsTrue(result.MemoryUsage < 128 * MB && result.MemoryUsage > 0);
+    Assert.AreEqual(ResultCode.SUCCESS, result.ResultCode);
+}
+
+/// <summary>
+/// Test input processing
+/// </summary>
+/// <returns></returns>
+[TestMethod, TestCategory("TestRunCodeInput")]
+public async Task TestRunCodeInputCpp()
+{
+    RunCodeResult result = await Judger.RunCode(APlusBCpp, "3\n4", LanguageConfig.Cpp, 1 * S, 64 * MB);
+    Assert.AreEqual("7\n", result.StandardOutput);
+    Assert.AreEqual("", result.StandardError);
+    Assert.AreEqual(0, result.ExitCode);
+    Assert.IsTrue(result.CPUTime < 2 * ms && result.CPUTime > 0);
+    Assert.IsTrue(result.MemoryUsage < 128 * MB && result.MemoryUsage > 0);
+    Assert.AreEqual(ResultCode.SUCCESS, result.ResultCode);
+}
+\end{minted}
+
+Both tests passed successfully.
+
+\begin{minted}{text}
+> dotnet test --filter TestCategory=TestRunCodeInput
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Algorithm Dynamics.Core -> C:\Algorithm-Dynamics\src\Algorithm Dynamics.Core\bin\Debug\net6.0\Algorithm Dynamics.Core.dll
+  Algorithm Dynamics.Test -> C:\Algorithm-Dynamics\src\Algorithm Dynamics.Test\bin\Debug\net6.0\Algorithm Dynamics.Test.dll
+Test run for C:\Algorithm-Dynamics\src\Algorithm Dynamics.Test\bin\Debug\net6.0\Algorithm Dynamics.Test.dll (.NETCoreApp,Version=v6.0)
+Microsoft (R) Test Execution Command Line Tool Version 17.0.0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:     2, Skipped:     0, Total:     2, Duration: 796 ms - Algorithm Dynamics.Test.dll (net6.0)
+\end{minted}
+
+Next, I test the time limit. I input a piece of code that will run an infinite loop. The Judger is expected to kill the process after 1 second and report the correct error.
+
+\begin{minted}{csharp}
+const string TLEPy = "while True:\n    pass";
+const string TLECpp = "int main(){while(1){}}";
+
+/// <summary>
+/// Test time limit exceed
+/// </summary>
+/// <returns></returns>
+[TestMethod, TestCategory("TestTLE")]
+public async Task TestTLEPy()
+{
+    RunCodeResult result = await Judger.RunCode(TLEPy, "", LanguageConfig.Python, 1 * S, 64 * MB);
+    Assert.AreEqual("", result.StandardOutput);
+    Assert.AreEqual("", result.StandardError);
+    Assert.AreNotEqual(0, result.ExitCode);
+    Assert.IsTrue(result.CPUTime >= 1 * S);
+    Assert.IsTrue(result.MemoryUsage < 128 * MB && result.MemoryUsage > 0);
+    Assert.AreEqual(ResultCode.TIME_LIMIT_EXCEEDED, result.ResultCode);
+}
+
+/// <summary>
+/// Test time limit exceed
+/// </summary>
+/// <returns></returns>
+[TestMethod, TestCategory("TestTLE")]
+public async Task TestTLECpp()
+{
+    RunCodeResult result = await Judger.RunCode(TLECpp, "", LanguageConfig.Cpp, 1 * S, 64 * MB);
+    Assert.AreEqual("", result.StandardOutput);
+    Assert.AreEqual("", result.StandardError);
+    Assert.AreNotEqual(0, result.ExitCode);
+    Assert.IsTrue(result.CPUTime >= 1 * S);
+    Assert.IsTrue(result.MemoryUsage < 128 * MB && result.MemoryUsage > 0);
+    Assert.AreEqual(ResultCode.TIME_LIMIT_EXCEEDED, result.ResultCode);
+}
+\end{minted}
+
+Both tests passed successfully.
+
+\begin{minted}{text}
+> dotnet test --filter TestCategory=TestTLE
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Algorithm Dynamics.Core -> C:\Algorithm-Dynamics\src\Algorithm Dynamics.Core\bin\Debug\net6.0\Algorithm Dynamics.Core.dll
+  Algorithm Dynamics.Test -> C:\Algorithm-Dynamics\src\Algorithm Dynamics.Test\bin\Debug\net6.0\Algorithm Dynamics.Test.dll
+Test run for C:\Algorithm-Dynamics\src\Algorithm Dynamics.Test\bin\Debug\net6.0\Algorithm Dynamics.Test.dll (.NETCoreApp,Version=v6.0)
+Microsoft (R) Test Execution Command Line Tool Version 17.0.0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:     2, Skipped:     0, Total:     2, Duration: 2 s - Algorithm Dynamics.Test.dll (net6.0)
+\end{minted}
+
+Next, I test the memory limit. I input a piece of code that will use a large amount of memory. The Judger is expected to kill the process when the actual memory usage is more than 64 MB.
+
+\begin{minted}{csharp}
+const string MLEPy = "a=[1]\nwhile True:\n    a+=a";
+const string MLECpp = "const int N = 100000000;int a[N];int main(){for(int i = 0;i<N;i++)a[i]= i;}";
+
+/// <summary>
+/// Test memory limit exceed
+/// </summary>
+/// <returns></returns>
+[TestMethod, TestCategory("TestMLE")]
+public async Task TestMLEPy()
+{
+    RunCodeResult result = await Judger.RunCode(MLEPy, "", LanguageConfig.Python, 1 * S, 64 * MB);
+    Assert.AreEqual("", result.StandardOutput);
+    Assert.AreEqual("", result.StandardError);
+    Assert.AreNotEqual(0, result.ExitCode);
+    Assert.IsTrue(result.CPUTime < 2 * ms && result.CPUTime > 0);
+    Assert.IsTrue(result.MemoryUsage > 64 * MB);
+    Assert.AreEqual(ResultCode.MEMORY_LIMIT_EXCEEDED, result.ResultCode);
+}
+
+/// <summary>
+/// Test memory limit exceed
+/// </summary>
+/// <returns></returns>
+[TestMethod, TestCategory("TestMLE")]
+public async Task TestMLECpp()
+{
+    RunCodeResult result = await Judger.RunCode(MLECpp, "", LanguageConfig.Cpp, 1 * S, 64 * MB, null, true);
+    Assert.AreEqual("", result.StandardOutput);
+    Assert.AreEqual("", result.StandardError);
+    Assert.AreNotEqual(0, result.ExitCode);
+    Assert.IsTrue(result.CPUTime < 2 * ms && result.CPUTime > 0);
+    Assert.IsTrue(result.MemoryUsage > 64 * MB);
+    Assert.AreEqual(ResultCode.MEMORY_LIMIT_EXCEEDED, result.ResultCode);
+}
+\end{minted}
+
+Next, I test the compile error. I input a piece of code that will not compile. The Judger is expected to collect the error message from the compiler and report it in the result.
+
+\begin{minted}{csharp}
+const string CECpp = "ce";
+
+/// <summary>
+/// Test compile error
+/// </summary>
+/// <returns></returns>
+[TestMethod, TestCategory("TestCE")]
+public async Task TestCE()
+{
+    RunCodeResult result = await Judger.RunCode(CECpp, "", LanguageConfig.Cpp, 1 * S, 64 * MB);
+    Assert.AreEqual("", result.StandardOutput);
+    Assert.AreNotEqual("", result.StandardError);
+    Assert.AreEqual(0, result.ExitCode);
+    Assert.AreEqual(0, result.CPUTime);
+    Assert.AreEqual(0, result.MemoryUsage);
+    Assert.AreEqual(ResultCode.COMPILE_ERROR, result.ResultCode);
+}
+\end{minted}
+
+The test passes successfully.
+
+\begin{minted}{text}
+> dotnet test --filter TestCategory=TestCE
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Algorithm Dynamics.Core -> C:\Algorithm-Dynamics\src\Algorithm Dynamics.Core\bin\Debug\net6.0\Algorithm Dynamics.Core.dll
+  Algorithm Dynamics.Test -> C:\Algorithm-Dynamics\src\Algorithm Dynamics.Test\bin\Debug\net6.0\Algorithm Dynamics.Test.dll
+Test run for C:\Algorithm-Dynamics\src\Algorithm Dynamics.Test\bin\Debug\net6.0\Algorithm Dynamics.Test.dll (.NETCoreApp,Version=v6.0)
+Microsoft (R) Test Execution Command Line Tool Version 17.0.0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:     1, Skipped:     0, Total:     1, Duration: 104 ms - Algorithm Dynamics.Test.dll (net6.0)
+\end{minted}
+
+Next, I test the runtime error. For interpreting language like Python, the syntax is checked during runtime. The Judger is expected to collect the error message from the intrepreter and report it in the result.
+
+\begin{minted}{csharp}
+const string REPy = "re";
+
+/// <summary>
+/// Test runtime error
+/// </summary>
+/// <returns></returns>
+[TestMethod, TestCategory("TestRE")]
+public async Task TestRE()
+{
+    RunCodeResult result = await Judger.RunCode(REPy, "", LanguageConfig.Python, 1 * S, 64 * MB);
+    Assert.AreEqual("", result.StandardOutput);
+    Assert.AreNotEqual("", result.StandardError);
+    Assert.AreNotEqual(0, result.ExitCode);
+    Assert.IsTrue(result.CPUTime > 0 && result.CPUTime < 2 * S);
+    Assert.IsTrue(result.MemoryUsage > 0 && result.MemoryUsage < 64 * MB);
+    Assert.AreEqual(ResultCode.RUNTIME_ERROR, result.ResultCode);
+}
+\end{minted}
+
+The test passed successfully.
+
+\begin{minted}{text}
+> dotnet test --filter TestCategory=TestRE
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Algorithm Dynamics.Core -> C:\Algorithm-Dynamics\src\Algorithm Dynamics.Core\bin\Debug\net6.0\Algorithm Dynamics.Core.dll
+  Algorithm Dynamics.Test -> C:\Algorithm-Dynamics\src\Algorithm Dynamics.Test\bin\Debug\net6.0\Algorithm Dynamics.Test.dll
+Test run for C:\Algorithm-Dynamics\src\Algorithm Dynamics.Test\bin\Debug\net6.0\Algorithm Dynamics.Test.dll (.NETCoreApp,Version=v6.0)
+Microsoft (R) Test Execution Command Line Tool Version 17.0.0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:     1, Skipped:     0, Total:     1, Duration: 100 ms - Algorithm Dynamics.Test.dll (net6.0)
+\end{minted}
+
+\subsection{Integration}
 
 \subsection{Stakeholder feedback}
 
@@ -6900,7 +7483,7 @@ public async Task TestCompileSystemError()
         helloWorldCpp,
         "",
         new("C++", "cpp", ".cpp", true, "g--", "-x c++ {SourceCodeFilePath} -o {ExecutableFilePath}", "{ExecutableFilePath}", ""),
-        1 * ms,
+        1 * S,
         64 * MB,
         new Progress<int>()
     );
@@ -6934,7 +7517,7 @@ public async Task TestExecuteSystemError()
         helloWorldCpp,
         "",
         new("Python", "python", ".py", "p", "{SourceCodeFilePath}"),
-        1 * ms,
+        1 * S,
         64 * MB,
         new Progress<int>()
     );
@@ -7397,9 +7980,46 @@ TODO: Review of the feedback
 
 TODO: Success criteria
 
-\section{Limitations, further maintaince and developement}
+\subsection{Usability}
 
-TODO:limitations and further development
+\subsubsection{Easy navigation}
+
+\subsubsection{Easy to find problems}
+
+\subsubsection{Easy to create new problems and problem lists}
+
+\subsubsection{Easy to import and export data}
+
+\subsubsection{Easy to create and distribute assignments}
+
+\subsubsection{Integration with Microsoft Teams API}
+
+\subsubsection{Easy to mark submissions}
+
+\subsubsection{Easy experimenting with the playground}
+
+\subsection{Validation}
+
+\subsubsection{Validate the search query}
+
+\subsubsection{Validate when creating new problems}
+
+\subsubsection{Validate the settings options}
+
+\subsection{Maintainability}
+
+\subsubsection{Modular design}
+
+\subsubsection{Split core functions into a core library}
+
+\subsubsection{Use sensible variable
+names and add comments to each function}
+
+\subsubsection{CI/CD pipeline}
+
+\subsubsection{Unit test for core functions}
+
+\section{Limitations, further maintaince and developement}
 
 \subsection{Cross platform}
 

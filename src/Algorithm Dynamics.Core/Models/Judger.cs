@@ -187,8 +187,12 @@ namespace Algorithm_Dynamics.Core.Models
         /// <param name="Progress"></param>
         /// <param name="skipCompile"></param>
         /// <returns></returns>
-        public async static Task<RunCodeResult> RunCode(string UserCode, string Input, Language language, int TimeLimit, long MemoryLimit, IProgress<int> Progress, bool skipCompile = false)
+        public async static Task<RunCodeResult> RunCode(string UserCode, string Input, Language language, int TimeLimit, long MemoryLimit, IProgress<int> Progress = null, bool skipCompile = false)
         {
+            if (Progress == null)
+            {
+                Progress = new Progress<int>();
+            }
             Progress.Report(0);
 
             // Add a \n to the end for the input
@@ -305,6 +309,14 @@ namespace Algorithm_Dynamics.Core.Models
             TestCaseResult result = TestCaseResult.Create(runCodeResult);
             return result;
         }
+
+        /// <summary>
+        /// Judge a problem submission
+        /// </summary>
+        /// <param name="Submission"></param>
+        /// <param name="Progress"></param>
+        /// <returns></returns>
+
         public async static Task<SubmissionResult> JudgeProblem(Submission Submission, IProgress<int> Progress)
         {
             // Create SubmissionResult
