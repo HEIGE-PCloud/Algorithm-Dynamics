@@ -117,6 +117,7 @@ namespace Algorithm_Dynamics.Core.Models
                 }
             }
         }
+
         [JsonIgnore]
         public string StatusAsString
         {
@@ -343,6 +344,11 @@ namespace Algorithm_Dynamics.Core.Models
             DataAccess.AddProblemListRecord(problemListId, Id);
         }
 
+        /// <summary>
+        /// Determine whether two problems are the same.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public override bool Equals(object obj)
         {
             // If not problem, not equal
