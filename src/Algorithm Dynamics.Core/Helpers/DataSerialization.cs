@@ -114,6 +114,7 @@ namespace Algorithm_Dynamics.Core.Helpers
             // Convert the string into the base model
             var @base = JsonSerializer.Deserialize<ExportObject>(str);
 
+            return JsonSerializer.Deserialize<Problem>(@base.Data.ToString());
             // Read the problem data from the base data
             var baseProblem = JsonSerializer.Deserialize<BaseProblem>(@base.Data.ToString());
             

@@ -6805,7 +6805,7 @@ public static void SetSourceCodeFilePath(string FolderPath, string FileName = "m
 
 Next, I started implementing the \code{Compile} function. It is a static function, so it can be called without creating an instance of the class. It is also an async function, so when it is executing, it will not block the main UI thread. This is particularly important as the user interface should stay responsive when the judger is working. It returns a \code{Task<int>} value, which containts the exit code of the compiler.
 
-To allow the user customize the behavior of different compiler, the compile command supports magic variables \code{SourceCodeFileExtension}, \code{SourceCodeFilePath} and \code{ExecutableFilePath}. These variables need to be replaced with the real value before executing.
+To allow the user customize the behavior of different compiler, the compile command supports magic variables SourceCodeFileExtension, SourceCodeFilePath and ExecutableFilePath. These variables need to be replaced with the real value before executing.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -7553,6 +7553,439 @@ I show this result back to the stakeholder, and he is happy with how I handle th
 
 \section{Milestone 4: Handle data import/export}
 
+\subsection{Implementation and testing}
+
+I created public static class in the Algorithm Dynamics.Core project, so it is separated from the main UI logic and can be tested by the unit test framework. I set it as a static class since it is a collection of methods and no need of creating instance.
+
+I first created an ExportObject to wrap any data I am exporting, so the exported data can be validated before importing.
+
+\begin{minted}{csharp}
+/// <summary>
+/// The base Object container that holds all the other data objects
+/// It adds <see cref="FileType"/> and <see cref="DataType"/> info to the data.
+/// </summary>
+private class ExportObject
+{
+    public ExportObject(string dataType, object data)
+    {
+        DataType = dataType;
+        Data = data;
+    }
+
+    public string FileType { get; set; } = "Algorithm Dynamics Exported Data";
+    public string DataType { get; set; }
+    public object Data { get; set; }
+}
+\end{minted}
+
+The \code{ExportObject} adds \code{FileType} and \code{DataType} to the object, and store the actual instance in \code{Data}.
+
+To export a problem, it is converted into an \code{ExportObject}, and gets converted into a JSON string.
+
+\begin{minted}{csharp}
+/// <summary>
+/// Convert a problem instance into a JSON string ready to be exported.
+/// </summary>
+/// <param name="problem"></param>
+/// <returns></returns>
+public static string SerializeProblem(Problem problem)
+{
+    return JsonSerializer.Serialize(new ExportObject("Problem", problem));
+}
+\end{minted}
+
+Now I can add tests to Algorithm Dynamics.Test. The data serialization requires the database for the data model, so a new database is initialized for each test case at the beginning.
+
+\begin{minted}{csharp}
+using Algorithm_Dynamics.Core.Helpers;
+using Algorithm_Dynamics.Core.Models;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.IO;
+
+namespace Algorithm_Dynamics.Test
+{
+    [TestClass]
+    public class TestDataSerialization
+    {
+        [TestInitialize]
+        public void InitDb()
+        {
+            string path = $"{Guid.NewGuid()}.db";
+            File.Delete(path);
+            DataAccess.InitializeDatabase(path);
+        }
+
+        [TestMethod]
+        public void TestSerializeProblem()
+        {
+            Problem problem = DatabaseHelper.CreateFullProblem();
+            
+            // Serialize problem
+            string str = DataSerialization.SerializeProblem(problem);
+
+            Debug.WriteLine(str);
+        }
+    }
+}
+\end{minted}
+
+When executing the test case, the following data is generated.
+
+\begin{minted}{json}
+{
+    "FileType": "Algorithm Dynamics Exported Data",
+    "DataType": "Problem",
+    "Data": {
+        "Id": 1,
+        "Uid": "82a1ac35-f5bb-478f-8a36-50ffc03eab16",
+        "Name": "Test Problem 1",
+        "Description": "Description 1",
+        "TimeLimit": 1000,
+        "MemoryLimit": 16777216,
+        "Status": 0,
+        "StatusAsString": "Todo",
+        "Difficulty": 0,
+        "DifficultyAsString": "Easy",
+        "TestCases": [
+            {
+                "Id": 1,
+                "Input": "Input 3",
+                "Output": "Output 3",
+                "IsExample": true
+            },
+            {
+                "Id": 2,
+                "Input": "Input 5",
+                "Output": "Output 5",
+                "IsExample": true
+            },
+            {
+                "Id": 3,
+                "Input": "Input 7",
+                "Output": "Output 7",
+                "IsExample": true
+            },
+            {
+                "Id": 4,
+                "Input": "Input 9",
+                "Output": "Output 9",
+                "IsExample": true
+            },
+            {
+                "Id": 5,
+                "Input": "Input 11",
+                "Output": "Output 11",
+                "IsExample": true
+            }
+        ],
+        "Tags": [
+            {
+                "Id": 1,
+                "Name": "Tag 2"
+            },
+            {
+                "Id": 2,
+                "Name": "Tag 4"
+            },
+            {
+                "Id": 3,
+                "Name": "Tag 6"
+            },
+            {
+                "Id": 4,
+                "Name": "Tag 8"
+            },
+            {
+                "Id": 5,
+                "Name": "Tag 10"
+            }
+        ],
+        "TagsAsString": "Tag 2, Tag 4, Tag 6, Tag 8, Tag 10",
+        "TagAsString": "Tag 2"
+    }
+}
+\end{minted}
+
+The problem with all its metadata and all test cases and tags are exported correctly. However, there are some fields that should not get exported. Such as \code{Id} and \code{Status}. Because when importing the data, all these fields will be regenerated any way, exporting them is just a waste of space.
+
+I can add the \code{[JsonIgnore]} attribute to the fields that should not be exported.
+
+Now when I test it again, only the necessary fields are exported.
+
+\begin{minted}{json}
+{
+    "FileType": "Algorithm Dynamics Exported Data",
+    "DataType": "Problem",
+    "Data": {
+        "Uid": "425f417f-0a9b-44e5-9e78-6c15d76ee4f2",
+        "Name": "Test Problem 1",
+        "Description": "Description 1",
+        "TimeLimit": 1000,
+        "MemoryLimit": 16777216,
+        "Difficulty": 0,
+        "TestCases": [
+            {
+                "Input": "Input 3",
+                "Output": "Output 3",
+                "IsExample": true
+            },
+            {
+                "Input": "Input 5",
+                "Output": "Output 5",
+                "IsExample": true
+            },
+            {
+                "Input": "Input 7",
+                "Output": "Output 7",
+                "IsExample": true
+            },
+            {
+                "Input": "Input 9",
+                "Output": "Output 9",
+                "IsExample": true
+            },
+            {
+                "Input": "Input 11",
+                "Output": "Output 11",
+                "IsExample": true
+            }
+        ],
+        "Tags": [
+            {
+                "Name": "Tag 2"
+            },
+            {
+                "Name": "Tag 4"
+            },
+            {
+                "Name": "Tag 6"
+            },
+            {
+                "Name": "Tag 8"
+            },
+            {
+                "Name": "Tag 10"
+            }
+        ]
+    }
+}
+\end{minted}
+
+I implemented a similar export function for exporting a problem list.
+
+\begin{minted}{csharp}
+/// <summary>
+/// Convert a problem list instance into a JSON string ready to be exported.
+/// </summary>
+/// <param name="problemList"></param>
+/// <returns></returns>
+public static string SerializeProblemList(ProblemList problemList)
+{
+    return JsonSerializer.Serialize(new ExportObject("ProblemList", problemList));
+}
+\end{minted}
+
+And similarly, I add a test case for the problem list.
+
+\begin{minted}{csharp}
+[TestMethod]
+public void TestSerializeProblemList()
+{
+    ProblemList problemList = DatabaseHelper.CreateFullProblemList();
+    
+    // Serialize problem list
+    string str = DataSerialization.SerializeProblemList(problemList);
+
+    Debug.WriteLine(str);
+}
+\end{minted}
+
+When running the test, the problem list is exported correctly, with only necessary fields.
+
+\begin{minted}{json}
+{
+    "FileType": "Algorithm Dynamics Exported Data",
+    "DataType": "ProblemList",
+    "Data": {
+        "Name": "Problem List 1",
+        "Description": "Description 1",
+        "Problems": [
+            {
+                "Uid": "cd6edee3-479c-4833-b8b3-7aa955514cba",
+                "Name": "Test Problem 2",
+                "Description": "Description 2",
+                "TimeLimit": 2000,
+                "MemoryLimit": 33554432,
+                "Difficulty": 0,
+                "TestCases": [
+                    {
+                        "Input": "Input 4",
+                        "Output": "Output 4",
+                        "IsExample": true
+                    },
+                    {
+                        "Input": "Input 6",
+                        "Output": "Output 6",
+                        "IsExample": true
+                    }
+                ],
+                "Tags": [
+                    {
+                        "Name": "Tag 3"
+                    },
+                    {
+                        "Name": "Tag 5"
+                    }
+                ]
+            },
+            {
+                "Uid": "e207230d-a10d-4f76-bf5c-08273687dacc",
+                "Name": "Test Problem 13",
+                "Description": "Description 13",
+                "TimeLimit": 13000,
+                "MemoryLimit": 218103808,
+                "Difficulty": 0,
+                "TestCases": [
+                    {
+                        "Input": "Input 15",
+                        "Output": "Output 15",
+                        "IsExample": true
+                    },
+                    {
+                        "Input": "Input 17",
+                        "Output": "Output 17",
+                        "IsExample": true
+                    }
+                ],
+                "Tags": [
+                    {
+                        "Name": "Tag 14"
+                    },
+                    {
+                        "Name": "Tag 16"
+                    }
+                ]
+            }
+        ]
+    }
+}
+\end{minted}
+
+Now, the export function is implemented and tested. To import the data, is data type is first checked and validated, then it is passed to the corresponding function to deserialize into an instance of the object.
+
+I create a \code{GetDataType} function to retrieve the data type and validate the file format.
+
+\begin{minted}{csharp}
+/// <summary>
+/// Get data type (problem/problem list) of an import data file.
+/// </summary>
+/// <param name="str"></param>
+/// <returns></returns>
+/// <exception cref="FormatException">The data format is invalid</exception>
+public static string GetDataType(string str)
+{
+    var @base = JsonSerializer.Deserialize<ExportObject>(str);
+    if (@base.FileType != "Algorithm Dynamics Exported Data")
+        throw new FormatException($"The FileType {@base.FileType} is invalid.");
+
+    if (@base.DataType != "Problem" && @base.DataType != "ProblemList")
+        throw new FormatException($"The DataType {@base.DataType} is invalid.");
+    return @base.DataType;
+}
+\end{minted}
+
+To deserialize the data, I need to first retrieve the data from the \code{ExportObject} instance, and return it to the caller.
+
+\begin{minted}{csharp}
+/// <summary>
+/// Convert a valid JSON string into a problem
+/// </summary>
+/// <param name="str"></param>
+/// <returns></returns>
+public static Problem DeserializeProblem(string str)
+{
+    // Convert the string into the base model
+    var @base = JsonSerializer.Deserialize<ExportObject>(str);
+
+    // Read the problem data from the base data
+    var problem = JsonSerializer.Deserialize<Problem>(@base.Data.ToString());
+
+    return problem;
+}
+\end{minted}
+
+Next, I add a full test case for serializing and deserializing a problem.
+
+\begin{minted}{csharp}
+[TestMethod]
+public void TestSerializeProblem()
+{
+    Problem problem = DatabaseHelper.CreateFullProblem();
+    
+    // Serialize problem
+    string str = DataSerialization.SerializeProblem(problem);
+
+    // Check data type
+    Assert.AreEqual("Problem", DataSerialization.GetDataType(str));
+
+    // Deserialize problem
+    Problem result = DataSerialization.DeserializeProblem(str);
+    
+    // Check properties
+    Assert.AreNotEqual(result.Id, problem.Id);
+    Assert.AreEqual(result.Uid, problem.Uid);
+    Assert.AreEqual(problem.Name, result.Name);
+    Assert.AreEqual(problem.Description, result.Description);
+    Assert.AreEqual(problem.TimeLimit, result.TimeLimit);
+    Assert.AreEqual(problem.MemoryLimit, result.MemoryLimit);
+    Assert.AreEqual(problem.Difficulty, result.Difficulty);
+    
+    // Check tags
+    Assert.AreEqual(problem.Tags.Count, result.Tags.Count);
+    for (int i = 0; i < problem.Tags.Count; i++)
+    {
+        Assert.AreEqual(problem.Tags[i].Name, result.Tags[i].Name);
+    }
+    
+    // Check test cases
+    Assert.AreEqual(problem.TestCases.Count, result.TestCases.Count);
+    for (int i = 0; i < problem.TestCases.Count; i++)
+    {
+        Assert.AreEqual(problem.TestCases[i].Input, result.TestCases[i].Input);
+        Assert.AreEqual(problem.TestCases[i].Output, result.TestCases[i].Output);
+    }
+}
+\end{minted}
+
+It generates a new problem, serialize it into a JSON string, deserialize from the JSON string into an instance, and compare the new instance and the original instance. The test passes when they are the same.
+
+However, when I run the test, it fails with the following error.
+
+\begin{minted}{text}
+Message: 
+Test method Algorithm_Dynamics.Test.TestDataSerialization.TestSerializeProblem threw exception: 
+System.NotSupportedException: Deserialization of types without a parameterless constructor, a singular parameterized constructor, or a parameterized constructor annotated with 'JsonConstructorAttribute' is not supported. Type 'Algorithm_Dynamics.Core.Models.Problem'. Path: $ | LineNumber: 0 | BytePositionInLine: 1. ---> System.NotSupportedException: Deserialization of types without a parameterless constructor, a singular parameterized constructor, or a parameterized constructor annotated with 'JsonConstructorAttribute' is not supported. Type 'Algorithm_Dynamics.Core.Models.Problem'.
+
+Stack Trace: 
+ThrowHelper.ThrowNotSupportedException(ReadStack& state, Utf8JsonReader& reader, NotSupportedException ex)
+ThrowHelper.ThrowNotSupportedException_DeserializeNoConstructor(Type type, Utf8JsonReader& reader, ReadStack& state)
+ObjectDefaultConverter`1.OnTryRead(Utf8JsonReader& reader, Type typeToConvert, JsonSerializerOptions options, ReadStack& state, T& value)
+JsonConverter`1.TryRead(Utf8JsonReader& reader, Type typeToConvert, JsonSerializerOptions options, ReadStack& state, T& value)
+JsonConverter`1.ReadCore(Utf8JsonReader& reader, JsonSerializerOptions options, ReadStack& state)
+JsonSerializer.ReadFromSpan[TValue](ReadOnlySpan`1 utf8Json, JsonTypeInfo jsonTypeInfo, Nullable`1 actualByteCount)
+JsonSerializer.ReadFromSpan[TValue](ReadOnlySpan`1 json, JsonTypeInfo jsonTypeInfo)
+JsonSerializer.Deserialize[TValue](String json, JsonSerializerOptions options)
+DataSerialization.DeserializeProblem(String str) line 117
+TestDataSerialization.TestSerializeProblem() line 32
+\end{minted}
+
+TODO: implement data Deserialization
+
+\subsection{Integration}
+
+TODO: Integration
+
 \section{Milestone 5: Handle settings}
 
 I designed a JSON schema to store the settings in a file in the design section, but after looking through some documentation, I found a better way of storing settings on Windows. I can use local app data store\cite{microsoft:docs:store-and-retrieve-app-data} to store the settings. Comparing to store the settings in JSON, this brings several advantages: the lifecycle of the settings files are managed by Windows, so when the app gets uninstalled, there will not be garbage settings file flying around the user's disk; the user also can't mess around the settings file directly, which reduces the risk of invalid settings; the data is stored in binary instead of plain text file, which saves disk space. Consider all these benefits, I decide to use \code{LocalSettings} container to store the settings.
@@ -8005,6 +8438,8 @@ TODO: Success criteria
 \subsubsection{Validate when creating new problems}
 
 \subsubsection{Validate the settings options}
+
+\subsubsection{Validate the import data}
 
 \subsection{Maintainability}
 

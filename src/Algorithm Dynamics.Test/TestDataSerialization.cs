@@ -16,16 +16,22 @@ namespace Algorithm_Dynamics.Test
             File.Delete(path);
             DataAccess.InitializeDatabase(path);
         }
+
         [TestMethod]
         public void TestSerializeProblem()
         {
             Problem problem = DatabaseHelper.CreateFullProblem();
+            
+            // Serialize problem
             string str = DataSerialization.SerializeProblem(problem);
 
+            // Check data type
             Assert.AreEqual("Problem", DataSerialization.GetDataType(str));
 
+            // Deserialize problem
             Problem result = DataSerialization.DeserializeProblem(str);
-
+            
+            // Check properties
             Assert.AreNotEqual(result.Id, problem.Id);
             Assert.AreEqual(result.Uid, problem.Uid);
             Assert.AreEqual(problem.Name, result.Name);
@@ -33,11 +39,15 @@ namespace Algorithm_Dynamics.Test
             Assert.AreEqual(problem.TimeLimit, result.TimeLimit);
             Assert.AreEqual(problem.MemoryLimit, result.MemoryLimit);
             Assert.AreEqual(problem.Difficulty, result.Difficulty);
+            
+            // Check tags
             Assert.AreEqual(problem.Tags.Count, result.Tags.Count);
             for (int i = 0; i < problem.Tags.Count; i++)
             {
                 Assert.AreEqual(problem.Tags[i].Name, result.Tags[i].Name);
             }
+           
+            // Check test cases
             Assert.AreEqual(problem.TestCases.Count, result.TestCases.Count);
             for (int i = 0; i < problem.TestCases.Count; i++)
             {
@@ -45,19 +55,28 @@ namespace Algorithm_Dynamics.Test
                 Assert.AreEqual(problem.TestCases[i].Output, result.TestCases[i].Output);
             }
         }
+
         [TestMethod]
         public void TestSerializeProblemList()
         {
             ProblemList problemList = DatabaseHelper.CreateFullProblemList();
+            
+            // Serialize problem list
             string str = DataSerialization.SerializeProblemList(problemList);
-
+            
+            // Check data type
             Assert.AreEqual("ProblemList", DataSerialization.GetDataType(str));
 
+            // Deserialize problem list
             ProblemList result = DataSerialization.DeserializeProblemList(str);
+            
+            // Check problem list metadata
             Assert.AreNotEqual(result.Id, problemList.Id);
             Assert.AreEqual(problemList.Name, result.Name);
             Assert.AreEqual(problemList.Description, result.Description);
             Assert.AreEqual(problemList.Problems.Count, result.Problems.Count);
+            
+            // Check problem data
             for (int i = 0; i < problemList.Problems.Count; i++)
             {
                 var expected = problemList.Problems[i];
@@ -69,11 +88,15 @@ namespace Algorithm_Dynamics.Test
                 Assert.AreEqual(expected.TimeLimit, actual.TimeLimit);
                 Assert.AreEqual(expected.MemoryLimit, actual.MemoryLimit);
                 Assert.AreEqual(expected.Difficulty, actual.Difficulty);
+                
+                // Check tag data
                 Assert.AreEqual(expected.Tags.Count, actual.Tags.Count);
                 for (int j = 0; j < expected.Tags.Count; j++)
                 {
                     Assert.AreEqual(expected.Tags[j].Name, actual.Tags[j].Name);
                 }
+
+                // Check test case data
                 Assert.AreEqual(expected.TestCases.Count, actual.TestCases.Count);
                 for (int j = 0; j < expected.TestCases.Count; j++)
                 {
