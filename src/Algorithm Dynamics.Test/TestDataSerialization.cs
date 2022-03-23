@@ -17,7 +17,7 @@ namespace Algorithm_Dynamics.Test
             DataAccess.InitializeDatabase(path);
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("TestSerialize")]
         public void TestSerializeProblem()
         {
             Problem problem = DatabaseHelper.CreateFullProblem();
@@ -56,7 +56,7 @@ namespace Algorithm_Dynamics.Test
             }
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("TestSerialize")]
         public void TestSerializeProblemList()
         {
             ProblemList problemList = DatabaseHelper.CreateFullProblemList();
@@ -106,13 +106,14 @@ namespace Algorithm_Dynamics.Test
             }
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("TestFormatException")]
         [ExpectedException(typeof(FormatException))]
         public void TestInvalidFileType()
         {
             DataSerialization.GetDataType("{\"FileType\":\"Wrong Data\",\"DataType\":\"Problem\",\"Data\":{}}");
         }
-        [TestMethod]
+
+        [TestMethod, TestCategory("TestFormatException")]
         [ExpectedException(typeof(FormatException))]
         public void TestInvalidDataType()
         {
