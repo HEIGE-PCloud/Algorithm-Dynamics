@@ -19,16 +19,21 @@ namespace Algorithm_Dynamics.Pages
             InitializeComponent();
             RefreshDatabase();
         }
-        public ObservableCollection<ProblemList> ProblemLists = new();
-        public ObservableCollection<Tag> Tags = new();
-        public ObservableCollection<Problem> Problems = new();
+        private ObservableCollection<ProblemList> ProblemLists = new();
+        private ObservableCollection<Tag> Tags = new();
+        private ObservableCollection<Problem> Problems = new();
 
-        public void RefreshDatabase()
+        /// <summary>
+        /// Reload all data from the database
+        /// </summary>
+        private void RefreshDatabase()
         {
+            // Clear the existing lists
             ProblemLists.Clear();
             Tags.Clear();
             Problems.Clear();
 
+            // Load all data from the database
             Problem.All.ForEach(problem => Problems.Add(problem));
             Core.Models.Tag.All.ForEach(tag => Tags.Add(tag));
             ProblemList.All.ForEach(problemList => ProblemLists.Add(problemList));
@@ -237,8 +242,13 @@ namespace Algorithm_Dynamics.Pages
                 {
                     try
                     {
+                        // Read data
                         string data = await FileIO.ReadTextAsync(file);
+
+                        // Get data type
                         string dataType = DataSerialization.GetDataType(data);
+
+                        // Deserialize the data and save to the database
                         if (dataType == "Problem")
                         {
                             DataSerialization.DeserializeProblem(data);
@@ -250,6 +260,7 @@ namespace Algorithm_Dynamics.Pages
                     }
                     catch (Exception ex)
                     {
+                        // Show an dialog with the error message
                         ContentDialog dialog = new()
                         {
                             Title = $"An error was encountered while importing {file.DisplayName}",
@@ -265,74 +276,93 @@ namespace Algorithm_Dynamics.Pages
             }
         }
 
+        /// <summary>
+        /// Navigate to the <see cref="CreateNewProblemListPage"/>.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CreateNewProblemList(object sender, RoutedEventArgs e)
         {
             App.NavigateTo(typeof(CreateNewProblemListPage));
         }
 
+
         private void Search(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
-        {
-            Search();
-        }
+            => Query();
 
         private void Search(object sender, SelectionChangedEventArgs e)
-        {
-            Search();
-        }
+            => Query();
 
-        private void Search()
+        private void Query()
         {
+            // Clear existing results
             Problems.Clear();
             NoResultTextBlock.Visibility = Visibility.Collapsed;
+            
+            // Get all problems
             var problems = Problem.All;
 
+            // Query difficulty
             if (DifficultyComboBox.SelectedIndex != -1)
             {
                 var difficulty = (Difficulty)DifficultyComboBox.SelectedIndex;
                 problems.RemoveAll(p => p.Difficulty != difficulty);
             }
 
+            // Query status
             if (StatusComboBox.SelectedIndex != -1)
             {
                 var status = (ProblemStatus)StatusComboBox.SelectedIndex;
                 problems.RemoveAll(p => p.Status != status);
             }
 
+            // Query tag
             if (TagComboBox.SelectedIndex != -1)
             {
                 var tag = (Tag)TagComboBox.SelectedItem;
                 problems.RemoveAll(p => p.Tags.Contains(tag) == false);
             }
 
+            // Query list
             if (ListComboBox.SelectedIndex != -1)
             {
                 var list = (ProblemList)ListComboBox.SelectedItem;
                 problems.RemoveAll(p => list.Problems.Contains(p) == false);
             }
 
+            // Query name
             if (string.IsNullOrEmpty(ProblemsSearchBox.Text) == false)
             {
                 var name = ProblemsSearchBox.Text;
                 problems.RemoveAll(p => p.Name != name);
             }
 
+            // Handle no result
             if (problems.Count == 0)
                 NoResultTextBlock.Visibility = Visibility.Visible;
 
+            // Return results
             foreach (var problem in problems)
             {
                 Problems.Add(problem);
             }
         }
 
+        /// <summary>
+        /// Give fuzzy search suggestions when the user is inputing search query
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
         private void ProblemsSearchBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
+            // Query if empty
             if (string.IsNullOrEmpty(ProblemsSearchBox.Text))
             {
-                Search();
+                Query();
             }
             else
             {
+                // Give fuzzy search suggestions
                 string keyword = ProblemsSearchBox.Text.Trim();
                 var resultList = new List<Problem>();
                 var sourceList = Problem.All;
@@ -349,23 +379,48 @@ namespace Algorithm_Dynamics.Pages
                         }
                     }
                 }
+                // Return result
                 sender.ItemsSource = resultList.Select(p => p.Name).ToList();
             }
         }
 
+        /// <summary>
+        /// Export problem to a JSON file
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void ExportProblem(object sender, RoutedEventArgs e)
         {
+            // Get selected problem
             Problem problem = ProblemsListView.SelectedItem as Problem;
+            
+            // Set file name
             string fileName = $"{problem.Name} Export";
+            
+            // Serialize problem
             string serializedProblem = DataSerialization.SerializeProblem(problem);
+            
+            // Save problem
             await FileHelper.FileSavePicker("Algorithm Dynamics Export File", new() { ".json" }, fileName, serializedProblem);
         }
 
+        /// <summary>
+        /// Export problem list to a JSON file
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void ExportProblemList(object sender, RoutedEventArgs e)
         {
+            // Get selected problem list
             ProblemList problemList = ListComboBox.SelectedItem as ProblemList;
+            
+            // Set file name
             string fileName = $"{problemList.Name} Export";
+            
+            // Serialize problem
             string serializedProblem = DataSerialization.SerializeProblemList(problemList);
+            
+            // Save problem list
             await FileHelper.FileSavePicker("Algorithm Dynamics Export File", new() { ".json" }, fileName, serializedProblem);
         }
     }

@@ -104,6 +104,7 @@ namespace Algorithm_Dynamics.Pages
                 App.NavigateTo(typeof(CodingPage), Tuple.Create(problem, problems));
             }));
             QAItems.Add(new QuickAccessItem("Playground", Symbol.Edit, () => App.NavigateTo(typeof(PlaygroundPage))));
+            // Remove AssignmentsPage
             // QAItems.Add(new QuickAccessItem("Assignments", Symbol.Library, () => App.NavigateTo(typeof(AssignmentsPage))));
             QAItems.Add(new QuickAccessItem("Problems", Symbol.List, () => App.NavigateTo(typeof(ProblemsPage))));
             QAItems.Add(new QuickAccessItem("Settings", Symbol.Setting, () => App.NavigateTo(typeof(SettingsPage))));
@@ -117,8 +118,13 @@ namespace Algorithm_Dynamics.Pages
                     {
                         try
                         {
+                            // Read data
                             string data = await FileIO.ReadTextAsync(file);
+                            
+                            // Get data type
                             string dataType = DataSerialization.GetDataType(data);
+
+                            // Deserialize the data and save to the database
                             if (dataType == "Problem")
                             {
                                 DataSerialization.DeserializeProblem(data);
@@ -127,9 +133,13 @@ namespace Algorithm_Dynamics.Pages
                             {
                                 DataSerialization.DeserializeProblemList(data);
                             }
+
+                            // Navigate to ProblemsPage on success
+                            App.NavigateTo(typeof(ProblemsPage));
                         }
                         catch (Exception e)
                         {
+                            // Show an dialog with the error message
                             ContentDialog dialog = new()
                             {
                                 Title = $"An error was encountered while importing {file.DisplayName}",

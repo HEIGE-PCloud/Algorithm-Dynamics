@@ -7895,6 +7895,44 @@ public static string GetDataType(string str)
 }
 \end{minted}
 
+\code{GetDataType} should throw \code{FormatException} whenever the file format is invalid. I added two tests to test the exceptions.
+
+\begin{minted}{csharp}
+[TestMethod, TestCategory("TestFormatException")]
+[ExpectedException(typeof(FormatException))]
+public void TestInvalidFileType()
+{
+    DataSerialization.GetDataType("{\"FileType\":\"Wrong Data\",\"DataType\":\"Problem\",\"Data\":{}}");
+}
+
+[TestMethod, TestCategory("TestFormatException")]
+[ExpectedException(typeof(FormatException))]
+public void TestInvalidDataType()
+{
+    DataSerialization.GetDataType("{\"FileType\":\"Algorithm Dynamics Exported Data\",\"DataType\":\"Wrong Data Type\",\"Data\":{}}");
+}
+\end{minted}
+
+They each has incorrect data type or file type, and a \code{FormatException} is thrown.
+
+\begin{minted}{text}
+> dotnet test --filter TestCategory=TestFormatException
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Algorithm Dynamics.Core -> C:\Algorithm-Dynamics\src\Algorithm Dynamics.Core\bin\Debug\net6.0\Algorithm Dynamics.Core.dll
+  Algorithm Dynamics.Test -> C:\Algorithm-Dynamics\src\Algorithm Dynamics.Test\bin\Debug\net6.0\Algorithm Dynamics.Test.dll
+Test run for C:\Algorithm-Dynamics\src\Algorithm Dynamics.Test\bin\Debug\net6.0\Algorithm Dynamics.Test.dll (.NETCoreApp,Version=v6.0)
+Microsoft (R) Test Execution Command Line Tool Version 17.0.0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:     2, Skipped:     0, Total:     2, Duration: 204 ms - Algorithm Dynamics.Test.dll (net6.0)
+\end{minted}
+
+Both tests are passed successfully.
+
 To deserialize the data, I need to first retrieve the data from the \code{ExportObject} instance, and return it to the caller.
 
 \begin{minted}{csharp}
@@ -7980,11 +8018,414 @@ DataSerialization.DeserializeProblem(String str) line 117
 TestDataSerialization.TestSerializeProblem() line 32
 \end{minted}
 
-TODO: implement data Deserialization
+The deserializer requires a custom constructor to create an object. Instead of changing the existing design of the Problem model. I decide to create a base problem model to retrieve the data, and then convert the base mode into a full problem model.
+
+\begin{minted}{csharp}
+/// <summary>
+/// The base test case model to hold the import data.
+/// </summary>
+private class BaseTestCase
+{
+    public string Input { get; set; }
+    public string Output { get; set; }
+    public bool IsExample { get; set; }
+}
+
+/// <summary>
+/// The base tag model to hold the import data.
+/// </summary>
+private class BaseTag
+{
+    public string Name { get; set; }
+}
+
+/// <summary>
+/// The base problem model to hold the import data
+/// </summary>
+private class BaseProblem
+{
+    public string Uid { get; set; }
+    public string Name { get; set; }
+    public string Description { get; set; }
+    public int TimeLimit { get; set; }
+    public int MemoryLimit { get; set; }
+    public int Difficulty { get; set; }
+    public List<BaseTestCase> TestCases { get; set; }
+    public List<BaseTag> Tags { get; set; }
+}
+\end{minted}
+
+These base models only have the fields that gets exported. I decide to set them as private classes since it is only used for the deserializer internally, other classes do not need to access it .The deserializer first saves the data into the base problem model.
+
+\begin{minted}{csharp}
+public static Problem DeserializeProblem(string str)
+{
+    // Convert the string into the base model
+    var @base = JsonSerializer.Deserialize<ExportObject>(str);
+
+    // Read the problem data from the base data
+    var baseProblem = JsonSerializer.Deserialize<BaseProblem>(@base.Data.ToString());
+}
+\end{minted}
+
+Next, the data in the base model is used to create actual problem model.
+
+\begin{minted}{csharp}
+// Create test cases and tags first
+List<TestCase> testCases = new();
+List<Tag> tags = new();
+foreach (BaseTestCase t in baseProblem.TestCases)
+{
+    testCases.Add(TestCase.Create(t.Input, t.Output, t.IsExample));
+}
+foreach (BaseTag t in baseProblem.Tags)
+{
+    tags.Add(Tag.Create(t.Name));
+}
+
+// Create the problem next and return it
+return Problem.Create(
+    Guid.Parse(baseProblem.Uid),
+    baseProblem.Name,
+    baseProblem.Description,
+    baseProblem.TimeLimit,
+    baseProblem.MemoryLimit,
+    (Difficulty)baseProblem.Difficulty,
+    testCases,
+    tags);
+\end{minted}
+
+Now I run the tests again, the test passed successfully.
+
+\begin{minted}{text}
+> dotnet test --filter TestCategory=TestSerialize
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Algorithm Dynamics.Core -> C:\Algorithm-Dynamics\src\Algorithm Dynamics.Core\bin\Debug\net6.0\Algorithm Dynamics.Core.dll
+  Algorithm Dynamics.Test -> C:\Algorithm-Dynamics\src\Algorithm Dynamics.Test\bin\Debug\net6.0\Algorithm Dynamics.Test.dll
+Test run for C:\Algorithm-Dynamics\src\Algorithm Dynamics.Test\bin\Debug\net6.0\Algorithm Dynamics.Test.dll (.NETCoreApp,Version=v6.0)
+Microsoft (R) Test Execution Command Line Tool Version 17.0.0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:     1, Skipped:     0, Total:     1, Duration: 569 ms - Algorithm Dynamics.Test.dll (net6.0)
+\end{minted}
+
+I used a similar approach to handle the problem list. First create the base problem list model.
+
+\begin{minted}{csharp}
+/// <summary>
+/// The base problem list 
+/// </summary>
+private class BaseProblemList
+{
+    public string Name { get; set; }
+    public string Description { get; set; }
+    public List<BaseProblem> Problems { get; set; }
+}
+\end{minted}
+
+Next deserialize to the base model and then create the actual model from the base model.
+
+\begin{minted}{csharp}
+/// <summary>
+/// Convert a valid JSON string into a problem list
+/// </summary>
+/// <param name="str"></param>
+/// <returns></returns>
+public static ProblemList DeserializeProblemList(string str)
+{
+    // Convert the string into the base model
+    var @base = JsonSerializer.Deserialize<ExportObject>(str);
+
+    // Read the problem list data from the base data
+    var baseProblemList = JsonSerializer.Deserialize<BaseProblemList>(@base.Data.ToString());
+    List<Problem> problems = new();
+    foreach (BaseProblem p in baseProblemList.Problems)
+    {
+        // Create problem from the problem list data
+        List<TestCase> testCases = new();
+        List<Tag> tags = new();
+        foreach (BaseTestCase t in p.TestCases)
+        {
+            testCases.Add(TestCase.Create(t.Input, t.Output, t.IsExample));
+        }
+        foreach (BaseTag t in p.Tags)
+        {
+            tags.Add(Tag.Create(t.Name));
+        }
+
+        // Add to the problem list
+        problems.Add(
+            Problem.Create(
+                Guid.Parse(p.Uid),
+                p.Name,
+                p.Description,
+                p.TimeLimit,
+                p.MemoryLimit,
+                (Difficulty)p.Difficulty,
+                testCases,
+                tags
+            )
+        );
+    }
+    return ProblemList.Create(baseProblemList.Name, baseProblemList.Description, problems);
+}
+\end{minted}
+
+Finally add tests for the problem list.
+
+\begin{minted}{csharp}
+[TestMethod, TestCategory("TestSerialize")]
+public void TestSerializeProblemList()
+{
+    ProblemList problemList = DatabaseHelper.CreateFullProblemList();
+    
+    // Serialize problem list
+    string str = DataSerialization.SerializeProblemList(problemList);
+    
+    // Check data type
+    Assert.AreEqual("ProblemList", DataSerialization.GetDataType(str));
+
+    // Deserialize problem list
+    ProblemList result = DataSerialization.DeserializeProblemList(str);
+    
+    // Check problem list metadata
+    Assert.AreNotEqual(result.Id, problemList.Id);
+    Assert.AreEqual(problemList.Name, result.Name);
+    Assert.AreEqual(problemList.Description, result.Description);
+    Assert.AreEqual(problemList.Problems.Count, result.Problems.Count);
+    
+    // Check problem data
+    for (int i = 0; i < problemList.Problems.Count; i++)
+    {
+        var expected = problemList.Problems[i];
+        var actual = result.Problems[i];
+        Assert.AreNotEqual(expected.Id, actual.Id);
+        Assert.AreEqual(expected.Uid, actual.Uid);
+        Assert.AreEqual(expected.Name, actual.Name);
+        Assert.AreEqual(expected.Description, actual.Description);
+        Assert.AreEqual(expected.TimeLimit, actual.TimeLimit);
+        Assert.AreEqual(expected.MemoryLimit, actual.MemoryLimit);
+        Assert.AreEqual(expected.Difficulty, actual.Difficulty);
+        
+        // Check tag data
+        Assert.AreEqual(expected.Tags.Count, actual.Tags.Count);
+        for (int j = 0; j < expected.Tags.Count; j++)
+        {
+            Assert.AreEqual(expected.Tags[j].Name, actual.Tags[j].Name);
+        }
+
+        // Check test case data
+        Assert.AreEqual(expected.TestCases.Count, actual.TestCases.Count);
+        for (int j = 0; j < expected.TestCases.Count; j++)
+        {
+            Assert.AreEqual(expected.TestCases[j].Input, actual.TestCases[j].Input);
+            Assert.AreEqual(expected.TestCases[j].Output, actual.TestCases[j].Output);
+        }
+    }
+}
+\end{minted}
+
+Now when I run the tests, both of them passed successfully.
+
+\begin{minted}{text}
+> dotnet test --filter TestCategory=TestSerialize
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Algorithm Dynamics.Core -> C:\Algorithm-Dynamics\src\Algorithm Dynamics.Core\bin\Debug\net6.0\Algorithm Dynamics.Core.dll
+  Algorithm Dynamics.Test -> C:\Algorithm-Dynamics\src\Algorithm Dynamics.Test\bin\Debug\net6.0\Algorithm Dynamics.Test.dll
+Test run for C:\Algorithm-Dynamics\src\Algorithm Dynamics.Test\bin\Debug\net6.0\Algorithm Dynamics.Test.dll (.NETCoreApp,Version=v6.0)
+Microsoft (R) Test Execution Command Line Tool Version 17.0.0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:     2, Skipped:     0, Total:     2, Duration: 1 s - Algorithm Dynamics.Test.dll (net6.0)
+\end{minted}
 
 \subsection{Integration}
 
-TODO: Integration
+Since the data serialization helper passes all the unit tests successfully, I am confident that it contains no issue and I can integrate them directly into the main project.
+
+The user can import data from either the homepage or the problems page.
+
+On the homepage, I add an action for the quick access item, which will be invoked when the user click the grid item.
+
+\begin{minted}{csharp}
+QAItems.Add(new QuickAccessItem("Import", Symbol.Import, async () =>
+{
+    IReadOnlyList<StorageFile> files = await FileHelper.FileOpenPicker(".json");
+    if (files.Count > 0)
+    {
+        foreach (StorageFile file in files)
+        {
+            // Read data
+            string data = await FileIO.ReadTextAsync(file);
+
+            // Get data type
+            string dataType = DataSerialization.GetDataType(data);
+
+            // Deserialize the data and save to the database
+            if (dataType == "Problem")
+            {
+                DataSerialization.DeserializeProblem(data);
+            }
+            else if (dataType == "ProblemList")
+            {
+                DataSerialization.DeserializeProblemList(data);
+            }
+        }
+    }
+\end{minted}
+
+The \code{FileOpenPicker} is a helper function to open a Windows dialog allowing the user to pick multiple JSON files.
+
+\begin{minted}{csharp}
+internal async static Task<IReadOnlyList<StorageFile>> FileOpenPicker(string fileTypeFilter = "*")
+{
+    // https://github.com/microsoft/WindowsAppSDK/issues/1188
+    // https://docs.microsoft.com/en-us/windows/uwp/files/quickstart-using-file-and-folder-pickers
+    var filePicker = new FileOpenPicker();
+
+    // Get the current window's HWND by passing in the Window object
+    var hwnd = WindowNative.GetWindowHandle(App.m_window);
+
+    // Associate the HWND with the file picker
+    InitializeWithWindow.Initialize(filePicker, hwnd);
+
+    // Use file picker like normal!
+    filePicker.FileTypeFilter.Add(fileTypeFilter);
+    IReadOnlyList<StorageFile> files = await filePicker.PickMultipleFilesAsync();
+    return files;
+}
+\end{minted}
+
+Now when I click the import button on the HomePage, a dialog shows up correctly.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{HomePage-Import}
+
+When I click open, the three problems are imported correctly.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{ProblemsPage-Import}
+
+However, when I try to import an invalid problem, the app crashes. This is an expected behavior since I have not handled the exception properly yet. I use a try catch block to handle the exception. If any exception happens, a dialog will show up and display the reason why the import is unsuccessful.
+
+\begin{minted}{csharp}
+try
+{
+    // Read data
+    string data = await FileIO.ReadTextAsync(file);
+    
+    // Get data type
+    string dataType = DataSerialization.GetDataType(data);
+
+    // Deserialize the data and save to the database
+    if (dataType == "Problem")
+    {
+        DataSerialization.DeserializeProblem(data);
+    }
+    else if (dataType == "ProblemList")
+    {
+        DataSerialization.DeserializeProblemList(data);
+    }
+}
+catch (Exception e)
+{
+    // Show an dialog with the error message
+    ContentDialog dialog = new()
+    {
+        Title = $"An error was encountered while importing {file.DisplayName}",
+        PrimaryButtonText = "Ok",
+        Content = $"The following error is encountered:\n\n{e.Message}",
+        DefaultButton = ContentDialogButton.Primary,
+        XamlRoot = Content.XamlRoot
+    };
+    await dialog.ShowAsync();
+}
+\end{minted}
+
+Now, if I attempted to import something invalid, this dialog will show up and abort the import.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{HomePage-Import-Error}
+
+I connect the same function to the import button on the ProblemsPage. The actual code is very similar so check out the \hyperref[subsubsec:problemspage]{source code} for details.
+
+The user can export a problem or a problem list from the ProblemsPage.
+
+\begin{minted}{csharp}
+/// <summary>
+/// Export problem to a JSON file
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
+private async void ExportProblem(object sender, RoutedEventArgs e)
+{
+    // Get selected problem
+    Problem problem = ProblemsListView.SelectedItem as Problem;
+    
+    // Set file name
+    string fileName = $"{problem.Name} Export";
+    
+    // Serialize problem
+    string serializedProblem = DataSerialization.SerializeProblem(problem);
+    
+    // Save problem
+    await FileHelper.FileSavePicker("Algorithm Dynamics Export File", new() { ".json" }, fileName, serializedProblem);
+}
+
+/// <summary>
+/// Export problem list to a JSON file
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
+private async void ExportProblemList(object sender, RoutedEventArgs e)
+{
+    // Get selected problem list
+    ProblemList problemList = ListComboBox.SelectedItem as ProblemList;
+    
+    // Set file name
+    string fileName = $"{problemList.Name} Export";
+    
+    // Serialize problem
+    string serializedProblem = DataSerialization.SerializeProblemList(problemList);
+    
+    // Save problem list
+    await FileHelper.FileSavePicker("Algorithm Dynamics Export File", new() { ".json" }, fileName, serializedProblem);
+}
+\end{minted}
+
+It is very easy to serialize the data, since the data serialization helper I wrote before has done most of the work. I only need to read the selected problem, seralize it and save it to the disk.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{ProblemsPage-Export}
+
+The data is saved to the disk correctly after I clicking the save button.
+
+The user can export problem list directly from the CreateNewProblemListPage as well. The implementation is very similar, check out the \hyperref[subsubsec:createnewproblemlistpage]{source code} for details.
+
+\subsection{Stakeholder feedback}
+
+I asked my stakeholders to test the data import/export function. They are pretty happy about its implementation. PCloud says that he is particularly satisfied because the speed of the import/export is very fast. He can import a large amount of data instantly. Timofei says he is happy about how the import is abort and a useful error message is dispalyed when the data is invalid. Mr Grimwood gives a suggestion that the app should navigate to the ProblemsPage once the import on the homepage is completed, so he can check out the data he imports right away. I think this is a very sensible feature, and it is easy to implement.
+
+\begin{minted}{csharp}
+// Deserialize the data and save to the database
+if (dataType == "Problem")
+{
+    DataSerialization.DeserializeProblem(data);
+}
+else if (dataType == "ProblemList")
+{
+    DataSerialization.DeserializeProblemList(data);
+}
+
+// Navigate to ProblemsPage on success
+App.NavigateTo(typeof(ProblemsPage));
+\end{minted}
+
+Now the app will navigate the problem page when the import is completed. Mr Grimwood is satisfied about this feature.
 
 \section{Milestone 5: Handle settings}
 
@@ -8619,6 +9060,8 @@ On top of everything mentained aboved, my stakeholders have given me a lot of su
 \inputminted{xml}{"../src/Algorithm Dynamics/Pages/CreateNewProblemListPage.xaml"}
 
 \subsubsection{Pages/CreateNewProblemListPage.xaml.cs}
+\label{subsubsec:createnewproblemlistpage
+}
 
 \inputminted{csharp}{"../src/Algorithm Dynamics/Pages/CreateNewProblemListPage.xaml.cs"}
 
@@ -8647,6 +9090,7 @@ On top of everything mentained aboved, my stakeholders have given me a lot of su
 \inputminted{csharp}{"../src/Algorithm Dynamics/Pages/PlaygroundPage.xaml.cs"}
 
 \subsubsection{Pages/ProblemsPage.xaml}
+\label{subsubsec:problemspage}
 
 \inputminted{xml}{"../src/Algorithm Dynamics/Pages/ProblemsPage.xaml"}
 

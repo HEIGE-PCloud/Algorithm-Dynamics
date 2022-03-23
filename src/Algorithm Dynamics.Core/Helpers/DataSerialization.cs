@@ -105,7 +105,7 @@ namespace Algorithm_Dynamics.Core.Helpers
         }
 
         /// <summary>
-        /// Convert a valid JSON string into a problem
+        /// Convert a valid JSON string into a problem and save it to the database
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
@@ -142,7 +142,7 @@ namespace Algorithm_Dynamics.Core.Helpers
         }
 
         /// <summary>
-        /// Convert a valid JSON string into a problem list
+        /// Convert a valid JSON string into a problem list and save it to the database
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>

@@ -17,10 +17,10 @@ namespace Algorithm_Dynamics.Helpers
             var filePicker = new FileOpenPicker();
 
             // Get the current window's HWND by passing in the Window object
-            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.m_window);
+            var hwnd = WindowNative.GetWindowHandle(App.m_window);
 
             // Associate the HWND with the file picker
-            WinRT.Interop.InitializeWithWindow.Initialize(filePicker, hwnd);
+            InitializeWithWindow.Initialize(filePicker, hwnd);
 
             // Use file picker like normal!
             filePicker.FileTypeFilter.Add(fileTypeFilter);
