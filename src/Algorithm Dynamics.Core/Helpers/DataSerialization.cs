@@ -7,7 +7,11 @@ namespace Algorithm_Dynamics.Core.Helpers
 {
     public static class DataSerialization
     {
-        internal class ExportObject
+        /// <summary>
+        /// The base Object container that holds all the other data objects
+        /// It adds <see cref="FileType"/> and <see cref="DataType"/> info to the data.
+        /// </summary>
+        private class ExportObject
         {
             public ExportObject(string dataType, object data)
             {
@@ -19,19 +23,29 @@ namespace Algorithm_Dynamics.Core.Helpers
             public string DataType { get; set; }
             public object Data { get; set; }
         }
-        internal class BaseTestCase
+
+        /// <summary>
+        /// The base test case model to hold the import data.
+        /// </summary>
+        private class BaseTestCase
         {
             public string Input { get; set; }
             public string Output { get; set; }
             public bool IsExample { get; set; }
         }
 
-        internal class BaseTag
+        /// <summary>
+        /// The base tag model to hold the import data.
+        /// </summary>
+        private class BaseTag
         {
             public string Name { get; set; }
         }
 
-        internal class BaseProblem
+        /// <summary>
+        /// The base problem model to hold the import data
+        /// </summary>
+        private class BaseProblem
         {
             public string Uid { get; set; }
             public string Name { get; set; }
@@ -43,22 +57,42 @@ namespace Algorithm_Dynamics.Core.Helpers
             public List<BaseTag> Tags { get; set; }
         }
 
-        internal class BaseProblemList
+        /// <summary>
+        /// The base problem list 
+        /// </summary>
+        private class BaseProblemList
         {
             public string Name { get; set; }
             public string Description { get; set; }
             public List<BaseProblem> Problems { get; set; }
         }
 
+        /// <summary>
+        /// Convert a problem instance into a JSON string ready to be exported.
+        /// </summary>
+        /// <param name="problem"></param>
+        /// <returns></returns>
         public static string SerializeProblem(Problem problem)
         {
             return JsonSerializer.Serialize(new ExportObject("Problem", problem));
         }
 
+        /// <summary>
+        /// Convert a problem list instance into a JSON string ready to be exported.
+        /// </summary>
+        /// <param name="problemList"></param>
+        /// <returns></returns>
         public static string SerializeProblemList(ProblemList problemList)
         {
             return JsonSerializer.Serialize(new ExportObject("ProblemList", problemList));
         }
+
+        /// <summary>
+        /// Get data type (problem/problem list) of an import data file.
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        /// <exception cref="FormatException">The data format is invalid</exception>
         public static string GetDataType(string str)
         {
             var @base = JsonSerializer.Deserialize<ExportObject>(str);
@@ -69,10 +103,21 @@ namespace Algorithm_Dynamics.Core.Helpers
                 throw new FormatException($"The DataType {@base.DataType} is invalid.");
             return @base.DataType;
         }
+
+        /// <summary>
+        /// Convert a valid JSON string into a problem
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
         public static Problem DeserializeProblem(string str)
         {
+            // Convert the string into the base model
             var @base = JsonSerializer.Deserialize<ExportObject>(str);
+
+            // Read the problem data from the base data
             var baseProblem = JsonSerializer.Deserialize<BaseProblem>(@base.Data.ToString());
+            
+            // Create test cases and tags first
             List<TestCase> testCases = new();
             List<Tag> tags = new();
             foreach (BaseTestCase t in baseProblem.TestCases)
@@ -83,6 +128,8 @@ namespace Algorithm_Dynamics.Core.Helpers
             {
                 tags.Add(Tag.Create(t.Name));
             }
+
+            // Create the problem next and return it
             return Problem.Create(
                 Guid.Parse(baseProblem.Uid),
                 baseProblem.Name,
@@ -94,13 +141,22 @@ namespace Algorithm_Dynamics.Core.Helpers
                 tags);
         }
 
+        /// <summary>
+        /// Convert a valid JSON string into a problem list
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
         public static ProblemList DeserializeProblemList(string str)
         {
+            // Convert the string into the base model
             var @base = JsonSerializer.Deserialize<ExportObject>(str);
+
+            // Read the problem list data from the base data
             var baseProblemList = JsonSerializer.Deserialize<BaseProblemList>(@base.Data.ToString());
             List<Problem> problems = new();
             foreach (BaseProblem p in baseProblemList.Problems)
             {
+                // Create problem from the problem list data
                 List<TestCase> testCases = new();
                 List<Tag> tags = new();
                 foreach (BaseTestCase t in p.TestCases)
@@ -111,6 +167,8 @@ namespace Algorithm_Dynamics.Core.Helpers
                 {
                     tags.Add(Tag.Create(t.Name));
                 }
+
+                // Add to the problem list
                 problems.Add(
                     Problem.Create(
                         Guid.Parse(p.Uid),
