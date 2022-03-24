@@ -6766,7 +6766,7 @@ public static void InitializeDatabase(string dbPath)
     }
 
     // Create tables
-    using (SqliteConnection db = new($"Filename={DbPath}"))
+    using (SqliteConnection db = new(ConnectionString))
     {
         db.Open();
 
@@ -6785,7 +6785,7 @@ public static void InitializeDatabase(string dbPath)
 
 \section{Milestone 3: Implement the Judger}
 
-\subsection{Implementation}
+\subsection{Implementation and testing}
 
 The Judger needs to be initialized with a working directory path for it to store all the temporary files. A folder path and the file name of the source code is taken as arguments.
 
@@ -6988,7 +6988,6 @@ I use a \code{RunCode} function to combime these two steps together, and returns
 /// <summary>
 /// Run the UserCode with the given data.
 /// Use the Progress for reporting progress.
-/// Use skipCompile if multiple data needs to run on the same code.
 /// </summary>
 /// <param name="UserCode"></param>
 /// <param name="Input"></param>
@@ -6996,7 +6995,6 @@ I use a \code{RunCode} function to combime these two steps together, and returns
 /// <param name="TimeLimit"></param>
 /// <param name="MemoryLimit"></param>
 /// <param name="Progress"></param>
-/// <param name="skipCompile"></param>
 /// <returns></returns>
 public async static Task<RunCodeResult> RunCode(string UserCode, string Input, Language language, int TimeLimit, long MemoryLimit, IProgress<int> Progress)
 {
@@ -7075,10 +7073,7 @@ if (!string.IsNullOrEmpty(result.StandardError) || result.ExitCode != 0)
 result.ResultCode = ResultCode.SUCCESS;
 \end{minted}
 
-\subsection{Testing}
-
-Now, before I integrate the Judger to the app, I wrote some unit tests to test the code. To test the basic functionality, I set up two test cases, testing. The code simply outputs hello world and the Judger asserts whether the output is correct. I choose to test on two different programming languages, Python and C++, since Python is an interpreting language and C++ is a compiled language, which tests the Judger's full functionality.
-
+To test the basic functionality, I set up two test cases. The code simply outputs hello world and the Judger asserts whether the output is correct. I choose to test on two different programming languages, Python and C++, since Python is an interpreting language and C++ is a compiled language, which tests the Judger's full functionality.
 
 \begin{minted}{csharp}
 [TestClass]
@@ -7380,7 +7375,317 @@ A total of 1 test files matched the specified pattern.
 Passed!  - Failed:     0, Passed:     1, Skipped:     0, Total:     1, Duration: 100 ms - Algorithm Dynamics.Test.dll (net6.0)
 \end{minted}
 
+I then implement the judge test case and judge problem function. This is a pretty straightforward task because I can reuse the entire \code{RunCode} function. On top of the result given by the \code{RunCode} function, I add branch to determine whether the result is correct, and report a wrong answer when the output does not match.
+
+\begin{minted}{csharp}
+/// <summary>
+/// Judge a TestCase
+/// </summary>
+/// <param name="UserCode"></param>
+/// <param name="TestCase"></param>
+/// <param name="Language"></param>
+/// <param name="TimeLimit"></param>
+/// <param name="MemoryLimit"></param>
+/// <returns></returns>
+public async static Task<TestCaseResult> JudgeTestCase(string UserCode, TestCase TestCase, Language Language, int TimeLimit, long MemoryLimit)
+{
+    RunCodeResult runCodeResult = await RunCode(UserCode, TestCase.Input, Language, TimeLimit, MemoryLimit, new Progress<int>());
+    
+    // Handle WA
+    if (runCodeResult.ResultCode == ResultCode.SUCCESS)
+    {
+        if (runCodeResult.StandardOutput.Trim() != TestCase.Output.Trim())
+        {
+            runCodeResult.ResultCode = ResultCode.WRONG_ANSWER;
+        }
+    }
+
+    // Not implemented edit result so must create it at the end
+    TestCaseResult result = TestCaseResult.Create(runCodeResult);
+    return result;
+}
+\end{minted}
+
+I set up 2 sets of tests to test the \code{JudgeTestCase} function. The first one test it with a simple hello world code to make sure it is working as intended. The second test it with a wrong answer code, to see whether it reports the correct error.
+
+\begin{minted}{csharp}
+/// <summary>
+/// Test judge <see cref="TestCase"/>
+/// </summary>
+/// <returns></returns>
+[TestMethod, TestCategory("TestTestCase")]
+public async Task TestTestCaseCpp()
+{
+    DataAccess.InitializeDatabase($"{Guid.NewGuid()}.db");
+    TestCase testCase = TestCase.Create("", "hello world\n", false);
+    TestCaseResult result = await Judger.JudgeTestCase(helloWorldCpp, testCase, LanguageConfig.Cpp, 1 * S, 64 * MB);
+    Assert.AreEqual("hello world\n", result.StandardOutput);
+    Assert.AreEqual("", result.StandardError);
+    Assert.AreEqual(0, result.ExitCode);
+    Assert.IsTrue(result.CPUTime < 2 * S && result.CPUTime > 0);
+    Assert.IsTrue(result.MemoryUsage < 128 * MB && result.MemoryUsage > 0);
+    Assert.AreEqual(ResultCode.SUCCESS, result.ResultCode);
+}
+
+/// <summary>
+/// Test Wrong Answer
+/// </summary>
+/// <returns></returns>
+[TestMethod, TestCategory("TestWrongAnswer")]
+public async Task TestWrongAnswerPy()
+{
+    DataAccess.InitializeDatabase($"{Guid.NewGuid()}.db");
+    TestCase testCase = TestCase.Create("3\n4\n", "7", false);
+    TestCaseResult result = await Judger.JudgeTestCase(WAPy, testCase, LanguageConfig.Python, 1 * S, 64 * MB);
+    Assert.AreEqual(0, result.ExitCode);
+    Assert.IsTrue(result.CPUTime > 0 && result.CPUTime < 2 * S);
+    Assert.IsTrue(result.MemoryUsage > 0 && result.MemoryUsage < 128 * MB);
+    Assert.AreEqual(ResultCode.WRONG_ANSWER, result.ResultCode);
+    Assert.AreNotEqual("7", result.StandardOutput);
+    Assert.AreEqual("", result.StandardError);
+}
+
+/// <summary>
+/// Test Wrong Answer
+/// </summary>
+/// <returns></returns>
+[TestMethod, TestCategory("TestWrongAnswer")]
+public async Task TestWrongAnswerCpp()
+{
+    DataAccess.InitializeDatabase($"{Guid.NewGuid()}.db");
+    TestCase testCase = TestCase.Create("3\n4\n", "7", false);
+    TestCaseResult result = await Judger.JudgeTestCase(WACpp, testCase, LanguageConfig.Cpp, 1 * S, 64 * MB);
+    Assert.AreEqual(0, result.ExitCode);
+    Assert.IsTrue(result.CPUTime > 0 && result.CPUTime < 2 * S);
+    Assert.IsTrue(result.MemoryUsage > 0 && result.MemoryUsage < 128 * MB);
+    Assert.AreEqual(ResultCode.WRONG_ANSWER, result.ResultCode);
+    Assert.AreNotEqual("7", result.StandardOutput);
+    Assert.AreEqual("", result.StandardError);
+}
+\end{minted}
+
+All tests passed successfully.
+
+\begin{minted}{text}
+> dotnet test --filter TestCategory="TestWrongAnswer|TestTestCase"
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Algorithm Dynamics.Core -> C:\Algorithm-Dynamics\src\Algorithm Dynamics.Core\bin\Debug\net6.0\Algorithm Dynamics.Core.dll
+  Algorithm Dynamics.Test -> C:\Algorithm-Dynamics\src\Algorithm Dynamics.Test\bin\Debug\net6.0\Algorithm Dynamics.Test.dll
+Test run for C:\Algorithm-Dynamics\src\Algorithm Dynamics.Test\bin\Debug\net6.0\Algorithm Dynamics.Test.dll (.NETCoreApp,Version=v6.0)
+Microsoft (R) Test Execution Command Line Tool Version 17.0.0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:     4, Skipped:     0, Total:     4, Duration: 2 s - Algorithm Dynamics.Test.dll (net6.0)
+\end{minted}
+
+To judge a problem, I set up a queue of test cases, judge them one by one, and compose the result at the end.
+
+\begin{minted}{csharp}
+/// <summary>
+/// Judge a problem submission
+/// </summary>
+/// <param name="Submission"></param>
+/// <param name="Progress"></param>
+/// <returns></returns>
+public async static Task<SubmissionResult> JudgeProblem(Submission Submission, IProgress<int> Progress)
+{
+    // Create SubmissionResult
+    SubmissionResult Result = SubmissionResult.Create(Submission, new());
+
+    // Set up Judge Queue
+    Queue<TestCase> JudgeQueue = new(Submission.Problem.TestCases);
+
+    // Ready to judge, report progress
+    Progress.Report(0);
+
+    int testCasesCount = Submission.Problem.TestCases.Count;
+    while (JudgeQueue.Count > 0)
+    {
+        TestCaseResult result = await JudgeTestCase(
+            Submission.Code,
+            JudgeQueue.Dequeue(),
+            Submission.Language,
+            Submission.Problem.TimeLimit,
+            Submission.Problem.MemoryLimit);
+
+        // Add result
+        Result.AddTestCaseResult(result);
+
+        // Report progress
+        Progress.Report(100 * (testCasesCount - JudgeQueue.Count) / testCasesCount);
+    }
+
+    //Finish Judging
+    Progress.Report(100);
+
+    // Update problem status
+    if (Result.ResultCode == ResultCode.SUCCESS)
+    {
+        Submission.Problem.Status = ProblemStatus.Solved;
+    }
+    else
+    {
+        if (Submission.Problem.Status == ProblemStatus.Todo)
+        {
+            Submission.Problem.Status = ProblemStatus.Attempted;
+        }
+    }
+
+    return Result;
+}
+\end{minted}
+
+I add a set of simple tests just to see \code{JudgeProblem} is working correctly. I generate 100 test cases for the A + B problem and test it on both Python and C++.
+
+\begin{minted}{csharp}
+/// <summary>
+/// Test Judge Problem
+/// </summary>
+/// <returns></returns>
+[TestMethod, TestCategory("TestJudgeProblem")]
+public async Task TestJudgeProblemPy()
+{
+    DataAccess.InitializeDatabase($"{Guid.NewGuid()}.db");
+
+    // Generate 1000 A + B test cases
+    Random rnd = new();
+    List<TestCase> testCases = new();
+    for (int i = 0; i < 100; i ++)
+    {
+        int a = rnd.Next(1000);
+        int b = rnd.Next(1000);
+        testCases.Add(TestCase.Create($"{a}\n{b}\n", $"{a + b}\n", false));
+    }
+    
+    // Generate problem
+    Problem problem = Problem.Create(Guid.NewGuid(), "", "", 1 * S, 64 * MB, Difficulty.Easy, testCases);
+
+    // Generate submission
+    User user = DatabaseHelper.CreateNewUser();
+    Language language = DatabaseHelper.CreateLanguage("python");
+    Submission submission = Submission.Create(APlusBPy, language, user, problem);
+    SubmissionResult result = await Judger.JudgeProblem(submission, new Progress<int>());
+
+    // Run tests
+    Assert.AreEqual("Success", result.Result);
+    Assert.AreEqual(ResultCode.SUCCESS, result.ResultCode);
+    Assert.IsTrue(0 < result.CPUTime && result.CPUTime < 1 * S);
+    Assert.IsTrue(0 < result.MemoryUsage && result.MemoryUsage < 128 * MB);
+}
+\end{minted}
+
+Both tests passed successfully.
+
+\begin{minted}{text}
+❯ dotnet test --filter TestCategory="TestJudgeProblem"
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Algorithm Dynamics.Core -> C:\Algorithm-Dynamics\src\Algorithm Dynamics.Core\bin\Debug\net6.0\Algorithm Dynamics.Core.dll
+  Algorithm Dynamics.Test -> C:\Algorithm-Dynamics\src\Algorithm Dynamics.Test\bin\Debug\net6.0\Algorithm Dynamics.Test.dll
+Test run for C:\Algorithm-Dynamics\src\Algorithm Dynamics.Test\bin\Debug\net6.0\Algorithm Dynamics.Test.dll (.NETCoreApp,Version=v6.0)
+Microsoft (R) Test Execution Command Line Tool Version 17.0.0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:     2, Skipped:     0, Total:     2, Duration: 11 s - Algorithm Dynamics.Test.dll (net6.0)
+\end{minted}
+
+After all the testing, I am confident that the Judger module is bug free and ready to be integrated into the main program.
+
 \subsection{Integration}
+
+There are two pages that will use the Judger module, the playground page and the coding page.
+
+For the PlaygroundPage, I only need to handle the run code button. \code{Judger.RunCode} is called to run the user's code and the result is returned and displayed in the UI.
+
+\begin{minted}{csharp}
+/// <summary>
+/// RunCode using <see cref="Judger.RunCode"/>
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
+private async void RunCodeButton_Click(object sender, RoutedEventArgs e)
+{
+    // Set the progress bar and button
+    var progress = new Progress<int>(percent 
+        => { RunCodeProgressBar.Value = percent; });
+    RunCodeButton.IsEnabled = false;
+
+    // Run Code
+    RunCodeResult result = await Judger.RunCode(
+        CodeEditor.Code,
+        Input,
+        Languages[LanguageComboBox.SelectedIndex],
+        _timeLimit,
+        _memoryLimit,
+        progress);
+
+    // Restore the button and display result
+    RunCodeButton.IsEnabled = true;
+    StatusTextBlock.Text 
+        = $"{result.Result} Time: {result.CPUTime} ms Memory: {result.MemoryUsage / MB} MB";
+    OutputBox.Text = result.StandardOutput + result.StandardError;
+}
+\end{minted}
+
+The PlaygroundPage is workding correctly.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{PlaygroundPage-RunCode}
+
+The RunCode function in the CodingPage is similar. Please reference to the source code for the detailed implementation.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CodingPage-RunCode}
+
+The submission button creates a formal submission and commit the result to the database.
+
+\begin{minted}{csharp}
+/// <summary>
+/// Submit the user's code for formal judging
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
+private async void SubmitCodeButton_Click(object sender, RoutedEventArgs e)
+{
+    // Create submission
+    Submission submission = Submission.Create(CodeEditor.Code, (Language)LanguageComboBox.SelectedItem, App.CurrentUser, _currentProblem);
+    
+    // Prepare progerss bar and button
+    var progress = new Progress<int>(percent => { RunCodeProgressBar.Value = percent; });
+    RunCodeButton.IsEnabled = false;
+    SubmitCodeButton.IsEnabled = false;
+
+    // Judge problem
+    SubmissionResult result = await Judger.JudgeProblem(submission, progress);
+
+    // Restore button
+    RunCodeButton.IsEnabled = true;
+    SubmitCodeButton.IsEnabled = true;
+
+    // Display the result
+    StatusTextBlock.Text = $"{result.Result} Time: {result.CPUTime} ms Memory: {result.MemoryUsage / 1024 / 1024} MB";
+    ErrorTextBox.Text = result.StandardError;
+    
+    // Navigate to stderr
+    if (!string.IsNullOrWhiteSpace(result.StandardError))
+    {
+        IOPivot.SelectedIndex = 2;
+    }
+    OnPropertyChanged(nameof(Submissions));
+    OnPropertyChanged(nameof(ReverseSubmissions));
+}
+\end{minted}
+
+The submission is graded correctly.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CodingPage-Submit}
+
+The Judger is implemented and fully tested, I will hand this to the stakeholders for their feedback.
 
 \subsection{Stakeholder feedback}
 
@@ -7395,7 +7700,7 @@ Stack Trace:
 Process.StartWithCreateProcess(ProcessStartInfo startInfo)
 Process.Start()
 Judger.Compile(Language language) line 66
-Judger.RunCode(String UserCode, String Input, Language language, Int32 TimeLimit, Int64 MemoryLimit, IProgress`1 Progress, Boolean skipCompile) line 218
+Judger.RunCode(String UserCode, String Input, Language language, Int32 TimeLimit, Int64 MemoryLimit, IProgress`1 Progress) line 218
 TestJudger.TestRunCodeCpp() line 34
 ThreadOperations.ExecuteWithAbortSafety(Action action)
 \end{minted}
@@ -7449,7 +7754,7 @@ Now, I can check whether the compile exists before compiling. A system error wil
 
 \begin{minted}{csharp}
 // Compile if needed
-if (language.NeedCompile && (!skipCompile))
+if (language.NeedCompile)
 {
     // Check if the compiler exists before compiling
     if (!ExistsOnPath(language.CompileCommand.Replace("{SourceCodeFilePath}", sourceFilePath).Replace("{ExecutableFilePath}", _ExecutableFilePath)))
@@ -7550,6 +7855,52 @@ I then test it in the integration environment, the error message is displayed co
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{SystemErrorReport}
 
 I show this result back to the stakeholder, and he is happy with how I handle this error.
+
+Timofei reports that the judging speed is very slow with multiple test cases on compiling language. After some investigate, I found that the reason is that the same source code gets compiled every time when a teset case is evaludated. I can optimize the \code{RunCode} function to skip compile after the first test case.
+
+\begin{minted}{csharp}
+public async static Task<RunCodeResult> RunCode(string UserCode, string Input, Language language, int TimeLimit, long MemoryLimit, IProgress<int> Progress = null, bool skipCompile = false)
+{
+    // ...
+
+    // Compile if needed
+    if (language.NeedCompile && (!skipCompile))
+    {
+        // ...
+    }
+
+    // ...
+}
+\end{minted}
+
+
+\begin{minted}{csharp}
+public async static Task<SubmissionResult> JudgeProblem(Submission Submission, IProgress<int> Progress)
+{
+    // ...
+
+    bool skipCompile = false;
+    while (JudgeQueue.Count > 0)
+    {
+        TestCaseResult result = await JudgeTestCase(
+            Submission.Code,
+            JudgeQueue.Dequeue(),
+            Submission.Language,
+            Submission.Problem.TimeLimit,
+            Submission.Problem.MemoryLimit,
+            skipCompile);
+
+        // ...
+
+        // Skip compile
+        skipCompile = true;
+    }
+
+    // ...
+}
+\end{minted}
+
+Now each code submission will only get compiled once, and therefore the total judging time is shortened significantly. Timofei is satisfied with this result.
 
 \section{Milestone 4: Handle data import/export}
 
@@ -8916,6 +9267,8 @@ The current Judger is not very smart, it only takes in pre-generated test cases 
 One simple improvement is to allow the user to set up different scores for each test case. For example, passing a simple and small test case is awarded 1 point, while passing a complex test case is awarded 5 points. At the end, instead of passing or not, a numerical score is presented. This allows the teacher to get more information about students.
 
 Another improvement is to support custom special judge. For some cases, there might be more than one possible solution. For example, when there are multiple answers and the order of them does not matter. Instead of simply compare the outputs, the user can write a custom special judger to determine whether the output is correct.
+
+TODO: Multiple threading
 
 These tasks are fairly simple to implement, since the underlying architecture is designed to be modular and flexible and easy to maintain.
 

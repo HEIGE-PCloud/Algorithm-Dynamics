@@ -9,7 +9,7 @@ namespace Algorithm_Dynamics.Core.Helpers
     {
         internal static TestCaseResult AddTestCaseResult(string stdout, string stderr, int exitCode, long time, long memory, ResultCode resultCode, int? submissionResultId)
         {
-            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            using (SqliteConnection conn = new(ConnectionString))
             {
                 conn.Open();
                 SqliteCommand insertCommand = new();
@@ -36,7 +36,7 @@ namespace Algorithm_Dynamics.Core.Helpers
         internal static List<TestCaseResult> GetTestCaseResults(int submissionResultId)
         {
             List<TestCaseResult> results = new();
-            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            using (SqliteConnection conn = new(ConnectionString))
             {
                 conn.Open();
 
@@ -63,7 +63,7 @@ namespace Algorithm_Dynamics.Core.Helpers
 
         internal static void EditTestCaseResult(int id, int? submissionResultId = null)
         {
-            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            using (SqliteConnection conn = new(ConnectionString))
             {
                 conn.Open();
 
@@ -80,7 +80,7 @@ namespace Algorithm_Dynamics.Core.Helpers
 
         internal static void DeleteTestCaseResult(int id)
         {
-            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            using (SqliteConnection conn = new(ConnectionString))
             {
                 conn.Open();
 

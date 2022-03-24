@@ -316,7 +316,6 @@ namespace Algorithm_Dynamics.Core.Models
         /// <param name="Submission"></param>
         /// <param name="Progress"></param>
         /// <returns></returns>
-
         public async static Task<SubmissionResult> JudgeProblem(Submission Submission, IProgress<int> Progress)
         {
             // Create SubmissionResult

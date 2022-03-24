@@ -94,5 +94,28 @@ namespace Algorithm_Dynamics.Test
             var result = TestCaseResult.Create(new($"stdout{counter}", $"stderr{counter++}", 0, 1000, 64 * MB, ResultCode.SUCCESS));
             return result;
         }
+
+        internal static Language CreateLanguage(string lang)
+        {
+            switch (lang)
+            {
+                case "python":
+                    return Language.Create("python", "Python", false, "", "", "python.exe", "{SourceCodeFilePath}", ".py");
+                case "c":
+                    return Language.Create("c", "C", true, "gcc.exe", "-x c {SourceCodeFilePath} -o {ExecutableFilePath}", "{ExecutableFilePath}", "", ".c");
+                case "cpp":
+                    return Language.Create("cpp", "C++", true, "g++.exe", "-x c++ {SourceCodeFilePath} -o {ExecutableFilePath}", "{ExecutableFilePath}", "", ".cpp");
+                case "rust":
+                    return Language.Create("rust", "Rust", true, "rustc.exe", "{SourceCodeFilePath} -o {ExecutableFilePath}", "{ExecutableFilePath}", "", ".rs");
+                case "javascript":
+                    return Language.Create("javascript", "JavaScript", false, "", "", "node.exe", "{SourceCodeFilePath}", ".js");
+                case "java":
+                    return Language.Create("java", "Java", true, "javac.exe", "{SourceCodeFilePath}", "java.exe", "main", ".java");
+                case "go":
+                    return Language.Create("go", "Go", true, "go.exe", "build {SourceCodeFilePath}", "{ExecutableFilePath}", "", ".go");
+                default:
+                    return null;
+            }
+        }
     }
 }

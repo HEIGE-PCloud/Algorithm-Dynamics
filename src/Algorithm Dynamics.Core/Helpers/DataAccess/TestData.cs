@@ -12,7 +12,7 @@ namespace Algorithm_Dynamics.Core.Helpers
         /// <param name="inputText"></param>
         internal static void AddData(string inputText)
         {
-            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            using (SqliteConnection conn = new(ConnectionString))
             {
                 conn.Open();
 
@@ -36,7 +36,7 @@ namespace Algorithm_Dynamics.Core.Helpers
         {
             List<string> entries = new();
 
-            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            using (SqliteConnection conn = new(ConnectionString))
             {
                 conn.Open();
 

@@ -15,7 +15,7 @@ namespace Algorithm_Dynamics.Core.Helpers
         /// <returns></returns>
         internal static ProblemList AddProblemList(string name, string description, List<Problem> problems)
         {
-            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            using (SqliteConnection conn = new(ConnectionString))
             {
                 conn.Open();
                 SqliteCommand insertCommand = new();
@@ -34,7 +34,7 @@ namespace Algorithm_Dynamics.Core.Helpers
 
         internal static void EditProblemList(int id, string name, string description)
         {
-            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            using (SqliteConnection conn = new(ConnectionString))
             {
                 conn.Open();
 
@@ -54,7 +54,7 @@ namespace Algorithm_Dynamics.Core.Helpers
         {
             ProblemList problemList;
 
-            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            using (SqliteConnection conn = new(ConnectionString))
             {
                 conn.Open();
 
@@ -81,7 +81,7 @@ namespace Algorithm_Dynamics.Core.Helpers
         {
             List<ProblemList> problemLists = new();
 
-            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            using (SqliteConnection conn = new(ConnectionString))
             {
                 conn.Open();
 
@@ -102,7 +102,7 @@ namespace Algorithm_Dynamics.Core.Helpers
 
         internal static void AddProblemListRecord(int problemListId, int problemId)
         {
-            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            using (SqliteConnection conn = new(ConnectionString))
             {
                 conn.Open();
                 SqliteCommand insertCommand = new();
@@ -118,7 +118,7 @@ namespace Algorithm_Dynamics.Core.Helpers
 
         internal static void DeleteProblemListRecord(int problemListId, int problemId)
         {
-            using (SqliteConnection conn = new($"FileName={DbPath}"))
+            using (SqliteConnection conn = new(ConnectionString))
             {
                 conn.Open();
                 SqliteCommand deleteCommand = new();
@@ -132,7 +132,7 @@ namespace Algorithm_Dynamics.Core.Helpers
 
         internal static void DeleteProblemList(int id)
         {
-            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            using (SqliteConnection conn = new(ConnectionString))
             {
                 conn.Open();
 

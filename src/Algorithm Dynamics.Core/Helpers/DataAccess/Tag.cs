@@ -15,7 +15,7 @@ namespace Algorithm_Dynamics.Core.Helpers
         /// <returns></returns>
         internal static Tag AddTag(string name)
         {
-            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            using (SqliteConnection conn = new(ConnectionString))
             {
                 conn.Open();
                 SqliteCommand insertCommand = new();
@@ -35,7 +35,7 @@ namespace Algorithm_Dynamics.Core.Helpers
         {
             List<Tag> tags = new();
 
-            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            using (SqliteConnection conn = new(ConnectionString))
             {
                 conn.Open();
 
@@ -53,7 +53,7 @@ namespace Algorithm_Dynamics.Core.Helpers
 
         internal static bool TagExists(string name)
         {
-            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            using (SqliteConnection conn = new(ConnectionString))
             {
                 conn.Open();
                 SqliteCommand selectCommand = new();
@@ -69,7 +69,7 @@ namespace Algorithm_Dynamics.Core.Helpers
 
         internal static Tag? GetTag(int id)
         {
-            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            using (SqliteConnection conn = new(ConnectionString))
             {
                 conn.Open();
                 SqliteCommand selectCommand = new();
@@ -90,7 +90,7 @@ namespace Algorithm_Dynamics.Core.Helpers
         }
         internal static Tag GetTag(string name)
         {
-            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            using (SqliteConnection conn = new(ConnectionString))
             {
                 conn.Open();
                 SqliteCommand selectCommand = new();
@@ -116,7 +116,7 @@ namespace Algorithm_Dynamics.Core.Helpers
         /// <param name="id"></param>
         internal static void DeleteTag(int id)
         {
-            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            using (SqliteConnection conn = new(ConnectionString))
             {
                 conn.Open();
 
@@ -136,7 +136,7 @@ namespace Algorithm_Dynamics.Core.Helpers
         internal static List<Tag> GetTags(int problemId)
         {
             List<Tag> tags = new();
-            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            using (SqliteConnection conn = new(ConnectionString))
             {
                 conn.Open();
 
@@ -156,7 +156,7 @@ namespace Algorithm_Dynamics.Core.Helpers
 
         internal static void AddTagRecord(int problemId, int tagId)
         {
-            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            using (SqliteConnection conn = new(ConnectionString))
             {
                 conn.Open();
                 SqliteCommand insertCommand = new();
@@ -172,7 +172,7 @@ namespace Algorithm_Dynamics.Core.Helpers
 
         internal static void DeleteTagRecord(int problemId, int tagId)
         {
-            using (SqliteConnection conn = new($"FileName={DbPath}"))
+            using (SqliteConnection conn = new(ConnectionString))
             {
                 conn.Open();
                 SqliteCommand deleteCommand = new();
@@ -191,7 +191,7 @@ namespace Algorithm_Dynamics.Core.Helpers
         /// <returns></returns>
         internal static bool TagRecordExists(int tagId)
         {
-            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            using (SqliteConnection conn = new(ConnectionString))
             {
                 conn.Open();
                 SqliteCommand selectCommand = new();

@@ -10,7 +10,7 @@ namespace Algorithm_Dynamics.Core.Helpers
         internal static Submission AddSubmission(string code, DateTime time, Language language, User user, Problem problem)
         {
 
-            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            using (SqliteConnection conn = new(ConnectionString))
             {
                 conn.Open();
                 SqliteCommand insertCommand = new();
@@ -35,7 +35,7 @@ namespace Algorithm_Dynamics.Core.Helpers
 
         internal static Submission GetSubmission(int Id)
         {
-            using (var conn = new SqliteConnection($"Filename ={ DbPath }"))
+            using (var conn = new SqliteConnection(ConnectionString))
             {
                 conn.Open();
                 SqliteCommand selectCommand = new();
@@ -65,7 +65,7 @@ namespace Algorithm_Dynamics.Core.Helpers
         {
             List<Submission> submissions = new();
 
-            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            using (SqliteConnection conn = new(ConnectionString))
             {
                 conn.Open();
 
@@ -89,7 +89,7 @@ namespace Algorithm_Dynamics.Core.Helpers
 
         internal static void DeleteSubmission(int id)
         {
-            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            using (SqliteConnection conn = new(ConnectionString))
             {
                 conn.Open();
 

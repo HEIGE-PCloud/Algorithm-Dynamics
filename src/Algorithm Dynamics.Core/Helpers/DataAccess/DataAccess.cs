@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.Sqlite;
+using System;
 using System.IO;
 
 namespace Algorithm_Dynamics.Core.Helpers
@@ -6,29 +7,35 @@ namespace Algorithm_Dynamics.Core.Helpers
     public static partial class DataAccess
     {
         /// <summary>
-        /// Store the physical loaction of the database.
+        /// Store the connection config of the database.
         /// Use <see cref="InitializeDatabase(string)"/> to initialize the value.
         /// </summary>
-        private static string DbPath;
+        private static string ConnectionString;
 
         /// <summary>
         /// Initialize the database at the <see cref="dbPath"/> given.
         /// Execute CREATE TABLE commands.
         /// </summary>
         /// <param name="dbPath"></param>
-        public static void InitializeDatabase(string dbPath)
+        public static void InitializeDatabase(string dbPath = "")
         {
-            // Save the DbPath
-            DbPath = dbPath;
-
-            // Create a new database if not exist
-            if (!File.Exists(dbPath))
+            // Create a memory database if dbPath is empty
+            if (string.IsNullOrWhiteSpace(dbPath))
             {
-                File.CreateText(dbPath).Dispose();
+                ConnectionString = $"Data Source=InMemoryDb;Mode=Memory;Cache=Shared";
+            }
+            else
+            {
+                // Create a new database if not exist
+                ConnectionString = $"Data Source={dbPath}";
+                if (!File.Exists(dbPath))
+                {
+                    File.CreateText(dbPath).Dispose();
+                }
             }
 
             // Create tables
-            using (SqliteConnection db = new($"Filename={DbPath}"))
+            using (SqliteConnection db = new(ConnectionString))
             {
                 db.Open();
 
@@ -176,7 +183,7 @@ namespace Algorithm_Dynamics.Core.Helpers
 
         public static void DropDatabase()
         {
-            using (SqliteConnection db = new($"Filename={DbPath}"))
+            using (SqliteConnection db = new(ConnectionString))
             {
                 db.Open();
 

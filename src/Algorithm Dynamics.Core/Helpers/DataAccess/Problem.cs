@@ -9,7 +9,7 @@ namespace Algorithm_Dynamics.Core.Helpers
     {
         internal static Problem AddProblem(Guid uid, string name, string description, int timeLimit, long memoryLimit, ProblemStatus status, Difficulty difficulty, List<TestCase> testCases, List<Tag> tags)
         {
-            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            using (SqliteConnection conn = new(ConnectionString))
             {
                 conn.Open();
                 SqliteCommand insertCommand = new();
@@ -36,7 +36,7 @@ namespace Algorithm_Dynamics.Core.Helpers
         internal static Problem GetProblem(int Id)
         {
             Problem problem;
-            using (var connection = new SqliteConnection($"Filename ={ DbPath }"))
+            using (var connection = new SqliteConnection(ConnectionString))
             {
                 connection.Open();
                 SqliteCommand selectCommand = new();
@@ -72,7 +72,7 @@ namespace Algorithm_Dynamics.Core.Helpers
         internal static List<Problem> GetProblems(int problemListId)
         {
             List<Problem> problems = new();
-            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            using (SqliteConnection conn = new(ConnectionString))
             {
                 conn.Open();
 
@@ -99,7 +99,7 @@ namespace Algorithm_Dynamics.Core.Helpers
         }
         internal static void EditProblem(int id, string name, string description, int timeLimit, long memoryLimit, ProblemStatus status, Difficulty difficulty)
         {
-            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            using (SqliteConnection conn = new(ConnectionString))
             {
                 conn.Open();
                 SqliteCommand updateCommand = new();
@@ -121,7 +121,7 @@ namespace Algorithm_Dynamics.Core.Helpers
         {
             List<Problem> problems = new();
 
-            using (SqliteConnection connection = new($"Filename={DbPath}"))
+            using (SqliteConnection connection = new(ConnectionString))
             {
                 connection.Open();
 
@@ -148,7 +148,7 @@ namespace Algorithm_Dynamics.Core.Helpers
 
         internal static void DeleteProblem(int id)
         {
-            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            using (SqliteConnection conn = new(ConnectionString))
             {
                 conn.Open();
 

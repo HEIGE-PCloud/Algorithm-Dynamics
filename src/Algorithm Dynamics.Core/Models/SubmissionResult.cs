@@ -15,10 +15,10 @@ namespace Algorithm_Dynamics.Core.Models
             _results = results;
         }
 
-        public int Id { get; set; }
-        public Submission Submission { get; set; }
+        public int Id { get; private set; }
+        public Submission Submission { get; private set; }
 
-        private List<TestCaseResult> _results { get; set; }
+        private List<TestCaseResult> _results;
         public ReadOnlyCollection<TestCaseResult> Results { get => _results.AsReadOnly(); }
         public ResultCode ResultCode
         {
@@ -34,9 +34,7 @@ namespace Algorithm_Dynamics.Core.Models
         }
         public string Result
         {
-            get
-            {
-                return ResultCode switch
+            get => ResultCode switch
                 {
                     ResultCode.WRONG_ANSWER => "Wrong Answer",
                     ResultCode.SUCCESS => "Success",
@@ -46,7 +44,6 @@ namespace Algorithm_Dynamics.Core.Models
                     ResultCode.RUNTIME_ERROR => "Runtime Error",
                     _ => "System Error",
                 };
-            }
         }
         public long CPUTime { get => _results.Max(r => r.CPUTime); }
         public string CPUTimeAsString { get => $"{CPUTime} ms"; }

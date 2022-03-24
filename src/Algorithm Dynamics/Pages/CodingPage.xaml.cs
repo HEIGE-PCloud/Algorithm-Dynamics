@@ -38,6 +38,10 @@ namespace Algorithm_Dynamics.Pages
         public int CurrentProblemIndex { get => _currentProblemList.IndexOf(_currentProblem); }
 
         public string Code { get; set; }
+
+        /// <summary>
+        /// The renderec markdown text of the current problem
+        /// </summary>
         public string ProblemMarkdown
         {
             get
@@ -45,9 +49,17 @@ namespace Algorithm_Dynamics.Pages
                 if (_currentProblem != null)
                 {
                     const int MB = 1024 * 1024;
+                    
+                    // Set title
                     string title = $"# {_currentProblem.Name}\r\r";
+                    
+                    // Set time limit
                     string timeLimit = $"\r\r## Time Limit\r\r{_currentProblem.TimeLimit} ms";
+                    
+                    // Set memory limit
                     string memoryLimit = $"\r## Memory Limit\r\r{_currentProblem.MemoryLimit / MB} MB";
+                    
+                    // Set example test case
                     string example = "\r## Example";
                     int testCaseCnt = 1;
                     _currentProblem.TestCases.Where(testCase => testCase.IsExample == true).ToList().ForEach(testCase =>
@@ -58,16 +70,17 @@ namespace Algorithm_Dynamics.Pages
                         example += "```\r" + testCase.Output.Replace("\r", "\r\r") + "\r```\r";
                         testCaseCnt++;
                     });
+
                     return title + _currentProblem.Description + timeLimit + memoryLimit + example;
                 }
                 return "";
             }
         }
+
         public CodingPage()
         {
             InitializeComponent();
             Core.Models.Language.All.ForEach(lang => Languages.Add(lang));
-
         }
         public ObservableCollection<SubmissionResult> Submissions { get => new(SubmissionResult.All.Where(result => result.Submission.Problem.Id == _currentProblem.Id)); }
         public ObservableCollection<SubmissionResult> ReverseSubmissions { get => new(Submissions.Reverse()); }
@@ -94,6 +107,7 @@ namespace Algorithm_Dynamics.Pages
             }
             base.OnNavigatedTo(e);
         }
+
         private void LanguageComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Language language = LanguageComboBox.SelectedItem as Language;
@@ -119,7 +133,12 @@ namespace Algorithm_Dynamics.Pages
                 FullScreenIcon.Glyph = "\xE740";
             }
         }
-
+        
+        /// <summary>
+        /// Load the submission code and language config to the code editor
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SubmissionsDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (SubmissionsDataGrid.SelectedItem is SubmissionResult result)
@@ -129,12 +148,22 @@ namespace Algorithm_Dynamics.Pages
             }
         }
 
+        /// <summary>
+        /// Load the problem when navigate within coding page
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ProblemListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var problem = ProblemListView.SelectedItem as Problem;
             CurrentProblem = problem;
         }
 
+        /// <summary>
+        /// Navigate to the previous problem
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void PreviousProblem(object sender, RoutedEventArgs e)
         {
             var problem = ProblemListView.SelectedItem as Problem;
@@ -149,6 +178,11 @@ namespace Algorithm_Dynamics.Pages
             }
         }
 
+        /// <summary>
+        /// Navigate to the next problem
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void NextProblem(object sender, RoutedEventArgs e)
         {
             var problem = ProblemListView.SelectedItem as Problem;
@@ -163,19 +197,31 @@ namespace Algorithm_Dynamics.Pages
             }
         }
 
+        /// <summary>
+        /// Run the user's code with the given input 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void RunCodeButton_Click(object sender, RoutedEventArgs e)
         {
+            // Set the progress bar and button
             var progress = new Progress<int>(percent => { RunCodeProgressBar.Value = percent; });
-
             RunCodeButton.IsEnabled = false;
+            SubmitCodeButton.IsEnabled = false;
 
+            // RunCode
             RunCodeResult result = await Judger.RunCode(CodeEditor.Code, InputTextBox.Text, Languages[LanguageComboBox.SelectedIndex], _currentProblem.TimeLimit, CurrentProblem.MemoryLimit, progress);
 
+            // Restore button
             RunCodeButton.IsEnabled = true;
+            SubmitCodeButton.IsEnabled = true;
 
+            // Display the result
             StatusTextBlock.Text = $"{result.Result} Time: {result.CPUTime} ms Memory: {result.MemoryUsage / 1024 / 1024} MB";
             OutputTextBox.Text = result.StandardOutput;
             ErrorTextBox.Text = result.StandardError;
+
+            // Navigate to the output or error panel
             if (string.IsNullOrEmpty(result.StandardError))
             {
                 IOPivot.SelectedIndex = 1;
@@ -186,21 +232,33 @@ namespace Algorithm_Dynamics.Pages
             }
         }
 
+        /// <summary>
+        /// Submit the user's code for formal judging
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void SubmitCodeButton_Click(object sender, RoutedEventArgs e)
         {
+            // Create submission
             Submission submission = Submission.Create(CodeEditor.Code, (Language)LanguageComboBox.SelectedItem, App.CurrentUser, _currentProblem);
+            
+            // Prepare progerss bar and button
             var progress = new Progress<int>(percent => { RunCodeProgressBar.Value = percent; });
-
             RunCodeButton.IsEnabled = false;
             SubmitCodeButton.IsEnabled = false;
 
+            // Judge problem
             SubmissionResult result = await Judger.JudgeProblem(submission, progress);
 
+            // Restore button
             RunCodeButton.IsEnabled = true;
             SubmitCodeButton.IsEnabled = true;
 
+            // Display the result
             StatusTextBlock.Text = $"{result.Result} Time: {result.CPUTime} ms Memory: {result.MemoryUsage / 1024 / 1024} MB";
             ErrorTextBox.Text = result.StandardError;
+            
+            // Navigate to stderr
             if (!string.IsNullOrWhiteSpace(result.StandardError))
             {
                 IOPivot.SelectedIndex = 2;

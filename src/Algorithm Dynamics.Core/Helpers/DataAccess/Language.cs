@@ -8,7 +8,7 @@ namespace Algorithm_Dynamics.Core.Helpers
     {
         internal static Language AddLanguage(string name, string displayName, bool needCompile, string compileCommand, string compileArguments, string runCommand, string runArguments, string fileExtension)
         {
-            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            using (SqliteConnection conn = new(ConnectionString))
             {
                 conn.Open();
                 SqliteCommand insertCommand = new();
@@ -34,7 +34,7 @@ namespace Algorithm_Dynamics.Core.Helpers
 
         internal static Language GetLanguage(int Id)
         {
-            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            using (SqliteConnection conn = new(ConnectionString))
             {
                 conn.Open();
                 SqliteCommand selectCommand = new();
@@ -67,7 +67,7 @@ namespace Algorithm_Dynamics.Core.Helpers
         {
             List<Language> langs = new();
 
-            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            using (SqliteConnection conn = new(ConnectionString))
             {
                 conn.Open();
 
@@ -94,7 +94,7 @@ namespace Algorithm_Dynamics.Core.Helpers
 
         internal static void EditLanguage(int id, string name, string displayName, bool needCompile, string compileCommand, string compileArguments, string runCommand, string runArguments, string fileExtension)
         {
-            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            using (SqliteConnection conn = new(ConnectionString))
             {
                 conn.Open();
 
@@ -118,7 +118,7 @@ namespace Algorithm_Dynamics.Core.Helpers
 
         internal static void DeleteLanguage(int id)
         {
-            using (SqliteConnection conn = new($"Filename={DbPath}"))
+            using (SqliteConnection conn = new(ConnectionString))
             {
                 conn.Open();
 

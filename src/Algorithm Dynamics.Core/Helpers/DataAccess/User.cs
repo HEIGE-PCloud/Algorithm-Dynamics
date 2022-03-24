@@ -9,7 +9,7 @@ namespace Algorithm_Dynamics.Core.Helpers
     {
         internal static void AddUser(User user)
         {
-            using (SqliteConnection connection = new($"Filename={DbPath}"))
+            using (SqliteConnection connection = new(ConnectionString))
             {
                 connection.Open();
 
@@ -28,7 +28,7 @@ namespace Algorithm_Dynamics.Core.Helpers
 
         internal static User GetUser(Guid Uid)
         {
-            SqliteConnection db = new($"Filename={DbPath}");
+            SqliteConnection db = new(ConnectionString);
             User user;
             db.Open();
 
@@ -53,7 +53,7 @@ namespace Algorithm_Dynamics.Core.Helpers
         {
             List<User> users = new();
 
-            using (SqliteConnection db = new($"Filename={DbPath}"))
+            using (SqliteConnection db = new(ConnectionString))
             {
                 db.Open();
 
@@ -78,7 +78,7 @@ namespace Algorithm_Dynamics.Core.Helpers
 
         internal static void EditUser(Guid uid, string newName, string newEmail, Role newRole)
         {
-            using SqliteConnection db = new($"Filename={DbPath}");
+            using SqliteConnection db = new(ConnectionString);
             db.Open();
 
             SqliteCommand updateCommand = new();
