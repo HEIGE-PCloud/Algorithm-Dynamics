@@ -4,7 +4,6 @@ namespace Algorithm_Dynamics.Core.Models
 {
     public class TestCaseResult : RunCodeResult
     {
-        public int Id { get; private set; }
         internal TestCaseResult(
             int id,
             string standardOutput,
@@ -23,8 +22,15 @@ namespace Algorithm_Dynamics.Core.Models
             MemoryUsage = memoryUsage;
             ResultCode = resultCode;
         }
+        public int Id { get; private set; }
         internal int SubmissionResultId { set => DataAccess.EditTestCaseResult(Id, value); }
-        public static TestCaseResult Create(RunCodeResult r)
+        
+        /// <summary>
+        /// Create a new test case result
+        /// </summary>
+        /// <param name="r"></param>
+        /// <returns></returns>
+        internal static TestCaseResult Create(RunCodeResult r)
         {
             return DataAccess.AddTestCaseResult(
                 r.StandardOutput,
@@ -35,10 +41,15 @@ namespace Algorithm_Dynamics.Core.Models
                 r.ResultCode,
                 null);
         }
-        public void Delete()
+        
+        /// <summary>
+        /// Delete the current test case result from the database
+        /// </summary>
+        internal void Delete()
         {
             DataAccess.DeleteTestCaseResult(Id);
         }
+
         public override bool Equals(object obj)
         {
             if (obj is not TestCaseResult result)

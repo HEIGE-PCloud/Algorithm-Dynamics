@@ -15,19 +15,21 @@ namespace Algorithm_Dynamics.Core.Models
             _description = description;
             _problems = problems;
         }
+
         private void UpdateDatabase()
         {
             DataAccess.EditProblemList(_id, _name, _description);
         }
+
         private int _id;
-        private string _name;
-        private string _description;
         [JsonIgnore]
         public int Id
         {
             get => _id;
             private set => _id = value;
         }
+
+        private string _name;
         public string Name
         {
             get => _name;
@@ -40,6 +42,8 @@ namespace Algorithm_Dynamics.Core.Models
                 }
             }
         }
+
+        private string _description;
         public string Description
         {
             get => _description;
@@ -52,12 +56,74 @@ namespace Algorithm_Dynamics.Core.Models
                 }
             }
         }
+
+        private List<Problem> _problems;
+        public ReadOnlyCollection<Problem> Problems { get => _problems.AsReadOnly(); }
+        
+        /// <summary>
+        /// Get all problem lists in the database
+        /// </summary>
         public static List<ProblemList> All
         {
             get => DataAccess.GetAllProblemLists();
         }
-        private List<Problem> _problems;
-        public ReadOnlyCollection<Problem> Problems { get => _problems.AsReadOnly(); }
+
+        /// <summary>
+        /// Create a new problem list and save it to the database
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="description"></param>
+        /// <param name="problems"></param>
+        /// <returns></returns>
+        public static ProblemList Create(string name, string description, List<Problem> problems)
+        {
+            // Create a new problem list
+            var problemList = DataAccess.AddProblemList(name, description, problems);
+            
+            // Attach problems to the problem list
+            if (problems != null)
+            {
+                foreach (var problem in problems)
+                {
+                    problem.AttachTo(problemList.Id);
+                }
+            }
+            else
+            {
+                problemList._problems = new() { };
+            }
+
+            return problemList;
+        }
+
+        /// <summary>
+        /// Add a new problem to the problem list and save it to the database
+        /// </summary>
+        /// <param name="problem"></param>
+        public void AddProblem(Problem problem)
+        {
+            DataAccess.AddProblemListRecord(Id, problem.Id);
+            _problems.Add(problem);
+        }
+
+        /// <summary>
+        /// Remove an existing problem from the database.
+        /// </summary>
+        /// <param name="problem"></param>
+        public void RemoveProblem(Problem problem)
+        {
+            DataAccess.DeleteProblemListRecord(Id, problem.Id);
+            _problems.Remove(problem);
+        }
+
+        /// <summary>
+        /// Delete the current problem list and all problems associate to it
+        /// </summary>
+        public void Delete()
+        {
+            while (_problems.Count != 0) RemoveProblem(_problems[0]);
+            DataAccess.DeleteProblemList(_id);
+        }
 
         public override bool Equals(object obj)
         {
@@ -80,41 +146,6 @@ namespace Algorithm_Dynamics.Core.Models
         public override int GetHashCode()
         {
             return HashCode.Combine(Id, Name, Description);
-        }
-
-        public static ProblemList Create(string name, string description, List<Problem> problems)
-        {
-            var problemList = DataAccess.AddProblemList(name, description, problems);
-            if (problems != null)
-            {
-                foreach (var problem in problems)
-                {
-                    problem.AttachTo(problemList.Id);
-                }
-            }
-            else
-            {
-                problemList._problems = new() { };
-            }
-
-            return problemList;
-        }
-        public void AddProblem(Problem problem)
-        {
-            DataAccess.AddProblemListRecord(Id, problem.Id);
-            _problems.Add(problem);
-        }
-
-        public void RemoveProblem(Problem problem)
-        {
-            DataAccess.DeleteProblemListRecord(Id, problem.Id);
-            _problems.Remove(problem);
-        }
-
-        public void Delete()
-        {
-            while (_problems.Count != 0) RemoveProblem(_problems[0]);
-            DataAccess.DeleteProblemList(_id);
         }
 
         public override string ToString()

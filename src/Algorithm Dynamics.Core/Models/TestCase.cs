@@ -59,6 +59,10 @@ namespace Algorithm_Dynamics.Core.Models
                 }
             }
         }
+
+        /// <summary>
+        /// Set the problem id of the testcase
+        /// </summary>
         internal int ProblemId 
         { 
             set => DataAccess.EditTestCase(_id, _input, _output, _isExample, value); 

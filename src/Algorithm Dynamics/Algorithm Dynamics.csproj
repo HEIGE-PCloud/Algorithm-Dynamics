@@ -76,8 +76,6 @@
     <None Remove="Controls\CodeEditor.xaml" />
     <None Remove="Controls\TitleBar.xaml" />
     <None Remove="Pages\AccountPage.xaml" />
-    <None Remove="Pages\AssignmentDetailsPage.xaml" />
-    <None Remove="Pages\AssignmentsPage.xaml" />
     <None Remove="Pages\CodingPage.xaml" />
     <None Remove="Pages\CreateNewProblemListPage.xaml" />
     <None Remove="Pages\CreateNewProblemPage.xaml" />
@@ -121,11 +119,6 @@
   </ItemGroup>
   <ItemGroup>
     <Page Update="Pages\AccountPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Update="Pages\AssignmentsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
@@ -184,11 +177,6 @@
   </ItemGroup>
   <ItemGroup>
     <Page Update="Pages\CreateNewProblemListPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Update="Pages\AssignmentDetailsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

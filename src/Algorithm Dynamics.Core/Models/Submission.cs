@@ -24,10 +24,22 @@ namespace Algorithm_Dynamics.Core.Models
 
         public static List<Submission> All { get => DataAccess.GetAllSubmissions(); }
 
+        /// <summary>
+        /// Create a new submission and save it to the database
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="language"></param>
+        /// <param name="user"></param>
+        /// <param name="problem"></param>
+        /// <returns></returns>
         public static Submission Create(string code, Language language, User user, Problem problem)
         {
             return DataAccess.AddSubmission(code, DateTime.Now, language, user, problem);
         }
+
+        /// <summary>
+        /// Delete all submission results then self destory
+        /// </summary>
         public void Delete()
         {
             // Delete All SubmissionResult
@@ -35,13 +47,14 @@ namespace Algorithm_Dynamics.Core.Models
             // Then self destroy
             DataAccess.DeleteSubmission(Id);
         }
+
         public override bool Equals(object obj)
         {
             if (obj is not Submission sub)
                 return false;
-            //return Id == sub.Id && Code == sub.Code && SubmittedTime == sub.SubmittedTime && Language == sub.Language && Submitter == sub.Submitter && Problem == sub.Problem;
             return Id == sub.Id && Code == sub.Code && SubmittedTime == sub.SubmittedTime && Equals(Language, sub.Language) && Equals(Problem, sub.Problem) && Equals(Submitter, sub.Submitter);
         }
+
         public override int GetHashCode()
         {
             return HashCode.Combine(Id, Code, SubmittedTime, Language, Submitter, Problem);
