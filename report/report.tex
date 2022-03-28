@@ -9219,11 +9219,9 @@ My stakeholders generally give very positive feedback about this project. From t
 
 \section{Success criteria}
 
-TODO: Success criteria
+\subsection{User experience criteria}
 
-\subsection{Usability}
-
-\subsubsection{Easy navigation}
+\subsubsection{Easy navigate around the software}
 
 The design of the quick access menu in the HomePage enables a one-click access to all core functionalities. The recommendations on the HomePage also allows the user to get into working faster.
 
@@ -9231,66 +9229,84 @@ The design of the navigate panel on the left enables the user to navigate throug
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{HomePage-Final}
 
-\subsubsection{Easy to find problems}
+\subsubsection{Easy to find data in the database}
 
 An advanced search bar is provided for the user to search through the database easily. The user can search based on the difficulty, the tag, the status and the list of the problem. The search box also supports fuzzy search so the user does not need to remember the exact name of the problem. This criteria is fully met.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{ProblemsPage-Final}
 
-\subsubsection{Easy to create new problems and problem lists}
+\subsubsection{Easy to create new problems}
+
+A CreateNewProblemPage is provided for the user to create a new problem easily. It provide text and number input boxes for the user to input problem details. Default values are provided for the problem properties. A template is provided for the problem description. A markdown preview panel is provided for preview. This criteria is fully met.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]
+{CreateNewProblemPage-Final}
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CreateNewProblemPage-Final-2}
+
+\subsubsection{Easy to create new problem lists}
+
+A CreateNewProblemListPage is provided for the user to create a new problem list easily. It provide text input boxes for the user to input details. A search box is provided for the user to search and add new problems easily. This criteria is fully met.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CreateNewProblemListPage-Final}
+
+\subsubsection{Assignment functionality}
+
+Due to a security flaw in design reported by one of my stakeholders during the developement stage, the assignment functionality is cancelled. Allowing any code submission from students to be executed on the teacher's computer without any permission control is very dangerous, potentially causes the teacher's computer to be hacked or data to be leaked. However, there is no easy way of implementing permission control and therefore this functionality is cancelled and this criteria is not met.
+
+\subsubsection{Microsoft Teams integration}
+
+Due to the assignment functionality being cancelled, there is not much point implementing the Microsoft Teams integration alone. Also because the I don't have the permission to call and debug education API as explained in the developement stage, the Microsoft Teams integration is cancelled. This criteria is not met.
+
+\subsubsection{Playground functionality}
+
+A PlaygroundPage is provided for the user to run any code in any programming language with custom input. The user can also set the time limit or the memory limit to prevent the code from running forever. This criteria is fully met.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{PlaygroundPage-Final}
+
+\subsubsection{Custom settings options}
+
+A SettingsPage is provided for the user to adjust settings such as light/dark mode, playground limits, programming language settings and clear database. The setting presists between sessions, initialized automatically on first launch and deleted automatically when the app is uninstalled. This criteria is fully met.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{SettingsPage-Final}
+
+\subsubsection{Account settings}
+
+An AccountPage is provided for the user to edit account settings such as user name and email. But due to the AssignmentPage being canclled, this part of information is not really utilzed. It also provides statistical data related to the account, which is very useful based on the stakeholders feedback. This criteria is fully met.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{AccountPage-Final}
+
+\subsection{Technical criterias}
+
+\subsubsection{Local Database}
 
 TODO:
 
-\subsubsection{Easy to import and export data}
+\subsection{Prevent SQL injection}
 
 TODO:
 
-\subsubsection{Easy to create and distribute assignments}
+\subsubsection{Data validation}
 
 TODO:
 
-\subsubsection{Integration with Microsoft Teams API}
+\subsubsection{Code Editor}
 
 TODO:
 
-\subsubsection{Easy to mark submissions}
+\subsubsection{API calls}
 
-TODO:
+\subsubsection{Meaningful variale name}
 
-\subsubsection{Easy experimenting with the playground}
+\subsubsection{Comments}
 
-TODO:
-
-\subsection{Validation}
-
-\subsubsection{Validate the search query}
-
-TODO:
-
-\subsubsection{Validate when creating new problems}
-
-TODO:
-
-\subsubsection{Validate the settings options}
-
-TODO:
-
-\subsubsection{Validate the import data}
-
-TODO:
-
-\subsection{Maintainability}
+\subsubsection{Object Oriented Design}
 
 \subsubsection{Modular design}
 
 The entire app is split into 3 small projects. Algorithm Dynamics contains all code for user interface logic, Algorithm Dynamics.Core contains all the code for database and the judger, Algorithm Dynamics.Test contains all the unit tests for core functionalities. I use OOP design throughout the developement, each page, window, data model are all abstracted into a class. Thus I can conclude that the code is modular and easy to maintain. This criteria is fully met.
 
-\subsubsection{Use sensible variable
-names and add comments to each function}
-
-Each function is named under a camel case name. I have also added comments above each function to describe what it does. Every variable is named with a sensible name. This criteria is fully met.
-
-\subsubsection{CI/CD pipeline}
+\subsubsection{Continuous integration and continuous delivery}
 
 I have set up a CI/CD pipeline from the beginning, each time when I modify the source code, the CI/CD tasks are run automatically to build and test the code. When I release a new version of the app, a release is automatically created and send to the Microsoft Store. This criteria is fully met.
 
