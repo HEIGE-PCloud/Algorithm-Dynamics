@@ -6952,6 +6952,8 @@ TODO: Clear data
 
 \section{Milestone 2: Implement the data structures and database}
 
+\subsubsection{Implementation and testing}
+
 I decide to create a second project called Algorithm Dynamics.Core to separate the UI code and the core code. This allows me to organize the code base in a cleaner way, and allows me to run unit tests on the core code.
 
 When developing the core code, I decide not to integrate it with the UI right away, since it is very inefficient in testing and debugging. Instead, I will write unit tests for each functions, test everything in isolation, and then integrate the core code with the UI when it is ready.
@@ -6993,8 +6995,6 @@ public static void InitializeDatabase(string dbPath)
 }
 \end{minted}
 
-
-
 \begin{minted}{csharp}
 public static void InitializeDatabase(string dbPath)
 {
@@ -7024,6 +7024,73 @@ public static void InitializeDatabase(string dbPath)
     }
 }
 \end{minted}
+
+\subsubsection{Integration}
+
+I then needs to integrate the core code with the UI.
+
+On the HomePage, I need to implement the random problem button and the recommendations.
+
+\begin{minted}{csharp}
+private void InitializeQAItems()
+{
+    // ...    
+    QAItems.Add(new QuickAccessItem("Random Problem", Symbol.Shuffle, () =>
+        {
+            // Get all problems from the database
+            List<Problem> problems = Problem.All;
+
+            // Generate a random index
+            var random = new Random();
+            int randomIndex = random.Next(problems.Count);
+
+            // Get the corresponding problem
+            Problem problem = problems[randomIndex];
+
+            // Navigate to coding page with the problems as parameters
+            App.NavigateTo(typeof(CodingPage), Tuple.Create(problem, problems));
+        }));
+    // ...
+}
+
+/// <summary>
+/// Generate Recommendation from database.
+/// </summary>
+private void InitializeRecItems()
+{
+    RecItems.Clear();
+    // Generate recommend problems
+    var problems = Problem.All;
+    for (int i = 0; i < problems.Count && i < 4; i++)
+    {
+        var problem = problems[i];
+        RecItems.Add(new RecommendItem(problem.Name, $"{problem.DifficultyAsString} | {problem.TagAsString}", () => { App.NavigateTo(typeof(CodingPage), Tuple.Create(problem, Problem.All)); }));
+    }
+    // If no item, hide the title
+    if (RecItems.Count == 0)
+    {
+        RecommendTextBlock.Visibility = Visibility.Collapsed;
+    }
+    else
+    {
+        RecommendTextBlock.Visibility = Visibility.Visible;
+    }
+}
+\end{minted}
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{HomePage-Final}
+
+Now, when I click the random problem button, or the recommendations button, I am navigated to the correct problem correctly.
+
+TODO: ProblemsPage
+
+TODO: CreateNewProblemPage
+
+TODO: CreateNewProblemListPage
+
+TODO: CodingPage
+
+TODO: AccountPage
 
 \section{Milestone 3: Implement the Judger}
 
@@ -7823,7 +7890,7 @@ public async Task TestJudgeProblemPy()
 Both tests passed successfully.
 
 \begin{minted}{text}
-❯ dotnet test --filter TestCategory="TestJudgeProblem"
+> dotnet test --filter TestCategory="TestJudgeProblem"
   Determining projects to restore...
   All projects are up-to-date for restore.
   Algorithm Dynamics.Core -> C:\Algorithm-Dynamics\src\Algorithm Dynamics.Core\bin\Debug\net6.0\Algorithm Dynamics.Core.dll
@@ -9371,9 +9438,257 @@ I ran the code analysis on the entire codebase and it gives me a maintainbility 
 
 \subsection{Usability testing}
 
-TODO: Usability testing
-% run integration testing
-% go through each function
+\subsubsection{NavigationView}
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{NavigationView-Testing}
+
+\begin{tabulary}{\linewidth}{|L|l|L|}
+    \hline
+    Test & Result & Remark \\
+    \hline
+    Does it load & Pass & \\
+    \hline
+    Does the button work & Pass & \\
+    \hline
+    Does it response to different screen size & Pass & \\
+    \hline
+\end{tabulary}
+
+\subsubsection{HomePage}
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{HomePage-Testing}
+
+\begin{tabulary}{\linewidth}{|L|l|L|}
+    \hline
+    Test & Result & Remark \\
+    \hline
+    Does it load & Pass & \\
+    \hline
+    Does the background image show up correctly & Pass & \\
+    \hline
+    Does the greeting message show up correctly & Pass & \\
+    \hline
+    Does the Quick Access Toolbar show up correctly & Pass & \\
+    \hline
+    Does the Quick Access Toolbar work correctly & Pass & \\
+    \hline
+    Does the Recommendation show up correctly & Pass &  \\
+    \hline
+    Does the Recommendation work correctly & Pass &  \\
+    \hline
+    Is the page responsive & Pass & \\
+    \hline
+\end{tabulary}
+
+\subsubsection{ProblemsPage}
+
+\begin{tabulary}{\linewidth}{|L|l|L|}
+    \hline
+    Test & Result & Remark \\
+    \hline
+    Does it load & Pass & \\
+    \hline
+    Does the toolbar display correctly & Pass & \\
+    \hline
+    Does the toolbar interact correctly & Pass & \\
+    \hline
+    Does the toolbar return the correct search result & Pass & \\
+    \hline
+    Does the add button work & Pass & \\
+    \hline
+    Does the problem list show up correct & Pass & \\
+    \hline
+    Does the start button work & Pass &  \\
+    \hline
+    Does the selection and menu flyout work & Pass & \\
+    \hline
+\end{tabulary}
+
+Add problem
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{ProblemsPage-Testing-Add.png}
+
+Right click flyout
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{ProblemsPage-Testing-Flyout.png}
+
+Import problem and problem list
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{ProblemsPage-Testing-Import.png}
+
+Search
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{ProblemsPage-Testing-Search.png}
+
+\subsubsection{CreateNewProblemPage}
+
+\begin{tabulary}{\linewidth}{|L|l|L|}
+    \hline
+    Test & Result & Remark \\
+    \hline
+    Does it load & Pass & \\
+    \hline
+    Does the title field work & Pass &  \\
+    \hline
+    Does the tags field work & Pass &  \\
+    \hline
+    Does the difficulty field work & Pass & \\
+    \hline
+    Does the time limit field work and validate the data & Pass & \\
+    \hline
+    Does the memory limit field work and validate the data & Pass & \\
+    \hline
+    Does the description field work & Pass & \\
+    \hline
+    Does the preview block work & Pass & \\
+    \hline
+    Is it possible to add or remove test cases & Pass & \\
+    \hline
+    Does the cancel button work & Pass & \\
+    \hline
+    Does the save button work & Pass &  \\
+    \hline
+\end{tabulary}
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CreateNewProblemListPage-Final}
+
+\subsubsection{CreateNewProblmeListPage}
+
+\begin{tabulary}{\linewidth}{|L|l|L|}
+    \hline
+    Does it load & Pass & \\
+    \hline
+    Does the title field work & Pass & \\
+    \hline
+    Does the description field work & Pass & \\
+    \hline
+    Does the search box work & Pass & \\
+    \hline
+    Does the cancel button work & Pass & \\
+    \hline
+    Does the save button work & Pass & \\
+    \hline
+    Does the export button work & Pass & \\
+    \hline
+\end{tabulary}
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CreateNewProblemListPage-Final}
+
+\subsubsection{CodingPage}
+
+\begin{tabulary}{\linewidth}{|L|l|L|}
+    \hline
+    Test & Result & Remark \\
+    \hline
+    Does it load & Pass & \\
+    \hline
+    Does the full screen button work & Pass & \\
+    \hline
+    Does the markdown text block work & Pass & \\
+    \hline
+    Does the code editor work & Pass & \\
+    \hline
+    Does the input panel work & Pass & \\
+    \hline
+    Does the output panel work & Pass & \\
+    \hline
+    Does the error panel work & Pass & \\
+    \hline
+    Does the language selection box work & Pass & \\
+    \hline
+    Does the Run Code button work & Pass &  \\
+    \hline
+    Does the Submit button work & Pass &  \\
+    \hline
+    Does the Submit problem navigation & Pass & \\
+    \hline
+    Does the submission history table work & Pass & \\
+    \hline
+\end{tabulary}
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CodingPage-Testing}
+
+RunCode testing
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CodingPage-Testing-RunCode}
+
+Submission testing
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CodingPage-Testing-Submission}
+
+Navigation testing
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CodingPage-Testing-Navigation}
+
+Language testing
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CodingPage-Testing-Language}
+
+\subsubsection{PlaygroundPage}
+
+\begin{tabulary}{\linewidth}{|L|l|L|}
+    \hline
+    Test & Result & Remark \\
+    \hline
+    Does it load & Pass & \\
+    \hline
+    Can each section be resized correctly & Pass & \\
+    \hline
+    Does the CodeEditor work correctly & Pass & \\
+    \hline
+    Does the language ComboBox work correctly & Pass & \\
+    \hline
+    Does the input output box work correctly & Pass & \\
+    \hline
+    Does the Run Code button work & Pass &  \\
+    \hline
+    Is the CodeEditor unloaded correctly on close & Pass & \\
+    \hline
+\end{tabulary}
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{PlaygroundPage-Testing}
+
+
+\subsubsection{AccountPage}
+
+\begin{tabulary}{\linewidth}{|L|l|L|}
+    \hline
+    Test & Result & Remark \\
+    \hline
+    Does it load & Pass & \\
+    \hline
+    Does the Edit button work & Pass & \\
+    \hline
+    Does the statistics data show up correctly & Pass & \\
+    \hline
+\end{tabulary}
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{AccountPage-Testing}
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{AccountPage-Testing-Edit}
+
+\subsubsection{SettingsPage}
+
+\begin{tabulary}{\linewidth}{|L|l|L|}
+    \hline
+    Does it load & Pass & \\
+    \hline
+    Does theme switch work & Pass & \\
+    \hline
+    Does the run code time limit field work and validate the data & Pass & \\
+    \hline
+    Does the run code memory limit field work and validate the data & Pass & \\
+    \hline
+    Does the language configuration editor works & Pass & \\
+    \hline
+    Does the about buttons work & Pass & \\
+    \hline
+    Does the settings get loaded and saved correctly & Pass & \\
+    \hline
+\end{tabulary}
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{SettingsPage-Final}
+
 
 \subsection{Robustness testing}
 

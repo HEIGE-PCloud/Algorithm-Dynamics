@@ -156,7 +156,7 @@ namespace Algorithm_Dynamics.Pages
         }
 
         /// <summary>
-        /// TODO: Generate Recommendation from database.
+        /// Generate Recommendation from database.
         /// </summary>
         private void InitializeRecItems()
         {
