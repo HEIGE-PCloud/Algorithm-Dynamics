@@ -9489,27 +9489,35 @@ An AccountPage is provided for the user to edit account settings such as user na
 
 \subsubsection{Local Database}
 
-TODO:
+All unit tests on the DataAccess class passes, which means the database is working as expected. In the black box test and the integration test, no issue with the local database is discovered. It is created successfully when the app is run the first time. This criteria is fully met.
 
 \subsection{Prevent SQL injection}
 
-TODO:
+The entire DataAccess class is using the parameterized solution, so all variable fields are treated as variable and no string concatenation is used. It is impossible to inject SQL into the database. This criteria is fully met.
 
 \subsubsection{Data validation}
 
-TODO:
+As tested in the alpha testing stage and the beta testing stage, all fields are validated in the user interface and useful error message is provided to the user. This criteria is fully met.
 
 \subsubsection{Code Editor}
 
-t
+The code editor supports line number, syntax highlighting, code folding, code completion, and code navigation. This criteria is fully met.
 
 \subsubsection{API calls}
 
+This criteria is not met.
+
 \subsubsection{Meaningful variale name}
+
+All variables use meaningful name. This criteria is fully met. Please reference to the source code for details.
 
 \subsubsection{Comments}
 
+All improtant functions and code are associated with comments explaining its purpose. This criteria is fully met. Please reference to the source code for details.
+
 \subsubsection{Object Oriented Design}
+
+All pages, data models are designed using the OOP. This criteria is fully met.
 
 \subsubsection{Modular design}
 
@@ -9521,10 +9529,9 @@ I have set up a CI/CD pipeline from the beginning, each time when I modify the s
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CICD}
 
-
 \subsubsection{Unit test for core functions}
 
-TODO:
+All unit tests for the core functions are passed with a code coverage above 88\%. This makes sure the core library is bug free and therefore this criteria is fully met.
 
 \section{Limitations, further maintaince and developement}
 
