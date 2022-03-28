@@ -9846,7 +9846,7 @@ An AccountPage is provided for the user to edit account settings such as user na
 
 All unit tests on the DataAccess class passes, which means the database is working as expected. In the black box test and the integration test, no issue with the local database is discovered. It is created successfully when the app is run the first time. This criteria is fully met.
 
-\subsection{Prevent SQL injection}
+\subsubsection{Prevent SQL injection}
 
 The entire DataAccess class is using the parameterized solution, so all variable fields are treated as variable and no string concatenation is used. It is impossible to inject SQL into the database. This criteria is fully met.
 
