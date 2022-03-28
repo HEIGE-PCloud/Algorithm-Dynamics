@@ -2640,8 +2640,6 @@ During this milestone, a basic prototype with user interface will be created. Th
 
 \subsubsection{Implementation}
 
-TODO: CI
-
 I will create a prototype with a minimal user interface to test run the development environment and building tools.\cite{microsoft:docs:create-your-first-winui3-app}
 
 I create the \code{App.xaml} file, which will include all application resources. Right now, the only resources imported is the \code{XamlControlsResource}, which provides the resources for the all controls. Later on, I will create and import new resources in this file.
@@ -2773,6 +2771,218 @@ As expected, a window with a button shows up correctly. After clicking the butto
 \end{tabulary}
 
 This is the simplest prototype, and its successful running means the development environment and the building tools are set up correctm, and I can start developing a more complex user interface.
+
+\subsubsection{CI/CD pipeline}
+
+I then set up the continuous integration pipeline based on the prototype. There are three jobs in the pipeline: test the app, build and sign the app, and deploy the app if a new version is released.
+
+I am using the GitHub Actions\cite{github:actions} for this pipeline. I need to set up a YAML file to configure the pipeline.
+
+\begin{minted}{yaml}
+# The name of the pipeline
+name: Build
+
+# Triggered when a new commit is pushed to main
+# Or a new tag is pushed to main
+# Or a pull request is opened on main
+on:
+  push:
+    branches: [main]
+    tags:
+      - '*'
+  pull_request:
+    branches: [main]
+
+  workflow_dispatch:
+  # Test the app using dotnet test
+  test-app:
+    name: Test App
+    runs-on: windows-2022
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    
+    # Cache nuget
+    - uses: actions/cache@v2
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('src\Algorithm Dynamics.Core\Algorithm Dynamics.Core.csproj') }}-${{ hashFiles('src\Algorithm Dynamics.Test\Algorithm Dynamics.Test.csproj') }}
+
+    # Execute all unit tests in the solution
+    - name: Execute unit tests
+      working-directory: src\Algorithm Dynamics.Test
+      run: dotnet test --filter TestCategory!=TestRunCode
+
+  # Build the app using msbuild
+  build-app:
+    name: Build App
+    runs-on: windows-2022
+    env:
+      Solution_Name: Algorithm Dynamics.sln
+      Project_Directory: src\Algorithm Dynamics
+    outputs:
+      version: ${{ steps.getappmanifest.outputs.version }}
+    strategy:
+      matrix:
+        targetPlatform: [x86, x64, arm64]
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    # Cache nuget
+    - uses: actions/cache@v2
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ matrix.targetplatform }}-${{ hashFiles('src\Algorithm Dynamics\Algorithm Dynamics.csproj') }}-${{ hashFiles('src\Algorithm Dynamics.Core\Algorithm Dynamics.Core.csproj') }}
+
+    # Add MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
+    - name: Setup MSBuild.exe
+      uses: microsoft/setup-msbuild@v1.1
+
+    # Build app package
+    - name: Create the ${{ matrix.targetplatform }} app package
+      working-directory: src
+      env:
+        Solution_Name: Algorithm Dynamics.sln
+        Appx_Bundle_Platforms: x86|x64|arm64
+        Platform: ${{ matrix.targetplatform }}
+        Configuration: Release
+        Appx_Package_Build_Mode: StoreUpload
+        Appx_Bundle: Never
+        Appx_Package_Dir: AppPackages\
+      run: |
+        msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:AppxPackageSigningEnabled=false /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
+
+    # Upload build artifacts
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ matrix.targetplatform }} Package
+        path: src\Algorithm Dynamics\AppPackages\**\Algorithm Dynamics*.msix
+
+    # Read the version of the app
+    - name: Get app manifest
+      id: getappmanifest
+      working-directory: src
+      run: |
+        [xml]$manifest = get-content "Algorithm Dynamics\Package.appxmanifest"
+        $version = $manifest.Package.Identity.Version
+        echo $version
+        echo "::set-output name=version::$version"
+
+  # Sign the app
+  sign-app:
+    name: Sign App
+    runs-on: windows-2022
+    needs: [test-app, build-app]
+    env:
+      Solution_Name: Algorithm Dynamics.sln
+      Project_Directory: src\Algorithm Dynamics
+    steps:
+
+    # Set up working directory
+    - name: Create directory
+      run: |
+        mkdir src\Bundle
+        mkdir "src\Algorithm Dynamics"
+
+    # Decode the base 64 encoded pfx and save the Signing_Certificate
+    - name: Decode the pfx
+      id: decodepfx
+      run: |
+        $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.AlgorithmDynamics_TemporaryKey }}")
+        $certificatePath = Join-Path -Path $env:Project_Directory -ChildPath AlgorithmDynamics_TemporaryKey.pfx
+        [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
+        echo "::set-output name=cert_path::$certificatePath"
+
+    # Download build artifacts
+    - name: Prepare x86 MSIX
+      uses: actions/download-artifact@v2
+      with:
+        name: x86 Package
+        path: src\Bundle
+
+    - name: Prepare x64 MSIX
+      uses: actions/download-artifact@v2
+      with:
+        name: x64 Package
+        path: src\Bundle
+
+    - name: Prepare arm64 MSIX
+      uses: actions/download-artifact@v2
+      with:
+        name: arm64 Package
+        path: src\Bundle
+
+    # Bundle and sign the app
+    - name: Create MSIX Bundle
+      uses: LanceMcCarthy/Action-MsixBundler@v1.0.1
+      with:
+        msix-folder: src\Bundle
+        msixbundle-filepath: src\Bundle\Algorithm Dynamics_x86_x64_arm64.msixbundle
+        msixbundle-version: ${{ needs.build-app.outputs.version }}
+        enable-bundle-signing: true
+        certificate-path: ${{ steps.decodepfx.outputs.cert_path }}
+        certificate-private-key: ${{ secrets.Pfx_Key }}
+
+    # Remove the pfx
+    - name: Remove the pfx
+      run: |
+        $certificatePath = Join-Path -Path $env:Project_Directory -ChildPath AlgorithmDynamics_TemporaryKey.pfx
+        Remove-Item -path $certificatePath
+
+    # Upload the MSIX package: https://github.com/marketplace/actions/upload-a-build-artifact
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: MSIX Package Release
+        path: src\Bundle\*.msixbundle
+
+    - name: Delete Artifact
+      uses: GeekyEggo/delete-artifact@v1.0.0
+      with:
+        name: |
+          x86 Package
+          x64 Package
+          arm64 Package
+        failOnError: false
+
+  # Distribute to Microsoft Store
+  distribute:
+    if: startsWith(github.event.ref, 'refs/tags/v')
+    name: Distribute App
+    runs-on: [self-hosted]
+    needs: [test-app, sign-app]
+    steps:
+      # Prepare the app
+      - name: Prepare app
+        uses: actions/download-artifact@v2
+        with:
+          name: MSIX Package Release
+          path: Release
+      
+      # Publish to Microsoft Store
+      - uses: isaacrlevin/windows-store-action@1.0
+        name: Publish to Store
+        with:
+          tenant-id: ${{ secrets.AZURE_AD_TENANT_ID }}
+          client-id: ${{ secrets.AZURE_AD_APPLICATION_CLIENT_ID }}
+          client-secret: ${{ secrets.AZURE_AD_APPLICATION_SECRET }}
+          app-id: ${{ secrets.STORE_APP_ID }}
+          package-path: "Release"
+          skip-polling: ""
+
+\end{minted}
+
+Now, everytime when I push a commit to the remote repo, the app will be automatically build and tested, which ensures the code quality throughout the developement stage.
+
+Here is an example of a success run of the build job.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CICD-Example}
 
 \subsection{Create the NavigationView}
 
@@ -6739,8 +6949,6 @@ All the data should be immediately saved to the disk after the user changes a va
 TODO: Clear data
 
 \subsection{Stakeholder feedback}
-
-
 
 \section{Milestone 2: Implement the data structures and database}
 

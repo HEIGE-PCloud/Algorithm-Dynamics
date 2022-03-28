@@ -1,5 +1,8 @@
 name: Build
 
+# Triggered when a new commit is pushed to main
+# Or a new tag is pushed to main
+# Or a pull request is opened on main
 on:
   push:
     branches: [main]
@@ -39,6 +42,7 @@ jobs:
           name: Report
           path: report/report.pdf
 
+  # Test the app using dotnet test
   test-app:
     name: Test App
     runs-on: windows-2022
@@ -47,7 +51,8 @@ jobs:
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
-
+    
+    # Cache nuget
     - uses: actions/cache@v2
       with:
         path: ~/.nuget/packages
@@ -58,6 +63,7 @@ jobs:
       working-directory: src\Algorithm Dynamics.Test
       run: dotnet test --filter TestCategory!=TestRunCode
 
+  # Build the app using msbuild
   build-app:
     name: Build App
     runs-on: windows-2022
@@ -75,6 +81,7 @@ jobs:
       with:
         fetch-depth: 0
 
+    # Cache nuget
     - uses: actions/cache@v2
       with:
         path: ~/.nuget/packages
@@ -84,6 +91,7 @@ jobs:
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v1.1
 
+    # Build app package
     - name: Create the ${{ matrix.targetplatform }} app package
       working-directory: src
       env:
@@ -97,12 +105,14 @@ jobs:
       run: |
         msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:AppxPackageSigningEnabled=false /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
 
+    # Upload build artifacts
     - name: Upload build artifacts
       uses: actions/upload-artifact@v2
       with:
         name: ${{ matrix.targetplatform }} Package
         path: src\Algorithm Dynamics\AppPackages\**\Algorithm Dynamics*.msix
 
+    # Read the version of the app
     - name: Get app manifest
       id: getappmanifest
       working-directory: src
@@ -112,6 +122,7 @@ jobs:
         echo $version
         echo "::set-output name=version::$version"
 
+  # Sign the app
   sign-app:
     name: Sign App
     runs-on: windows-2022
@@ -121,6 +132,7 @@ jobs:
       Project_Directory: src\Algorithm Dynamics
     steps:
 
+    # Set up working directory
     - name: Create directory
       run: |
         mkdir src\Bundle
@@ -135,6 +147,7 @@ jobs:
         [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
         echo "::set-output name=cert_path::$certificatePath"
 
+    # Download build artifacts
     - name: Prepare x86 MSIX
       uses: actions/download-artifact@v2
       with:
@@ -153,6 +166,7 @@ jobs:
         name: arm64 Package
         path: src\Bundle
 
+    # Bundle and sign the app
     - name: Create MSIX Bundle
       uses: LanceMcCarthy/Action-MsixBundler@v1.0.1
       with:
@@ -227,18 +241,21 @@ jobs:
           CLOUDFLARE_ZONE: ${{ secrets.CLOUDFLARE_ZONE }}
           CLOUDFLARE_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
 
+  # Distribute to Microsoft Store
   distribute:
     if: startsWith(github.event.ref, 'refs/tags/v')
     name: Distribute App
     runs-on: [self-hosted]
     needs: [test-app, sign-app]
     steps:
+      # Prepare the app
       - name: Prepare app
         uses: actions/download-artifact@v2
         with:
           name: MSIX Package Release
           path: Release
       
+      # Publish to Microsoft Store
       - uses: isaacrlevin/windows-store-action@1.0
         name: Publish to Store
         with:
