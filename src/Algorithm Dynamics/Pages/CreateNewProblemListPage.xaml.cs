@@ -235,8 +235,6 @@ namespace Algorithm_Dynamics.Pages
             SaveFlyout.Hide();
             if (_pageMode == Mode.CreateProblemList || _pageMode == Mode.EditProblemList)
                 App.NavigateTo(typeof(ProblemsPage));
-            else
-                App.NavigateTo(typeof(AssignmentsPage));
         }
 
         /// <summary>

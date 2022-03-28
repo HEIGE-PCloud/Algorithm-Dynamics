@@ -9357,14 +9357,17 @@ Even if I can use these API, the Judging security issue which I mentioned before
 
 \subsection{Unit test and code coverage}
 
-TODO: Unit test
+Throughout the development process, I have written a total of 55 test cases. Running all of them takes around 20 seconds and they test all the code in the core library, making it bug free when integrating with the user interface.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{UnitTestUI}
+
+The overall test coverage is 88.4\%. The coverage is a measurement of how many lines of code are executed during the unit tests. 88.4\% is a very high percentage, some of the untested code are helper functions and dummy properties. The coverage is not a measure of the quality of the code, but rather the quality of the tests and I am confident that with all those unit tests, the core library is bug free.
 
 \subsection{Code Metrics}
 
-TODO: Code Metrics
+I ran the code analysis on the entire codebase and it gives me a maintainbility index. It calculates an index value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability. Color coded ratings can be used to quickly identify trouble spots in your code. A green rating is between 20 and 100 and indicates that the code has good maintainability.\cite{microsoft:docs:code-metrics-maintainability-index-range-and-meaning}
 
-% run code analysis
-% evaluate whatever index it gives
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CodeAnalysis}
 
 \subsection{Usability testing}
 
