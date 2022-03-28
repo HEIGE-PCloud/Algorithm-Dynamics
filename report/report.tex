@@ -9555,9 +9555,15 @@ One simple improvement is to allow the user to set up different scores for each 
 
 Another improvement is to support custom special judge. For some cases, there might be more than one possible solution. For example, when there are multiple answers and the order of them does not matter. Instead of simply compare the outputs, the user can write a custom special judger to determine whether the output is correct.
 
-TODO: Multiple threading
-
 These tasks are fairly simple to implement, since the underlying architecture is designed to be modular and flexible and easy to maintain.
+
+\subsection{Assignment function}
+
+As I mentioned in the developement stage, there is no easy way on the Windows operation system to run external code safely. One possible approach is to send the code to a remote server, and then run the code in a virtual machine or a docker container so it cannot cause any damage, and then send the result back. This requires extra servers and exchanging data, which is a giant task. There might also involve some legal issues since a server storing student submission code may need to comply the GDPR. An alternative is to allow the teacher to host the judger on a local server, but this also needs extra work and will not be easy to set up. Overall, there is no simple alternative solution to this problem and I will keep doing reasearh to find a proper solution before implementing it.
+
+\subsection{Assignment integration}
+
+I find it is impossible for me to integrate my app with the Microsoft Education API, since it requires an account from an education organization, which I do not have and probably will never have. It might be possible to integrate the app with other education apps such as Slack or Google Classroom. More in-depth research needs to be done to determine if this is possible. This task also depends on the assignment function, so it probably will not be done in the near future. 
 
 \subsection{A better code editor}
 
