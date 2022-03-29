@@ -4106,10 +4106,6 @@ The correct search result is returned and the search result is updated correctly
 
 The ProblemsPage is partially implemented with many todos left for the future. But in this iteration, it is good to go as all UI elements are ready. I will move on to the PlaygroundPage and CodingPage next.
 
-\subsubsection{Stakeholder feedback}
-
-TODO: Copy problem
-
 \subsection{Create the PlaygroundPage}
 
 \subsubsection{Implementation}
@@ -6252,10 +6248,6 @@ After adding these two lines, the save file picker can work correctly.
     \hline
 \end{tabulary}
 
-\subsubsection{Stakeholder feedback}
-
-TODO: Spell check
-
 \begin{tabulary}{\linewidth}{|L|l|L|}
     \hline
     Does it load & Pass & \\
@@ -6273,6 +6265,25 @@ TODO: Spell check
     Does the export button work & Pass & The file picker shows up correctly. But similarly, the actual content is not saved to the disk. \\
     \hline
 \end{tabulary}
+
+\subsubsection{Stakeholder feedback}
+
+Timofei reports that the spell check is sometimes very annoying and inappropriate in the problem description section.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CreateNewProblemPage-SpellCheck}
+
+Some legal programming language keywords are marked wrong. I decide to disable it since it does not really help much anyway.
+
+\begin{minted}{xaml}
+<TextBox
+    <!-- ... -->
+    IsSpellCheckEnabled="False"
+    <!-- ... -->/>
+\end{minted}
+
+Timofei is happy with the result.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CreateNewProblemPage-SpellCheck-Disable}
 
 \subsection{Create the AssignmentsPage}
 
@@ -6946,9 +6957,81 @@ All the data should be immediately saved to the disk after the user changes a va
 
 \subsubsection{Stakeholder feedback}
 
-TODO: Clear data
+PCloud says that it will be great if a ``Clear history data'' button is placed in the settings page, so he can reset his statistics or problems easily. This will be a useful feature and very easy to implement.
+
+\begin{minted}{xml}
+<StackPanel 
+    Margin="0 10 0 0"
+    Orientation="Vertical">
+    <Button
+    x:Name="ClearAllSubmissionsButton"
+    Margin="0 4 0 0"
+    Content="Clear Submission History">
+    <Button.Flyout>
+        <Flyout x:Name="ClearAllSubmissionsFlyout">
+        <StackPanel>
+            <TextBlock 
+            Style="{ThemeResource BaseTextBlockStyle}" 
+            Text="All submission history will be deleted. Do you want to continue?" 
+            Margin="0,0,0,12"/>
+            <Button 
+            HorizontalAlignment="Right" 
+            Content="Yes"
+            Click="DeleteAllSubmissions"/>
+        </StackPanel>
+        </Flyout>
+    </Button.Flyout>
+    </Button>
+    <Button
+    x:Name="ClearAllProblemsButton"
+    Margin="0 4 0 0"
+    Content="Clear All Problems">
+    <Button.Flyout>
+        <Flyout x:Name="ClearAllProblemsFlyout">
+        <StackPanel>
+            <TextBlock 
+            Style="{ThemeResource BaseTextBlockStyle}" 
+            Text="All problems will be deleted. Do you want to continue?" 
+            Margin="0,0,0,12"/>
+            <Button 
+            HorizontalAlignment="Right" 
+            Content="Yes"
+            Click="DeleteAllProblems"/>
+        </StackPanel>
+        </Flyout>
+    </Button.Flyout>
+    </Button>
+    <Button
+    x:Name="ClearAllDataButton"
+    Margin="0 4 0 0"
+    Content="Clear All Data">
+    <Button.Flyout>
+        <Flyout x:Name="ClearAllDataFlyout">
+        <StackPanel>
+            <TextBlock 
+            Style="{ThemeResource BaseTextBlockStyle}" 
+            Text="All data will be deleted. Do you want to continue?" 
+            Margin="0,0,0,12"/>
+            <TextBlock 
+            Text="Restart is required."/>
+            <Button 
+            HorizontalAlignment="Right" 
+            Content="Yes"
+            Click="ClearAllData"/>
+        </StackPanel>
+        </Flyout>
+    </Button.Flyout>
+    </Button>
+</StackPanel>
+\end{minted}
+
+I add three buttons to the settings page, one to clear all submissions, one to clear all problems, and one to clear all data. They will be connected to the database functions in the later milestone.
+
+\includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{SettingsPage-ClearData}
 
 \subsection{Stakeholder feedback}
+
+My stakeholders are generally very happy about the user interface of the software. They think the prototype looks modern and easy to use. They cannot wait to see the full functionality of the software.
 
 \section{Milestone 2: Implement the data structures and database}
 

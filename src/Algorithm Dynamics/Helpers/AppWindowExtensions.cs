@@ -28,7 +28,7 @@ namespace Algorithm_Dynamics.Helpers
             }
 
             titleBar.ExtendsContentIntoTitleBar = true;
-            if (App.Current.RequestedTheme == ApplicationTheme.Light)
+            if (true || App.Current.RequestedTheme == ApplicationTheme.Light)
             {
                 titleBar.BackgroundColor = Colors.White;
                 titleBar.InactiveBackgroundColor = Colors.White;

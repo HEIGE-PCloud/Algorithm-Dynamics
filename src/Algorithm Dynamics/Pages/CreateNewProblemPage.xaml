@@ -72,7 +72,7 @@
             VerticalAlignment="Stretch"
             TextWrapping="Wrap" 
             AcceptsReturn="True" 
-            IsSpellCheckEnabled="True"
+            IsSpellCheckEnabled="False"
             MinHeight="200"
             MaxHeight="840"
             Text="{x:Bind Description, Mode=TwoWay}"/>
