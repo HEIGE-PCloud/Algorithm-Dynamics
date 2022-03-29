@@ -302,7 +302,7 @@ private void ProblemsSearchBox_TextChanged(AutoSuggestBox sender, AutoSuggestBox
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{ProblemsPage-FuzzySearch}
 
-Next, I integrate the CreateNew pages. I will show the CreateNewProblemListPage as an example since both of them share a similar process, please refer the source code for details.
+Next, I integrate the CreateNew pages. I will show the CreateNewProblemListPage as an example since both of them share a similar process, please refer to the source code for details.
 
 The key to the integration is to create a new problem list and save any changes to the database.
 
@@ -580,7 +580,7 @@ System.DivideByZeroException
     ABI.Microsoft.UI.Xaml.Markup.IXamlType.Do_Abi_ActivateInstance_13(System.IntPtr, System.IntPtr*)
 \end{minted}
 
-It is a divide by zero error, because the number of submissions is 0. I can fix this by adding a branching to handle the 0 case specially.
+It is a divide by zero error because the number of submissions is 0. I can fix this by adding branching to handle the 0 cases.
 
 \begin{minted}{csharp}
 // Count correct rate
@@ -600,7 +600,7 @@ Now the AccountPage works correctly with all statistics showing up correctly.
 
 \subsubsection{Stakeholder feedback}
 
-Mr Grimwood asked me what will happen to the account page when the software is installed for the first time. Where does the user create an account? In my current design, there is no such sign-up page. I think when the app lauches, if it finds there are no user in the database, it should promote the user to a register page. The user can only log in after registration.
+Mr Grimwood asked me what will happen to the account page when the software is installed for the first time. Where does the user create an account? In my current design, there is no such sign-up page. I think when the app launches if it finds there is no user in the database, it should promote the user to a registration page. The user can only log in after registration.
 
 I place the welcome page in the main window.
 
@@ -733,11 +733,11 @@ public bool IsValidInput
 }
 \end{minted}
 
-Now, when the user run the app for the first time, he will be promoted to this registration page.
+Now, when the user runs the app for the first time, he will be promoted to this registration page.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{WelcomeScreen}
 
-Both name and email is validated before the user can continue.
+Both name and email are validated before the user can continue.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{WelcomeScreen-Validation}
 
