@@ -21,9 +21,9 @@ public static void SetSourceCodeFilePath(string FolderPath, string FileName = "m
 }
 \end{minted}
 
-Next, I started implementing the \code{Compile} function. It is a static function, so it can be called without creating an instance of the class. It is also an async function, so when it is executing, it will not block the main UI thread. This is particularly important as the user interface should stay responsive when the judger is working. It returns a \code{Task<int>} value, which containts the exit code of the compiler.
+Next, I started implementing the \code{Compile} function. It is a static function, so it can be called without creating an instance of the class. It is also an async function, so when it is executing, it will not block the main UI thread. This is particularly important as the user interface should stay responsive when the judger is working. It returns a \code{Task<int>} value, which contains the exit code of the compiler.
 
-To allow the user customize the behavior of different compiler, the compile command supports magic variables SourceCodeFileExtension, SourceCodeFilePath and ExecutableFilePath. These variables need to be replaced with the real value before executing.
+To allow the user to customize the behaviour of different compilers, the compile command supports magic variables SourceCodeFileExtension, SourceCodeFilePath and ExecutableFilePath. These variables need to be replaced with the real value before executing.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -81,7 +81,7 @@ private async static Task<int> Compile(Language language)
 }
 \end{minted}
 
-Two event handlers are bind to the \code{CompileProcess}. They are simply used to receive the output from the compiler. They are bost set to private to encapsulate from the main program.
+Two event handlers are bound to the \code{CompileProcess}. They are simply used to receive the output from the compiler. They are bost set to private to encapsulate from the main program.
 
 \begin{minted}{csharp}
 private static void CompileProcess_ErrorDataReceived(object sender, DataReceivedEventArgs e)
@@ -165,7 +165,7 @@ private async static Task<int> Execute(string stdin, Language language, int time
 }
 \end{minted}
 
-On top of the running procedure, I also need to monitor the memory and time usage, and kill the process when the limit is exceeded.
+On top of the running procedure, I also need to monitor the memory and time usage and kill the process when the limit is exceeded.
 
 \begin{minted}{csharp}
 // Start the time monitor
@@ -179,7 +179,7 @@ Timer timer = new((e) =>
 }, null, timeLimit, Timeout.Infinite);
 \end{minted}
 
-This is a count down timer, it runs on a separate thread, once the time limit is reached, it executes the kill command and record the time limit exceed error.
+This is a count down timer, it runs on a separate thread, once the time limit is reached, it executes the kill command and records the TLE.
 
 \begin{minted}{csharp}
 // Create the memory monitor
@@ -198,7 +198,7 @@ Thread MemoryMonitor = new(() =>
 });
 \end{minted}
 
-This is a memory monitor, it runs on a separate thread too. It keeps refreshing the process information, and check the memory usage. If the memory usage exceeds the limit, it kills the process and record the memory limit exceed error.
+This is a memory monitor, it runs on a separate thread too. It keeps refreshing the process information and checking the memory usage. If the memory usage exceeds the limit, it kills the process and records the MLE error.
 
 I use a \code{RunCode} function to combime these two steps together, and returns a \code{RunCodeResult} containing all data.
 
@@ -291,7 +291,7 @@ if (!string.IsNullOrEmpty(result.StandardError) || result.ExitCode != 0)
 result.ResultCode = ResultCode.SUCCESS;
 \end{minted}
 
-To test the basic functionality, I set up two test cases. The code simply outputs hello world and the Judger asserts whether the output is correct. I choose to test on two different programming languages, Python and C++, since Python is an interpreting language and C++ is a compiled language, which tests the Judger's full functionality.
+To test the basic functionality, I set up two test cases. The code simply outputs hello world and the Judger asserts whether the output is correct. I choose to test on two different programming languages, Python and C++ since Python is an interpreting language and C++ is a compiled language, which tests the Judger's full functionality.
 
 \begin{minted}{csharp}
 [TestClass]
@@ -360,7 +360,7 @@ A total of 1 test files matched the specified pattern.
 Passed!  - Failed:     0, Passed:     2, Skipped:     0, Total:     2, Duration: 651 ms - Algorithm Dynamics.Test.dll (net6.0)
 \end{minted}
 
-Next I tested input. I use the simple A + B problem, two integers will be feed to the test code by the judger, and a correct sum should be output.
+Next, I tested input. I use the simple A + B problem, two integers will be fed to the test code by the judger, and a correct sum should be output.
 
 \begin{minted}{csharp}
 const string APlusBPy = "a=int(input())\nb=int(input())\nprint(a+b)";
@@ -553,7 +553,7 @@ A total of 1 test files matched the specified pattern.
 Passed!  - Failed:     0, Passed:     1, Skipped:     0, Total:     1, Duration: 104 ms - Algorithm Dynamics.Test.dll (net6.0)
 \end{minted}
 
-Next, I test the runtime error. For interpreting language like Python, the syntax is checked during runtime. The Judger is expected to collect the error message from the intrepreter and report it in the result.
+Next, I test the runtime error. For interpreting language like Python, the syntax is checked during runtime. The Judger is expected to collect the error message from the interpreter and report it in the result.
 
 \begin{minted}{csharp}
 const string REPy = "re";
@@ -593,7 +593,7 @@ A total of 1 test files matched the specified pattern.
 Passed!  - Failed:     0, Passed:     1, Skipped:     0, Total:     1, Duration: 100 ms - Algorithm Dynamics.Test.dll (net6.0)
 \end{minted}
 
-I then implement the judge test case and judge problem function. This is a pretty straightforward task because I can reuse the entire \code{RunCode} function. On top of the result given by the \code{RunCode} function, I add branch to determine whether the result is correct, and report a wrong answer when the output does not match.
+I then implement the judge test case and judge problem function. This is a pretty straightforward task because I can reuse the entire \code{RunCode} function. On top of the result given by the \code{RunCode} function, I add a branch to determine whether the result is correct and report a wrong answer when the output does not match.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -624,7 +624,7 @@ public async static Task<TestCaseResult> JudgeTestCase(string UserCode, TestCase
 }
 \end{minted}
 
-I set up 2 sets of tests to test the \code{JudgeTestCase} function. The first one test it with a simple hello world code to make sure it is working as intended. The second test it with a wrong answer code, to see whether it reports the correct error.
+I set up 2 sets of tests to test the \code{JudgeTestCase} function. The first one test it with a simple hello world code to make sure it is working as intended. The second test is with a wrong answer code, to see whether it reports the correct error.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -814,11 +814,11 @@ A total of 1 test files matched the specified pattern.
 Passed!  - Failed:     0, Passed:     2, Skipped:     0, Total:     2, Duration: 11 s - Algorithm Dynamics.Test.dll (net6.0)
 \end{minted}
 
-After all the testing, I am confident that the Judger module is bug free and ready to be integrated into the main program.
+After all the testing, I am confident that the Judger module is bug-free and ready to be integrated into the main program.
 
 \subsection{Integration}
 
-There are two pages that will use the Judger module, the playground page and the coding page.
+Two pages will use the Judger module, the playground page and the coding page.
 
 For the PlaygroundPage, I only need to handle the run code button. \code{RunCode} is called to run the user's code and the result is returned and displayed in the UI.
 
@@ -852,15 +852,15 @@ private async void RunCodeButton_Click(object sender, RoutedEventArgs e)
 }
 \end{minted}
 
-The PlaygroundPage is workding correctly.
+The PlaygroundPage is working correctly.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{PlaygroundPage-RunCode}
 
-The RunCode function in the CodingPage is similar. Please reference to the source code for the detailed implementation.
+The RunCode function in the CodingPage is similar. Please refer to the source code for the detailed implementation.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CodingPage-RunCode}
 
-The submission button creates a formal submission and commit the result to the database.
+The submission button creates a formal submission and commits the result to the database.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -907,7 +907,7 @@ The Judger is implemented and fully tested, I will hand this to the stakeholders
 
 \subsection{Stakeholder feedback}
 
-PCloud reported that the Judger will panic when the language config is not correct. This is a very serious issue, the Judger should not crash in any circumstances. I am able to reproduce it in my environment.
+PCloud reported that the Judger will panic when the language config is not correct. This is a very serious issue, the Judger should not crash under any circumstances. I can reproduce it in my environment.
 
 \begin{minted}{text}
 Message:
@@ -923,7 +923,7 @@ TestJudger.TestRunCodeCpp() line 34
 ThreadOperations.ExecuteWithAbortSafety(Action action)
 \end{minted}
 
-If the compiler does not exist on the path, the Judger will panic directly. This should be handled more gracefully and a proper error should be reported. I can add a check for the compiler existence before running.
+If the compiler does not exist on the path, the Judger will panic directly. This should be handled more gracefully and a proper error should be reported. I can add a check for the compiler's existence before running.
 
 I set up a function \code{GetFullPath} to search the local folder and environment variable path for a given file. It returns null if the file is not found.
 
@@ -966,9 +966,9 @@ private static bool ExistsOnPath(string fileName)
 }
 \end{minted}
 
-Both method are set to private as they are only intended to be used inside the \code{Judger} class.
+Both methods are set to private as they are only intended to be used inside the \code{Judger} class.
 
-Now, I can check whether the compile exists before compiling. A system error will be reported if it encounters error.
+Now, I can check whether the compile exists before compiling. A system error will be reported if it encounters an error.
 
 \begin{minted}{csharp}
 // Compile if needed
@@ -1016,7 +1016,7 @@ public async Task TestCompileSystemError()
 }
 \end{minted}
 
-I noticed another issue, the Judger can encounter the same issue when executing as well. For interpreting language like Python, the interpreter is called during execution, so its path must be check before executing as well. Since I have written the function for \code{ExistsOnPath} it is easy to set up another check before executing.
+I noticed another issue, the Judger can encounter the same issue when executing as well. For interpreting language like Python, the interpreter is called during execution, so its path must be checked before executing as well. Since I have written the function for \code{ExistsOnPath} it is easy to set up another check before executing.
 
 \begin{minted}{csharp}
 // Check run command before running
@@ -1074,7 +1074,7 @@ I then test it in the integration environment, the error message is displayed co
 
 I show this result back to the stakeholder, and he is happy with how I handle this error.
 
-Timofei reports that the judging speed is very slow with multiple test cases on compiling language. After some investigate, I found that the reason is that the same source code gets compiled every time when a teset case is evaludated. I can optimize the \code{RunCode} function to skip compile after the first test case.
+Timofei reports that the judging speed is very slow with multiple test cases on compiling language. After some investigation, I found that the reason is that the same source code gets compiled whenever a test case is evaluated. I can optimize the \code{RunCode} function to skip compile after the first test case.
 
 \begin{minted}{csharp}
 public async static Task<RunCodeResult> RunCode(string UserCode, string Input, Language language, int TimeLimit, long MemoryLimit, IProgress<int> Progress = null, bool skipCompile = false)

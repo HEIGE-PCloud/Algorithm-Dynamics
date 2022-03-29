@@ -3,11 +3,11 @@
 \begin{document}
 \section{Milestone 5: Handle settings}
 
-I designed a JSON schema to store the settings in a file in the design section, but after looking through some documentation, I found a better way of storing settings on Windows. I can use local app data store\cite{microsoft:docs:store-and-retrieve-app-data} to store the settings. Comparing to store the settings in JSON, this brings several advantages: the lifecycle of the settings files are managed by Windows, so when the app gets uninstalled, there will not be garbage settings file flying around the user's disk; the user also can't mess around the settings file directly, which reduces the risk of invalid settings; the data is stored in binary instead of plain text file, which saves disk space. Consider all these benefits, I decide to use \code{LocalSettings} container to store the settings.
+I designed a JSON schema to store the settings in a file in the design section, but after looking through some documentation, I found a better way of storing settings on Windows. I can use local app data store\cite{microsoft:docs:store-and-retrieve-app-data} to store the settings. Compared to storing the settings in JSON, this brings several advantages: the lifecycle of the settings files are managed by Windows, so when the app gets uninstalled, there will not be garbage settings file flying around the user's disk; the user also can't mess around the settings file directly, which reduces the risk of invalid settings; the data is stored in binary instead of plain text file, which saves disk space. Considering all these benefits, I decide to use \code{LocalSettings} container to store the settings.
 
 \subsection{Theme settings}
 
-The color theme of the app needs to be loaded when the app starts. So in App.xaml.cs, I added logic to handle this in \code{OnLaunched}.
+The colour theme of the app needs to be loaded when the app starts. So in App.xaml.cs, I added logic to handle this in \code{OnLaunched}.
 
 \begin{minted}{csharp}
 protected override async void OnLaunched(LaunchActivatedEventArgs args)
@@ -43,7 +43,7 @@ private static void InitializeTheme()
 }
 \end{minted}
 
-In SettingsPage, I need to initialize the current theme on load, and save the selected theme to the setting when the check boxes are checked.
+In SettingsPage, I need to initialize the current theme on load and save the selected theme to the setting when the checkboxes are checked.
 
 \begin{minted}{csharp}
 public SettingsPage()
@@ -99,7 +99,7 @@ After I change the setting and relaunch the app, the setting is saved correctly.
 
 \subsection{TimeLimit settings}
 
-In the SettingsPage, I add a public attribute \code{TimeLimit}, its setter and getter reads and saves its value directly to the local setting container. After the user input the number, it is first validated by the number box control, then it gets saved directly to the setting, which makes the user experience seemless.
+In the SettingsPage, I add a public attribute \code{TimeLimit}, its setter and getter reads and saves its value directly to the local setting container. After the user input the number, it is first validated by the number box control, then it gets saved directly to the setting, which makes the user experience seamless.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -132,7 +132,7 @@ public int TimeLimit
 }
 \end{minted}
 
-If an invalid input is receive, it is automatically rejected and the value is unchanged.
+If invalid input is received, it is automatically rejected and the value is unchanged.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{SettingsPage-TimeLimit-InvalidInput}
 
@@ -230,13 +230,13 @@ RunCodeResult result = await Judger.RunCode(
     progress);
 \end{minted}
 
-The process is killed after exceeding 32 MB memory usage, which means the memory limit setting is working correctly.
+The process is killed after exceeding 32 MB of memory usage, which means the memory limit setting is working correctly.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{PlaygroundPage-RunCodeMemoryLimit}
 
 \subsection{Current User settings}
 
-The settings also store an item that cannot be edited directly, the current user id. All user data is stored in the database, the current user id in the settings determines what gets recorded to the code submissions record and the greeting meesage on HomePage.
+The settings also store an item that cannot be edited directly, the current user id. All user data is stored in the database, the current user id in the settings determines what gets recorded to the code submissions record and the greeting message on HomePage.
 
 In App.xaml.cs, I created a global method to get the current id, so it can be used easily anywhere in the app.
 
@@ -271,7 +271,7 @@ private void SetWelcomeMessage()
 }
 \end{minted}
 
-The currect user value is only set on the first startup. When creating the user in the welcome page, the user id should also be stored into the settings.
+The current user value is only set on the first startup. When creating the user on the welcome page, the user id should also be stored in the settings.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -298,6 +298,6 @@ Hence, all functions related to the local settings are implemented and tested.
 
 \subsection{Stakeholder feedback}
 
-The stakeholders are very satisfied about all the settings options and how they can be changed and loaded seemlessly.
+The stakeholders are very satisfied with all the settings options and how they can be changed and loaded seamlessly.
 
 \end{document}

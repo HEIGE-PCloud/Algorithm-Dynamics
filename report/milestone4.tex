@@ -5,7 +5,7 @@
 
 \subsection{Implementation and testing}
 
-I created public static class in the Algorithm Dynamics.Core project, so it is separated from the main UI logic and can be tested by the unit test framework. I set it as a static class since it is a collection of methods and no need of creating instance.
+I created a public static class in Algorithm Dynamics.Core project, so it is separated from the main UI logic and can be tested by the unit test framework. I set it as a static class since it is a collection of methods and no need of creating an instance.
 
 I first created an ExportObject to wrap any data I am exporting, so the exported data can be validated before importing.
 
@@ -30,7 +30,7 @@ private class ExportObject
 
 The \code{ExportObject} adds \code{FileType} and \code{DataType} to the object, and store the actual instance in \code{Data}.
 
-To export a problem, it is converted into an \code{ExportObject}, and gets converted into a JSON string.
+To export a problem, it is converted into an \code{ExportObject} and gets converted into a JSON string.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -157,7 +157,7 @@ When executing the test case, the following data is generated.
 }
 \end{minted}
 
-The problem with all its metadata and all test cases and tags are exported correctly. However, there are some fields that should not get exported. Such as \code{Id} and \code{Status}. Because when importing the data, all these fields will be regenerated any way, exporting them is just a waste of space.
+The problem with all its metadata and all test cases and tags are exported correctly. However, some fields should not get exported. Such as \code{Id} and \code{Status}. Because when importing the data, all these fields will be regenerated any way, exporting them is just a waste of space.
 
 I can add the \code{[JsonIgnore]} attribute to the fields that should not be exported.
 
@@ -322,7 +322,7 @@ When running the test, the problem list is exported correctly, with only necessa
 }
 \end{minted}
 
-Now, the export function is implemented and tested. To import the data, is data type is first checked and validated, then it is passed to the corresponding function to deserialize into an instance of the object.
+Now, the export function is implemented and tested. To import the data, the data type is first checked and validated, then it is passed to the corresponding function to deserialize into an instance of the object.
 
 I create a \code{GetDataType} function to retrieve the data type and validate the file format.
 
@@ -363,7 +363,7 @@ public void TestInvalidDataType()
 }
 \end{minted}
 
-They each has incorrect data type or file type, and a \code{FormatException} is thrown.
+They each have an incorrect data type or file type, and a \code{FormatException} is thrown.
 
 \begin{minted}{text}
 > dotnet test --filter TestCategory=TestFormatException
@@ -383,7 +383,7 @@ Passed!  - Failed:     0, Passed:     2, Skipped:     0, Total:     2, Duration:
 
 Both tests are passed successfully.
 
-To deserialize the data, I need to first retrieve the data from the \code{ExportObject} instance, and return it to the caller.
+To deserialize the data, I need to first retrieve the data from the \code{ExportObject} instance and return it to the caller.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -446,7 +446,7 @@ public void TestSerializeProblem()
 }
 \end{minted}
 
-It generates a new problem, serialize it into a JSON string, deserialize from the JSON string into an instance, and compare the new instance and the original instance. The test passes when they are the same.
+It generates a new problem, serializes it into a JSON string, deserializes from the JSON string into an instance, and compare the new instance and the original instance. The test passes when they are the same.
 
 However, when I run the test, it fails with the following error.
 
@@ -468,7 +468,7 @@ DataSerialization.DeserializeProblem(String str) line 117
 TestDataSerialization.TestSerializeProblem() line 32
 \end{minted}
 
-The deserializer requires a custom constructor to create an object. Instead of changing the existing design of the Problem model. I decide to create a base problem model to retrieve the data, and then convert the base mode into a full problem model.
+The deserializer requires a custom constructor to create an object. Instead of changing the existing design of the Problem model. I decided to create a base problem model to retrieve the data, and then convert the base mode into a full problem model.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -505,7 +505,7 @@ private class BaseProblem
 }
 \end{minted}
 
-These base models only have the fields that gets exported. I decide to set them as private classes since it is only used for the deserializer internally, other classes do not need to access it .The deserializer first saves the data into the base problem model.
+These base models only have the fields that get exported. I decide to set them as private classes since it is only used for the deserializer internally, other classes do not need to access it. The deserializer first saves the data into the base problem model.
 
 \begin{minted}{csharp}
 public static Problem DeserializeProblem(string str)
@@ -518,7 +518,7 @@ public static Problem DeserializeProblem(string str)
 }
 \end{minted}
 
-Next, the data in the base model is used to create actual problem model.
+Next, the data in the base model is used to create the actual problem model.
 
 \begin{minted}{csharp}
 // Create test cases and tags first
@@ -563,7 +563,7 @@ A total of 1 test files matched the specified pattern.
 Passed!  - Failed:     0, Passed:     1, Skipped:     0, Total:     1, Duration: 569 ms - Algorithm Dynamics.Test.dll (net6.0)
 \end{minted}
 
-I used a similar approach to handle the problem list. First create the base problem list model.
+I used a similar approach to handle the problem list. First, create the base problem list model.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -577,7 +577,7 @@ private class BaseProblemList
 }
 \end{minted}
 
-Next deserialize to the base model and then create the actual model from the base model.
+Next, deserialize the base model and then create the actual model from the base model.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -625,7 +625,7 @@ public static ProblemList DeserializeProblemList(string str)
 }
 \end{minted}
 
-Finally add tests for the problem list.
+Finally, add tests for the problem list.
 
 \begin{minted}{csharp}
 [TestMethod, TestCategory("TestSerialize")]
@@ -699,11 +699,11 @@ Passed!  - Failed:     0, Passed:     2, Skipped:     0, Total:     2, Duration:
 
 \subsection{Integration}
 
-Since the data serialization helper passes all the unit tests successfully, I am confident that it contains no issue and I can integrate them directly into the main project.
+Since the data serialization helper passes all the unit tests successfully, I am confident that it contains no issues and I can integrate them directly into the main project.
 
 The user can import data from either the homepage or the problems page.
 
-On the homepage, I add an action for the quick access item, which will be invoked when the user click the grid item.
+On the homepage, I add an action for the quick access item, which will be invoked when the user clicks the grid item.
 
 \begin{minted}{csharp}
 QAItems.Add(new QuickAccessItem("Import", Symbol.Import, async () =>
@@ -732,7 +732,7 @@ QAItems.Add(new QuickAccessItem("Import", Symbol.Import, async () =>
     }
 \end{minted}
 
-The \code{FileOpenPicker} is a helper function to open a Windows dialog allowing the user to pick multiple JSON files.
+The \code{FileOpenPicker} is a helper function to open a Windows dialogue allowing the user to pick multiple JSON files.
 
 \begin{minted}{csharp}
 internal async static Task<IReadOnlyList<StorageFile>> FileOpenPicker(string fileTypeFilter = "*")
@@ -754,7 +754,7 @@ internal async static Task<IReadOnlyList<StorageFile>> FileOpenPicker(string fil
 }
 \end{minted}
 
-Now when I click the import button on the HomePage, a dialog shows up correctly.
+Now when I click the import button on the HomePage, a dialogue shows up correctly.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{HomePage-Import}
 
@@ -762,7 +762,7 @@ When I click open, the three problems are imported correctly.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{ProblemsPage-Import}
 
-However, when I try to import an invalid problem, the app crashes. This is an expected behavior since I have not handled the exception properly yet. I use a try catch block to handle the exception. If any exception happens, a dialog will show up and display the reason why the import is unsuccessful.
+However, when I try to import an invalid problem, the app crashes. This is expected behaviour since I have not handled the exception properly yet. I use a try-catch block to handle the exception. If any exception happens, a dialogue will show up and display the reason why the import is unsuccessful.
 
 \begin{minted}{csharp}
 try
@@ -798,7 +798,7 @@ catch (Exception e)
 }
 \end{minted}
 
-Now, if I attempted to import something invalid, this dialog will show up and abort the import.
+Now, if I attempted to import something invalid, this dialogue will show up and abort the import.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{HomePage-Import-Error}
 
@@ -848,17 +848,17 @@ private async void ExportProblemList(object sender, RoutedEventArgs e)
 }
 \end{minted}
 
-It is very easy to serialize the data, since the data serialization helper I wrote before has done most of the work. I only need to read the selected problem, seralize it and save it to the disk.
+It is very easy to serialize the data since the data serialization helper I wrote before has done most of the work. I only need to read the selected problem, serialize it and save it to the disk.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{ProblemsPage-Export}
 
-The data is saved to the disk correctly after I clicking the save button.
+The data is saved to the disk correctly after I click the save button.
 
-The user can export problem list directly from the CreateNewProblemListPage as well. The implementation is very similar, check out the source code for details.
+The user can export the problem list directly from the CreateNewProblemListPage as well. The implementation is very similar, check out the source code for details.
 
 \subsection{Stakeholder feedback}
 
-I asked my stakeholders to test the data import/export function. They are pretty happy about its implementation. PCloud says that he is particularly satisfied because the speed of the import/export is very fast. He can import a large amount of data instantly. Timofei says he is happy about how the import is abort and a useful error message is dispalyed when the data is invalid. Mr Grimwood gives a suggestion that the app should navigate to the ProblemsPage once the import on the homepage is completed, so he can check out the data he imports right away. I think this is a very sensible feature, and it is easy to implement.
+I asked my stakeholders to test the data import/export function. They are pretty happy about its implementation. PCloud says that he is particularly satisfied because the speed of the import/export is very fast. He can import a large amount of data instantly. Timofei says he is happy about how the import is aborted and a useful error message is displayed when the data is invalid. Mr Grimwood suggests that the app should navigate to the ProblemsPage once the import on the homepage is completed, so he can check out the data he imports right away. I think this is a very sensible feature, and it is easy to implement.
 
 \begin{minted}{csharp}
 // Deserialize the data and save to the database
@@ -875,6 +875,6 @@ else if (dataType == "ProblemList")
 App.NavigateTo(typeof(ProblemsPage));
 \end{minted}
 
-Now the app will navigate the problem page when the import is completed. Mr Grimwood is satisfied about this feature.
+Now the app will navigate the problem page when the import is completed. Mr Grimwood is satisfied with this feature.
 
 \end{document}

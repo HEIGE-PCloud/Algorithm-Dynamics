@@ -5,7 +5,7 @@
 
 \subsection{Objective}
 
-During this milestone, a basic prototype with user interface will be created. The prototype needs to compile and run and the user should be able to navigate around the app to see different UI elements.
+During this milestone, a basic prototype with a user interface will be created. The prototype needs to compile and run and the user should be able to navigate around the app to see different UI elements.
 
 \subsection{Create a minimal running prototype}
 
@@ -13,7 +13,7 @@ During this milestone, a basic prototype with user interface will be created. Th
 
 I will create a prototype with a minimal user interface to test run the development environment and building tools.\cite{microsoft:docs:create-your-first-winui3-app}
 
-I create the \code{App.xaml} file, which will include all application resources. Right now, the only resources imported is the \code{XamlControlsResource}, which provides the resources for the all controls. Later on, I will create and import new resources in this file.
+I create the \code{App.xaml} file, which will include all application resources. Right now, the only resource imported is the \code{XamlControlsResource}, which provides the resources for all controls. Later on, I will create and import new resources into this file.
 
 \begin{minted}{xml}
 <Application
@@ -33,7 +33,7 @@ I create the \code{App.xaml} file, which will include all application resources.
 </Application>
 \end{minted}
 
-I then create the \code{App.xaml.cs} file, which will include the main entry point of the application. It inheriates from the \code{Application} class, and create a \code{Window} object to show the main window. The \code{App} class will activate the main window when it is launched.
+I then create the \code{App.xaml.cs} file, which will include the main entry point of the application. It inherits from the \code{Application} class, and create a \code{Window} object to show the main window. The \code{App} class will activate the main window when it is launched.
 
 \begin{minted}{csharp}
 using Microsoft.UI.Xaml;
@@ -141,7 +141,7 @@ As expected, a window with a button shows up correctly. After clicking the butto
     \hline
 \end{tabulary}
 
-This is the simplest prototype, and its successful running means the development environment and the building tools are set up correctm, and I can start developing a more complex user interface.
+This is the simplest prototype, and its successful running means the development environment and the building tools are set up correctly, and I can start developing a more complex user interface.
 
 \subsubsection{CI/CD pipeline}
 
@@ -153,9 +153,9 @@ I am using the GitHub Actions\cite{github:actions} for this pipeline. I need to 
 # The name of the pipeline
 name: Build
 
-# Triggered when a new commit is pushed to main
-# Or a new tag is pushed to main
-# Or a pull request is opened on main
+# Triggered when a new commit is pushed to the main
+# Or a new tag is pushed to the main
+# Or a pull request is opened on the main
 on:
   push:
     branches: [main]
@@ -228,7 +228,7 @@ on:
       run: |
         msbuild "$env:Solution_Name" /restore /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Platform="$env:Platform" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:AppxPackageSigningEnabled=false /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true -m
 
-    # Upload build artifacts
+    # Upload build artefacts
     - name: Upload build artifacts
       uses: actions/upload-artifact@v2
       with:
@@ -255,7 +255,7 @@ on:
       Project_Directory: src\Algorithm Dynamics
     steps:
 
-    # Set up working directory
+    # Set up the working directory
     - name: Create directory
       run: |
         mkdir src\Bundle
@@ -270,7 +270,7 @@ on:
         [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
         echo "::set-output name=cert_path::$certificatePath"
 
-    # Download build artifacts
+    # Download build artefacts
     - name: Prepare x86 MSIX
       uses: actions/download-artifact@v2
       with:
@@ -349,9 +349,9 @@ on:
 
 \end{minted}
 
-Now, everytime when I push a commit to the remote repo, the app will be automatically build and tested, which ensures the code quality throughout the developement stage.
+Now, whenever I push a commit to the remote repo, the app will be automatically built and tested, which ensures the code quality throughout the development stage.
 
-Here is an example of a success run of the build job.
+Here is an example of a successful run of the build job.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CICD-Example}
 
@@ -370,7 +370,7 @@ First, I will implement the NavigationView as \hyperref[sec:NavigationViewDesign
 </NavigationView>
 \end{minted}
 
-I assign a name \code{MainNavView} to the control so I can call it later in the code behind. I decide to hide the back button, which prevent the user to navigate the page in an unintended way. I also assign a \code{SelectionChanged} event handler to the control, which will be used to handle the navigation.
+I assign a name \code{MainNavView} to the control so I can call it later in the code behind. I decide to hide the back button, which prevents the user to navigate the page in an unintended way. I also assign a \code{SelectionChanged} event handler to the control, which will be used to handle the navigation.
 
 I then need to add different options to the navigation menu.
 
@@ -522,7 +522,7 @@ namespace Algorithm_Dynamics.Pages
 }
 \end{minted}
 
-Now, the software build and run successfully. The HomePage is correctly selected when it is launched and the TextBlock HomePage shows up correctly means that the right page is loaded.
+Now, the software builds and run successfully. The HomePage is correctly selected when it is launched and the TextBlock HomePage shows up correctly means that the right page is loaded.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{HomePage-Draft-TextBlock}
 
@@ -599,7 +599,7 @@ Inside the background image grid, I place a \code{Image} control with the source
     Style="{ThemeResource TitleTextBlockStyle}"/>
 \end{minted}
 
-The \code{TextBlock} is used to display a greeting message. It is placed on the bottom right. Because its content needs to be adjusted by the current time and the current user, it is binded to the a variable \code{WelcomeMessage} so I can change its value programmatically.
+The \code{TextBlock} is used to display a greeting message. It is placed on the bottom right. Because its content needs to be adjusted by the current time and the current user, it is bound to the variable \code{WelcomeMessage} so I can change its value programmatically.
 
 \begin{minted}{csharp}
 namespace Algorithm_Dynamics.Pages
@@ -618,7 +618,7 @@ namespace Algorithm_Dynamics.Pages
 }
 \end{minted}
 
-The welcome message is adjusted by different time in the day. It should also display the user name, but since the settings module is not implemented yet, I use a placeholder for the user name.
+The welcome message is adjusted at different times in the day. It should also display the user name, but since the settings module is not implemented yet, I use a placeholder for the user name.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -878,7 +878,7 @@ private void InitializeRecItems()
 }
 \end{minted}
 
-I need to handle the click event as well. And because neither the AssignmentsPage nor the CodingPage is ready, it will throw an NotImplementedException too.
+I need to handle the click event as well. And because neither the AssignmentsPage nor the CodingPage is ready, it will throw a NotImplementedException too.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -1020,7 +1020,7 @@ For the toolbar, I use a grid with 6 columns to hold the search box and the Comb
 </DropDownButton>
 \end{minted}
 
-The ItemsSource of the ComboBox is binded to the corresponding variable, which allows me to set their value programmatically. Because the database is not implemented yet, I will use some dummy data to test the UI.
+The ItemsSource of the ComboBox is bound to the corresponding variable, which allows me to set their value programmatically. Because the database is not implemented yet, I will use some dummy data to test the UI.
 
 \begin{minted}{csharp}
 using Microsoft.UI.Xaml.Controls;
@@ -1044,7 +1044,7 @@ namespace Algorithm_Dynamics.Pages
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{ProblemsPage-Toolbar}
 
-The toolbar shows up with all data loaded correctly. I can select an item correctly, but I cannot clear the selection. I need to empty the ComboBox when the user right clicks it. For the list ComboBox, I also need to allow the user to edit and delete an existing list, so when the user right click the list ComboBox, a menu flyout needs to show up with all options. I create a \code{ClearComboBox} procedure to handle the right click event.
+The toolbar shows up with all data loaded correctly. I can select an item correctly, but I cannot clear the selection. I need to empty the ComboBox when the user right-clicks it. For the list ComboBox, I also need to allow the user to edit and delete an existing list, so when the user right-clicks the list ComboBox, a menu flyout needs to show up with all options. I create a \code{ClearComboBox} procedure to handle the right-click event.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -1059,7 +1059,7 @@ private void ClearComboBox(object sender, RightTappedRoutedEventArgs e)
 }
 \end{minted}
 
-And then bind the right clicked event to the procedure.
+And then bind the right-clicked event to the procedure.
 
 \begin{minted}{xml}
 <ComboBox
@@ -1109,7 +1109,7 @@ private void ClearComboBox(object sender, RoutedEventArgs e)
 }
 \end{minted}
 
-The menu flyout needs to be displayed when the list ComboBox is right clicked.
+The menu flyout needs to be displayed when the list ComboBox is right-clicked.
 
 \begin{minted}{xml}
 <ComboBox 
@@ -1149,7 +1149,7 @@ private void ListComboBox_RightTapped(object sender, RightTappedRoutedEventArgs 
 
 Now, the menu flyout does not show up when no list is selected, which fixes a potential issue in the future.
 
-Next, I need to handle the delete and edit event for the list ComboBox. Because the actual database and data structures have not been implemented yet, I will only create the UI for these events and implement their functions later. For the edit event, the content frame should navigate to the edit page. For the delete event, a content dialog will show up to confirm the deletion. I create two procedures to handle these events.
+Next, I need to handle the delete and edit event for the list ComboBox. Because the actual database and data structures have not been implemented yet, I will only create the UI for these events and implement their functions later. For the edit event, the content frame should navigate to the edit page. For the delete event, a content dialogue will show up to confirm the deletion. I create two procedures to handle these events.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -1188,11 +1188,11 @@ private async void DeleteProblemList(object sender, RoutedEventArgs e)
 }
 \end{minted}
 
-Now, when I click the delete button, a popup shows up correctly to confirm deletion.
+Now, when I click the delete button, a popup shows up correctly to confirm the deletion.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{ProblemsPage-ContentDialog}
 
-I then implement the problem list below the toolbar. I use a \code{ListView} to display the problem list. Similarly, I bind the data source to a variable Problems which contains a list of Problem. For each problem, its name, difficulty, status and tags are displayed.
+I then implement the problem list below the toolbar. I use a \code{ListView} to display the problem list. Similarly, I bind the data source to a variable Problems which contains a list of problems. For each problem, its name, difficulty, status and tags are displayed.
 
 \begin{minted}{xml}
 <ListView x:Name="ProblemsListView"
@@ -1251,7 +1251,7 @@ I then implement the problem list below the toolbar. I use a \code{ListView} to 
 </ListView>
 \end{minted}
 
-Because the data structure for Problem has not been implemented yet, I create a sample class for the Problem. It only contains the four attributes that matters and a constructor to initialize the values.
+Because the data structure for Problem has not been implemented yet, I create a sample class for the Problem. It only contains the four attributes that matter and a constructor to initialize the values.
 
 \begin{minted}{csharp}
 public class Problem
@@ -1271,7 +1271,7 @@ public class Problem
 }
 \end{minted}
 
-I create a ObserableCollection for the list of Problem and add some sample data to it.
+I create an ObserableCollection for the list of problems and add some sample data to it.
 
 \begin{minted}{csharp}
 public ObservableCollection<Problem> Problems = new();
@@ -1295,7 +1295,7 @@ The problem list shows up with the correct data.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{ProblemsPage-ProblemList}
 
-I need to add a flyout menu for the problem list to allow the user to edit and delete problems when right clicking the list. When only one problem is selected, the user can edit it or delete it. When multiple problems are selected, the user can delete all of them or create a problem list from them.
+I need to add a flyout menu for the problem list to allow the user to edit and delete problems when right-clicking the list. When only one problem is selected, the user can edit it or delete it. When multiple problems are selected, the user can delete all of them or create a problem list from them.
 
 \begin{minted}{xml}
 <ListView.Resources>
@@ -1351,7 +1351,7 @@ The corresponding menu flyout can show up correctly based on the selection.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{ProblemsPage-MultipleSelected-Flyout}
 
-Similarly, I can add the delete content dialog for these flyouts and leave the edit and create new problem list feature in the future.
+Similarly, I can add the delete content dialogue for these flyouts and leave the edit and create a new problem list feature in the future.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -1426,7 +1426,7 @@ private async void DeleteProblems(object sender, RoutedEventArgs e)
 }
 \end{minted}
 
-Finally, for the ProblemsPage, I need to handle the searh query. The ProblemListView needs to be updated when different search queries are entered in the toolbar. I create a \code{Search} procedure to handle the searc event. When the user select an option in the ComboBoxes, or enter the search box, the \code{Search} procedure will be called. All data will be passed to a \code{Query} function that returns searching result. For now, because the database is not implemented, I will just return the query. The \code{Query} function will be implemented in the future.
+Finally, for the ProblemsPage, I need to handle the search query. The ProblemListView needs to be updated when different search queries are entered in the toolbar. I create a \code{Search} procedure to handle the search event. When the user selects an option in the ComboBoxes, or enter the search box, the \code{Search} procedure will be called. All data will be passed to a \code{Query} function that returns the searching result. For now, because the database is not implemented, I will just return the query. The \code{Query} function will be implemented in the future.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -1481,11 +1481,11 @@ The ProblemsPage is partially implemented with many todos left for the future. B
 
 \subsubsection{Implementation}
 
-The main component in the PlaygroundPage is the Code Editor. Because the CodingPage will need to use the Code Editor as well, so I will set the Code Editor as a custom control so it can be reused later.
+The main component in the PlaygroundPage is the Code Editor. Because the CodingPage will need to use the Code Editor as well, I will set the Code Editor as a custom control so it can be reused later.
 
-The Code Editor needs to support line number, syntax highlighting, and other editing features. It is too complex for this project to implement all of these by hand. So I will use a third-party library to achieve that. I am using the \href{https://microsoft.github.io/monaco-editor/}{Monaco Editor} for this purpose.
+The Code Editor needs to support line numbers, syntax highlighting, and other editing features. It is too complex for this project to implement all of these by hand. So I will use a third-party library to achieve that. I am using the \href{https://microsoft.github.io/monaco-editor/}{Monaco Editor} for this purpose.
 
-I create a custom control for the editor so I can reuse it later in different pages easily.
+I create a custom control for the editor so I can reuse it later on different pages easily.
 
 \begin{minted}{xml}
 <UserControl
@@ -1516,7 +1516,7 @@ namespace Algorithm_Dynamics.Controls
 }
 \end{minted}
 
-I import the control in the PlaygroundPage to verify its working.
+I import the control in the PlaygroundPage to verify it's working.
 
 \begin{minted}{xml}
 <Page
@@ -1540,7 +1540,7 @@ Now, when I run the application and navigate to the PlaygroundPage I can see the
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CodeEditorControl}
 
-The Monaco Editor is a web application, which means it needs to run in a browser. To use it, I need to use WebView2 component to load a HTML file, and initialize the Monaco Editor inside that webpage. The WebView2 control launches a Chromium instance and allows me to integrate webpages inside my app. I use the WebView2 control to load the HTML file. Before I create the webpage for the Monaco Editor, I place the WebView2 control and test it out.
+The Monaco Editor is a web application, which means it needs to run in a browser. To use it, I need to use the WebView2 component to load an HTML file and initialize the Monaco Editor inside that webpage. The WebView2 control launches a Chromium instance and allows me to integrate webpages inside my app. I use the WebView2 control to load the HTML file. Before I create the webpage for the Monaco Editor, I place the WebView2 control and test it out.
 
 \begin{minted}{xml}
 <WebView2 
@@ -1552,7 +1552,7 @@ The Monaco Editor is a web application, which means it needs to run in a browser
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{PlaygroundPage-WebView2-Webpage}
 
-I set the source of the WebView2 control to the offcial website of OCR, and it loads up correctly. Now I can start working on the webpage for the editor. To load a local HTML file, I need to set a mapping relationship between a URL space and a local folder.
+I set the source of the WebView2 control to the official website of OCR, and it loads up correctly. Now I can start working on the webpage for the editor. To load a local HTML file, I need to set a mapping relationship between a URL space and a local folder.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -1618,9 +1618,9 @@ I add a container in the body to host the instance of the editor. Then I write s
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{PlaygroundPage-WebView2-EditorLoaded}
 
-The editor is now loaded correctly with the sample code. I can type in the editor and utlize all powerful functions of the Monaco Editor.
+The editor is now loaded correctly with the sample code. I can type in the editor and utilize all the powerful functions of the Monaco Editor.
 
-But I find that the editor has a fixed height and width. On a small screen like the screen shot, you can see the scroll bars. And on a larger display, the editor will not occupy the entire screen. I need to adjust its style to make it responsive.
+But I find that the editor has a fixed height and width. On a small screen like the screenshot, you can see the scroll bars. And on a larger display, the editor will not occupy the entire screen. I need to adjust its style to make it responsive.
 
 I add some CSS code to set the height and width of the editor to 100\%.
 
@@ -1634,7 +1634,7 @@ Now, the scroll bars are gone. But when I resize the window, the editor still do
 </script>
 \end{minted}
 
-By adding the event handler for the window resize event and call the layout function, the editor can now resize correctly according to the window size.
+By adding the event handler for the window resize event and calling the layout function, the editor can now resize correctly according to the window size.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{PlaygroundPage-WebView2-ResizeSuccess}
 
@@ -1778,7 +1778,7 @@ To allow different sections to be resizeable, I add two grid splitters to the gr
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{PlaygroundPage-Layout}
 
-All controls work correctly and they can be resized by the grid splitter. Now I need to interact with the code editer. I need to be able to get the code inside, set its programming language and color theme. To pass the config data to the editor, I will need to serialize the data into a JSON string and send it through web message. To avoid hand crafting the JSON string, I create a new class \code{EditorConfig} and use the \code{System.Text.Json} library to serialize the data.
+All controls work correctly and they can be resized by the grid splitter. Now I need to interact with the code editor. I need to be able to get the code inside, set its programming language and colour theme. To pass the config data to the editor, I will need to serialize the data into a JSON string and send it through a web message. To avoid handcrafting the JSON string, I create a new class \code{EditorConfig} and use the \code{System.Text.Json} library to serialize the data.
 
 \begin{minted}{csharp}
 public class EditorConfig
@@ -1828,11 +1828,11 @@ window.chrome.webview.addEventListener('message', (e) => {
 })
 \end{minted}
 
-Now, when I open the PlaygroundPage, a code editor with dark theme and syntax highlighting for Python should be loaded.
+Now, when I open the PlaygroundPage, a code editor with a dark theme and syntax highlighting for Python should be loaded.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{PlaygroundPage-EditorConfig-NotLoading}
 
-However, it is clearly not loading. Neither the theme, the syntax highlighting nor the code is set. It is clear that the config has not been passed correctly. When I open the devtool, nothing is in the output, which means that \code{console.log(e)} has not been called.
+However, it is not loading. Neither the theme, the syntax highlighting nor the code is set. The config has not been passed correctly. When I open the devtool, nothing is in the output, which means that \code{console.log(e)} has not been called.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{PlaygroundPage-EditorConfig-NotLoading-Devtool}
 
@@ -1859,9 +1859,9 @@ window.editor = monaco.editor.create(document.getElementById('container'), {
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{PlaygroundPage-EditorConfig-Loading}
 
-Now the theme, code, and language config is passed correctly, which also proves my hypothesis is correct. This problem should only occur at the initializing stage. Once the editor is loaded, passing config through web message should work fine.
+Now the theme, code, and language config are passed correctly, which also proves my hypothesis is correct. This problem should only occur at the initializing stage. Once the editor is loaded, passing config through web message should work fine.
 
-In order to allow other pages to set the config, I need to expose these three fields by registering them as properties.
+To allow other pages to set the config, I need to expose these three fields by registering them as properties.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -1967,7 +1967,7 @@ private void UpdateEditorConfig(EditorConfig editorConfig)
 
 Now when I run the app, it works correctly again.
 
-I can pass config to the Monaco Editor now, but I also need to be able to retrieve the code input from the editor. To do this, I add an event listener to the editor, and post a web message when the code is changed.
+I can pass the config to the Monaco Editor now, but I also need to be able to retrieve the code input from the editor. To do this, I add an event listener to the editor and post a web message when the code is changed.
 
 \begin{minted}{javascript}
 // Send code when the code is changed
@@ -2014,7 +2014,7 @@ When I run the app and start typing in the code editor, the output panel updates
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{PlaygroundPage-Editor-CodeSync}
 
-I am not able to implement the full function of the PlaygroundPage right now since the Judger has not been implemented yet. But there is one last thing, I need to make the language ComboBox working. When the user selects a different programming, the syntax highlighting should adjust accordingly. This should be very easy to do since I have already implemented the config updaing function.
+I am not able to implement the full functionality of the PlaygroundPage right now since the Judger has not been implemented yet. But there is one last thing, I need to make the language ComboBox work. When the user selects different programming languages, the syntax highlighting should adjust accordingly. This should be very easy to do since I have already implemented the config updating function.
 
 I add a new event handler to process the selection change event.
 
@@ -2050,11 +2050,11 @@ And it turns out to work perfectly as I expected. I can change the syntax highli
 
 I have finished the PlaygroundPage in this iteration. I will move on to the CodingPage next, which should be relatively simple because I have encapsulated the code editor into a user control and it can be easily reused.
 
-Just before I plan to start the CodingPage, I find another bug with the Editor control. When the user navigate from the PlaygroundPage to another page, and then navigate back, the editor config cannot be loaded correctly. After some more research, it turns out that the WebView2 component is not destroyed after the page is unloaded, so when the next time it is loaded, it initialize much faster and load before \code{window.config} is set. I decide to design a three-way handshake protocol to solve this problem once and for all.
+Just before I plan to start the CodingPage, I find another bug with the Editor control. When the user navigates from the PlaygroundPage to another page and then navigate back, the editor config cannot be loaded correctly. After some more research, it turns out that the WebView2 component is not destroyed after the page is unloaded, so when the next time it is loaded, it initializes much faster and loads before \code{window.config} are set. I decided to design a three-way handshake protocol to solve this problem once and for all.
 
 \includegraphics[width=\linewidth]{webviewHandshake}
 
-At first, the WebView starts loading, and sends a message to request the initial configuration for the Monaco Editor when it is ready. The CodeEditor will keep listening until it receives the request. Then it will send the request and starts listening again. When the Monaco Editor is fully loaded, another message is sent to tell the CodeEditor it is ready. Then the initialization procedure is completed.
+At first, the WebView starts loading and sends a message to request the initial configuration for the Monaco Editor when it is ready. The CodeEditor will keep listening until it receives the request. Then it will send the request and starts listening again. When the Monaco Editor is fully loaded, another message is sent to tell the CodeEditor it is ready. Then the initialization procedure is completed.
 
 \begin{minted}{javascript}
 require.config({ paths: { vs: 'monaco-editor/min/vs' } })
@@ -2088,7 +2088,7 @@ function init() {
 }
 \end{minted}
 
-For the CodeEditor control, I add a progress ring to display when it is going through the initilazation process.
+For the CodeEditor control, I add a progress ring to display when it is going through the initialization process.
 
 \begin{minted}{xml}
 <Grid>
@@ -2138,11 +2138,11 @@ private async void CoreWebView2_WebMessageReceived(CoreWebView2 sender, CoreWebV
 
 Now, it is ok to navigate around different pages, and the editor will always be initialized correctly.
 
-After testing the PlaygroundPage for a longer time, I find another issue. The memory usage of the app keep increasing each time when I navigate to and away from the PlaygroundPage. The memory garbage collection does not seem to work as expected. I suspect that is caused by the WebView2 control not being destroyed correctly. To verify my hypothesis, I use the Porcess Explorer \cite{microsoft:docs:process-explorer} to examine the process tree of the app.
+After testing the PlaygroundPage for a longer time, I find another issue. The memory usage of the app keeps increasing each time when I navigate to and away from the PlaygroundPage. The memory garbage collection does not seem to work as expected. I suspect that is caused by the WebView2 control not being destroyed correctly. To verify my hypothesis, I use the Process Explorer \cite{microsoft:docs:process-explorer} to examine the process tree of the app.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{Process-Explorer-WebView2}
 
-As I expected, the WebView2 process is created not destroyed when I navigate away from the PlaygroundPage. And each time a new instance is create, which is causing the memory leak. After some researching on the lifecycle of the WebView2 component \cite{github:microsoft-ui-xaml:4752}, I found that I can call \code{WebView2.Close()} to manually dispose it. So I add a new procedure to handle the control unload event.
+As I expected, the WebView2 process is created not destroyed when I navigate away from the PlaygroundPage. And each time a new instance is created, which is causing the memory leak. After some researching on the lifecycle of the WebView2 component \cite{github:microsoft-ui-xaml:4752}, I found that I can call \code{WebView2.Close()} to manually dispose it. So I add a new procedure to handle the control unload event.
 
 \begin{minted}{csharp}
 private void CodeEditor_Unloaded(object sender, RoutedEventArgs e)
@@ -2153,7 +2153,7 @@ private void CodeEditor_Unloaded(object sender, RoutedEventArgs e)
 }
 \end{minted}
 
-Now, when I navigate away from the PlaygroundPage, I can see from the Process Explorer that all WebView2 processes are killed. And the memory usage fall back to the initial state correctly.
+Now, when I navigate away from the PlaygroundPage, I can see from the Process Explorer that all WebView2 processes are killed. And the memory usage falls back to the initial state correctly.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{Process-Explorer-WebView2-Destroyed}
 
@@ -2396,9 +2396,9 @@ At the bottom, I place the problem navigation buttons, the status text block, a 
 </Grid>
 \end{minted}
 
-At the end, I add two grid splitters between the problem panel and the editor, the editor and the panel so users can resize each window to fit their needs.
+In the end, I add two grid splitters between the problem panel and the editor, the editor and the panel so users can resize each window to fit their needs.
 
-When I build and run the app, I encounter a problem - I cannot navigate to the CodingPage. Unlike the previous pages, the CodingPage is not a top-level page, it is opened when the user select a problem or an assignment. So I need to link the start problem button to the CodingPage. So for the Start button on the ProblemsPage, I add a StartProblem function to handle the click event.
+When I build and run the app, I encounter a problem - I cannot navigate to the CodingPage. Unlike the previous pages, the CodingPage is not a top-level page, it is opened when the user selects a problem or an assignment. So I need to link the start problem button to the CodingPage. So for the Start button on the ProblemsPage, I add a StartProblem function to handle the click event.
 
 \begin{minted}{xml}
 <Button
@@ -2430,7 +2430,7 @@ Now when I run the app, I can navigate to the CodingPage through the ProblemsPag
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CodingPage-Layout}
 
-When I provide the screenshot to my stakeholder PCloud, he says that the controls are quite ugly, especially the pivot and the grid splitter, the font and color theme does not seem to match the overall design. I agree with him, so I decide to add some style to the pivot and the grid splitter.
+When I provide the screenshot to my stakeholder PCloud, he says that the controls are quite ugly, especially the pivot and the grid splitter, the font and colour theme does not seem to match the overall design. I agree with him, so I decide to add some style to the pivot and the grid splitter.
 
 I create a new file Generic.xaml to store all the styles. In App.xaml, I import the Generic.xaml file.
 
@@ -2447,7 +2447,7 @@ I create a new file Generic.xaml to store all the styles. In App.xaml, I import 
 </Application.Resources>
 \end{minted}
 
-For the GridSplitter, I reference the design in DevToys\cite{github:DevToys:Generic.xaml} by setting the background color to transparent which makes the GridSplitter less significant.
+For the GridSplitter, I reference the design in DevToys\cite{github:DevToys:Generic.xaml} by setting the background colour to transparent which makes the GridSplitter less significant.
 
 For the Pivot, I reference the design from the Windows Calculator\cite{github:calculator:Calculator.xaml}, which modifies the Pivot to make it look like the modern NavigationView.
 
@@ -2455,7 +2455,7 @@ For the Pivot, I reference the design from the Windows Calculator\cite{github:ca
 
 After applying the custom theme, the interface looks much more modern and consistent.
 
-Next I will implement the full screen button. It will be a toggle, when clicking in the window mode, it set the window to full screen. When clicking in the full screen mode, it sets the window back to a window. I also assigned a keyboard accelerator F11 to the button, so the user can toggle it by keyboard.
+Next, I will implement the full-screen button. It will be a toggle, when clicking in the window mode, it set the window to full screen. When clicking in the full-screen mode, it sets the window back to a window. I also assigned a keyboard accelerator F11 to the button, so the user can toggle it by the keyboard.
 
 \begin{minted}{xml}
 <Button
@@ -2511,11 +2511,11 @@ For the other parts, the submission records depend on the database, and the run 
     \hline
     Test & Result & Remark \\
     \hline
-    Does it load & Failed & This feature is not fully implemented. When the CodingPage loads, it should take in two parameter, the current problem and a problem list for navigation. The main page can load correctly, but the support for these two parameters are not yet implemented because the data structure is not implemented yet. \\
+    Does it load & Failed & This feature is not fully implemented. When the CodingPage loads, it should take in two parameters, the current problem and a problem list for navigation. The main page can load correctly, but the support for these two parameters are not yet implemented because the data structure is not implemented yet. \\
     \hline
-    Does the full screen button work & Pass & \\
+    Does the full-screen button work & Pass & \\
     \hline
-    Does the markdown text block work & Pass & \\
+    Does the markdown text blockwork & Pass & \\
     \hline
     Does the code editor work & Pass & \\
     \hline
@@ -2541,7 +2541,7 @@ For the other parts, the submission records depend on the database, and the run 
 
 \subsubsection{Implementation}
 
-For the AccountPage, I use a grid of two row to divide the two sections for the account information and the statistics data. For the account information, I decide to use the RelativePanel to construct the layout to make it responsive to different sizes of the window. For the statistics data, I use the AdaptiveGridView which is used for the HomePage as well, so the data can be dynamically added in the code behind and make it a lot easier to add custom statistics later.
+For the AccountPage, I use a grid of two rows to divide the two sections for the account information and the statistics data. For the account information, I decide to use the RelativePanel to construct the layout to make it responsive to different sizes of the window. For the statistics data, I use the AdaptiveGridView which is used for the HomePage as well, so the data can be dynamically added in the code behind and make it a lot easier to add custom statistics later.
 
 \begin{minted}{xml}
 <Grid>
@@ -2629,7 +2629,7 @@ For the AccountPage, I use a grid of two row to divide the two sections for the 
 </Grid>
 \end{minted}
 
-Similar to the HomePage, I create a model \code{StatisticsItem} for the statistics data and binds it to the grid. For now, I just add some sample data in for display purpose.
+Similar to the HomePage, I create a model \code{StatisticsItem} for the statistics data and binds it to the grid. For now, I just add some sample data for display purposes.
 
 \begin{minted}{csharp}
 public class StatisticsItem
@@ -2661,7 +2661,7 @@ public ObservableCollection<StatisticsItem> StatsItems { get; } = new Observable
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{AccountPage-Layout}
 
-Next, I want to implement the edit function, which allows the user to change their user name, email address and role. To achieve this, I decide to replace the TextBlocks with TextBoxes for the user to edit the data when the Edit button is clicked. This can be achieved by setting the visibility of the controls. Instead of directly setting the visibility, I decide to bind the visibility property to a public variable named \code{IsEditMode} to determine whether it should display. In order to notify the binded control, I implement the \code{PropertyChanged} event\cite{microsoft:docs:data-binding-in-depth}.
+Next, I want to implement the edit function, which allows the user to change their user name, email address and role. To achieve this, I decide to replace the TextBlocks with TextBoxes for the user to edit the data when the Edit button is clicked. This can be achieved by setting the visibility of the controls. Instead of directly setting the visibility, I decided to bind the visibility property to a public variable named \code{IsEditMode} to determine whether it should display. In order to notify the binding control, I implement the \code{PropertyChanged} event\cite{microsoft:docs:data-binding-in-depth}.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -2765,11 +2765,11 @@ Now when I run the program, I can edit all fields successfully after clicking th
     \hline
     Does it load & Pass & \\
     \hline
-    Does the Edit button work & Pass & Note that the changes are not actually saved to the disk, since the settings module will not be implemented in this iteration. \\
+    Does the Edit button work & Pass & Note that the changes are not saved to the disk, since the settings module will not be implemented in this iteration. \\
     \hline
     Does the login button work & Failed & The login button depends on the API module, which will not be implemented in this iteration. \\
     \hline
-    Does the statistics data show up correctly & Pass & Note that the actual data depends on the database module, which is not implemented yet. \\
+    Does the statistics data show up correctly & Pass & Note that the data depends on the database module, which is not implemented yet. \\
     \hline
 \end{tabulary}
 
@@ -2789,7 +2789,7 @@ For the CreateNewProblemPage, it contains a form for the user to input data to c
 </ScrollViewer>
 \end{minted}
 
-I use TextBoxes to allow the user to input problem name, a TokenizingTextBox for the tag, ComboBox for difficult, and NumberBox for time limit and memory limit.
+I use TextBoxes to allow the user to input the problem name, a TokenizingTextBox for the tag, ComboBox for difficulty, and NumberBox for a time limit and memory limit.
 
 \begin{minted}{xml}
 <TextBlock
@@ -2869,7 +2869,7 @@ For the description, I use a Pivot to organize the input TextBox and the preview
 </Pivot>
 \end{minted}
 
-Next, I implement the TestCase list. Similarly as the ProblemList before, I use a ListView and bind the TestCases collection to it.
+Next, I implement the TestCase list. Similarly to the ProblemList before, I use a ListView and bind the TestCases collection to it.
 
 \begin{minted}{xml}
 <ListView
@@ -2981,7 +2981,7 @@ I add another StackPanel to organize the buttons to add new test cases and delet
 </StackPanel>
 \end{minted}
 
-At the bottom of the page, a StackPanel is used to organize the save and cancel button. Flyouts are added to all delete and cancel buttons to confirm before actually performing the action.
+At the bottom of the page, a StackPanel is used to organize the save and cancel button. Flyouts are added to all delete and cancel buttons to confirm before actually acting.
 
 \begin{minted}{xml}
 <StackPanel 
@@ -3015,7 +3015,7 @@ At the bottom of the page, a StackPanel is used to organize the save and cancel 
 </StackPanel>
 \end{minted}
 
-The CreateNewProblemPage can be navigated to from the ProblemsPage. I connect the add problem in the ProblemsPage to the navigation function. Instead of manually navigate through the ContentFrame, I decide to encapsulate the management of the NavigationView through an App.NavigateTo function. Which enables me to reuse this part of code, and make it less likely for me to get the navigation wrong in the future. I expose the \code{m_window} and the \code{MainNavView} as global static variables, so the can be accessed easily in the App level.
+The CreateNewProblemPage can be navigated from the ProblemsPage. I connect the additional problem in the ProblemsPage to the navigation function. Instead of manually navigating through the ContentFrame, I decided to encapsulate the management of the NavigationView through an App.NavigateTo function. This enables me to reuse this part of the code and make it less likely for me to get the navigation wrong in the future. I expose the \code{m_window} and the \code{MainNavView} as global static variables, so they can be accessed easily at the App level.
 
 \begin{minted}{csharp}
 public static MainWindow m_window;
@@ -3083,13 +3083,13 @@ When I click the Add Problem button in the ProblemsPage, the ContentFrame naviga
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CreateNewProblemPage-Layout}
 
-I can input all data for a new problem. The length validation for the problem name and the tag box is working as intended. The time limit field and memory limit field also rejecte any non-numerical input as intended. However, when I try to delete a token in the TokenizingTextBox, an exception is thrown and the app crashes.
+I can input all data for a new problem. The length validation for the problem name and the tag box is working as intended. The time limit field and memory limit field also rejected any non-numerical input as intended. However, when I try to delete a token in the TokenizingTextBox, an exception is thrown and the app crashes.
 
 \begin{minted}{text}
 Unhandled exception at 0x00007FFCDA3E6328 (Microsoft.ui.xaml.dll) in Algorithm Dynamics.exe: 0xC000027B: An application-internal exception has occurred (parameters: 0x000001DCA9C47860, 0x0000000000000006).
 \end{minted}
 
-It seems to be an internal issue with Microsoft.ui.xaml.dll. After some research, I found that this is caused by an internal bug with the TokenizingTextBox\cite{github:WindowsCommunityToolkit:4437}. I will keep an eye on the issue and update the dependency as soon as it gets fixed. For now, I will just leave it as this and mark this as a known issue.
+It seems to be an internal issue with Microsoft.ui.xaml.dll. After some research, I found that this is caused by an internal bug with the TokenizingTextBox\cite{github:WindowsCommunityToolkit:4437}. I will keep an eye on the issue and update the dependency as soon as it gets fixed. For now, I will just leave it like this and mark this as a known issue.
 
 Next, I implement a series of functions in the code behind to handle the add delete test case function, and the save cancel function.
 
@@ -3154,7 +3154,7 @@ private void CreateProblem(object sender, RoutedEventArgs e)
 }
 \end{minted}
 
-For the edit problem page, I find that there is not much difference from the create page. The edit problem page is just a create problem page with a different title, and some pre-loaded problem data. I think I can reuse most of the existing code to implement the edit page.
+For the edit problem page, I find that it is not much different from the create page. The edit problem page is just a create problem page with a different title and some pre-loaded problem data. I think I can reuse most of the existing code to implement the edit page.
 
 I add an enumeration of \code{Mode} to the page to specify whether it is a create page or an edit page.
 
@@ -3229,7 +3229,7 @@ protected override void OnNavigatedTo(NavigationEventArgs e)
 }
 \end{minted}
 
-Now when I right click a problem in the ProblemsPage and click the edit button in the flyout, the edit page mode is loaded correctly with the problem data being filled for me.
+Now when I right-click a problem in the ProblemsPage and click the edit button in the flyout, the edit page mode is loaded correctly with the problem data being filled for me.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CreateNewProblemPage-Edit}
 
@@ -3372,7 +3372,7 @@ For the CreateNewProblemListPage, I create it in a very similar way - but with d
 </ScrollViewer>
 \end{minted}
 
-Similarly, I reuse the same page for create/edit ProblemList and Assignments by managing different page mode.
+Similarly, I reuse the same page for creating/editing ProblemList and Assignments by managing different page modes.
 
 \begin{minted}{csharp}
 public enum Mode
@@ -3415,7 +3415,7 @@ protected override void OnNavigatedTo(NavigationEventArgs e)
 \end{minted}
 
 
-Differently, instead of asking the user to create new test cases, the user is required to search and select problems from the existing database. I use a procedure to handle the event when the user is inputing in the search box.
+Differently, instead of asking the user to create new test cases, the user is required to search and select problems from the existing database. I use a procedure to handle the event when the user is inputting in the search box.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -3464,7 +3464,7 @@ private void DeleteSingleProblem(object sender, RoutedEventArgs e)
 }
 \end{minted}
 
-When the user click the save button, I use a procedure to save the problem to the database.
+When the user clicks the save button, I use a procedure to save the problem to the database.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -3474,7 +3474,7 @@ When the user click the save button, I use a procedure to save the problem to th
 /// <param name="e"></param>
 private void SaveButton_Click(object sender, RoutedEventArgs e)
 {
-    // TODO actually save the problem to the database.
+    // TODO save the problem to the database.
     TestTextBlock.Text = "The Problem List is saved.";
 }
 \end{minted}
@@ -3498,7 +3498,7 @@ private void Finish(object sender, RoutedEventArgs e)
 }
 \end{minted}
 
-When the user clicks the export button, a dialog is shown allowing the user to save the file at a desired location\cite{microsoft:docs:quickstart-using-file-and-folder-pickers}. Then the file is saved to that path.
+When the user clicks the export button, a dialogue is shown allowing the user to save the file at the desired location\cite{microsoft:docs:quickstart-using-file-and-folder-pickers}. Then the file is saved to that path.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -3575,7 +3575,7 @@ The title displays correctly, and all fields and the search box is working as in
 Unhandled exception at 0x00007FFB617D5B2C (CoreMessagingXP.dll) in Algorithm Dynamics.exe: 0xC000027B: An application-internal exception has occurred (parameters: 0x00000281960E3F70, 0x0000000000000001).
 \end{minted}
 
-The CoreMessagingXP.dll suggests that this might caused by another internal bug. After doing some research, there is a way around it. I need to obtain the current HWND and set the HWND on the picker\cite{github:WindowsAppSDK:1188}.
+The CoreMessagingXP.dll suggests that this might be caused by another internal bug. After doing some research, there is a way around it. I need to obtain the current HWND and set the HWND on the picker\cite{github:WindowsAppSDK:1188}.
 
 \begin{minted}{csharp}
 // Get the current window's HWND by passing in the Window object
@@ -3643,7 +3643,7 @@ Timofei reports that the spell check is sometimes very annoying and inappropriat
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CreateNewProblemPage-SpellCheck}
 
-Some legal programming language keywords are marked wrong. I decide to disable it since it does not really help much anyway.
+Some legal programming language keywords are marked wrong. I decide to disable it since it does not help much anyway.
 
 \begin{minted}{xml}
 <TextBox
@@ -3660,7 +3660,7 @@ Timofei is happy with the result.
 
 \subsubsection{Implementation}
 
-I first implement the AssignmentsPage, which allows the user to broswe existing assignments. I decide to use a grid of two rows to organize the navigation bar and the assignment list.
+I first implement the AssignmentsPage, which allows the user to browse existing assignments. I decide to use a grid of two rows to organize the navigation bar and the assignment list.
 
 \begin{minted}{xml}
 <Grid>
@@ -3679,7 +3679,7 @@ I first implement the AssignmentsPage, which allows the user to broswe existing 
 </Grid>
 \end{minted}
 
-For the navigation panel, it has three tabs, assigned, completed and created. It also has a ComboBox, which allows the user to create or import assignments.
+The navigation panel has three tabs, assigned, completed and created. It also has a ComboBox, which allows the user to create or import assignments.
 
 \begin{minted}{xml}
 <NavigationView 
@@ -3756,7 +3756,7 @@ private void CreateAssignment(object sender, RoutedEventArgs e)
 }
 \end{minted}
 
-For the ImportAssignment button, it shows a similar file picker for the user to pick a file to import.
+The ImportAssignment button shows a similar file picker for the user to pick a file to import.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -3842,9 +3842,9 @@ The file picker also shows up correctly.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{AssignmentsPage-FilePicker}
 
-Now, I need to create the AssignmentDetailsPage to display the detailed information about each assignment. The AssignmentDetailsPage will be different for the student or the teacher, but I will use the same page mode idea here to reuse as much code as possible.
+Now, I need to create the AssignmentDetailsPage to display detailed information about each assignment. The AssignmentDetailsPage will be different for the student or the teacher, but I will use the same page mode idea here to reuse as much code as possible.
 
-I wrap everything in a ScrollViewer so all components will be responsive on different screen sizes. In the ScrollViewer, I use a StackPanel to group all components together.
+I wrap everything in a ScrollViewer so all components will be responsive on different screen sizes. In the ScrollViewer, I use a StackPanel to group all components.
 
 \begin{minted}{xml}
 <ScrollViewer>
@@ -3863,7 +3863,7 @@ I place a header at the top.
         Style="{ThemeResource TitleTextBlockStyle}"/>
 \end{minted}
 
-Then, a RelativePanel to display all basic information of the assignment.
+Then, a RelativePanel displays all the basic information of the assignment.
 
 \begin{minted}{xml}
 <RelativePanel>
@@ -3951,7 +3951,7 @@ A two by two grid to put the description of the assignment, the problem list and
 </Grid>
 \end{minted}
 
-Similarly, I use the PageMode to manage visibility for different components, therefore display a different page for students and teachers.
+Similarly, I use PageMode to manage visibility for different components, therefore displaying a different page for students and teachers.
 
 \begin{minted}{csharp}
 public enum Mode
@@ -3978,7 +3978,7 @@ protected override void OnNavigatedTo(NavigationEventArgs e)
 }
 \end{minted}
 
-I can modify the navigate function in the AssignmentsPage to pass the correct argument for corresponding assignment.
+I can modify the navigate function in the AssignmentsPage to pass the correct argument for the corresponding assignment.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -4051,7 +4051,7 @@ All these buttons are not working right now, since the UI is the only thing that
 
 \subsubsection{Stakeholder feedback}
 
-When I show the assignment pages to Mr Grimwood, he asked me that how the student's submission is graded? Is it send to a server or is it graded locally. I explained that the code submission will be compiled and run locally against test cases. He then expressed concerns of the security of the grading system. Allowing any external code to be run on the teacher's computer may not be a good idea.
+When I show the assignment pages to Mr Grimwood, he asked me how the student's submission is graded? Is it sent to a server or is it graded locally? I explained that the code submission will be compiled and run locally against test cases. He then expressed concerns about the security of the grading system. Allowing any external code to be run on the teacher's computer may not be a good idea.
 
 He showed this example to me:
 
@@ -4062,15 +4062,15 @@ os.system("calc")
 
 When executing this Python code, the system calculator will be launched. The \code{calc} command can be replaced with any other commands, such as deleting files or shutting down the computer.
 
-After some research, there is no easy way on Windows to restrictive the priviliges for certain code. Since this security issue is very serious, we both agree that implementing the assignment feature in this way is not ideal.
+After some research, there is no easy way on Windows to restrict the privileges for certain codes. Since this security issue is very serious, we both agree that implementing the assignment feature in this way is not ideal.
 
-For now, I will discontinue all the assignment related feature in the prototype. I will continue researching and discuss some potintial solutions in the Evaluation chapter.
+For now, I will discontinue all the assignment related features in the prototype. I will continue researching and discuss some potential solutions in the Evaluation chapter.
 
 \subsection{Create the SettingsPage}
 
 \subsubsection{Implementation}
 
-Similarly, I wrap a ScrollViewer around all the components so they can be responsive to different screen size.
+Similarly, I wrap a ScrollViewer around all the components so they can be responsive to different screen sizes.
 
 \begin{minted}{xml}
 <ScrollViewer>
@@ -4105,7 +4105,7 @@ For the theme selection, I use three radio buttons so the user can select betwee
 </StackPanel>
 \end{minted}
 
-The radio buttons are bind to a procedure, so when they are checked, the subroutine gets executed.
+The radio buttons are bound to a procedure, so when they are checked, the subroutine gets executed.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -4124,7 +4124,7 @@ private void ThemeRadioButton_Checked(object sender, RoutedEventArgs e)
 }
 \end{minted}
 
-The run code time limit and memory limit are two simple number box, which automatically validate the input.
+The run code time limit and memory limit are two simple number box, which automatically validates the input.
 
 \begin{minted}{xml}
 <TextBlock
@@ -4167,7 +4167,7 @@ The run code time limit and memory limit are two simple number box, which automa
 </StackPanel>
 \end{minted}
 
-I use an expander to hold the programming language configuration editor. It expands when the user clicks it, which makes the interface looks simple when the user does not want to modify this part of settings.
+I use an expander to hold the programming language configuration editor. It expands when the user clicks it, which makes the interface looks simple when the user does not want to modify this part of the settings.
 
 \begin{minted}{xml}
 <TextBlock
@@ -4328,7 +4328,7 @@ All the data should be immediately saved to the disk after the user changes a va
 
 \subsubsection{Stakeholder feedback}
 
-PCloud says that it will be great if a ``Clear history data'' button is placed in the settings page, so he can reset his statistics or problems easily. This will be a useful feature and very easy to implement.
+PCloud says that it will be great if a ``Clear history data'' button is placed on the settings page, so he can reset his statistics or problems easily. This will be a useful feature and very easy to implement.
 
 \begin{minted}{xml}
 <StackPanel 
