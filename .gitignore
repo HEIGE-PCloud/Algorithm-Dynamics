@@ -129,7 +129,9 @@ report.pdf
 report/graphs/*.pdf
 
 # LaTeX
-_minted-report/
+_minted-**/
+*.run.xml
+*.pdf
 *.aux
 *.bbl
 *.blg

@@ -1,0 +1,412 @@
+\documentclass[report.tex]{subfiles}
+\graphicspath{ \subfix{./images/} \subfix{./graphs/} }
+\begin{document}
+\chapter{Analysis}
+
+\section{Problem identification}
+
+A Level Computer Science students need to learn many algorithms and data structures during the course. In the final exam, they need to write pseudocode to solve computational questions. Many students find it is hard to achieve a high score on those questions due to the lack of efficient training. The general method used by students to learn and revise for Computer Science is to attempt and self-mark past paper questions. This works well for ordinary questions. However, for the algorithm questions, different students may produce completely different code solutions. This makes their self-marking very unreliable. It is also too much work for the teacher to mark their solutions one by one. So, in the end, students do not know whether they get things right, and teachers do not know how the students perform and how they can help, especially in this lockdown online learning era where no direct contact between teachers and students is possible.
+
+Both the students and the teachers are looking for a more efficient method to learn and practice.
+
+\section{Stakeholders}
+
+There are two types of stakeholders, Computer Science teachers, and Computer Science students.
+
+\subsection{Computer Science teachers}
+
+Computer Science teachers find it is difficult to monitor their students' ability to design and implement algorithms, so they cannot provide efficient help to their students. This software allows them to create coding questions and send them to the students. After the students hand their solutions back, the software will automatically mark their answers and provide detailed statistical data with simple visualizations. This helps the teachers save a lot of time and allows them to help the students better.
+
+The stakeholder is Mr Grimwood, who is an experienced A Level Computer Science teacher who teaches a Year 12 CS group and a Year 13 CS group.
+
+\subsection{Computer Science students}
+
+Computer Science students find that they tend to lose marks on the algorithms coding questions, so they want more practice. But unlike ordinary questions, they may take a completely different approach towards the questions compared to the mark scheme, so they do not know whether they get it correct. Students may also think they have got things right, but actually, they have made some mistakes. The software provides a free practice space that automatically marks their solutions and points out their mistakes in real-time. So the students can learn and revise more efficiently.
+
+The stakeholders are Timofei and PCloud. They are both Year 13 students studying A Level Computer Science.
+
+\section{Why it is suited to a computational solution}
+
+The original problem, `understand and mark a student's answer' is a very difficult question for a computer to solve. But I transform the question into `compare the output of the students' code with pre-generated test cases', which makes the problem solvable using a computational method since a computer is good at `executing a piece of code' and `comparing two strings'. This approach solves the `marking' question from another angle and makes the question suited to a computational solution.
+
+\section{Solve by computational methods}
+
+\subsection{Thinking abstractly}
+
+In reality, students use pens and paper to write their code solutions. This can be simplified into a code editor, and the students can use their keyboards to type in the code. In this way, no `text scanning' or `handwriting recognization' is needed which makes the design and programming much easier. The code editor will also provide a better user experience. Features such as syntax highlighting cannot exist on paper but are possible in a code editor.
+
+In reality, the students' answer is sent to a teacher to mark it against the mark scheme. The teacher needs to read the code line by line and check whether it is correct. This process is abstracted into a judger that marks the code against pre-generated test cases, which transforms a problem that originally cannot be solved by computational method into one which is very easy to be solved by a computer while saving time and costs. When creating a new question, instead of creating a mark scheme for marking, the teacher needs to provide test cases with the correct input and expected output. The judger will run the students' submissions with the input and check whether their output matches the expected one.
+
+\subsection{Thinking ahead}
+
+For teachers, the software requires them to enter questions and test cases. A question editor containing input boxes is needed for this purpose. For students, the software requires them to enter their code solutions. A code editor is needed for this purpose. A relational database is needed to store all the data. For all users, the software requires input data from the mouse and keyboard to navigate between different windows and menus. Users will also need a monitor for the program to display all the information and outputs.
+
+\subsection{Thinking procedurally and decomposition}
+
+The program can be decomposed into several parts. Each part can be designed and maintained individually. Different components can interact with each other using custom APIs.
+
+\includegraphics[width=\linewidth]{decomposition-analysis}
+
+\subsection{Thinking concurrently}
+
+When judging the students' solution, many test cases can be executed at the same time to reduce the judging time. The number of parallel judgers needs to be set carefully based on the user's hardware. Running too few test cases concurrently may result in a very long judging time while running too many test cases at the same time may use up computing resources and cause issues.
+
+\section{Interview}
+
+\subsection{Design interview}
+
+\subsubsection{Interview for teachers}
+
+\begin{enumerate}
+    \item Do you find your students tend to lose marks on programming questions in exams?
+    \item Do you find marking the programming question takes a lot of time and effort?
+    \item Compare to the knowledge-based Computer System section, do you find it is more difficult to monitor students' skill level on the Algorithm and Programming section?
+    \item Have you ever heard about some online programming platforms?
+    \item Have you ever tried some of the online programming platforms?
+    \item If yes, what do you think about these platforms? Have you ever considered using them for teaching and training?
+    \item Do you think a similar solution can help improve the efficiency of learning and training?
+    \item If no, do you think the idea of a software that can mark students' answers on programming questions and provide analysis data can help improve the efficiency of learning and training?
+    \item Do you have anything else to add?
+\end{enumerate}
+
+Question 1 to 3 is a series of proof-of-concept questions, which I expect my stakeholders to answer `Yes' to all of them. They confirm that the problem I am trying to solve exists and there is a need for such a solution. Question 4 to 5 asks about the teachers' knowledge of existing solutions. Question 6 to 8 ask about their experiences and opinions about these existing solutions, which gives me insights on the problems with existing solutions and how my solution can fit their need better.
+
+\subsubsection{Interview for students}
+
+\begin{enumerate}
+    \item Do you find the programming questions difficult?
+    \item Do you find yourself lacking efficient practising in algorithm designing and programming?
+    \item Have you ever heard about some online programming platforms?
+    \item Have you ever tried some of the online programming platforms?
+    \item If yes, what do you think about these platforms?
+    \item Do you think a similar solution can help you learn and practise?
+    \item If no, do you think the idea of software that provides coding questions and marks your answer instantly can help you learn and practice better?
+    \item Do you have anything else to add?
+\end{enumerate}
+
+Question 1 and 2 are similar proof-of-concept questions to confirm such a problem exists. The following questions ask about students' knowledge of existing solutions. If they have used an existing product before, I ask whether they think it helps. Otherwise, I ask whether they think it will be useful.
+
+\subsection{Conduct the interview}
+
+\subsubsection{Computer Science teacher - Mr Grimwood}
+
+\begin{enumerate}
+    \item Do you find your students tend to lose marks on programming questions in exams?
+
+          They do. Many of them don't understand the algorithms.
+
+    \item Do you find marking the programming questions takes a lot of time and effort?
+
+          Yes. Because some students produce partially correct answers, so it takes a lot of time to identify the correct part and award them the corresponding mark. Some students may take completely different approaches which takes a lot of effort to understand and mark them.
+
+    \item Do you find it is more difficult to monitor students' skill level on the Algorithm and Programming section and more difficult to provide sufficient help?
+
+          Yes.
+
+    \item Have you ever heard about some online programming platforms?
+
+          I have. Emm... But I forget the names.
+
+    \item If yes, have you ever tried some of the online programming platforms?
+
+          I have.
+
+    \item If yes, what do you think about these platforms?
+
+          I think the idea is quite interesting and I find them working quite well.
+
+    \item Have you ever considered using them for teaching and practising?
+
+          No. Because most of them require a paid subscription, and their content is more likely to be something like `Learning Python' which is irrelevant to the A Level Computer Science content.
+
+    \item Do you think a similar solution can help improve the efficiency of learning and training?
+
+          Yes. The students can learn at their own pace and they can keep practising by themselves.
+
+    \item Do you have anything else to add?
+
+          No.
+\end{enumerate}
+
+Mr Grimwood has several valuable points here. He points out that the `partially correct' answers are the most difficult ones to mark. For my solution, if a student submits a `partially correct' code answer, then its output will certainly not match the expected output. This means my solution might not be able to tell the difference between a `partially correct' answer and an `incorrect' answer. This is a potential limitation I need to watch out for. He also says the price is one of his concerns. My solution will be free and open-source, which will meet his need perfectly. By adding the function to create custom questions and share them with others, users will be able to create and find A Level Computer Science content, or any content easier. It is also a good idea for me to create some A Level Computer Science content that comes with the software to make it easier to use.
+
+\subsubsection{Computer Science student - PCloud}
+
+\begin{enumerate}
+    \item Do you find the programming questions difficult?
+
+          I find some of them quite complex and difficult, especially the graph algorithms such as Dijkstra.
+
+    \item Do you find yourself lacking efficient practising in algorithm designing and programming?
+
+          Absolutely. Although I code a lot in my spare time, normal projects are quite different from the exam questions. There are not many past papers and exam-style questions for practising, so I usually don't feel confident of those questions.
+
+    \item Have you ever heard about some online programming platforms?
+
+          Yes. Such as AcWing, LeetCode, and TopCoder.
+
+    \item Have you ever tried some of the online programming platforms?
+
+          Yes. I am an active user of AcWing.
+
+    \item If yes, what do you think about these platforms?
+
+          I enjoy the experience. They can provide instant feedback for my submissions. It provides very strong positive feedback when I solve a new question. I find myself learning faster and more efficiently with such platforms.
+
+    \item Do you think a similar solution can help you learn and practise?
+
+          Absolutely. The existing platforms do not provide A Level related content. So if a software solution can be altered for A Level Computer Science course, that will help a lot.
+
+    \item (*) How do you think it should be optimized for A Level CS content?
+
+          You can add past exam questions practising. Adding a timed practice mode will be helpful.
+
+    \item Do you have anything else to add?
+
+          No.
+\end{enumerate}
+
+PCloud confirms that such a solution will help him learn and practise more efficiently. The instant feedback of whether he gets the question correctly is very important to him. Instead of sending the user's submission to a remote server, my solution should judge the user's answer on their computer. This can avoid the instabilities caused by the remote server's availability and the network connection. He also gives me some good ideas about the content. I can add past exam questions for users to do timed practice, which enables users to practice algorithms and exam techniques at the same time.
+
+\subsubsection{Computer Science student - Timofei}
+
+\begin{enumerate}
+
+    \item Do you find the programming questions difficult?
+
+          Yes. I generally lose marks because of some careless syntax mistakes I made.
+
+    \item Do you find yourself lacking efficient practising in algorithm designing and programming?
+
+          Yes. I find I cannot find many materials to practice.
+
+    \item Have you ever heard about some online programming platforms?
+
+          Codewar. Something like that.
+
+    \item Have you ever tried some of the online programming platforms?
+
+          Yes.
+
+    \item If yes, what do you think about these platforms?
+
+          I think they are quite helpful. But I find their marking is too specific, if I get a single character wrong in my output, it gets marked incorrect.
+
+    \item Do you think a similar solution can help you learn and practise?
+
+          Yes.
+
+    \item Do you have anything else to add?
+
+          No.
+
+\end{enumerate}
+
+Timofei points out that the marking system in existing products is not very sensible. This may be a potential limitation of my solution as well. It is easy to directly compare the users' output and the expected output. But if they are different, it is difficult to figure out whether that difference is caused by a wrong code solution or just some formatting error. I can partially solve this by allowing the users to pre-test their code against examples before formal submissions, so they can check the output format.
+
+\section{Research}
+
+There are many coding training websites on the market, most of them share a similar idea, so I will investigate two of the most popular ones.
+
+\begin{itemize}
+    \item LeetCode
+    \item Codeforces
+\end{itemize}
+
+\subsection{LeetCode}
+
+\href{https://leetcode.com/}{LeetCode} is a platform for interview coding training, many large companies (Google, Facebook, ...) use it as a part of their interview.
+
+LeetCode provides a database containing more than 1000 coding questions.
+
+\subsubsection{Main coding layout}
+\includegraphics[width=\linewidth]{Two-Sum-LeetCode-Coding}
+
+This is LeetCode's main coding area. The user's screen is split into two parts - the question section and the code editor for inputting answers. Users can drag the splitter in the middle to adjust the size of each section.
+
+The question section contains 4 tabs, `Description' tab displays the content of the question. `Solution' tab displays the solutions from the community. `Discuss' tab displays the discussions in the community. `Submission' tab lists the user's previous submissions. Since I am not adding social functions in my solution, I will ignore the `Solution' and `Discuss' tabs. Under the `Description' tab, LeetCode provides the context of the question, followed by 3 examples, and constraints for this question. The examples allow the user to run and check their solution before formal submission for marking, this can help them avoid silly mistakes. My solution should also provide similar examples for each question. Under the `Submission' tab, LeetCode records every history submission, so the user can revise old questions more efficiently. My solution should provide a similar function as well.
+
+\includegraphics[width=\linewidth]{Two-Sum-LeetCode-Submission}
+
+The code editor provides line number and syntax highlighting functions. User can change their programming language with a drop-down box. LeetCode supports all mainstream programming languages. My solution should be able to support multiple programming languages as well, which allows students with different backgrounds to use them easily.
+
+On the button, the user can `Run Code' to test their code against the examples before submission, and then click the `Submit' button to submit their solution formally.
+
+The split view design is clean and handy. The user can see the question and write their solution on the same page without switching between different windows. The design of examples and the `Run Code' button is useful as well. I can refer to LeetCode's coding layout when designing my solution's interface.
+
+\subsubsection{Question database}
+
+\includegraphics[width=\linewidth]{LeetCode-Problems}
+
+Every question in LeetCode has many different attributes (Lists, Difficulty, Status, Tags, Title, Acceptance), so it is very easy for a user to find a suitable question to practice. My solution can similarly organize the question database and provide a corresponding query interface for a better user experience. The Pick One button on the top right is a very handy feature as well. Users can simply click that button to start working on a quick random question. The idea of a list of questions is great. Users can organize a series of questions to practice and share.
+
+\subsubsection{Pricing}
+
+\includegraphics[width=\linewidth]{LeetCode-Premium}
+
+The basic functions of LeetCode are free to use for all users and it charges a fee for premium subscriptions. The premium subscription provides a larger question database, better code editor, faster judger, and more.
+
+\subsubsection{Analysis}
+
+LeetCode is a fully web-based solution, which means it works on any device. However, it also means you will not be able to use it without a stable Internet connection. I decide to make my solution a desktop application since most students practice coding with a computer. It also save me a lot of cost from running and maintaining a server. LeetCode runs a large community for users to discuss questions with each other. I am not adding such a function to my solution. Teachers and students can use existing platforms they have been familiar with, it is unnecessary for me to develop a new platform and for the users to migrate from mature solutions. LeetCode has an easy-to-use graphical interface, which is important so new users can get their hands on very easily.
+
+LeetCode does not support custom questions or any functions for educators. It is mainly designed for self-learners. My solution is designed for school use, so it must support functions like custom questions, custom assignments, statistics data visualizations. LeetCode charges a subscription fee for essential functions. My solution will be free and open-source so everyone can benefit from it.
+
+\subsection{Codeforces}
+
+Codeforces is a competitive coding platform, it is mainly used by people to hold coding competitions.
+
+\subsubsection{Main question layout}
+
+\includegraphics[width=\linewidth]{Problem-A-Codeforces}
+
+The questions and the examples take up nearly all the spaces on the question page. There is no online editor or online runtime environment provided. Users are expected to write and test their code in their IDEs and only submit the solution for judging. Custom IDEs may be more powerful than a built-in one. My solution will provide an editor, it is much more convenient to use. Even if a user decides to use his environment, he can paste his code into the editor for submission. It sets the time and memory limits for users' submissions, if a piece of code takes too long to run, or takes up too much memory while running, it will be terminated and marked wrong.
+
+\subsubsection{Submission}
+
+\includegraphics[width=\linewidth]{Submission-66675479-Codeforces}
+
+When the user submits the code, the code enters a queue waiting for judging, then the user can look up their result. Users can check their source code, performance stats, and more importantly, when they have not passed all test cases, they can see what they have got wrong. The judgment protocol provides detailed information about each test case, so users can debug easily.
+
+\includegraphics[width=\linewidth]{Judgement-Protocol-Codeforces}
+
+\subsubsection{Analysis}
+
+Codeforces is optimized for coding competition, so it has a lightweight and complex interface for better performance. It is completely free to use. Users can create their questions but it is very complicated to do so. My solution needs to enable users without experience to create questions easily. There is no function for education - there is no way for a teacher to `create a class' and monitor his students. Codeforces is an online platform, so it also works across all devices and requires an Internet connection. Users have to use their IDEs to write and debug their code. Codeforces sends all submissions to a central `judging queue' for marking. My solution will mark all submissions locally, which makes judging a lot faster and save me from running a server. By limiting time and space allowance, Codeforces effectively prevents malicious code from running.
+
+\section{Features}
+
+A useful homepage interface with shortcuts to different functions in the software and other resources outside the software. This allows the user to get into practising faster and makes the software easy to use. Details about the design of the homepage will be discussed in the Design chapter.
+
+A problem database with a graphical user interface. The GUI will have a search box and several drop-down menus for the user to input information to search for a problem. This provides the user with a simple way to find the problems they want, and it also ensures the users can manage and backup the data easily.
+
+An interface for users to create new problems and share them with others. This interface will have multiple text fields for the user to input the descriptions to the problem, the expected input/output data. Then the problem is saved to the database and can be exported to a JSON file allowing the user to share it with others. Users can also create a `list' of problems and export the entire list into a JSON file and share it with others. This enables teachers to create custom problems and share them with the students. It is a core feature that differentiates my solution from the existing ones.
+
+An interface for teachers to create assignments. An assignment is a `list' of problems with some extra data, such as the due date and total mark. It can be exported to a JSON file and shared with students. The student's submission will be exported into a JSON file as well and can be sent back to the teacher. The solution will also integrate with the assignment function in Microsoft Teams for Education, which makes it even easier to do. The students' submissions will be automatically marked by the software and detailed data will be provided to the teacher. A simple data analysis interface will be provided to the teacher so they can have a brief look at the result. The teacher can also export the data into a CSV file so they can import it to their school system or analysis it with professional software. This automates the entire process from creating assignments, distributing assignments, collecting assignments, and marking assignments. Teachers will have more time analysis the student's performance and provide corresponding help timely. It is a core feature that differentiates my solution from the existing ones.
+
+An interface displaying the problem and the code editor. The solution provides a `Run Code' button for the student to pre-run their code before submission, a `Submit' button for the student to submit their code. This allows the students to read the question and write their code solution without switching between different windows. The `Run Code' function also makes it easier to debug their code.
+
+A playground with a code editor and runtime environment. This allows the software to be used in class teaching as well, the students can experiment with different algorithms and programming languages in the playground easily.
+
+A settings page contains all the setting options for the software. Users can adjust settings such as their preferred programming language, syntax highlighting settings, colour themes, and so on. This allows the users to customize the software to fit their needs and allows users with different backgrounds to use it without issues.
+
+\section{Limitations}
+
+The software will be written in C\# instead of web-based which means extra software needs to be downloaded by the user. I plan to use .NET 5 runtime and WinUI 3 library for my solution, so only the Windows 10 1809 or newer Windows operating systems will be supported. This should not cause many compatibility issues since most school computers are running the required version of the operating system. Downloading extra software is inconvenient and may violate the IT security policy of some schools.
+
+The judger can only accept limited programming languages and the user may require to configure their runtime environment. Creating a compiler for `OCR Pseudocode Programming Language' is too complex for this project. I will attempt to allow the user to add their preferred programming language and write documentation for them to make the process easier.
+
+Unlike LeetCode, there are no Discussion pages for users to discuss questions because it is a desktop program instead of a web one. But this is not a big problem, students and teachers should use an existing product such as Microsoft Teams which has very good support in sharing code snippets. It is unnecessary to rebuild the wheel.
+
+Distributing the questions and assignments is still inconvenient. Currently, distributing questions and assignments requires the teacher to first export the questions and assignments, then send them to the students through email or file-sharing platforms. When the students finish working, they need to send their results back through email or other apps. I have attempted to integrate the file-sharing function with the existing platform - the Microsoft Teams Assignment function. But unfortunately, the Graph API required for this operation is still in beta version, which means it can only be tested in the development environment and cannot be used in production. So for now, the users still have to use this inconvenient way to share questions and submissions. But in the future, the integration with some existing platforms may improve the experience. (Update: the Microsoft Teams API is out of beta, now it is possible to integrate with it)
+
+There are no good ways to maintain and distribute a large question database. Computer Science teachers are required to maintain a database for their students. But this is difficult work. Creating good test cases is much time consuming than writing a mark scheme, it is very likely for a wrong solution to pass the judging if the test cases are not good enough. It relies on the teacher who creates the questions to consider everything clearly to minimize its impact.
+
+The judger can only simply compare the students' output with the expected output if there is a format error such as trailing space and extra newline in their output, which will not be considered as a mistake in a real exam, will be marked as a wrong answer by the judger. So students may need to spend extra time debugging their output format. It cannot judge ``partially correct'' answers as well. It does not care which line did the student get correct or wrong, if the final output doesn't match, the submission will be marked wrong.
+
+\section{Hardware and software requirements}
+
+\begin{tabulary}{\linewidth}{|L|L|}
+    \hline
+    Hardware and software requirements & Justification \\
+    \hline
+    Standard mouse, keyboard, and monitor. & Standard I/O devices are required for the user to interact with the software. Users need a mouse to navigate around different menus and pages, they need to use a keyboard to input their code solutions and use a monitor to get the output from the software. \\
+    \hline
+    Operating system: Windows 10 (1809 or later), Windows 11. & The software is designed with the WinUI 3 library and .Net 5 runtimes, which require such an operating system to run. \\
+    \hline
+    x86 64-bit CPU (Intel / AMD architecture) with 2 or more cores and 1 GHz or higher clock speed. & A modern CPU is required for the software. 1 core will be used to run the main program and at least 1 spare core is required for the judger to judge the submitted code. A clock speed higher than 1 GHz is required to ensure the software is running smoothly. \\
+    \hline
+    1GB free memory or more. & Around 512MB RAM is required to run the software, and another 512MB RAM is required for the judger to judge the submissions. \\
+    \hline
+    256MB free disk space or more. & 256MB free disk space is required to store and run the program itself, the user may need extra disk space to store extra cache data and the database. \\
+    \hline
+    A modern dedicated or integrated graphics card. & The software has very little graphical demand, if the user's graphics card can run their operation system, it should be able to handle software as well. \\
+    \hline
+\end{tabulary}
+
+\section{Success criteria}
+
+\subsection{User experience criterias}
+
+\subsubsection{Easy navigation around the software}
+
+The user can use different links, menus and buttons to navigate around the software easily. This makes the app easy to use and allows the user to find the function they want quickly. This is also essential for the students and teachers to get their hands on the app right away without the need of reading a long documentation about the software.
+
+\subsubsection{Easy to find data in the database}
+
+The user can use an advanced search tool to search any problems or problem lists from the database easily. This allows the user to quickly find the problem they want from the database and improves their productivity.
+
+\subsubsection{Easy to create new problems}
+
+The users should be able to use a simple but powerful interface to create new problems in the database. The user should only be asked to input necessary data about the new problem, and these data should get validated automatically. The user should be able to see a preview of the data while creating the problem, which allows them to make sure the data is correct before submitting it to the database.
+
+\subsubsection{Easy to create problem lists}
+
+The users should be able to search for problems and add them to a list easily. They should also be able to name the list and add a description to it. This allows the user to group the problems easily and share with others.
+
+\subsubsection{Assignments functionality}
+
+The teachers should be able to create assignments from problems and distribute them to the students. The students should be able to complete the assignments and submit their solutions back to the teacher. The teacher should be able to auto grade the submissions and give feedback to the students. This fully automates the process of algorithm teaching and learning and grading, which is one of the problems the app tries to solve.
+
+\subsubsection{Microsoft Teams integration}
+
+The user should be able to login their Microsoft account, and interact with the assignments through Microsoft Teams. This utlize the existing architecture of digital teaching in the stakeholders' school, which makes the entire process more efficient and less time consuming.
+
+\subsubsection{Playground functionality}
+
+Provide the user with a playground to run code in different programming language quick. This is particularly useful in in-class teaching. The students can practice on writing code for an algorithm immediately after teaching.
+
+\subsubsection{Custom settings options}
+
+Provide the user with a set of customizable settings options. This allows the user to customize the settings of the software to their liking. The settings should be stored on the disk automatically, and should be deleted when the app is uninstalled.
+
+\subsubsection{Account settings}
+
+Provide the user with a set of account settings. This allows the user to change their account information, such as username, password, and email. The account information is attached to submissions and assignments for the interaction between teachers and students.
+
+\subsection{Technical criterias}
+
+\subsubsection{Local Database}
+
+Create and maintain a local database to store all the user data inside. Use custom commands to query the database and return the results to the frontend without any additional setup from the user. The database should also be cleared when the user deletes the software.
+
+\subsubsection{Prevent SQL injection}
+
+Measurements should be taken to prevent SQL injection. This is a common problem in database applications. The software should prevent SQL injection by using prepared statements and parameterized solution. Therefore the database will not be destroyed by improper input.
+
+\subsubsection{Data validation}
+
+All input boxes should be validated when the user is inputing and any data that is invalid should be rejected right away. A clear and concise message should be displayed to the user to explain what has gone wrong.
+
+\subsubsection{Code Editor}
+
+A robust and well-designed code editor needs to be implemented to provide the user the best possible experience writing code inside the app. The code editor should support syntax highlighting for all common programming languages, line numbers and basic editing functions.
+
+\subsubsection{API calls}
+
+The app should handle the APIs of the Microsoft Graph API. It should be able to handle the OAuth2 login, access education data through various endpoints and handle different responses and exceptions gracefully. This provides a robust foundation for the Microsoft Teams intergation.
+
+\subsubsection{Meaningful variale name}
+
+All variables should have sensible names. This helps me understanding my own code in the future developement and make the codebase easy to maintain. The naming convention should follow the Naming Guidline\cite{microsoft:docs:naming-guidelines} from the dotnet framework documentation.
+
+\subsubsection{Comments}
+
+Comments should be added for every function and any important code. This helps me understanding my own code in the future developement and make the codebase easy to maintain.
+
+\subsubsection{Object Oriented Design}
+
+The object oriented programming should be used across the entire codebase. Every page, window, data model should be abstracted into classes. The app should build on top of the interaction of different instances of data models. This makes the app easy to maintain and enable me to reuse different components and improve developement efficiency.
+
+\subsubsection{Modular design}
+
+The app should be split into different small projects. A main project contains the user interfacen and the integration with other projects. A core project is used to implement all core functionalities. A test project is used to conduct unit testing on the main and core project. Splitting into smaller projects organizes the codebase and make it to be more manageable and easy to maintain.
+
+\subsubsection{Unit testing}
+
+Unit testing is a testing tool that lets me write test cases in code to test different components of my code. These tests can be run automatically after changes to the codebase. This improves the efficiency of the testing significantly comparing to test everything by hand. Which helps eliminating the bugs during developement stage and prevent future features from affecting existing features.
+
+\subsubsection{Continuous integration and continuous delivery}
+
+Continuous integration means after every change to the codebase, the code is send to a remote server. The app is then built and tested on the server, only if the app passes all the tests and build successfully, the change of code can be merged into the codebase. This helps me improving the code quality throughout the developement and eliminating bugs efficiently. Continuous delivery means every time when I create a new release, the app is automatically build and published to the Microsoft Store for the stakeholders to download. This makes delivery faster with better code quality. It also allows the stakeholders to give me feedback instantly after I make any changes, which allows me to work with them better.
+\end{document}
