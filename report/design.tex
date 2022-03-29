@@ -36,7 +36,7 @@ The `Random' button starts a random problem for the user. The `Import' button ca
 
 \subsubsection{Validation}
 
-There are only buttons in the HomePage for the user to click, so only valid actions can be taken, no further data validation is required.
+There are only buttons on the HomePage for the user to click, so only valid actions can be taken, no further data validation is required.
 
 \subsubsection{Stakeholder feedback}
 \label{subsubsec:homepage stakeholder feedback}
@@ -51,11 +51,11 @@ Mr Grimwood says it will be great if some greeting messages with recommendations
 
 Timofei has a good point here, and I decide to remove these links. The UI will be responsive to different window sizes, and this will be tested.
 
-The greeting message and recommendations is a great idea. I will add an additional row below the image to display the greeting and recommendations.
+The greeting message and recommendations is a great idea. I will add a row below the image to display the greeting and recommendations.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{HomePage-Updated-design}
 
-This is the redesigned HomePage. It adds greeting messages and recommendations. It has a responsive grid and a scroller is displayed when the item does not fit in one page. The useless links are removed.
+This is the redesigned HomePage. It adds greeting messages and recommendations. It has a responsive grid and a scroller is displayed when the item does not fit on one page. The useless links are removed.
 
 \subsection{ProblemsPage}
 \label{sec:ProblemsPageDesign}
@@ -82,7 +82,7 @@ The CodingPage is where the user works on a programming problem. It contains a q
 
 \subsubsection{Usability feature}
 
-The question is displayed on the left and a code editor will be displayed on the top right. The input, output and error messages will be displayed on the button right, the user can switch between them by clicking the corresponding tab. On the bottom, the user can select programming language using a dropdown menu, run code by clicking the run code button and submit their code for judging by clicking the submit button. The status field shows the status of the judger and 3 navigation buttons on the button right to make it easy to navigate between different problems. There is a progress bar between the IO panel and the navigation buttons, it displays the judging progress.
+The question is displayed on the left and a code editor will be displayed on the top right. The input, output and error messages will be displayed on the button right, the user can switch between them by clicking the corresponding tab. On the bottom, the user can select a programming language using a dropdown menu, run code by clicking the run code button and submit their code for judging by clicking the submit button. The status field shows the status of the judger and 3 navigation buttons on the button right to make it easy to navigate between different problems. There is a progress bar between the IO panel and the navigation buttons, it displays the judging progress.
 
 The code editor will support line numbers, basic syntax highlighting and keyboard shortcuts to make it easy to use.
 
@@ -147,7 +147,7 @@ The AccountPage is used to manage the current user and display user statistics.
 
 \subsubsection{Usability feature}
 
-If the user has login into his Microsoft account, the avatar, username, email and role will be managed by his Microsoft Account, the edit button will navigate to the Microsoft account website, and the login button will be replaced with a logout button. If the user has a login locally, he can edit his information by clicking the edit button and log in to Microsoft account by clicking the login button.
+If the user has login into his Microsoft account, the avatar, username, email and role will be managed by his Microsoft Account, the edit button will navigate to the Microsoft account website, and the login button will be replaced with a logout button. If the user has a login locally, he can edit his information by clicking the edit button and log in to his Microsoft account by clicking the login button.
 
 Some interesting statistics will be displayed on the button.
 
@@ -158,7 +158,7 @@ When the user edits his local identity, the user name will not be allowed to exc
 \subsubsection{Stakeholder feedback}
 \label{subsubsec:accountpage stakeholder feedback}
 
-Timofei thinks there can be more interesting statistics, such as favourite variable names, and the total time spends in the software.
+Timofei thinks there can be more interesting statistics, such as favourite variable names, and the total time spends on the software.
 
 Mr Grimwood suggests that ``topic needs more revision'' can be added to the statistics.
 
@@ -244,11 +244,11 @@ The DateTime picker will prevent invalid dates from being input, the name field 
 
 \subsection{Judger module}
 
-The Judger module will handle all the judging and marking tasks. It takes in a \code{Submission}, compile and execute the user's code, judges whether it gives the correct output.
+The Judger module will handle all the judging and marking tasks. It takes in a \code{Submission}, compiles and execute the user's code, judges whether it gives the correct output.
 
 The Judger will take a few seconds to judge each \code{Submission}, while it is judging, the other parts of the software need to keep working on their tasks. So I use concurrent processing to let the Judger run parallel with the main program.
 
-When judging a single \code{TestCase}, the Judger will first start the compiler in a new process to compile the user's code. The Judger redirects the output of the compiler to an internal string variable to store all outputs. When the compiler finishes compiling, an interrupt is triggered and the Judger will be notified that the compilation has been done. It will check the compiler's exit code and its output, if there are any compilation errors, they will be reported back. Otherwise, the Judger will run the compiled executable, and feed the input to its \code{stdin} and redirects all \code{stdout} and \code{stderr} to internal string variables. On top of that, the Judger will start a countdown timer in a different process to track the time. When the countdown reaches zero, an interrupt will be sent to the Judger and it will terminate the user's code and report a time limit exceed error, or if the user's code finishes first, then its output will be compared with the expected output, the result and all statistics will then be reported.
+When judging a single \code{TestCase}, the Judger will first start the compiler in a new process to compile the user's code. The Judger redirects the output of the compiler to an internal string variable to store all outputs. When the compiler finishes compiling, an interrupt is triggered and the Judger will be notified that the compilation has been done. It will check the compiler's exit code and its output, if there are any compilation errors, they will be reported back. Otherwise, the Judger will run the compiled executable, and feed the input to its \code{stdin} and redirects all \code{stdout} and \code{stderr} to internal string variables. On top of that, the Judger will start a countdown timer in a different process to track the time. When the countdown reaches zero, an interrupt will be sent to the Judger and it will terminate the user's code and report a TLE error, if the user's code finishes first, then its output will be compared with the expected output, the result and all statistics will then be reported.
 
 A problem may contain multiple test cases, so all test cases will be first pushed into a judging queue, and the judger will judge them one by one.
 
@@ -277,7 +277,7 @@ The API module will be implemented at the end after all local functions are work
 
 \subsection{Stakeholder feedback}
 
-I conduct an interview with each stakeholder after designing all the user interface elements. The statkeholders are generally very satisfying with the design. Suggestions are mainly about the \hyperref[subsubsec:homepage stakeholder feedback]{HomePage design} and the \hyperref[subsubsec:accountpage stakeholder feedback]{AccountPage design}, I have recorded their suggestions and my responses in those sections.
+I conduct an interview with each stakeholder after designing all the user interface elements. The stakeholders are generally very satisfied with the design. Suggestions are mainly about the \hyperref[subsubsec:homepage stakeholder feedback]{HomePage design} and the \hyperref[subsubsec:accountpage stakeholder feedback]{AccountPage design}, I have recorded their suggestions and my responses in those sections.
 
 \section{Algorithm design}
 \label{sec:algorithm design}
@@ -313,13 +313,13 @@ endfunction
 
 In this algorithm, I first create an empty list to store the result. Then I split the keyword into a list by space. So the keyword ``A Long Problem Name'' will be splitted into \code{["A", "Long", "Problem", "Name"]}.
 
-Next, I use two nested loops to perform a linear search on each keyword. I choose to use the linear search here because the list is not sorted, so only it will work. The overall time complexity here is $O(nm)$ where $n$ is the length of the \code{sourceList} and $m$ is the length of \code{splitKeyword}. This is not very fast, but in real-world use cases, both $n$ and $m$ will be very small (less than 1000), so this algorithm will be fast enough to handle most of the cases. The increase in complexity brings a better searching experience. In this way, the algorithm will be able to match keywords like ``prob'' to result in ``A Long Problem List'', while normal linear search will not be able to do this.
+Next, I use two nested loops to perform a linear search on each keyword. I choose to use the linear search here because the list is not sorted, so only it will work. The overall time complexity here is $O(nm)$ where $n$ is the length of the \code{sourceList} and $m$ is the length of \code{splitKeyword}. This is not very fast, but in real-world use cases, both $n$ and $m$ will be very small (less than 1000), so this algorithm will be fast enough to handle most of the cases. The increase in complexity brings a better searching experience. In this way, the algorithm will be able to match keywords like ``prob'' to result in ``A Long Problem List'', while a normal linear search will not be able to do this.
 
 In the end, if no item is found, a not found notice is added to the list, which will be displayed to the user.
 
 \subsection{Judger RunCode algorithm}
 
-This algorithm is designed for the Judger to run a piece of code, pass input to the code and receive all the output and error. This is the basic function of the Judger and further judging will all base on this algorithm.
+This algorithm is designed for the Judger to run a piece of code, pass input to the code and receive all the output and errors. This is the basic function of the Judger and further judging will all be based on this algorithm.
 
 Before anything can run, the Judger will need to first write the user's code to a source code file. And before it can do that, it needs to know where it should write to. I will create three private variables \code{_SourceCodeFilePath}, \code{_SourceCodeFolderPath} and \code{_ExecutableFilePath} to store the file paths for the source code file and the executable file. I use the idea of encapsulation here so these variables can only be set by the public method \code{SetSourceCodeFilePath}, so they will not be modified unexpectedly.
 
@@ -866,7 +866,7 @@ An \code{Assignment} is a \code{ProblemList} which gets distributed to students.
 
 \subsubsection{AssignmentSubmission}
 
-When a student finishes an \code{Assignment}, an \code{AssignmentSubmission} is created for the \code{Judger} to judge. The \code{AssignmentSubmission} can either be exported to file and sent to the teacher, or it can be uploaded using API. The teacher imports the \code{AssignmentSubmission} or uses API to load it, and the \code{Judger} will be able to mark it and return the result.
+When a student finishes an \code{Assignment}, an \code{AssignmentSubmission} is created for the \code{Judger} to judge. The \code{AssignmentSubmission} can either be exported to a file and sent to the teacher, or it can be uploaded using API. The teacher imports the \code{AssignmentSubmission} or uses API to load it, and the \code{Judger} will be able to mark it and return the result.
 
 \begin{tabulary}{\textwidth}{|l|l|L|}
     \hline
@@ -886,7 +886,7 @@ When a student finishes an \code{Assignment}, an \code{AssignmentSubmission} is 
 
 \subsubsection{Judger}
 
-The \code{Judger} is a static class, only eposes 5 functions to run and judge user's code. The \code{Judger} takes a \code{Submission} as an input, and outputs a \code{SubmissionResult}. No variable is exposed. The private attributes and methods are discussed in the \hyperref[sec:algorithm design]{algorithm design section}.
+The \code{Judger} is a static class, that only exposes 5 functions to run and judge the user's code. The \code{Judger} takes a \code{Submission} as an input, and outputs a \code{SubmissionResult}. No variable is exposed. The private attributes and methods are discussed in the \hyperref[sec:algorithm design]{algorithm design section}.
 
 \subsubsection{RunCodeResult}
 
@@ -991,7 +991,7 @@ The settings will be stored in a JSON file.
 }
 \end{minted}
 
-The \code{Theme} field stores the current color theme. There are three possible values, \code{Light}, \code{Dark} or \code{Default}. The data will be validated before applying, if it is empty or invalid, the \code{Default} theme will be applyed and write back to this field.
+The \code{Theme} field stores the current colour theme. There are three possible values, \code{Light}, \code{Dark} or \code{Default}. The data will be validated before applying, if it is empty or invalid, the \code{Default} theme will be applied and written back to this field.
 
 The \code{RunCodeTimeLimit} field stores the max time allowed for the run code function. The data will be validated before applying, if it is not a positive integer, then a default 1000 will be applied and written back to this field. 
 
@@ -1355,7 +1355,7 @@ CREATE TABLE SubmissionResult
 
 \subsubsection{AssignmentSubmissionResult table}
 
-The AssignmentSubmission table will have \code{Uid} as its primary key. It has a one-to-one relationship with a AssignmentSubmission, so a \code{Id} field is used to record this relationship.
+The AssignmentSubmission table will have \code{Uid} as its primary key. It has a one-to-one relationship with an AssignmentSubmission, so a \code{Id} field is used to record this relationship.
 
 \begin{tabulary}{\textwidth}{|L|L|}
     \hline
@@ -1914,19 +1914,19 @@ At this milestone, the Judger is implemented. A series of tests are designed to 
     \hline
     Test input & Expect output & Justification \\
     \hline
-    The Normal RunCode test data below. & The number 7 gets output. No error gets reported. & A normal test to make sure the Judger can compile and execute the user's code correctly. \\
+    The Normal RunCode test data. & The number 7 gets output. No error gets reported. & A normal test to make sure the Judger can compile and execute the user's code correctly. \\
     \hline
-    The CE RunCode test data below. & A compile error is reported. & An erroneous test to make sure if the user's code does not compile, the correct error is reported. \\
+    The CE RunCode test data. & A compile error is reported. & An erroneous test to make sure if the user's code does not compile, the correct error is reported. \\
     \hline
-    The TLE RunCode test data below. & A time limit exceed error is reported. The process is terminated. & An erroneous test to make sure if the user's code exceeds the time limit, it gets terminated and the error is reported correctly. \\
+    The TLE RunCode test data. & A TLE error is reported. The process is terminated. & An erroneous test to make sure if the user's code exceeds the time limit, it gets terminated and the error is reported correctly. \\
     \hline
-    The MLE RunCode test data below. & A memory limit exceed error is reported. The process is terminated. & An erroneous test to make sure if the user's code exceeds the memory limit, it gets terminated and the error is reported correctly. \\
+    The MLE RunCode test data. & A MLE error is reported. The process is terminated. & An erroneous test to make sure if the user's code exceeds the memory limit, it gets terminated and the error is reported correctly. \\
     \hline
-    The RE RunCode test data below. & A runtime error is reported. & An erroneous test to make sure if the user's code crashes itself, the error can be identified and reported correctly. \\
+    The RE RunCode test data. & A runtime error is reported. & An erroneous test to make sure if the user's code crashes itself, the error can be identified and reported correctly. \\
     \hline
-    The Normal Submission test data below. & The user's code is executed correctly, and success is returned. & A normal test to make sure the Judger can judge a Submission. \\
+    The Normal Submission test data. & The user's code is executed correctly, and success is returned. & A normal test to make sure the Judger can judge a Submission. \\
     \hline
-    The WA Submission test data below. & The user's code is executed correctly, and a wrong answer is returned. & A erroneous test to make sure if the user's output does not match the expected one, an error is reported correctly. \\
+    The WA Submission test data. & The user's code is executed correctly, and a wrong answer is returned. & A erroneous test to make sure if the user's output does not match the expected one, an error is reported correctly. \\
     \hline
 \end{tabulary}
 
@@ -2028,7 +2028,7 @@ At this milestone, the database is implemented. A series of tests are designed t
     \hline
     Test input & Expect output & Justification \\
     \hline
-    Search an existing problem in the ProblemsPage. Set the List, Tag, Status and Difficulty to their values. & The matching problems show up correctly. & A normal test to make sure database query is working correctly. \\
+    Search an existing problem in the ProblemsPage. Set the List, Tag, Status and Difficulty to their values. & The matching problems show up correctly. & A normal test to make sure the database query is working correctly. \\
     \hline
     Create/Edit a Problem in the CreateNewProblemPage & The Problem is created successfully. & A normal test to make sure the database insert/update is working correctly. \\
     \hline
@@ -2148,7 +2148,7 @@ At this milestone, the API calls are implemented. A series of test data is desig
     \hline
     Click the login button on the Account page, and input the correct email and password. & Login successfully, the information on the Account page is updated correctly. & A normal test to make sure the software can process the login API correctly. \\
     \hline
-    Click the login button on the Account page, and input the wrong email and password. & Login failed with correct error message displayed. & A erroneous test to make sure the software handles login failure correctly. \\
+    Click the login button on the Account page, and input the wrong email and password. & Login failed with the correct error message displayed. & A erroneous test to make sure the software handles login failure correctly. \\
     \hline
     Login with a teacher account, navigate to the assignment page. & All local assignments and remote assignments created by the teacher show up correctly. & A normal test to make sure the assignments can be fetched correctly. \\
     \hline
@@ -2179,7 +2179,7 @@ Any failed tests will be investigated and at the end of the alpha testing, all u
 
 \subsection{Beta testing}
 
-During the beta testing stage. I will invite my stakeholders to use the software. First, the deployment of the software is tested. I will test how difficult it is for my stakeholders to download and install the software on their computer, identify and fix any compatibility issues that occur during this process.
+During the beta testing stage. I will invite my stakeholders to use the software. First, the deployment of the software is tested. I will test how difficult it is for my stakeholders to download and install the software on their computers, identify and fix any compatibility issues that occur during this process.
 
 I will create some test coding problems for the students to import and practice on. During this process, the import function, the coding page, the judger and the user interface is tested. After that, I will invite the students to play with the software themselves and identify and fix any issues they meet.
 
