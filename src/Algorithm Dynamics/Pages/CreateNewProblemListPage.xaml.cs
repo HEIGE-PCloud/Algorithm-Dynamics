@@ -176,8 +176,13 @@ namespace Algorithm_Dynamics.Pages
 
         private void AddProblemBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
-
-            Problem.All.Where(problem => problem.Name == sender.Text).ToList().ForEach(problem => { if (!Problems.Contains(problem)) Problems.Add(problem); });
+            Problem.All.Where(problem 
+                => problem.Name == sender.Text)
+                .ToList()
+                .ForEach(problem => { 
+                        if (!Problems.Contains(problem)) 
+                            Problems.Add(problem); 
+                    });
         }
 
         /// <summary>
@@ -193,8 +198,11 @@ namespace Algorithm_Dynamics.Pages
             }
             else if (_pageMode == Mode.EditProblemList)
             {
+                // Save name
                 _problemList.Name = _name;
+                // Save description
                 _problemList.Description = _description;
+                // Save problems
                 Problems.ToList().ForEach(problem =>
                 {
                     if (_problemList.Problems.Contains(problem) == false)
@@ -210,6 +218,8 @@ namespace Algorithm_Dynamics.Pages
                     }
                 });
             }
+
+            // Done
             TestTextBlock.Text = "The Problem List is saved.";
         }
 

@@ -45,11 +45,6 @@
           Icon="Edit"
           Content="Playground"
           Tag="PlaygroundPage"/>
-          <!--<NavigationViewItem
-            x:Name="AssignmentsPageNavViewItem"
-            Icon="Library"
-            Content="Assignments"
-            Tag="AssignmentsPage"/>-->
       </NavigationView.MenuItems>
       <NavigationView.FooterMenuItems>
         <NavigationViewItem

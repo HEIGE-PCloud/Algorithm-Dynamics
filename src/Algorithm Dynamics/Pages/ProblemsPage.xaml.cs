@@ -286,10 +286,15 @@ namespace Algorithm_Dynamics.Pages
             App.NavigateTo(typeof(CreateNewProblemListPage));
         }
 
-
+        /// <summary>
+        /// Trigger when the search box is submitted
+        /// </summary>
         private void Search(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
             => Query();
 
+        /// <summary>
+        /// Trigger when the combo box is changed
+        /// </summary>
         private void Search(object sender, SelectionChangedEventArgs e)
             => Query();
 

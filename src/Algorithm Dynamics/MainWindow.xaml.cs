@@ -26,6 +26,7 @@ namespace Algorithm_Dynamics
             AppWindow = AppWindowExtensions.GetAppWindow(this);
             Title = "Algorithm Dynamics";
 
+            // If no user, show welcome grid
             if (DataAccess.GetAllUsers().Count == 0)
             {
                 WelcomeGrid.Visibility = Visibility.Visible;
@@ -51,10 +52,13 @@ namespace Algorithm_Dynamics
             PropertyChanged?.Invoke(this, new(nameof(IsValidInput)));
             PropertyChanged?.Invoke(this, new(nameof(ErrorMessage)));
         }
-        public bool IsValidEmail(string source)
+        public static bool IsValidEmail(string source)
         {
             return new EmailAddressAttribute().IsValid(source);
         }
+        /// <summary>
+        /// Validate the name and the email
+        /// </summary>
         public bool IsValidInput
         {
             get
