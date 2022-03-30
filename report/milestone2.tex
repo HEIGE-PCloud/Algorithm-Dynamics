@@ -27,14 +27,14 @@ namespace Algorithm_Dynamics.Core.Helpers
 }
 \end{minted}
 
-I set up a private attribute \code{DbPath}, which stores the physical location of the database. And a function \code{InitDatabase}, which takes in a string, and init the database at that location.
+I set up a private attribute \code{DbPath}, which stores the physical location of the database. And a function \code{InitDatabase}, which takes in a string, and init the database at that location. A test table is created to verify that the database is working.
 
 \begin{minted}{csharp}
 /// <summary>
 /// Store the physical loaction of the database.
 /// Use <see cref="InitializeDatabase(string)"/> to initialize the value.
 /// </summary>
-private static string DbPath;
+private static string ConnectionString;
 
 /// <summary>
 /// Initialize the database at the <see cref="dbPath"/> given.
@@ -43,14 +43,7 @@ private static string DbPath;
 /// <param name="dbPath"></param>
 public static void InitializeDatabase(string dbPath)
 {
-}
-\end{minted}
-
-\begin{minted}{csharp}
-public static void InitializeDatabase(string dbPath)
-{
-    // Save the DbPath
-    DbPath = dbPath;
+    ConnectionString = $"Data Source={dbPath}";
 
     // Create a new database if not exist
     if (!File.Exists(dbPath))
@@ -76,7 +69,436 @@ public static void InitializeDatabase(string dbPath)
 }
 \end{minted}
 
-TODO: Implementation
+I set up two methods for the test data, to insert and query data.
+
+\begin{minted}{csharp}
+/// <summary>
+/// Add a text data into the test table in the database.
+/// This procedure is used for testing the function of the database.
+/// </summary>
+/// <param name="inputText"></param>
+internal static void AddData(string inputText)
+{
+    using (SqliteConnection conn = new(ConnectionString))
+    {
+        conn.Open();
+
+        SqliteCommand insertCommand = new();
+        insertCommand.Connection = conn;
+
+        insertCommand.CommandText = "INSERT INTO MyTable VALUES (NULL, @Entry);";
+        insertCommand.Parameters.AddWithValue("@Entry", inputText);
+
+        insertCommand.ExecuteReader();
+
+    }
+}
+
+/// <summary>
+/// Get all data in the test table in the database.
+/// This function is used for testing the function of the database.
+/// </summary>
+/// <returns></returns>
+internal static List<string> GetData()
+{
+    List<string> entries = new();
+
+    using (SqliteConnection conn = new(ConnectionString))
+    {
+        conn.Open();
+
+        SqliteCommand selectCommand = new("SELECT Text_Entry from MyTable", conn);
+
+        using (var reader = selectCommand.ExecuteReader())
+        {
+            while (reader.Read())
+            {
+                entries.Add(reader.GetString(0));
+            }
+        }
+    }
+
+    return entries;
+}
+\end{minted}
+
+Finally, I write a test class to test the database and the test table.
+
+\begin{minted}{csharp}
+using Algorithm_Dynamics.Core.Helpers;
+using Algorithm_Dynamics.Core.Models;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Collections.Generic;
+using System.IO;
+
+namespace Algorithm_Dynamics.Test
+{
+    [TestClass]
+    public class TestDataAccess
+    {
+        const int MB = 1024 * 1024;
+
+        /// <summary>
+        /// Create a temp database with unique name for testing
+        /// </summary>
+        [TestInitialize]
+        public void InitDb()
+        {
+            string path = $"{Guid.NewGuid()}.db";
+            File.Delete(path);
+            DataAccess.InitializeDatabase(path);
+        }
+
+        /// <summary>
+        /// Clean up all temp databases after testing
+        /// </summary>
+        [AssemblyCleanup]
+        public static void AssemblyCleanup()
+        {
+            foreach (string path in Directory.GetFiles(".", "*.db"))
+            {
+                File.Delete(path);
+            }
+        }
+
+        /// <summary>
+        /// Insert a single data into the test table
+        /// </summary>
+        [TestMethod]
+        public void TestSingleData()
+        {
+            DataAccess.AddData("Text1");
+            Assert.AreEqual(DataAccess.GetData().Count, 1);
+            Assert.AreEqual(DataAccess.GetData()[0], "Text1");
+        }
+    }
+}
+\end{minted}
+
+In the TestSingleData method, I insert a single piece of data into the test table using the AddData method. I then verify that the data is inserted correctly by using the GetData method.
+
+The test passed successfully.
+
+\begin{minted}{text}
+> dotnet test --filter TestSingleData
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Algorithm Dynamics.Core -> C:\Algorithm-Dynamics\src\Algorithm Dynamics.Core\bin\Debug\net6.0\Algorithm Dynamics.Core.dll
+  Algorithm Dynamics.Test -> C:\Algorithm-Dynamics\src\Algorithm Dynamics.Test\bin\Debug\net6.0\Algorithm Dynamics.Test.dll
+Test run for C:\Algorithm-Dynamics\src\Algorithm Dynamics.Test\bin\Debug\net6.0\Algorithm Dynamics.Test.dll (.NETCoreApp,Version=v6.0)
+Microsoft (R) Test Execution Command Line Tool Version 17.1.0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:     1, Skipped:     0, Total:     1, Duration: 110 ms - Algorithm Dynamics.Test.dll (net6.0)
+\end{minted}
+
+Now I have verified that the database and database bindings are working correctly, I can create real data models in a similar parttern: create table, add methods, add unit tests. I will use the Problem, Tag, and TestCase data models as an example. They represent a one-to-one relationship and a many-to-many relationship. Other data models are created similarly and please reference the source code for details.
+
+I will start with the TestCase. I use the factory pattern to create a TestCase object. Instead of using the constructor to create a TestCase object, I expose a static method \code{Create} to initialize a TestCase object and also create it in the database. An internal constructor is used to initialize the object internally.
+
+\begin{minted}{csharp}
+public class TestCase
+{
+    internal TestCase(int id, string input, string output, bool isExample)
+    {
+        _id = id;
+        _input = input;
+        _output = output;
+        _isExample = isExample;
+    }
+
+    /// <summary>
+    /// Create a new <see cref="TestCase"/> and save it into the databse.
+    /// </summary>
+    /// <param name="input"></param>
+    /// <param name="output"></param>
+    /// <param name="isExample"></param>
+    /// <returns></returns>
+    public static TestCase Create(string input, string output, bool isExample)
+    {
+        return DataAccess.AddTestCase(input, output, isExample);
+    }
+}
+\end{minted}
+
+I create getters and setters for each properties of the TestCase class. A private _prop is used to store the actual value and a public Prop is used to expose the value.
+
+\begin{minted}{csharp}
+private void UpdateDatabase()
+{
+    DataAccess.EditTestCase(_id, _input, _output, _isExample);
+}
+private int _id;
+public int Id { get => _id; private set => _id = value; }
+
+private string _input;
+public string Input
+{
+    get => _input;
+    set
+    {
+        if (value == _input)
+        {
+            _input = value;
+            UpdateDatabase();
+        }
+    }
+}
+
+private string _output;
+public string Output
+{
+    get => _output;
+    set
+    {
+        if (value != _output)
+        {
+            _output = value;
+            UpdateDatabase();
+        }
+    }
+}
+
+private bool _isExample;
+public bool IsExample
+{
+    get => _isExample;
+    set
+    {
+        if (value != _isExample)
+        {
+            _isExample = value;
+            UpdateDatabase();
+        }
+    }
+}
+\end{minted}
+
+The UpdateDatabase method saves the changes to the database. This Id has a private setter since the Id property can only be changed when it is created.
+
+I can simply add SQL commands in the DataAccess class to create the tables for TestCase.
+
+\begin{minted}{csharp}
+// Create TestCase table
+tableCommand +=
+    @"CREATE TABLE IF NOT EXISTS TestCase
+    (
+        Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        Input TEXT NOT NULL,
+        Output TEXT NOT NULL,
+        IsExample INTEGER NOT NULL,
+        ProblemId INTEGER,
+        FOREIGN KEY (ProblemId) REFERENCES Problem (Id)
+    );";
+\end{minted}
+
+
+After completing the TestCase model, I can implement the underlying database methods. There 4 methods I need to implement, AddTestCase creates a new test case and saves it to the database, GetAllTestCases returns all test cases in the database, EditTestCase edits an existing test case and saves it to the database, and DeleteTestCase deletes a test case from the database.
+
+\begin{minted}{csharp}
+/// <summary>
+/// Pass in a <see cref="TestCase"/> without <see cref="TestCase.Id"/>.
+/// Save the <see cref="TestCase"/> into database and return a <see cref="TestCase"/> with Id.
+/// </summary>
+/// <param name="testCase"></param>
+/// <param name="problemId"></param>
+/// <returns></returns>
+internal static TestCase AddTestCase(string input, string output, bool isExample, int? problemId = null)
+{
+    using (SqliteConnection conn = new(ConnectionString))
+    {
+        conn.Open();
+        SqliteCommand insertCommand = new();
+        insertCommand.Connection = conn;
+
+        insertCommand.CommandText = "INSERT INTO TestCase (Input, Output, IsExample, ProblemId) VALUES (@Input, @Output, @IsExample, @ProblemId);";
+        insertCommand.Parameters.AddWithValue("@Input", input);
+        insertCommand.Parameters.AddWithValue("@Output", output);
+        insertCommand.Parameters.AddWithValue("@IsExample", isExample);
+        insertCommand.Parameters.AddWithValue("@ProblemId", problemId == null ? DBNull.Value : problemId);
+
+        insertCommand.ExecuteNonQuery();
+
+        SqliteCommand selectIdCommand = new("SELECT last_insert_rowid();", conn);
+        var query = selectIdCommand.ExecuteReader();
+        query.Read();
+        return new TestCase(query.GetInt32(0), input, output, isExample);
+    }
+}
+
+/// <summary>
+/// Return all test cases in the database as a list
+/// </summary>
+/// <returns></returns>
+internal static List<TestCase> GetAllTestCases()
+{
+    List<TestCase> testCases = new();
+
+    using (SqliteConnection connection = new(ConnectionString))
+    {
+        connection.Open();
+
+        SqliteCommand selectCommand = new("SELECT * from TestCase", connection);
+
+        SqliteDataReader query = selectCommand.ExecuteReader();
+
+        while (query.Read())
+        {
+            testCases.Add(new(query.GetInt32(0), query.GetString(1), query.GetString(2), query.GetBoolean(3)));
+        }
+    }
+    return testCases;
+}
+
+/// <summary>
+/// Edit an existing test case with the given id
+/// </summary>
+/// <param name="id"></param>
+/// <param name="newInput"></param>
+/// <param name="newOutput"></param>
+/// <param name="newIsExample"></param>
+/// <param name="newProblemId"></param>
+internal static void EditTestCase(int id, string newInput, string newOutput, bool newIsExample, int? newProblemId = null)
+{
+    using (SqliteConnection conn = new(ConnectionString))
+    {
+        conn.Open();
+
+        SqliteCommand updateCommand = new();
+        updateCommand.Connection = conn;
+
+        updateCommand.CommandText = "UPDATE TestCase SET Input = @newInput, Output = @newOutput, IsExample = @newIsExample, ProblemId = @newProblemId WHERE Id = @Id;";
+        updateCommand.Parameters.AddWithValue("@newInput", newInput);
+        updateCommand.Parameters.AddWithValue("@newOutput", newOutput);
+        updateCommand.Parameters.AddWithValue("@newIsExample", newIsExample);
+        updateCommand.Parameters.AddWithValue("@newProblemId", newProblemId == null ? DBNull.Value : newProblemId);
+        updateCommand.Parameters.AddWithValue("@Id", id);
+
+        updateCommand.ExecuteNonQuery();
+    }
+}
+
+/// <summary>
+/// Delete a test case with the given id
+/// </summary>
+/// <param name="id"></param>
+internal static void DeleteTestCase(int id)
+{
+    using (SqliteConnection conn = new(ConnectionString))
+    {
+        conn.Open();
+
+        SqliteCommand deleteCommand = new();
+        deleteCommand.Connection = conn;
+        deleteCommand.CommandText = "DELETE FROM TestCase WHERE Id = @Id";
+        deleteCommand.Parameters.AddWithValue("@Id", id);
+        deleteCommand.ExecuteNonQuery();
+    }
+}
+\end{minted}
+
+Finally, I add the following three tests to check whether the methods are working.
+
+\begin{minted}{csharp}
+[TestMethod]
+public void TestAddTestCase()
+{
+    TestCase testCase1 = TestCase.Create("input", "output", true);
+    Assert.AreEqual(testCase1, DataAccess.GetAllTestCases()[0]);
+}
+
+[TestMethod]
+public void TestEditTestCase()
+{
+    TestCase testCase = TestCase.Create("input", "output", true);
+    testCase.Input = "newInput";
+    testCase.Output = "newOutput";
+    testCase.IsExample = false;
+    Assert.AreEqual(testCase, DataAccess.GetAllTestCases()[0]);
+}
+
+[TestMethod]
+public void TestDeleteTestCase()
+{
+    TestCase testCase = TestCase.Create("input", "output", true);
+    testCase.Delete();
+    Assert.AreEqual(0, DataAccess.GetAllTestCases().Count);
+}
+\end{minted}
+
+However, when I run the tests, I encountered the following errors:
+
+\begin{minted}{text}
+> dotnet test --filter "Name~TestCase"
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Algorithm Dynamics.Core -> C:\Algorithm-Dynamics\src\Algorithm Dynamics.Core\bin\Debug\net6.0\Algorithm Dynamics.Core.dll
+  Algorithm Dynamics.Test -> C:\Algorithm-Dynamics\src\Algorithm Dynamics.Test\bin\Debug\net6.0\Algorithm Dynamics.Test.dll
+Test run for C:\Algorithm-Dynamics\src\Algorithm Dynamics.Test\bin\Debug\net6.0\Algorithm Dynamics.Test.dll (.NETCoreApp,Version=v6.0)
+Microsoft (R) Test Execution Command Line Tool Version 17.1.0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+  Failed TestAddTestCase [123 ms]
+  Error Message:
+   Assert.AreEqual failed. Expected:<Algorithm_Dynamics.Core.Models.TestCase>. Actual:<Algorithm_Dynamics.Core.Models.TestCase>.
+  Stack Trace:
+     at Algorithm_Dynamics.Test.TestDataAccess.TestAddTestCase() in C:\Algorithm-Dynamics\src\Algorithm Dynamics.Test\TestDataAccess.cs:line 141
+
+  Failed TestEditTestCase [44 ms]
+  Error Message:
+   Assert.AreEqual failed. Expected:<Algorithm_Dynamics.Core.Models.TestCase>. Actual:<Algorithm_Dynamics.Core.Models.TestCase>.
+  Stack Trace:
+     at Algorithm_Dynamics.Test.TestDataAccess.TestEditTestCase() in C:\Algorithm-Dynamics\src\Algorithm Dynamics.Test\TestDataAccess.cs:line 151
+
+Failed!  - Failed:     2, Passed:     1, Skipped:     0, Total:     7, Duration: 2 s - Algorithm Dynamics.Test.dll (net6.0)
+\end{minted}
+
+The EditTestCase and AddTestCase tests are failed. After setting a few breakpoints and watches the actual value. I find that the actual value in the instance is actually correct. But when dotnet is comparing these two intances, they are considered to be different. One possible solution is to override the Equals method of the TestCase class, so dotnet can determine whether two instances are equal correctly.
+
+\begin{minted}{csharp}
+/// <summary>
+/// Determine whether two testcases are the same
+/// </summary>
+/// <param name="obj"></param>
+/// <returns></returns>
+public override bool Equals(object obj)
+{
+    if (obj is not TestCase testCase)
+        return false;
+    return Id == testCase.Id && Input == testCase.Input && Output == testCase.Output && IsExample == testCase.IsExample;
+}
+
+public override int GetHashCode()
+{
+    return HashCode.Combine(Id, Input, Output, IsExample);
+}
+\end{minted}
+
+Now when I run the tests again, it passes without any problem.
+
+\begin{minted}{text}
+> dotnet test --filter "Name~TestCase"
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Algorithm Dynamics.Core -> C:\Algorithm-Dynamics\src\Algorithm Dynamics.Core\bin\Debug\net6.0\Algorithm Dynamics.Core.dll
+  Algorithm Dynamics.Test -> C:\Algorithm-Dynamics\src\Algorithm Dynamics.Test\bin\Debug\net6.0\Algorithm Dynamics.Test.dll
+Test run for C:\Algorithm-Dynamics\src\Algorithm Dynamics.Test\bin\Debug\net6.0\Algorithm Dynamics.Test.dll (.NETCoreApp,Version=v6.0)
+Microsoft (R) Test Execution Command Line Tool Version 17.1.0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:     3, Skipped:     0, Total:     3, Duration: 946 ms - Algorithm Dynamics.Test.dll (net6.0)
+\end{minted}
+
+
 
 \subsection{Integration}
 
@@ -418,7 +840,7 @@ I use the test data in the design section to test the markdown renderer. However
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CodingPage-MarkdownTest-Failed}
 
-After some debugging and reading the documentation of the markdown control, I found that I should use `\\r' instead of `\\n' for newlines.
+After some debugging and reading the documentation of the markdown control, I found that I should use `\textbackslash r' instead of `\textbackslash n' for newlines.
 
 \begin{minted}{csharp}
 /// <summary>

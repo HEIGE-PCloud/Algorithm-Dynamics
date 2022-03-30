@@ -19,19 +19,11 @@ namespace Algorithm_Dynamics.Core.Helpers
         /// <param name="dbPath"></param>
         public static void InitializeDatabase(string dbPath = "")
         {
-            // Create a memory database if dbPath is empty
-            if (string.IsNullOrWhiteSpace(dbPath))
+            // Create a new database if not exist
+            ConnectionString = $"Data Source={dbPath}";
+            if (!File.Exists(dbPath))
             {
-                ConnectionString = $"Data Source=InMemoryDb;Mode=Memory;Cache=Shared";
-            }
-            else
-            {
-                // Create a new database if not exist
-                ConnectionString = $"Data Source={dbPath}";
-                if (!File.Exists(dbPath))
-                {
-                    File.CreateText(dbPath).Dispose();
-                }
+                File.CreateText(dbPath).Dispose();
             }
 
             // Create tables

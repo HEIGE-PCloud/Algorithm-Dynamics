@@ -37,6 +37,10 @@ namespace Algorithm_Dynamics.Core.Helpers
             }
         }
 
+        /// <summary>
+        /// Return all test cases in the database as a list
+        /// </summary>
+        /// <returns></returns>
         internal static List<TestCase> GetAllTestCases()
         {
             List<TestCase> testCases = new();
@@ -57,6 +61,14 @@ namespace Algorithm_Dynamics.Core.Helpers
             return testCases;
         }
 
+        /// <summary>
+        /// Edit an existing test case with the given id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="newInput"></param>
+        /// <param name="newOutput"></param>
+        /// <param name="newIsExample"></param>
+        /// <param name="newProblemId"></param>
         internal static void EditTestCase(int id, string newInput, string newOutput, bool newIsExample, int? newProblemId = null)
         {
             using (SqliteConnection conn = new(ConnectionString))
@@ -77,6 +89,10 @@ namespace Algorithm_Dynamics.Core.Helpers
             }
         }
 
+        /// <summary>
+        /// Delete a test case with the given id
+        /// </summary>
+        /// <param name="id"></param>
         internal static void DeleteTestCase(int id)
         {
             using (SqliteConnection conn = new(ConnectionString))

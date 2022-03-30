@@ -12,6 +12,9 @@ namespace Algorithm_Dynamics.Test
     {
         const int MB = 1024 * 1024;
 
+        /// <summary>
+        /// Create a temp database with unique name for testing
+        /// </summary>
         [TestInitialize]
         public void InitDb()
         {
@@ -20,6 +23,9 @@ namespace Algorithm_Dynamics.Test
             DataAccess.InitializeDatabase(path);
         }
 
+        /// <summary>
+        /// Clean up all temp databases after testing
+        /// </summary>
         [AssemblyCleanup]
         public static void AssemblyCleanup()
         {
@@ -29,6 +35,9 @@ namespace Algorithm_Dynamics.Test
             }
         }
 
+        /// <summary>
+        /// Insert a single data into the test table
+        /// </summary>
         [TestMethod]
         public void TestSingleData()
         {
