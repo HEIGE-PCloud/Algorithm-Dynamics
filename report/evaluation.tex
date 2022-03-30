@@ -69,7 +69,7 @@ I ran the code analysis on the entire codebase and it gives me a maintainability
     \hline
     Test & Result \\
     \hline
-    Does it load & \\
+    Does it load & Pass \\
     \hline
     Does the toolbar display correctly & Pass \\
     \hline
@@ -87,19 +87,19 @@ I ran the code analysis on the entire codebase and it gives me a maintainability
     \hline
 \end{tabulary}
 
-Add problem
+Add problem shows up the correct flyout and navigate to the correct page.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{ProblemsPage-Testing-Add.png}
 
-Right-click flyout
+The right-click flyout menu shows up correctly with all it button functional.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{ProblemsPage-Testing-Flyout.png}
 
-Import problem and problem list
+The file picker shows up correctly and the problems or problem lists are imported correctly.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{ProblemsPage-Testing-Import.png}
 
-Search
+The search bar is fully functional.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{ProblemsPage-Testing-Search.png}
 
@@ -191,19 +191,19 @@ Search
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CodingPage-Testing}
 
-RunCode testing
+The RunCode button runs the code against the given input correctly. 
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CodingPage-Testing-RunCode}
 
-Submission testing
+The Submission button submits the code for judging and save the result to the database correctly.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CodingPage-Testing-Submission}
 
-Navigation testing
+The navigation menu switches between different problems correctly.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CodingPage-Testing-Navigation}
 
-Language testing
+The programming language selection box switches between different languages in runtime correctly.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CodingPage-Testing-Language}
 
@@ -230,7 +230,6 @@ Language testing
 \end{tabulary}
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{PlaygroundPage-Testing}
-
 
 \subsubsection{AccountPage}
 
@@ -278,19 +277,27 @@ Language testing
 
 Empty search: Pass
 
+An empty string is passed to the search box. The search box returns all problems which are as expected.
+
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{ProblemsPage-Testing-EmptySearch}
 
 Not exist search: Pass
 
+A non-existing problem name is passed to the search box. The search box returns the correct error message.
+
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{ProblemsPage-Testing-NotExist}
 
 Wrong import file: Pass
+
+A non-correct import file is passed to the import button. The import button returns the correct error message.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{ProblemsPage-Testing-ImportInvalid}
 
 \subsubsection{CreateNewProblmePage}
 
 Empty input: Pass
+
+No name or test case is input, the save button is disabled and a correct error message is displayed.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CreateNewProblemPage-Testing-Empty}
 
@@ -302,6 +309,8 @@ Invalid input gets filtered by the controls automatically.
 
 Empty input: Pass
 
+No name is input, the save button is disabled and a correct error message is displayed.
+
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CreateNewProblemListPage-Testing-Empty}
 
 Invalid input: Pass
@@ -311,6 +320,8 @@ Invalid input gets filtered by the controls automatically.
 \subsubsection{AccountPage}
 
 Empty input: Pass
+
+No name or email is input, the save button is disabled and a correct error message is displayed.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{AccountPage-Testing-Empty}
 
@@ -453,7 +464,7 @@ The code editor supports line number, syntax highlighting, code folding, code co
 
 \subsubsection{API calls}
 
-This criterion is not met.
+This criterion is not met. Since the Teams integration is forced to be cancelled.
 
 \subsubsection{Meaningful variale name}
 
@@ -465,7 +476,7 @@ All important functions and codes are associated with comments explaining their 
 
 \subsubsection{Object Oriented Design}
 
-All pages, data models are designed using the OOP. This criterion is fully met.
+All pages, data models are designed using OOP. This criterion is fully met.
 
 \subsubsection{Modular design}
 
@@ -527,6 +538,18 @@ One possible way is to refactor the UI code into the MVVM\cite{microsoft:docs:mv
 
 \subsection{Stakeholder suggestions}
 
-On top of everything mentioned above, my stakeholders have given me a lot of suggestions that I can work on as well. See beta testing review for details.
+On top of everything mentioned above, my stakeholders have given me a lot of suggestions that I can work on as well. This includes:
+
+\begin{itemize}
+  \item Better beginner's guide with animation and teaching tips.
+  \item Utilize the problem list descriptions.
+  \item More keyboard shortcuts.
+  \item Faster code editor.
+  \item Multiple tags in the search box.
+  \item More graphical statistics data.
+  \item Better submission grid with sorting and searching.
+\end{itemize}
+
+I will try to make some initial designs of these improvements and fully discuss them with my stakeholders. After which these can be implemented in the future easily.
 
 \end{document}
