@@ -31,6 +31,10 @@ namespace Algorithm_Dynamics.Core.Helpers
             }
         }
 
+        /// <summary>
+        /// Return all tags in the database
+        /// </summary>
+        /// <returns></returns>
         internal static List<Tag> GetAllTags()
         {
             List<Tag> tags = new();
@@ -51,6 +55,11 @@ namespace Algorithm_Dynamics.Core.Helpers
             return tags;
         }
 
+        /// <summary>
+        /// Determine whether a tag is exist
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         internal static bool TagExists(string name)
         {
             using (SqliteConnection conn = new(ConnectionString))
@@ -67,6 +76,11 @@ namespace Algorithm_Dynamics.Core.Helpers
             }
         }
 
+        /// <summary>
+        /// Get the tag with given id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         internal static Tag? GetTag(int id)
         {
             using (SqliteConnection conn = new(ConnectionString))
@@ -88,6 +102,12 @@ namespace Algorithm_Dynamics.Core.Helpers
                 }
             }
         }
+
+        /// <summary>
+        /// Get the tag with the given name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         internal static Tag GetTag(string name)
         {
             using (SqliteConnection conn = new(ConnectionString))
@@ -154,6 +174,11 @@ namespace Algorithm_Dynamics.Core.Helpers
             return tags;
         }
 
+        /// <summary>
+        /// Add a new tag record to the database
+        /// </summary>
+        /// <param name="problemId"></param>
+        /// <param name="tagId"></param>
         internal static void AddTagRecord(int problemId, int tagId)
         {
             using (SqliteConnection conn = new(ConnectionString))
@@ -170,6 +195,11 @@ namespace Algorithm_Dynamics.Core.Helpers
             }
         }
 
+        /// <summary>
+        /// Delete an existing tag record from the database
+        /// </summary>
+        /// <param name="problemId"></param>
+        /// <param name="tagId"></param>
         internal static void DeleteTagRecord(int problemId, int tagId)
         {
             using (SqliteConnection conn = new(ConnectionString))

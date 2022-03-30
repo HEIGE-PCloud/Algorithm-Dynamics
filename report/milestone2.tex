@@ -196,7 +196,7 @@ A total of 1 test files matched the specified pattern.
 Passed!  - Failed:     0, Passed:     1, Skipped:     0, Total:     1, Duration: 110 ms - Algorithm Dynamics.Test.dll (net6.0)
 \end{minted}
 
-Now I have verified that the database and database bindings are working correctly, I can create real data models in a similar parttern: create table, add methods, add unit tests. I will use the Problem, Tag, and TestCase data models as an example. They represent a one-to-one relationship and a many-to-many relationship. Other data models are created similarly and please reference the source code for details.
+Now I have verified that the database and database bindings are working correctly, I can create real data models in a similar parttern: create table, add methods, add unit tests. I will use the Problem, Tag, and TestCase data models as an example. They represent a many-to-one relationship and a many-to-many relationship. Other data models are created similarly and please reference the source code for details.
 
 I will start with the TestCase. I use the factory pattern to create a TestCase object. Instead of using the constructor to create a TestCase object, I expose a static method \code{Create} to initialize a TestCase object and also create it in the database. An internal constructor is used to initialize the object internally.
 
@@ -495,9 +495,1078 @@ Copyright (c) Microsoft Corporation.  All rights reserved.
 Starting test execution, please wait...
 A total of 1 test files matched the specified pattern.
 
-Passed!  - Failed:     0, Passed:     3, Skipped:     0, Total:     3, Duration: 946 ms - Algorithm Dynamics.Test.dll (net6.0)
+Passed!  - Failed:     0, Passed:     3, Skipped:     0, Total:     3, Duration: 863 ms - Algorithm Dynamics.Test.dll (net6.0)
 \end{minted}
 
+To implement the Tag and the Problem models, I follow the same steps.
+
+Create tables:
+
+\begin{minted}{csharp}
+// Create Problem table
+tableCommand +=
+    @"CREATE TABLE IF NOT EXISTS Problem
+    (
+        Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        Uid TEXT NOT NULL,
+        Name TEXT NOT NULL,
+        Description TEXT NOT NULL,
+        TimeLimit INTEGER NOT NULL,
+        MemoryLimit INTEGER NOT NULL,
+        Status INTEGER NOT NULL,
+        Difficulty INTEGER NOT NULL
+    );";
+
+// CREATE Tag table
+tableCommand +=
+    @"CREATE TABLE IF NOT EXISTS Tag
+    (
+        Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        Name TEXT NOT NULL UNIQUE
+    );";
+\end{minted}
+
+Create models:
+
+\begin{minted}{csharp}
+public class Problem
+{
+    internal Problem(
+        int id,
+        Guid uid,
+        string name,
+        string description,
+        int timeLimit,
+        long memoryLimit,
+        ProblemStatus status,
+        Difficulty difficulty,
+        List<TestCase> testCases,
+        List<Tag> tags)
+    {
+        _id = id;
+        _uid = uid;
+        _name = name;
+        _description = description;
+        _timeLimit = timeLimit;
+        _memoryLimit = memoryLimit;
+        _status = status;
+        _difficulty = difficulty;
+        _testCases = testCases;
+        _tags = tags;
+    }
+
+    private int _id;
+    public int Id
+    {
+        get => _id;
+        private set => _id = value;
+    }
+
+    private Guid _uid;
+    public Guid Uid
+    {
+        get => _uid;
+        private set => _uid = value;
+    }
+
+    private string _name;
+    public string Name
+    {
+        get => _name;
+        set
+        {
+            if (_name != value)
+            {
+                _name = value;
+                UpdateDatabase();
+            }
+        }
+    }
+
+    private string _description;
+    public string Description
+    {
+        get => _description;
+        set
+        {
+            if (_description != value)
+            {
+                _description = value;
+                UpdateDatabase();
+            }
+        }
+    }
+
+    private int _timeLimit;
+    public int TimeLimit
+    {
+        get => _timeLimit;
+        set
+        {
+            if (_timeLimit != value)
+            {
+                _timeLimit = value;
+                UpdateDatabase();
+            }
+        }
+    }
+
+    private long _memoryLimit;
+    public long MemoryLimit
+    {
+        get => _memoryLimit;
+        set
+        {
+            if (_memoryLimit != value)
+            {
+                _memoryLimit = value;
+                UpdateDatabase();
+            }
+        }
+    }
+
+    private ProblemStatus _status;
+    public ProblemStatus Status
+    {
+        get => _status;
+        set
+        {
+            if (_status != value)
+            {
+                _status = value;
+                UpdateDatabase();
+            }
+        }
+    }
+
+    private Difficulty _difficulty;
+    public Difficulty Difficulty
+    {
+        get => _difficulty;
+        set
+        {
+            if (_difficulty != value)
+            {
+                _difficulty = value;
+                UpdateDatabase();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Update database, save all the data in attributes into the database.
+    /// </summary>
+    private void UpdateDatabase()
+    {
+        DataAccess.EditProblem(
+        _id,
+        _name,
+        _description,
+        _timeLimit,
+        _memoryLimit,
+        _status,
+        _difficulty);
+    }
+}
+\end{minted}
+
+\begin{minted}{csharp}
+public class Tag
+{
+    internal Tag(int id, string name)
+    {
+        Id = id;
+        Name = name;
+    }
+
+    public int Id { get; }
+    public string Name { get; set; }
+
+    /// <summary>
+    /// Create a new <see cref="Tag"/> with a name, and an auto-generated <see cref="Id"/> and save to the Database.
+    /// The <see cref="Name"/> is unique, so if a tag exists in the database, it will be returned directly.
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public static Tag Create(string name)
+    {
+        if (DataAccess.TagExists(name))
+        {
+            return DataAccess.GetTag(name);
+        }
+        else
+        {
+            return DataAccess.AddTag(name);
+        }
+    }
+}
+\end{minted}
+
+Add database queries:
+
+\begin{minted}{csharp}
+/// <summary>
+/// Create a new problem in the database
+/// and return that instance
+/// </summary>
+/// <param name="uid"></param>
+/// <param name="name"></param>
+/// <param name="description"></param>
+/// <param name="timeLimit"></param>
+/// <param name="memoryLimit"></param>
+/// <param name="status"></param>
+/// <param name="difficulty"></param>
+/// <param name="testCases"></param>
+/// <param name="tags"></param>
+/// <returns></returns>
+internal static Problem AddProblem(Guid uid, string name, string description, int timeLimit, long memoryLimit, ProblemStatus status, Difficulty difficulty, List<TestCase> testCases, List<Tag> tags)
+{
+    using (SqliteConnection conn = new(ConnectionString))
+    {
+        conn.Open();
+        SqliteCommand insertCommand = new();
+        insertCommand.Connection = conn;
+
+        insertCommand.CommandText = "INSERT INTO Problem (Uid, Name, Description, TimeLimit, MemoryLimit, Status, Difficulty) VALUES (@Uid, @Name, @Description, @TimeLimit, @MemoryLimit, @Status, @Difficulty);";
+        insertCommand.Parameters.AddWithValue("@Uid", uid);
+        insertCommand.Parameters.AddWithValue("@Name", name);
+        insertCommand.Parameters.AddWithValue("@Description", description);
+        insertCommand.Parameters.AddWithValue("@TimeLimit", timeLimit);
+        insertCommand.Parameters.AddWithValue("@MemoryLimit", memoryLimit);
+        insertCommand.Parameters.AddWithValue("@Status", status);
+        insertCommand.Parameters.AddWithValue("@Difficulty", difficulty);
+
+        insertCommand.ExecuteNonQuery();
+
+        SqliteCommand selectIdCommand = new("SELECT last_insert_rowid();", conn);
+        var query = selectIdCommand.ExecuteReader();
+        query.Read();
+        return new Problem(query.GetInt32(0), uid, name, description, timeLimit, memoryLimit, status, difficulty, testCases, tags);
+    }
+}
+
+/// <summary>
+/// Get the problem with the given id
+/// </summary>
+/// <param name="Id"></param>
+/// <returns></returns>
+/// <exception cref="KeyNotFoundException"></exception>
+internal static Problem GetProblem(int Id)
+{
+    Problem problem;
+    using (var connection = new SqliteConnection(ConnectionString))
+    {
+        connection.Open();
+        SqliteCommand selectCommand = new();
+        selectCommand.Connection = connection;
+        selectCommand.CommandText = "SELECT * FROM Problem WHERE Id = @Id";
+        selectCommand.Parameters.AddWithValue("@Id", Id);
+        SqliteDataReader query = selectCommand.ExecuteReader();
+
+        if (query.Read())
+        {
+            int id = query.GetInt32(0);
+            Guid uid = query.GetGuid(1);
+            string name = query.GetString(2);
+            string description = query.GetString(3);
+            int timeLimit = query.GetInt32(4);
+            int memoryLimit = query.GetInt32(5);
+            ProblemStatus status = (ProblemStatus)query.GetInt32(6);
+            Difficulty difficulty = (Difficulty)query.GetInt32(7);
+            problem = new(id, uid, name, description, timeLimit, memoryLimit, status, difficulty, GetTestCases(id), GetTags(id));
+        }
+        else
+        {
+            throw new KeyNotFoundException($"The Problem with Id = {Id} is not found in the database.");
+        }
+    }
+    return problem;
+}
+
+/// <summary>
+/// Get all Problems under a ProblemList
+/// </summary>
+/// <returns></returns>
+internal static List<Problem> GetProblems(int problemListId)
+{
+    List<Problem> problems = new();
+    using (SqliteConnection conn = new(ConnectionString))
+    {
+        conn.Open();
+
+        SqliteCommand selectCommand = new();
+        selectCommand.Connection = conn;
+        selectCommand.CommandText = "SELECT ProblemListRecord.ProblemId, Problem.Uid, Problem.Name, Problem.Description, Problem.TimeLimit, Problem.MemoryLimit, Problem.Status, Problem.Difficulty FROM ProblemListRecord INNER JOIN Problem ON ProblemListRecord.ProblemId = Problem.Id WHERE ProblemListId = @ProblemListId";
+        selectCommand.Parameters.AddWithValue("@ProblemListId", problemListId);
+        SqliteDataReader query = selectCommand.ExecuteReader();
+
+        while (query.Read())
+        {
+            int id = query.GetInt32(0);
+            Guid uid = query.GetGuid(1);
+            string name = query.GetString(2);
+            string description = query.GetString(3);
+            int timeLimit = query.GetInt32(4);
+            int memoryLimit = query.GetInt32(5);
+            ProblemStatus status = (ProblemStatus)query.GetInt32(6);
+            Difficulty difficulty = (Difficulty)query.GetInt32(7);
+            problems.Add(new Problem(id, uid, name, description, timeLimit, memoryLimit, status, difficulty, GetTestCases(id), GetTags(id)));
+        }
+    }
+    return problems;
+}
+
+/// <summary>
+/// Edit a given problem data
+/// </summary>
+/// <param name="id"></param>
+/// <param name="name"></param>
+/// <param name="description"></param>
+/// <param name="timeLimit"></param>
+/// <param name="memoryLimit"></param>
+/// <param name="status"></param>
+/// <param name="difficulty"></param>
+internal static void EditProblem(int id, string name, string description, int timeLimit, long memoryLimit, ProblemStatus status, Difficulty difficulty)
+{
+    using (SqliteConnection conn = new(ConnectionString))
+    {
+        conn.Open();
+        SqliteCommand updateCommand = new();
+        updateCommand.Connection = conn;
+        updateCommand.CommandText = "UPDATE Problem SET Name = @Name, Description = @Description, TimeLimit = @TimeLimit, MemoryLimit = @MemoryLimit, Status = @Status, Difficulty = @Difficulty WHERE Id = @Id;";
+        updateCommand.Parameters.AddWithValue("@Name", name);
+        updateCommand.Parameters.AddWithValue("@Description", description);
+        updateCommand.Parameters.AddWithValue("@TimeLimit", timeLimit);
+        updateCommand.Parameters.AddWithValue("@MemoryLimit", memoryLimit);
+        updateCommand.Parameters.AddWithValue("@Status", status);
+        updateCommand.Parameters.AddWithValue("@Difficulty", difficulty);
+        updateCommand.Parameters.AddWithValue("@Id", id);
+
+        updateCommand.ExecuteNonQuery();
+    }
+}
+
+/// <summary>
+/// Return all problems in the database
+/// </summary>
+/// <returns></returns>
+internal static List<Problem> GetAllProblems()
+{
+    List<Problem> problems = new();
+
+    using (SqliteConnection connection = new(ConnectionString))
+    {
+        connection.Open();
+
+        SqliteCommand selectCommand = new("SELECT * from Problem", connection);
+
+        SqliteDataReader query = selectCommand.ExecuteReader();
+
+        while (query.Read())
+        {
+            int id = query.GetInt32(0);
+            Guid uid = query.GetGuid(1);
+            string name = query.GetString(2);
+            string description = query.GetString(3);
+            int timeLimit = query.GetInt32(4);
+            int memoryLimit = query.GetInt32(5);
+            ProblemStatus status = (ProblemStatus)query.GetInt32(6);
+            Difficulty difficulty = (Difficulty)query.GetInt32(7);
+            problems.Add(new(id, uid, name, description, timeLimit, memoryLimit, status, difficulty, GetTestCases(id), GetTags(id)));
+        }
+
+    }
+    return problems;
+}
+
+/// <summary>
+/// Delete the given problem
+/// </summary>
+/// <param name="id"></param>
+internal static void DeleteProblem(int id)
+{
+    using (SqliteConnection conn = new(ConnectionString))
+    {
+        conn.Open();
+
+        SqliteCommand deleteCommand = new();
+        deleteCommand.Connection = conn;
+        deleteCommand.CommandText = "DELETE FROM Problem WHERE Id = @Id";
+        deleteCommand.Parameters.AddWithValue("@Id", id);
+        deleteCommand.ExecuteNonQuery();
+    }
+}
+\end{minted}
+
+\begin{minted}{csharp}
+/// <summary>
+/// Pass in a <see cref="Tag"/> without <see cref="Tag.Id"/>.
+/// Save the <see cref="Tag"/> into database and return a <see cref="Tag"/> with Id.
+/// </summary>
+/// <param name="testCase"></param>
+/// <param name="problemId"></param>
+/// <returns></returns>
+internal static Tag AddTag(string name)
+{
+    using (SqliteConnection conn = new(ConnectionString))
+    {
+        conn.Open();
+        SqliteCommand insertCommand = new();
+        insertCommand.Connection = conn;
+        insertCommand.CommandText = "INSERT INTO Tag (Name) VALUES (@Name);";
+        insertCommand.Parameters.AddWithValue("@Name", name);
+        insertCommand.ExecuteNonQuery();
+
+        SqliteCommand selectIdCommand = new("SELECT last_insert_rowid();", conn);
+        var query = selectIdCommand.ExecuteReader();
+        query.Read();
+        return new Tag(query.GetInt32(0), name);
+    }
+}
+
+/// <summary>
+/// Return all tags in the database
+/// </summary>
+/// <returns></returns>
+internal static List<Tag> GetAllTags()
+{
+    List<Tag> tags = new();
+
+    using (SqliteConnection conn = new(ConnectionString))
+    {
+        conn.Open();
+
+        SqliteCommand selectCommand = new("SELECT * from Tag", conn);
+
+        SqliteDataReader query = selectCommand.ExecuteReader();
+
+        while (query.Read())
+        {
+            tags.Add(new(query.GetInt32(0), query.GetString(1)));
+        }
+    }
+    return tags;
+}
+
+/// <summary>
+/// Determine whether a tag is exist
+/// </summary>
+/// <param name="name"></param>
+/// <returns></returns>
+internal static bool TagExists(string name)
+{
+    using (SqliteConnection conn = new(ConnectionString))
+    {
+        conn.Open();
+        SqliteCommand selectCommand = new();
+        selectCommand.Connection = conn;
+        selectCommand.CommandText = "SELECT EXISTS (SELECT 1 FROM Tag WHERE Name = @Name)";
+        selectCommand.Parameters.AddWithValue("@Name", name);
+
+        SqliteDataReader query = selectCommand.ExecuteReader();
+        query.Read();
+        return query.GetBoolean(0);
+    }
+}
+
+/// <summary>
+/// Get the tag with given id
+/// </summary>
+/// <param name="id"></param>
+/// <returns></returns>
+internal static Tag? GetTag(int id)
+{
+    using (SqliteConnection conn = new(ConnectionString))
+    {
+        conn.Open();
+        SqliteCommand selectCommand = new();
+        selectCommand.Connection = conn;
+        selectCommand.CommandText = "SELECT * FROM Tag WHERE Id = @Id";
+        selectCommand.Parameters.AddWithValue("@Id", id);
+
+        SqliteDataReader query = selectCommand.ExecuteReader();
+        if (query.Read())
+        {
+            return new Tag(query.GetInt32(0), query.GetString(1));
+        }
+        else
+        {
+            return null;
+        }
+    }
+}
+
+/// <summary>
+/// Get the tag with the given name
+/// </summary>
+/// <param name="name"></param>
+/// <returns></returns>
+internal static Tag GetTag(string name)
+{
+    using (SqliteConnection conn = new(ConnectionString))
+    {
+        conn.Open();
+        SqliteCommand selectCommand = new();
+        selectCommand.Connection = conn;
+        selectCommand.CommandText = "SELECT * FROM Tag WHERE Name = @Name";
+        selectCommand.Parameters.AddWithValue("@Name", name);
+
+        SqliteDataReader query = selectCommand.ExecuteReader();
+        if (query.Read())
+        {
+            return new Tag(query.GetInt32(0), query.GetString(1));
+        }
+        else
+        {
+            return null;
+        }
+    }
+}
+
+/// <summary>
+/// Delete a Tag from the Tag table. You need to check whether there exists a tag record first.
+/// </summary>
+/// <param name="id"></param>
+internal static void DeleteTag(int id)
+{
+    using (SqliteConnection conn = new(ConnectionString))
+    {
+        conn.Open();
+
+        SqliteCommand deleteCommand = new();
+        deleteCommand.Connection = conn;
+        deleteCommand.CommandText = "DELETE FROM Tag WHERE Id = @Id";
+        deleteCommand.Parameters.AddWithValue("@Id", id);
+        deleteCommand.ExecuteNonQuery();
+    }
+}
+\end{minted}
+
+Finally add test cases to these models.
+
+\begin{minted}{csharp}
+[TestMethod]
+public void TestAddTag()
+{
+    Tag tag = Tag.Create("tag");
+    Assert.AreEqual(tag, DataAccess.GetAllTags()[0]);
+}
+
+[TestMethod]
+public void TestTagExists()
+{
+    Assert.AreEqual(false, DataAccess.TagExists("tag"));
+    Tag.Create("tag");
+    Assert.AreEqual(true, DataAccess.TagExists("tag"));
+}
+
+[TestMethod]
+public void TestGetTag()
+{
+    Tag tag = Tag.Create("tag");
+    Assert.AreEqual(tag, DataAccess.GetTag(tag.Id));
+    Assert.AreEqual(tag, DataAccess.GetTag(tag.Name));
+    Assert.AreEqual(null, DataAccess.GetTag("Non-exist Tag"));
+    Assert.AreEqual(null, DataAccess.GetTag(100));
+}
+\end{minted}
+
+
+\begin{minted}{csharp}
+[TestMethod]
+public void TestCreateProblem()
+{
+    TestCase testCase1 = TestCase.Create("input1", "output1", true);
+    TestCase testCase2 = TestCase.Create("input2", "output2", false);
+
+    Tag tag1 = Tag.Create("tag1");
+    Tag tag2 = Tag.Create("tag2");
+    var testCases = new List<TestCase>() { testCase1, testCase2 };
+    var tags = new List<Tag>() { tag1, tag2 };
+    Problem problem = Problem.Create(Guid.NewGuid(), "Test Problem", "Description", 1000, 64 * MB, Difficulty.Easy, testCases, tags);
+    Assert.AreEqual(problem, DataAccess.GetProblem(problem.Id));
+}
+
+[TestMethod]
+public void TestEditProblem()
+{
+    Problem problem = Problem.Create(Guid.NewGuid(), "Test Problem", "Description", 1000, 64 * MB, Difficulty.Easy);
+    problem.Name = "New name";
+    problem.Description = "New description";
+    problem.TimeLimit = 2000;
+    problem.MemoryLimit = 128 * MB;
+    problem.Difficulty = Difficulty.Easy;
+    problem.Status = ProblemStatus.Solved;
+    Assert.AreEqual(problem, DataAccess.GetProblem(problem.Id));
+}
+
+[TestMethod]
+public void TestGetAllProblems()
+{
+    TestCase testCase1 = TestCase.Create("input1", "output1", true);
+    TestCase testCase2 = TestCase.Create("input2", "output2", false);
+
+    Tag tag1 = Tag.Create("tag1");
+    Tag tag2 = Tag.Create("tag2");
+    var testCases1 = new List<TestCase>() { testCase1 };
+    var testCases2 = new List<TestCase>() { testCase2 };
+    var tags = new List<Tag>() { tag1, tag2 };
+    Problem problem = Problem.Create(Guid.NewGuid(), "Test Problem", "Description", 1000, 64 * MB, Difficulty.Easy, testCases1, tags);
+    Problem problem2 = Problem.Create(Guid.NewGuid(), "Test Problem2", "Description2", 2000, 6 * MB, Difficulty.Hard, testCases2, tags);
+    CollectionAssert.AreEqual(new List<Problem>() { problem, problem2 }, DataAccess.GetAllProblems());
+}
+\end{minted}
+
+All tests passed without any issue.
+
+\begin{minted}{csharp}
+> dotnet test
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Algorithm Dynamics.Core -> C:\Algorithm-Dynamics\src\Algorithm Dynamics.Core\bin\Debug\net6.0\Algorithm Dynamics.Core.dll
+  Algorithm Dynamics.Test -> C:\Algorithm-Dynamics\src\Algorithm Dynamics.Test\bin\Debug\net6.0\Algorithm Dynamics.Test.dll
+Test run for C:\Algorithm-Dynamics\src\Algorithm Dynamics.Test\bin\Debug\net6.0\Algorithm Dynamics.Test.dll (.NETCoreApp,Version=v6.0)
+Microsoft (R) Test Execution Command Line Tool Version 17.1.0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+Assembly Cleanup method TestDataAccess.AssemblyCleanup failed. Error Message: System.IO.IOException: The process cannot access the file 'C:\Algorithm-Dynamics\src\Algorithm Dynamics.Test\bin\Debug\net6.0\15b684ed-a205-4f26-8981-d76a5e4fd8ec.db' because it is being used by another process.. StackTrace:     at System.IO.FileSystem.DeleteFile(String fullPath)
+   at System.IO.File.Delete(String path)
+   at Algorithm_Dynamics.Test.TestDataAccess.AssemblyCleanup() in C:\Algorithm-Dynamics\src\Algorithm Dynamics.Test\TestDataAccess.cs:line 34
+
+
+Passed!  - Failed:     0, Passed:     6, Skipped:     0, Total:     6, Duration: 946 ms - Algorithm Dynamics.Test.dll (net6.0)
+\end{minted}
+
+Finally, I need to connect these data models together. The test case and the problem has a many-to-one relationship. One test case can only belong to one problem while one problem can have multiple test cases. So I add a field problemId in the test case table to represent this relationship. In the DataAccess class, I also add a GetTestCases function to get all test cases belong to a problem.
+
+\begin{minted}{csharp}
+/// <summary>
+/// Get all TestCases under a <see cref="Problem"/> by <see cref="Problem.Id"/>.
+/// </summary>
+/// <returns></returns>
+internal static List<TestCase> GetTestCases(int problemId)
+{
+    List<TestCase> testCases = new();
+    using (SqliteConnection conn = new(ConnectionString))
+    {
+        conn.Open();
+
+        SqliteCommand selectCommand = new();
+        selectCommand.Connection = conn;
+        selectCommand.CommandText = "SELECT * FROM TestCase WHERE ProblemId = @ProblemId";
+        selectCommand.Parameters.AddWithValue("@ProblemId", problemId);
+        SqliteDataReader query = selectCommand.ExecuteReader();
+
+        while (query.Read())
+        {
+            testCases.Add(new TestCase(query.GetInt32(0), query.GetString(1), query.GetString(2), query.GetBoolean(3)));
+        }
+    }
+    return testCases;
+}
+\end{minted}
+
+Finally, to bind a test case to a problem, I only need to set the problemId when needed.
+
+\begin{minted}{csharp}
+/// <summary>
+/// Set the problem id of the testcase
+/// </summary>
+internal int ProblemId 
+{ 
+    set => DataAccess.EditTestCase(_id, _input, _output, _isExample, value); 
+}
+\end{minted}
+
+The tag has a many-to-many relationship with a problem. One problem can have multiple tags while one tag can belong to multiple problems. A TagRecord table is needed to normalize the relationship.
+
+\begin{minted}{csharp}
+// Create TagRecord table
+tableCommand +=
+    @"CREATE TABLE IF NOT EXISTS TagRecord
+    (
+        Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        ProblemId INTEGER,
+        TagId INTEGER,
+        FOREIGN KEY (ProblemId) REFERENCES Problem (Id),
+        FOREIGN KEY (TagId) REFERENCES Tag (Id)
+    );";
+\end{minted}
+
+I also added several methods in DataAccess to modify and update the TagRecord table.
+
+\begin{minted}{csharp}
+/// <summary>
+/// Add a new tag record to the database
+/// </summary>
+/// <param name="problemId"></param>
+/// <param name="tagId"></param>
+internal static void AddTagRecord(int problemId, int tagId)
+{
+    using (SqliteConnection conn = new(ConnectionString))
+    {
+        conn.Open();
+        SqliteCommand insertCommand = new();
+        insertCommand.Connection = conn;
+
+        insertCommand.CommandText = "INSERT INTO TagRecord (ProblemId, TagId) VALUES (@ProblemId, @TagId);";
+        insertCommand.Parameters.AddWithValue("@ProblemId", problemId);
+        insertCommand.Parameters.AddWithValue("@TagId", tagId);
+
+        insertCommand.ExecuteNonQuery();
+    }
+}
+
+/// <summary>
+/// Delete an existing tag record from the database
+/// </summary>
+/// <param name="problemId"></param>
+/// <param name="tagId"></param>
+internal static void DeleteTagRecord(int problemId, int tagId)
+{
+    using (SqliteConnection conn = new(ConnectionString))
+    {
+        conn.Open();
+        SqliteCommand deleteCommand = new();
+        deleteCommand.Connection = conn;
+        deleteCommand.CommandText = "DELETE FROM TagRecord WHERE ProblemId = @ProblemId AND TagId = @TagId";
+        deleteCommand.Parameters.AddWithValue("@ProblemId", problemId);
+        deleteCommand.Parameters.AddWithValue("@TagId", tagId);
+        deleteCommand.ExecuteNonQuery();
+    }
+}
+
+/// <summary>
+/// Check whether there is a tag record for a given tagId
+/// </summary>
+/// <param name="tagId"></param>
+/// <returns></returns>
+internal static bool TagRecordExists(int tagId)
+{
+    using (SqliteConnection conn = new(ConnectionString))
+    {
+        conn.Open();
+        SqliteCommand selectCommand = new();
+        selectCommand.Connection = conn;
+        selectCommand.CommandText = "SELECT EXISTS (SELECT 1 FROM TagRecord WHERE TagId = @TagId)";
+        selectCommand.Parameters.AddWithValue("@TagId", tagId);
+
+        SqliteDataReader query = selectCommand.ExecuteReader();
+        query.Read();
+        return query.GetBoolean(0);
+    }
+}
+\end{minted}
+
+In the Tag class, I create the attach and delete methods to add or remove a tag from a problem.
+
+\begin{minted}{csharp}
+/// <summary>
+/// Attach the Tag to a problem.
+/// </summary>
+/// <param name="id"></param>
+internal void AttachTo(int problemId)
+{
+    DataAccess.AddTagRecord(problemId, Id);
+}
+
+/// <summary>
+/// Delete the tag record from the database.
+/// </summary>
+/// <param name="problemId"></param>
+internal void DeleteRecord(int problemId)
+{
+    DataAccess.DeleteTagRecord(problemId, Id);
+}
+\end{minted}
+
+Now, in the Problem class, to create a new problem, I first create a problem instance, then attach the tags and test cases to the problem.
+
+\begin{minted}{csharp}
+/// <summary>
+/// Create a new <see cref="Problem"/> and save it to the database.
+/// </summary>
+/// <param name="uid"></param>
+/// <param name="name"></param>
+/// <param name="description"></param>
+/// <param name="timeLimit"></param>
+/// <param name="memoryLimit"></param>
+/// <param name="difficulty"></param>
+/// <param name="testCases"></param>
+/// <param name="tags"></param>
+/// <returns>An instance of the Problem you just created</returns>
+public static Problem Create(
+    Guid uid,
+    string name,
+    string description,
+    int timeLimit,
+    long memoryLimit,
+    Difficulty difficulty,
+    List<TestCase> testCases = null,
+    List<Tag> tags = null)
+{
+    // Create record for Problem
+    var problem = DataAccess.AddProblem(uid,
+        name,
+        description,
+        timeLimit,
+        memoryLimit,
+        ProblemStatus.Todo,
+        difficulty,
+        testCases,
+        tags);
+
+    // Add testcases to problem
+    if (testCases != null)
+    {
+        foreach (var testCase in testCases)
+        {
+            testCase.ProblemId = problem.Id;
+        }
+    }
+    else
+    {
+        problem._testCases = new() { };
+    }
+
+    // Add tags to problem
+    if (tags != null)
+    {
+        foreach (var tag in tags)
+        {
+            tag.AttachTo(problem.Id);
+        }
+    }
+    else
+    {
+        problem._tags = new() { };
+    }
+
+    return problem;
+}
+\end{minted}
+
+I also add several methods to add or remove tags and test cases from a problem through all the method I created before.
+
+\begin{minted}{csharp}
+/// <summary>
+/// Add an existing <see cref="TestCase"/> to the problem
+/// </summary>
+/// <param name="testCase"></param>
+public void AddTestCase(TestCase testCase)
+{
+    testCase.ProblemId = Id;
+    _testCases.Add(testCase);
+}
+
+/// <summary>
+/// Remove an existing <see cref="TestCase"/> from the <see cref="Problem"/>
+/// and delete it from the database.
+/// </summary>
+/// <param name="testCase"></param>
+public void RemoveTestCase(TestCase testCase)
+{
+    testCase.Delete();
+    _testCases.Remove(testCase);
+}
+
+/// <summary>
+/// Add an existing <see cref="Tag"/> to the <see cref="Problem"/>
+/// </summary>
+/// <param name="tag"></param>
+public void AddTag(Tag tag)
+{
+    DataAccess.AddTagRecord(Id, tag.Id);
+    _tags.Add(tag);
+}
+
+/// <summary>
+/// Delete an existing <see cref="Tag"/> from the <see cref="Problem.Tags"/>.
+/// Delete the <see cref="Tag"/> from the database if it does not attach to any
+/// other problems.
+/// </summary>
+/// <param name="tag"></param>
+public void RemoveTag(Tag tag)
+{
+    // Delete the current record
+    tag.DeleteRecord(Id);
+    // If not belong to other problem
+    // delete the tag completely
+
+    if (DataAccess.TagRecordExists(tag.Id) == false)
+        tag.Delete();
+    
+    // Delete from _tags
+    _tags.Remove(tag);
+}
+\end{minted}
+
+At the very end, I add test cases for all these complex cases.
+
+\begin{minted}{csharp}
+    [TestMethod]
+    public void TestCreateProblem()
+    {
+        TestCase testCase1 = TestCase.Create("input1", "output1", true);
+        TestCase testCase2 = TestCase.Create("input2", "output2", false);
+
+        Tag tag1 = Tag.Create("tag1");
+        Tag tag2 = Tag.Create("tag2");
+        var testCases = new List<TestCase>() { testCase1, testCase2 };
+        var tags = new List<Tag>() { tag1, tag2 };
+        Problem problem = Problem.Create(Guid.NewGuid(), "Test Problem", "Description", 1000, 64 * MB, Difficulty.Easy, testCases, tags);
+        Assert.AreEqual(problem, DataAccess.GetProblem(problem.Id));
+    }
+
+    [TestMethod]
+    public void TestEditProblem()
+    {
+        Problem problem = Problem.Create(Guid.NewGuid(), "Test Problem", "Description", 1000, 64 * MB, Difficulty.Easy);
+        problem.Name = "New name";
+        problem.Description = "New description";
+        problem.TimeLimit = 2000;
+        problem.MemoryLimit = 128 * MB;
+        problem.Difficulty = Difficulty.Easy;
+        problem.Status = ProblemStatus.Solved;
+        Assert.AreEqual(problem, DataAccess.GetProblem(problem.Id));
+    }
+
+    [TestMethod]
+    public void TestGetAllProblems()
+    {
+        TestCase testCase1 = TestCase.Create("input1", "output1", true);
+        TestCase testCase2 = TestCase.Create("input2", "output2", false);
+
+        Tag tag1 = Tag.Create("tag1");
+        Tag tag2 = Tag.Create("tag2");
+        var testCases1 = new List<TestCase>() { testCase1 };
+        var testCases2 = new List<TestCase>() { testCase2 };
+        var tags = new List<Tag>() { tag1, tag2 };
+        Problem problem = Problem.Create(Guid.NewGuid(), "Test Problem", "Description", 1000, 64 * MB, Difficulty.Easy, testCases1, tags);
+        Problem problem2 = Problem.Create(Guid.NewGuid(), "Test Problem2", "Description2", 2000, 6 * MB, Difficulty.Hard, testCases2, tags);
+        CollectionAssert.AreEqual(new List<Problem>() { problem, problem2 }, DataAccess.GetAllProblems());
+    }
+
+    [TestMethod]
+    public void TestAddTestCase()
+    {
+        TestCase testCase1 = TestCase.Create("input", "output", true);
+        Assert.AreEqual(testCase1, DataAccess.GetAllTestCases()[0]);
+    }
+
+    [TestMethod]
+    public void TestEditTestCase()
+    {
+        TestCase testCase = TestCase.Create("input", "output", true);
+        testCase.Input = "newInput";
+        testCase.Output = "newOutput";
+        testCase.IsExample = false;
+        Assert.AreEqual(testCase, DataAccess.GetAllTestCases()[0]);
+    }
+
+    [TestMethod]
+    public void TestDeleteTestCase()
+    {
+        TestCase testCase = TestCase.Create("input", "output", true);
+        testCase.Delete();
+        Assert.AreEqual(0, DataAccess.GetAllTestCases().Count);
+    }
+
+    [TestMethod]
+    public void TestAddTag()
+    {
+        Tag tag = Tag.Create("tag");
+        Assert.AreEqual(tag, DataAccess.GetAllTags()[0]);
+    }
+
+    [TestMethod]
+    public void TestTagExists()
+    {
+        Assert.AreEqual(false, DataAccess.TagExists("tag"));
+        Tag.Create("tag");
+        Assert.AreEqual(true, DataAccess.TagExists("tag"));
+    }
+
+    [TestMethod]
+    public void TestGetTag()
+    {
+        Tag tag = Tag.Create("tag");
+        Assert.AreEqual(tag, DataAccess.GetTag(tag.Id));
+        Assert.AreEqual(tag, DataAccess.GetTag(tag.Name));
+        Assert.AreEqual(null, DataAccess.GetTag("Non-exist Tag"));
+        Assert.AreEqual(null, DataAccess.GetTag(100));
+    }
+
+    [TestMethod]
+    public void TestAddDeleteTagRecord()
+    {
+        Tag tag1 = Tag.Create("tag1");
+        Tag tag2 = Tag.Create("tag2");
+        Problem problem = Problem.Create(Guid.NewGuid(), "Test Problem", "Description", 1000, 64 * MB, Difficulty.Easy);
+        problem.AddTag(tag1);
+        problem.AddTag(tag2);
+        problem.RemoveTag(tag1);
+        Assert.AreEqual(problem, DataAccess.GetAllProblems()[0]);
+    }
+    [TestMethod]
+    public void TestTagRecordExists()
+    {
+        Tag tag1 = Tag.Create("tag1");
+        Tag tag2 = Tag.Create("tag2");
+        Problem problem = DatabaseHelper.CreateNewProblem();
+        problem.AddTag(tag1);
+        Assert.AreEqual(true, DataAccess.TagRecordExists(tag1.Id));
+        Assert.AreEqual(false, DataAccess.TagRecordExists(tag2.Id));
+        problem.RemoveTag(tag1);
+        Assert.AreEqual(false, DataAccess.TagRecordExists(tag1.Id));
+        Assert.AreEqual(false, DataAccess.TagExists(tag1.Name));
+    }
+    [TestMethod]
+    public void TestDeleteProblem()
+    {
+        Tag tag1 = Tag.Create("tag1");
+        Tag tag2 = Tag.Create("tag2");
+        TestCase testCase1 = TestCase.Create("input1", "output1", true);
+        TestCase testCase2 = TestCase.Create("input2", "output2", false);
+        Problem problem = DatabaseHelper.CreateNewProblem();
+        problem.AddTestCase(testCase1);
+        problem.AddTestCase(testCase2);
+        problem.AddTag(tag1);
+        problem.AddTag(tag2);
+        problem.Delete();
+
+        Assert.AreEqual(false, DataAccess.TagExists(tag1.Name));
+        Assert.AreEqual(false, DataAccess.TagExists(tag2.Name));
+        Assert.AreEqual(false, DataAccess.TagRecordExists(tag1.Id));
+        Assert.AreEqual(false, DataAccess.TagRecordExists(tag2.Id));
+        Assert.AreEqual(0, DataAccess.GetAllTestCases().Count);
+        Assert.AreEqual(0, DataAccess.GetAllProblems().Count);
+    }
+\end{minted}
+
+The tests all passed without any issues.
+
+\begin{minted}{text}
+> dotnet test --filter "Name~TestCase"
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Algorithm Dynamics.Core -> C:\Algorithm-Dynamics\src\Algorithm Dynamics.Core\bin\Debug\net6.0\Algorithm Dynamics.Core.dll
+  Algorithm Dynamics.Test -> C:\Algorithm-Dynamics\src\Algorithm Dynamics.Test\bin\Debug\net6.0\Algorithm Dynamics.Test.dll
+Test run for C:\Algorithm-Dynamics\src\Algorithm Dynamics.Test\bin\Debug\net6.0\Algorithm Dynamics.Test.dll (.NETCoreApp,Version=v6.0)
+Microsoft (R) Test Execution Command Line Tool Version 17.1.0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+Assembly Cleanup method TestDataAccess.AssemblyCleanup failed. Error Message: System.IO.IOException: The process cannot access the file 'C:\Algorithm-Dynamics\src\Algorithm Dynamics.Test\bin\Debug\net6.0\15b684ed-a205-4f26-8981-d76a5e4fd8ec.db' because it is being used by another process.. StackTrace:     at System.IO.FileSystem.DeleteFile(String fullPath)
+   at System.IO.File.Delete(String path)
+   at Algorithm_Dynamics.Test.TestDataAccess.AssemblyCleanup() in C:\Algorithm-Dynamics\src\Algorithm Dynamics.Test\TestDataAccess.cs:line 34
+
+
+Passed!  - Failed:     0, Passed:     11, Skipped:     0, Total:     11, Duration: 5 s - Algorithm Dynamics.Test.dll (net6.0)
+\end{minted}
 
 
 \subsection{Integration}

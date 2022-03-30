@@ -7,6 +7,20 @@ namespace Algorithm_Dynamics.Core.Helpers
 {
     public static partial class DataAccess
     {
+        /// <summary>
+        /// Create a new problem in the database
+        /// and return that instance
+        /// </summary>
+        /// <param name="uid"></param>
+        /// <param name="name"></param>
+        /// <param name="description"></param>
+        /// <param name="timeLimit"></param>
+        /// <param name="memoryLimit"></param>
+        /// <param name="status"></param>
+        /// <param name="difficulty"></param>
+        /// <param name="testCases"></param>
+        /// <param name="tags"></param>
+        /// <returns></returns>
         internal static Problem AddProblem(Guid uid, string name, string description, int timeLimit, long memoryLimit, ProblemStatus status, Difficulty difficulty, List<TestCase> testCases, List<Tag> tags)
         {
             using (SqliteConnection conn = new(ConnectionString))
@@ -33,6 +47,12 @@ namespace Algorithm_Dynamics.Core.Helpers
             }
         }
 
+        /// <summary>
+        /// Get the problem with the given id
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        /// <exception cref="KeyNotFoundException"></exception>
         internal static Problem GetProblem(int Id)
         {
             Problem problem;
@@ -97,6 +117,17 @@ namespace Algorithm_Dynamics.Core.Helpers
             }
             return problems;
         }
+
+        /// <summary>
+        /// Edit a given problem data
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="name"></param>
+        /// <param name="description"></param>
+        /// <param name="timeLimit"></param>
+        /// <param name="memoryLimit"></param>
+        /// <param name="status"></param>
+        /// <param name="difficulty"></param>
         internal static void EditProblem(int id, string name, string description, int timeLimit, long memoryLimit, ProblemStatus status, Difficulty difficulty)
         {
             using (SqliteConnection conn = new(ConnectionString))
@@ -117,6 +148,10 @@ namespace Algorithm_Dynamics.Core.Helpers
             }
         }
 
+        /// <summary>
+        /// Return all problems in the database
+        /// </summary>
+        /// <returns></returns>
         internal static List<Problem> GetAllProblems()
         {
             List<Problem> problems = new();
@@ -146,6 +181,10 @@ namespace Algorithm_Dynamics.Core.Helpers
             return problems;
         }
 
+        /// <summary>
+        /// Delete the given problem
+        /// </summary>
+        /// <param name="id"></param>
         internal static void DeleteProblem(int id)
         {
             using (SqliteConnection conn = new(ConnectionString))
