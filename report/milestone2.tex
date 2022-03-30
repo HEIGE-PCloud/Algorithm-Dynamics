@@ -196,7 +196,7 @@ A total of 1 test files matched the specified pattern.
 Passed!  - Failed:     0, Passed:     1, Skipped:     0, Total:     1, Duration: 110 ms - Algorithm Dynamics.Test.dll (net6.0)
 \end{minted}
 
-Now I have verified that the database and database bindings are working correctly, I can create real data models in a similar parttern: create table, add methods, add unit tests. I will use the Problem, Tag, and TestCase data models as an example. They represent a many-to-one relationship and a many-to-many relationship. Other data models are created similarly and please reference the source code for details.
+Now I have verified that the database and database bindings are working correctly, I can create real data models in a similar pattern: create tables, add methods, add unit tests. I will use the Problem, Tag, and TestCase data models as an example. They represent a many-to-one relationship and a many-to-many relationship. Other data models are created similarly and please reference the source code for details.
 
 I will start with the TestCase. I use the factory pattern to create a TestCase object. Instead of using the constructor to create a TestCase object, I expose a static method \code{Create} to initialize a TestCase object and also create it in the database. An internal constructor is used to initialize the object internally.
 
@@ -225,7 +225,7 @@ public class TestCase
 }
 \end{minted}
 
-I create getters and setters for each properties of the TestCase class. A private _prop is used to store the actual value and a public Prop is used to expose the value.
+I create getters and setters for each property of the TestCase class. A private prop is used to store the actual value and a public Prop is used to expose the value.
 
 \begin{minted}{csharp}
 private void UpdateDatabase()
@@ -459,7 +459,7 @@ A total of 1 test files matched the specified pattern.
 Failed!  - Failed:     2, Passed:     1, Skipped:     0, Total:     7, Duration: 2 s - Algorithm Dynamics.Test.dll (net6.0)
 \end{minted}
 
-The EditTestCase and AddTestCase tests are failed. After setting a few breakpoints and watches the actual value. I find that the actual value in the instance is actually correct. But when dotnet is comparing these two intances, they are considered to be different. One possible solution is to override the Equals method of the TestCase class, so dotnet can determine whether two instances are equal correctly.
+The EditTestCase and AddTestCase tests are failed. After setting a few breakpoints and watches the actual value. I find that the actual value in the instance is correct. But when dotnet is comparing these two instances, they are considered to be different. One possible solution is to override the Equals method of the TestCase class, so dotnet can determine whether two instances are equal correctly.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -1042,7 +1042,7 @@ internal static void DeleteTag(int id)
 }
 \end{minted}
 
-Finally add test cases to these models.
+Finally, add test cases to these models.
 
 \begin{minted}{csharp}
 [TestMethod]
@@ -1139,7 +1139,7 @@ Assembly Cleanup method TestDataAccess.AssemblyCleanup failed. Error Message: Sy
 Passed!  - Failed:     0, Passed:     6, Skipped:     0, Total:     6, Duration: 946 ms - Algorithm Dynamics.Test.dll (net6.0)
 \end{minted}
 
-Finally, I need to connect these data models together. The test case and the problem has a many-to-one relationship. One test case can only belong to one problem while one problem can have multiple test cases. So I add a field problemId in the test case table to represent this relationship. In the DataAccess class, I also add a GetTestCases function to get all test cases belong to a problem.
+Finally, I need to connect these data models. The test case and the problem has a many-to-one relationship. One test case can only belong to one problem while one problem can have multiple test cases. So I add a field problemId in the test case table to represent this relationship. In the DataAccess class, I also add a GetTestCases function to get all test cases that belong to a problem.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -1348,7 +1348,7 @@ public static Problem Create(
 }
 \end{minted}
 
-I also add several methods to add or remove tags and test cases from a problem through all the method I created before.
+I also add several methods to add or remove tags and test cases from a problem through all the methods I created before.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -1568,6 +1568,7 @@ Assembly Cleanup method TestDataAccess.AssemblyCleanup failed. Error Message: Sy
 Passed!  - Failed:     0, Passed:     11, Skipped:     0, Total:     11, Duration: 5 s - Algorithm Dynamics.Test.dll (net6.0)
 \end{minted}
 
+As I mentioned before, the other model relationships are created in a similar pattern. Please refer to the source code for details.
 
 \subsection{Integration}
 
@@ -1678,7 +1679,7 @@ private async void DeleteProblems(object sender, RoutedEventArgs e)
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{ProblemsPage-Delete}
 
-Next, I need to implement the search function. When the search box is submitted or the combo box is selected, a Query function is executed and return the search result.
+Next, I need to implement the search function. When the search box is submitted or the combo box is selected, a Query function is executed and returns the search result.
 
 \begin{minted}{csharp}
 /// <summary>
@@ -1994,7 +1995,7 @@ For the submission grid, I can directly bind it to the list of submissions and i
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CodingPage-SubmissionGrid}
 
-Finally, I need to integrate the AccountPage. The main job is to generate all statistics for the current user. The InitializeStatsItems procedure is called when the constructor of the Page is executed, so the statistics are generated when the page is loaded. It reads from the database and performs the calculations and save the results.
+Finally, I need to integrate the AccountPage. The main job is to generate all statistics for the current user. The InitializeStatsItems procedure is called when the constructor of the Page is executed, so the statistics are generated when the page is loaded. It reads from the database and performs the calculations and saves the results.
 
 \begin{minted}{csharp}
 public AccountPage()
