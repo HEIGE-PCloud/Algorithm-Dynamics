@@ -3,7 +3,7 @@
 \begin{document}
 \section{Milestone 2: Implement the data structures and database}
 
-\subsubsection{Implementation and testing}
+\subsection{Implementation and testing}
 
 I decided to create a second project called Algorithm Dynamics.Core to separate the UI code and the core code. This allows me to organize the codebase more cleanly and allows me to run unit tests on the core code.
 
@@ -11,7 +11,7 @@ When developing the core code, I decide not to integrate it with the UI right aw
 
 I decided to create the model and the database structure at the same time, so that I can make sure any change to the data model will be saved correctly into the database, preventing any data inconsistency between the runtime and the database.
 
-I decide to use SQLite\cite{sqlite} as the database since it is a small, fast and lightweight database suitable for local data storage. To access the database, I use Microsoft.Data.Sqlite\cite{microsoft:docs:sqlite} database to send my query commands to the local database.
+I decide to use SQLite\cite{sqlite} as the database since it is a small, fast and lightweight database suitable for local data storage. To access the database, I use Microsoft.Data.Sqlite\cite{microsoft:docs:sqlite} database bindings to send my query commands to the local database.
 
 First, I create a test table to test the workflow. Under Algorithm Dynamics.Core.Helpers namespace, I create a class DataAccess. I decide to make it public since it needs to be accessed to set the physical location of the database. I decide to make it static since it is essentially a collection of helper functions that depend on each other, but no instance needs to be created to call them. I decide to set it to a partial class since I intend to split functions that handle different data models into different files, so each file only contains a part of the class.
 
@@ -78,7 +78,7 @@ public static void InitializeDatabase(string dbPath)
 
 TODO: Implementation
 
-\subsubsection{Integration}
+\subsection{Integration}
 
 I then need to integrate the core code with the UI.
 
@@ -598,7 +598,7 @@ Now the AccountPage works correctly with all statistics showing up correctly.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{AccountPage-Final.png}
 
-\subsubsection{Stakeholder feedback}
+\subsection{Stakeholder feedback}
 
 Mr Grimwood asked me what will happen to the account page when the software is installed for the first time. Where does the user create an account? In my current design, there is no such sign-up page. I think when the app launches if it finds there is no user in the database, it should promote the user to a registration page. The user can only log in after registration.
 
