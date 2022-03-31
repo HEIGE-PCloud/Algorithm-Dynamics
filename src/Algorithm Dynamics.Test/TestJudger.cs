@@ -70,13 +70,13 @@ namespace Algorithm_Dynamics.Test
         [TestMethod, TestCategory("TestRunCodeInput")]
         public async Task TestRunCodeInputPy()
         {
-            RunCodeResult result = await Judger.RunCode(APlusBPy, "3\n4", LanguageConfig.Python, 1 * S, 64 * MB);
-            Assert.AreEqual("7\n", result.StandardOutput);
+            RunCodeResult result = await Judger.RunCode(APlusBPy, "3\n4\n", LanguageConfig.Python, 1 * S, 64 * MB);
             Assert.AreEqual("", result.StandardError);
             Assert.AreEqual(0, result.ExitCode);
             Assert.IsTrue(result.CPUTime < 2 * S && result.CPUTime > 0);
             Assert.IsTrue(result.MemoryUsage < 128 * MB && result.MemoryUsage > 0);
             Assert.AreEqual(ResultCode.SUCCESS, result.ResultCode);
+            Assert.AreEqual("7\n", result.StandardOutput);
         }
 
         /// <summary>
