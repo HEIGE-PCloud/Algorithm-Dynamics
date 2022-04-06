@@ -67,7 +67,7 @@ namespace Algorithm_Dynamics.Test
         /// Test input processing
         /// </summary>
         /// <returns></returns>
-        [TestMethod, TestCategory("TestRunCodeInput")]
+        [TestMethod, TestCategory("TestRunCode")]
         public async Task TestRunCodeInputPy()
         {
             RunCodeResult result = await Judger.RunCode(APlusBPy, "3\n4\n", LanguageConfig.Python, 1 * S, 64 * MB);
@@ -83,7 +83,7 @@ namespace Algorithm_Dynamics.Test
         /// Test input processing
         /// </summary>
         /// <returns></returns>
-        [TestMethod, TestCategory("TestRunCodeInput")]
+        [TestMethod, TestCategory("TestRunCode")]
         public async Task TestRunCodeInputCpp()
         {
             RunCodeResult result = await Judger.RunCode(APlusBCpp, "3\n4", LanguageConfig.Cpp, 1 * S, 64 * MB);
