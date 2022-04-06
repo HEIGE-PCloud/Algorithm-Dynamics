@@ -91,7 +91,7 @@ Add problem shows up the correct flyout and navigate to the correct page.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{ProblemsPage-Testing-Add.png}
 
-The right-click flyout menu shows up correctly with all it button functional.
+The right-click flyout menu shows up correctly with all its buttons functional.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{ProblemsPage-Testing-Flyout.png}
 
@@ -195,7 +195,7 @@ The RunCode button runs the code against the given input correctly.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CodingPage-Testing-RunCode}
 
-The Submission button submits the code for judging and save the result to the database correctly.
+The Submission button submits the code for judging and saves the result to the database correctly.
 
 \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{CodingPage-Testing-Submission}
 
@@ -373,7 +373,7 @@ PCloud thinks overall the app has very good performance, and he encounters no cr
 
 \subsection{Beta testing feedback from Timofei}
 
-Timofei likes to be able to change the colour theme of the software, the modern design and the dark mode is appealing to him. He thinks the fullscreen button in the CodingPage is very helpful, which creates an immersive working environment and remove all distractions.
+Timofei likes to be able to change the colour theme of the software, the modern design and the dark mode are appealing to him. He thinks the fullscreen button in the CodingPage is very helpful, which creates an immersive working environment and removes all distractions.
 
 Timofei finds the PlaygroundPage page very useful for him to run any short pieces of code without launching a huge IDE. He thinks it can be more useful if the programming language select box can remember his last option instead of resetting to the first language every time.
 
@@ -393,7 +393,7 @@ My stakeholders generally give very positive feedback about this project. From t
 
 \subsubsection{Easy navigate around the software}
 
-The design of the quick access menu in the HomePage enables one-click access to all core functionalities. The recommendations on the HomePage also allows the user to get into working faster.
+The design of the quick access menu in the HomePage enables one-click access to all core functionalities. The recommendations on the HomePage also allow the user to get into working faster.
 
 The design of the navigation panel on the left enables the user to navigate through different pages at any time. The panel can also expand or collapse so the user can get focused when they are working. This criterion is fully met.
 
@@ -448,7 +448,7 @@ An AccountPage is provided for the user to edit account settings such as user na
 
 \subsubsection{Local Database}
 
-All unit tests on the DataAccess class passes, which means the database is working as expected. In the black box test and the integration test, no issue with the local database is discovered. It is created successfully when the app is run the first time. This criterion is fully met.
+All unit tests on the DataAccess class pass, which means the database is working as expected. In the black box test and the integration test, no issue with the local database is discovered. It is created successfully when the app is run the first time. This criterion is fully met.
 
 \subsubsection{Prevent SQL injection}
 
@@ -464,9 +464,9 @@ The code editor supports line number, syntax highlighting, code folding, code co
 
 \subsubsection{API calls}
 
-This criterion is not met. Since the Teams integration is forced to be cancelled.
+This criterion is not met. Since the Teams integration is forced to be cancelled. During further development, it is not likely that Teams will open up its APIs to developers with a non-education account. I will need to reassess and maybe integrate with other education products.
 
-\subsubsection{Meaningful variale name}
+\subsubsection{Meaningful variable name}
 
 All variables use meaningful names. This criterion is fully met. Please refer to the source code for details.
 
@@ -476,7 +476,7 @@ All important functions and codes are associated with comments explaining their 
 
 \subsubsection{Object Oriented Design}
 
-All pages, data models are designed using OOP. This criterion is fully met.
+All pages and data models are designed using OOP. This criterion is fully met.
 
 \subsubsection{Modular design}
 
@@ -502,7 +502,7 @@ The current code base is heavily dependent on the dotnet runtime and the WinUI 3
 
 One possible solution is the new .NET MAUI framework\cite{microsoft:docs:what-is-maui}, which is currently in its beta development phase. It also depends on the dotnet runtime, which means I can reuse most of my existing codebase. But since it is still in the beta testing phase, and there are a lot of bugs and unsupported features, currently it is not possible to migrate to this framework.
 
-The other solution is to completely rewrite the app using web technologies, which can run on any browser, and therefore any device. I can also use technologies like ElectronJS\cite{electron} to pack the webpages into a desktop app for offline use. I personally do not agree with this approach, since I need to rewrite the entire codebase, and the result will probably have much worse performance and more limitations.
+The other solution is to completely rewrite the app using web technologies, which can run on any browser, and therefore any device. I can also use technologies like ElectronJS\cite{electron} to pack the webpages into a desktop app for offline use. I do not agree with this approach, since I need to rewrite the entire codebase, and the result will probably have much worse performance and more limitations.
 
 In conclusion, it is a very difficult challenge to support multiple platforms, and it will be a long term task.
 
@@ -532,9 +532,13 @@ Implementing a code editor from scratch is very difficult. There is no similar p
 
 \subsection{Unit test for UI}
 
-I added unit tests for Algorithm Dynamics.Core throughout its development. And I have seen how useful unit test is to eliminate bugs during the development stage. It will be very helpful if I can add unit tests for the UI code as well.
+I added unit tests for Algorithm Dynamics.Core throughout its development. And I have seen how useful unit test is to eliminate bugs during the development stage. It will be very helpful for future maintenance if I can add unit tests for the UI code as well.
 
 One possible way is to refactor the UI code into the MVVM\cite{microsoft:docs:mvvm-introduction} pattern, which abstracts a view model out of the UI and decouples the UI logic with its markup using data binding\cite{microsoft:docs:data-binding-and-mvvm}. I have heavily used data binding throughout the development and the refactor will take a lot of work but it should be pretty straightforward. After the abstraction of the view model, I can write test cases in the Algorithm Dynamics.Test project to test the behaviour of the view models just like testing the DataAccess and Judger class. However, currently, it is not possible to connect an MSTest project to a WinUI 3 project due to some upstream limitations\cite{github:microsoft-ui-xaml:6258}. But I can start refactoring, which also makes the code easier to be maintained, and start writing unit tests once this feature is supported.
+
+\subsubsection{Documentation}
+
+The code uses meaningful variable names and is well commented. However, it will be more helpful for further maintenance if I set up a documentation site and introduce the design of the software from a higher level. I need to document all top-level modules and their job and how they are connected. So when a new feature is added, it will be easy for the maintainer to decide which module should be modified and keep the code modular and easy to maintain.
 
 \subsection{Stakeholder suggestions}
 
