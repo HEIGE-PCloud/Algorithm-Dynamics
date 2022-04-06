@@ -494,7 +494,9 @@ All unit tests for the core functions are passed with a code coverage above 88\%
 
 \section{Limitations, further maintenance and developement}
 
-\subsection{Cross platform}
+\subsection{Limitations and further development}
+
+\subsubsection{Cross platform}
 
 The current app only runs on Windows by design, so Linux or macOS users will not be able to use it. It is okay for all my stakeholders, but in real life, there are a lot of users who do not work on a Windows device. It will be really useful for the app to support multiple platforms, so it can reach more users and help more students and teachers.
 
@@ -506,7 +508,7 @@ The other solution is to completely rewrite the app using web technologies, whic
 
 In conclusion, it is a very difficult challenge to support multiple platforms, and it will be a long term task.
 
-\subsection{A more flexible Judger}
+\subsubsection{A more flexible Judger}
 
 The current Judger is not very smart, it only takes in pre-generated test cases and makes direct comparisons. There are a lot of ways to make the Judger smarter and provide more useful outputs.
 
@@ -516,21 +518,23 @@ Another improvement is to support the custom special judge. In some cases, there
 
 These tasks are fairly simple to implement since the underlying architecture is designed to be modular and flexible and easy to maintain.
 
-\subsection{Assignment function}
+\subsubsection{Assignment function}
 
 As I mentioned in the development stage, there is no easy way on the Windows operating system to run external code safely. One possible approach is to send the code to a remote server, and then run the code in a virtual machine or a docker container so it cannot cause any damage, and then send the result back. This requires extra servers and exchanging data, which is a giant task. There might also involve some legal issues since a server storing student submission code may need to comply with the GDPR. An alternative is to allow the teacher to host the judger on a local server, but this also needs extra work and will not be easy to set up. Overall, there is no simple alternative solution to this problem and I will keep researching to find a proper solution before implementing it.
 
-\subsection{Assignment integration}
+\subsubsection{Assignment integration}
 
 I find I can't integrate my app with the Microsoft Education API since it requires an account from an education organization, which I do not have and probably will never have. It might be possible to integrate the app with other education apps such as Slack or Google Classroom. More in-depth research needs to be done to determine if this is possible. This task also depends on the assignment function, so it probably will not be done shortly.
 
-\subsection{A better code editor}
+\subsubsection{A better code editor}
 
 The current code editor is based on the web view and the Monaco Editor. Compared to a native editor, it is fairly slow. Some upstream bugs of the web view component also cause many inconvenient issues in the implementation. A native code editor, supporting line number, syntax highlighting, find and replace is desirable.
 
 Implementing a code editor from scratch is very difficult. There is no similar project written in C\#, I can implement it as a standalone library so other people can benefit from it as well. This will be a long term task.
 
-\subsection{Unit test for UI}
+\subsection{Maintenance}
+
+\subsubsection{Unit test for UI}
 
 I added unit tests for Algorithm Dynamics.Core throughout its development. And I have seen how useful unit test is to eliminate bugs during the development stage. It will be very helpful for future maintenance if I can add unit tests for the UI code as well.
 
@@ -540,7 +544,7 @@ One possible way is to refactor the UI code into the MVVM\cite{microsoft:docs:mv
 
 The code uses meaningful variable names and is well commented. However, it will be more helpful for further maintenance if I set up a documentation site and introduce the design of the software from a higher level. I need to document all top-level modules and their job and how they are connected. So when a new feature is added, it will be easy for the maintainer to decide which module should be modified and keep the code modular and easy to maintain.
 
-\subsection{Stakeholder suggestions}
+\subsubsection{Stakeholder suggestions}
 
 On top of everything mentioned above, my stakeholders have given me a lot of suggestions that I can work on as well. This includes:
 
